@@ -19,8 +19,8 @@
       padding:80px 40px 80px 140px;
       display:flex; flex-direction:column;
       opacity:0;
-      position:relative;
     }
+    #bar-svg { display:block; }
     .chart-accent-line {
       width:100%; height:1px;
       background:linear-gradient(90deg, rgba(232,160,32,0.5), transparent);
@@ -33,13 +33,6 @@
     }
     .chart-subtitle { font-size:20px; color:rgba(250,248,243,0.35); margin-bottom:28px; }
     .chart-source { font-size:17px; color:rgba(250,248,243,0.25); margin-top:18px; }
-
-    .chart-streak-wrap { position:absolute; left:140px; right:40px; top:80px; bottom:80px; overflow:hidden; pointer-events:none; }
-    .chart-streak {
-      position:absolute; height:2px; width:100%;
-      background: linear-gradient(to right, transparent 0%, rgba(232,160,32,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(232,160,32,0.4) 70%, transparent 100%);
-      top:50%; left:-100%; opacity:0;
-    }
 
     .right {
       padding:0 100px 0 40px;
@@ -80,9 +73,6 @@
     <p class="chart-subtitle">The isolation trend, 1990 – 2023</p>
     <svg id="bar-svg" viewBox="0 0 1000 480" width="1000" height="480" aria-label="Bar chart: Americans with no close friends over time"></svg>
     <p class="chart-source">Source: American Enterprise Institute / Survey Center on American Life</p>
-    <div class="chart-streak-wrap">
-      <div class="chart-streak" id="csk"></div>
-    </div>
   </div>
 
   <div class="right" id="rightPanel">
@@ -138,11 +128,9 @@
   var PT_JS = 16;
 
   tl
-    .to('#scene', { opacity:1, scale:1, duration:0.6, ease:'power2.out' }, 0)
-    .from('#scene', { scale:0.92 }, 0)
+    .to('#scene', { opacity:1, duration:0.6, ease:'power2.out' }, 0)
 
-    .to('#leftPanel', { opacity:1, x:0, duration:0.65, ease:'expo.out' }, 0.2)
-    .from('#leftPanel', { x:-30 }, 0.2);
+    .to('#leftPanel', { opacity:1, duration:0.65, ease:'expo.out' }, 0.2);
 
   // Animate bars
   VALUES.forEach(function(val, i) {
@@ -154,12 +142,7 @@
     tl.to('#tbarval' + i, { opacity: 1, duration: 0.3 }, at + 0.4);
   });
 
-  // Horizontal amber chart streak after bars animate
   tl
-    .set('#csk', { left:'-100%', top:'55%' })
-    .to('#csk', { left:'200%', opacity:0.8, duration:1.0, ease:'power1.inOut' }, 2.8)
-    .to('#csk', { opacity:0, duration:0.3 }, 3.6)
-
     .to('#ch', { opacity:1, y:0, duration:0.4, ease:'power2.out' }, 0.8)
     .from('#ch', { y:14 }, 0.8)
 

@@ -41,14 +41,9 @@
       position:relative;
     }
     .chart-title { font-size:26px; color:#4a90d9; letter-spacing:1px; margin-bottom:24px; opacity:0; }
-    .chart-wrap { position:relative; width:100%; opacity:0; overflow:hidden; }
+    .chart-wrap { position:relative; width:100%; opacity:0; height:460px; }
+    #bar-svg { display:block; }
 
-    .chart-streak-wrap { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
-    .chart-streak {
-      position:absolute; height:2px; width:100%;
-      background: linear-gradient(to right, transparent 0%, rgba(74,144,217,0.7) 30%, rgba(255,255,255,0.9) 50%, rgba(74,144,217,0.7) 70%, transparent 100%);
-      top:50%; left:-100%; opacity:0;
-    }
   </style>
 </head>
 <body>
@@ -62,9 +57,6 @@
     <p class="chart-title" id="ct">Avg. close friends by age group</p>
     <div class="chart-wrap" id="cw">
       <svg id="bar-svg" viewBox="0 0 880 460" width="880" height="460" aria-label="Bar chart: average close friends by age group"></svg>
-      <div class="chart-streak-wrap">
-        <div class="chart-streak" id="csk"></div>
-      </div>
     </div>
   </div>
 </div>
@@ -112,8 +104,7 @@
   var PAD_T_JS = 12;
 
   tl
-    .to('#scene', { opacity:1, scale:1, duration:0.5, ease:'power2.out' }, 0)
-    .from('#scene', { scale:0.92 }, 0)
+    .to('#scene', { opacity:1, duration:0.5, ease:'power2.out' }, 0)
 
     .to('#ch', { opacity:1, y:0, duration:0.4, ease:'power2.out' }, 0.3)
     .from('#ch', { y:16 }, 0.3)
@@ -137,12 +128,7 @@
     tl.to('#barval' + i, { opacity: 1, duration: 0.3 }, at + 0.45);
   });
 
-  // Horizontal chart streak after bars animate
   tl
-    .set('#csk', { left:'-100%', top:'50%' })
-    .to('#csk', { left:'200%', opacity:0.8, duration:1.0, ease:'power1.inOut' }, 3.4)
-    .to('#csk', { opacity:0, duration:0.3 }, 4.2)
-
     .to('#scene', { opacity:0, duration:0.4, ease:'power2.in' }, 5.6);
 
   window.__timelines["beat-2-cliff"] = tl;

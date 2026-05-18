@@ -114,8 +114,7 @@
   var tl = gsap.timeline({ paused: true });
 
   tl
-    .to('#scene', { opacity:1, scale:1, duration:0.5, ease:'power2.out' }, 0)
-    .from('#scene', { scale:0.92 }, 0)
+    .to('#scene', { opacity:1, duration:0.5, ease:'power2.out' }, 0)
 
     .to('#ch', { opacity:1, y:0, duration:0.4, ease:'power2.out' }, 0.3)
     .from('#ch', { y:16 }, 0.3)
@@ -134,8 +133,7 @@
 
     .to('#rt', { opacity:1, duration:0.4 }, 1.4)
 
-    .to('#pw', { opacity:1, scale:1, duration:0.5, ease:'back.out(1.5)' }, 1.6)
-    .from('#pw', { scale:0.7 }, 1.6)
+    .to('#pw', { opacity:1, duration:0.5, ease:'power2.out' }, 1.6)
 
     .to('#lg', { opacity:1, y:0, duration:0.5, ease:'power2.out' }, 2.4)
     .from('#lg', { y:20 }, 2.4)
