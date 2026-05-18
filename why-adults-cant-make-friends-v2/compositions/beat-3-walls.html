@@ -14,33 +14,48 @@
       align-items:center; justify-content:center;
       gap:64px; padding:0 140px;
       opacity:0;
+      position:relative; overflow:hidden;
     }
 
-    .top { text-align:center; }
-    .chapter { font-size:22px; letter-spacing:5px; text-transform:uppercase; color:#c9622a; display:block; margin-bottom:20px; }
+    /* Purple radial overlay */
+    .scene::before {
+      content:''; position:absolute; inset:0;
+      background:radial-gradient(circle at 50% 50%, rgba(60,20,120,0.15) 0%, transparent 70%);
+      pointer-events:none;
+    }
+
+    .streaks { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+    .sk {
+      position:absolute; width:3px; height:200%; top:-50%; left:0;
+      background: linear-gradient(to bottom, transparent 0%, rgba(144,96,208,0.6) 40%, rgba(255,255,255,0.9) 50%, rgba(144,96,208,0.6) 60%, transparent 100%);
+      transform: rotate(18deg); opacity:0;
+    }
+
+    .top { text-align:center; position:relative; z-index:1; }
+    .chapter { font-size:22px; letter-spacing:5px; text-transform:uppercase; color:#9060d0; display:block; margin-bottom:20px; }
     .headline {
-      font-family:playfair-display, serif;
+      font-family:'playfair display', serif;
       font-size:88px; line-height:1.05; color:#faf8f3;
     }
-    .headline em { color:#c9622a; font-style:italic; }
+    .headline em { color:#a878f0; font-style:italic; }
 
-    .cards { display:flex; gap:40px; width:100%; }
+    .cards { display:flex; gap:40px; width:100%; position:relative; z-index:1; }
 
     .card {
       flex:1;
       background:rgba(255,255,255,0.04);
-      border:1px solid rgba(255,255,255,0.08);
+      border:1px solid rgba(144,96,208,0.3);
       border-radius:24px;
       padding:56px 52px 52px;
       display:flex; flex-direction:column; gap:20px;
       opacity:0; transform:translateY(40px);
     }
     .card-number {
-      font-family:playfair-display, serif;
-      font-size:72px; color:#c9622a; line-height:1;
+      font-family:'playfair display', serif;
+      font-size:72px; color:#9060d0; line-height:1;
     }
     .card-title {
-      font-family:playfair-display, serif;
+      font-family:'playfair display', serif;
       font-size:52px; color:#faf8f3; line-height:1.1;
     }
     .card-body {
@@ -49,13 +64,17 @@
     }
     .card-accent {
       width:48px; height:3px;
-      background:#c9622a; border-radius:2px;
+      background:#9060d0; border-radius:2px;
     }
   </style>
 </head>
 <body>
 <div class="scene" id="scene" data-composition-id="beat-3-walls" data-width="1920" data-height="1080">
-  <div class="top">
+  <div class="streaks">
+    <div class="sk" id="sk1"></div>
+    <div class="sk" id="sk2"></div>
+  </div>
+  <div class="top" id="topBlock">
     <span class="chapter">Chapter 2 · The Three Walls</span>
     <h2 class="headline">Friendship needs three things<br><em>adults rarely have.</em></h2>
   </div>
@@ -85,18 +104,32 @@
   window.__timelines = window.__timelines || {};
   var tl = gsap.timeline({ paused: true });
 
+  gsap.set('#sk1', { x:-200 });
+  gsap.set('#sk2', { x:-400 });
+
   tl
-    .to('#scene', { opacity:1, duration:0.5, ease:'power2.out' }, 0)
+    .to('#scene', { opacity:1, scale:1, duration:0.5, ease:'power2.out' }, 0)
+    .from('#scene', { scale:0.92 }, 0)
 
-    .to('.top', { opacity:1, y:0, duration:0.6, ease:'expo.out' }, 0.3)
-    .from('.top', { opacity:0, y:30 }, 0.3)
+    .to('#topBlock', { opacity:1, y:0, duration:0.6, ease:'expo.out' }, 0.3)
+    .from('#topBlock', { opacity:0, y:30 }, 0.3)
 
-    .to('#c1', { opacity:1, y:0, duration:0.55, ease:'back.out(1.8)' }, 1.0)
-    .to('#c2', { opacity:1, y:0, duration:0.55, ease:'back.out(1.8)' }, 1.35)
-    .to('#c3', { opacity:1, y:0, duration:0.55, ease:'back.out(1.8)' }, 1.70)
+    .to('#sk1', { x:2400, opacity:0.7, duration:1.4, ease:'power1.inOut' }, 0.3)
+    .to('#sk1', { opacity:0, duration:0.4 }, 1.5)
+    .to('#sk2', { x:2600, opacity:0.5, duration:1.6, ease:'power1.inOut' }, 0.55)
+    .to('#sk2', { opacity:0, duration:0.4 }, 2.0)
 
-    .to('.card-number', { color:'#e8844e', duration:0.3, stagger:0.35, ease:'power2.out' }, 2.6)
-    .to('.card-number', { color:'#c9622a', duration:0.5, stagger:0.35, ease:'power2.in' }, 2.9)
+    .to('#c1', { opacity:1, y:0, duration:0.55, ease:'back.out(1.6)' }, 1.0)
+    .to('#c2', { opacity:1, y:0, duration:0.55, ease:'back.out(1.6)' }, 1.25)
+    .to('#c3', { opacity:1, y:0, duration:0.55, ease:'back.out(1.6)' }, 1.50)
+
+    // Glow on each card after it appears
+    .to('#c1', { boxShadow:'0 0 40px rgba(144,96,208,0.2)', duration:0.4, ease:'power2.out' }, 1.6)
+    .to('#c2', { boxShadow:'0 0 40px rgba(144,96,208,0.2)', duration:0.4, ease:'power2.out' }, 1.85)
+    .to('#c3', { boxShadow:'0 0 40px rgba(144,96,208,0.2)', duration:0.4, ease:'power2.out' }, 2.1)
+
+    .to('.card-number', { color:'#c09ae8', duration:0.3, stagger:0.35, ease:'power2.out' }, 2.6)
+    .to('.card-number', { color:'#9060d0', duration:0.5, stagger:0.35, ease:'power2.in' }, 2.9)
 
     .to('#scene', { opacity:0, duration:0.4, ease:'power2.in' }, 7.6);
 

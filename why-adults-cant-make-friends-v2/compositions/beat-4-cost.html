@@ -10,7 +10,7 @@
 
     .scene {
       width:1920px; height:1080px;
-      display:grid; grid-template-columns:1fr 760px;
+      display:grid; grid-template-columns:1fr 680px;
       align-items:center;
       opacity:0;
     }
@@ -19,21 +19,21 @@
       padding:0 80px 0 140px;
       display:flex; flex-direction:column; gap:48px;
     }
-    .chapter { font-size:22px; letter-spacing:5px; text-transform:uppercase; color:#c9622a; opacity:0; }
+    .chapter { font-size:22px; letter-spacing:5px; text-transform:uppercase; color:#d94a5a; opacity:0; }
     .headline {
-      font-family:playfair-display, serif;
+      font-family:'playfair display', serif;
       font-size:86px; line-height:1.0; color:#faf8f3; opacity:0;
     }
-    .headline em { color:#c9622a; font-style:italic; }
+    .headline em { color:#d94a5a; font-style:italic; }
     blockquote {
-      border-left:4px solid #c9622a;
+      border-left:4px solid #d94a5a;
       padding:28px 40px;
-      background:rgba(201,98,42,0.07);
+      background:rgba(217,74,90,0.07);
       border-radius:0 16px 16px 0;
       opacity:0;
     }
     blockquote p {
-      font-family:playfair-display, serif;
+      font-family:'playfair display', serif;
       font-size:36px; line-height:1.55; color:#faf8f3; font-style:italic;
     }
     blockquote cite {
@@ -42,7 +42,7 @@
     }
 
     .right {
-      padding:80px 80px 80px 40px;
+      padding:60px 60px 60px 60px;
       display:flex; flex-direction:column; gap:40px;
     }
     .right-title { font-size:26px; color:rgba(250,248,243,0.4); letter-spacing:1px; opacity:0; }
@@ -65,10 +65,10 @@
   <div class="right">
     <p class="right-title" id="rt">Top barriers to new adult friendships</p>
     <div class="pie-wrap" id="pw">
-      <svg id="pie-svg" width="580" height="580" viewBox="0 0 580 580" aria-label="Donut chart: barriers to adult friendship"></svg>
+      <svg id="pie-svg" width="480" height="480" viewBox="0 0 480 480" aria-label="Donut chart: barriers to adult friendship"></svg>
     </div>
     <div class="legend" id="lg">
-      <div class="leg-row"><div class="leg-sq" style="background:#c9622a"></div>Too busy / no time — 34%</div>
+      <div class="leg-row"><div class="leg-sq" style="background:#d94a5a"></div>Too busy / no time — 34%</div>
       <div class="leg-row"><div class="leg-sq" style="background:#4a7fa8"></div>No shared context — 22%</div>
       <div class="leg-row"><div class="leg-sq" style="background:#7a5c38"></div>Social anxiety — 18%</div>
       <div class="leg-row"><div class="leg-sq" style="background:#5a8a4e"></div>Geographic mobility — 14%</div>
@@ -82,11 +82,11 @@
 
   // ── Deterministic donut chart ──
   var PIE_DATA   = [34, 22, 18, 14, 12];
-  var PIE_COLORS = ['#c9622a','#4a7fa8','#7a5c38','#5a8a4e','#6e6860'];
+  var PIE_COLORS = ['#d94a5a','#4a7fa8','#7a5c38','#5a8a4e','#6e6860'];
 
   (function buildPie() {
     var svg = document.getElementById('pie-svg');
-    var cx = 290, cy = 290, R = 230, r = 138;
+    var cx = 240, cy = 240, R = 185, r = 110;
     var toRad = function(d) { return d * Math.PI / 180; };
     var angle = -90;
     var paths = '';
@@ -106,15 +106,16 @@
       paths += '<path d="M' + f(x1) + ',' + f(y1) + ' A' + R + ',' + R + ' 0 ' + large + ' 1 ' + f(x2) + ',' + f(y2) + ' L' + f(x3) + ',' + f(y3) + ' A' + r + ',' + r + ' 0 ' + large + ' 0 ' + f(x4) + ',' + f(y4) + ' Z" fill="' + PIE_COLORS[i] + '"/>';
       angle = a2;
     });
-    paths += '<text x="' + cx + '" y="' + (cy - 10) + '" text-anchor="middle" font-size="60" font-weight="700" fill="#faf8f3" font-family="playfair-display,serif">34%</text>';
-    paths += '<text x="' + cx + '" y="' + (cy + 36) + '" text-anchor="middle" font-size="22" fill="rgba(250,248,243,0.4)" font-family="inter,sans-serif">Too busy</text>';
+    paths += '<text x="' + cx + '" y="' + (cy - 10) + '" text-anchor="middle" font-size="54" font-weight="700" fill="#faf8f3" font-family="\'playfair display\',serif">34%</text>';
+    paths += '<text x="' + cx + '" y="' + (cy + 34) + '" text-anchor="middle" font-size="20" fill="rgba(250,248,243,0.4)" font-family="inter,sans-serif">Too busy</text>';
     svg.innerHTML = paths;
   })();
 
   var tl = gsap.timeline({ paused: true });
 
   tl
-    .to('#scene', { opacity:1, duration:0.5, ease:'power2.out' }, 0)
+    .to('#scene', { opacity:1, scale:1, duration:0.5, ease:'power2.out' }, 0)
+    .from('#scene', { scale:0.92 }, 0)
 
     .to('#ch', { opacity:1, y:0, duration:0.4, ease:'power2.out' }, 0.3)
     .from('#ch', { y:16 }, 0.3)
@@ -124,6 +125,12 @@
 
     .to('#bq', { opacity:1, x:0, duration:0.6, ease:'expo.out' }, 1.1)
     .from('#bq', { x:-24 }, 1.1)
+
+    // Glow pulse on blockquote
+    .to('#bq', { boxShadow:'-4px 0 24px rgba(217,74,90,0.35)', duration:0.5, ease:'power2.out' }, 1.7)
+    .to('#bq', { boxShadow:'-4px 0 8px rgba(217,74,90,0.15)', duration:0.6, ease:'power2.in' }, 2.2)
+    .to('#bq', { boxShadow:'-4px 0 24px rgba(217,74,90,0.35)', duration:0.5, ease:'power2.out' }, 2.8)
+    .to('#bq', { boxShadow:'-4px 0 8px rgba(217,74,90,0.15)', duration:0.6, ease:'power2.in' }, 3.3)
 
     .to('#rt', { opacity:1, duration:0.4 }, 1.4)
 

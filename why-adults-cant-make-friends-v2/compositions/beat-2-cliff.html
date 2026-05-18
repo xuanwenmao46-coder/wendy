@@ -21,13 +21,14 @@
       display:flex; flex-direction:column; gap:24px;
     }
 
-    .chapter { font-size:22px; letter-spacing:5px; text-transform:uppercase; color:#c9622a; opacity:0; }
+    .chapter { font-size:22px; letter-spacing:5px; text-transform:uppercase; color:#4a90d9; opacity:0; }
     .headline {
-      font-family:playfair-display, serif;
+      font-family:'playfair display', serif;
       font-size:96px; line-height:1.0;
       color:#faf8f3; opacity:0;
+      overflow:hidden;
     }
-    .headline em { color:#c9622a; font-style:italic; }
+    .headline em { color:#4a90d9; font-style:italic; }
     .body-copy {
       font-size:30px; font-weight:300; line-height:1.6;
       color:rgba(250,248,243,0.55); opacity:0;
@@ -37,9 +38,17 @@
     .right {
       padding:80px 80px 80px 40px;
       display:flex; flex-direction:column;
+      position:relative;
     }
-    .chart-title { font-size:26px; color:rgba(250,248,243,0.4); letter-spacing:1px; margin-bottom:24px; opacity:0; }
-    .chart-wrap { position:relative; width:100%; opacity:0; }
+    .chart-title { font-size:26px; color:#4a90d9; letter-spacing:1px; margin-bottom:24px; opacity:0; }
+    .chart-wrap { position:relative; width:100%; opacity:0; overflow:hidden; }
+
+    .chart-streak-wrap { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+    .chart-streak {
+      position:absolute; height:2px; width:100%;
+      background: linear-gradient(to right, transparent 0%, rgba(74,144,217,0.7) 30%, rgba(255,255,255,0.9) 50%, rgba(74,144,217,0.7) 70%, transparent 100%);
+      top:50%; left:-100%; opacity:0;
+    }
   </style>
 </head>
 <body>
@@ -52,7 +61,10 @@
   <div class="right">
     <p class="chart-title" id="ct">Avg. close friends by age group</p>
     <div class="chart-wrap" id="cw">
-      <svg id="bar-svg" viewBox="0 0 1060 560" width="1060" height="560" aria-label="Bar chart: average close friends by age group"></svg>
+      <svg id="bar-svg" viewBox="0 0 880 460" width="880" height="460" aria-label="Bar chart: average close friends by age group"></svg>
+      <div class="chart-streak-wrap">
+        <div class="chart-streak" id="csk"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -63,12 +75,11 @@
   // ── Deterministic bar chart ──
   var BAR_VALS   = [6.6, 5.2, 4.0, 3.1, 2.6, 2.1];
   var BAR_LABELS = ['15–24','25–34','35–44','45–54','55–64','65+'];
-  var BAR_COLORS = ['#c9622a','#c9622a','#7a7568','#5f5e5a','#444441','#2c2c2a'];
+  var BAR_COLORS = ['#4a90d9','#5aaaf0','#7a8fa8','#5f7080','#445060','#303840'];
   var BAR_MAX = 8;
-  var SVG_W = 1060, SVG_H = 560;
-  var PAD_L = 55, PAD_R = 20, PAD_T = 12, PAD_B = 52;
-  var CHART_W = SVG_W - PAD_L - PAD_R;
-  var CHART_H = SVG_H - PAD_T - PAD_B;
+  var SVG_W = 880, SVG_H = 460;
+  var PAD_L = 55, PAD_R = 20, PAD_T = 12, PAD_B = 50;
+  var CHART_W = 805, CHART_H = 398;
 
   (function buildBar() {
     var svg = document.getElementById('bar-svg');
@@ -88,7 +99,6 @@
       var x = PAD_L + i * slotW + (slotW - barW) / 2;
       var fullH = (val / BAR_MAX) * CHART_H;
       var fullY = PAD_T + CHART_H - fullH;
-      // bar starts at height=0; GSAP animates to fullH
       html += '<rect id="bar' + i + '" x="' + x.toFixed(1) + '" y="' + (PAD_T + CHART_H).toFixed(1) + '" width="' + barW.toFixed(1) + '" height="0" fill="' + BAR_COLORS[i] + '" rx="6"/>';
       html += '<text id="barlbl' + i + '" x="' + (x + barW/2).toFixed(1) + '" y="' + (PAD_T + CHART_H + 38).toFixed(1) + '" text-anchor="middle" font-size="22" fill="rgba(250,248,243,0.4)" font-family="inter,sans-serif" opacity="0">' + BAR_LABELS[i] + '</text>';
       html += '<text id="barval' + i + '" x="' + (x + barW/2).toFixed(1) + '" y="' + (fullY - 10).toFixed(1) + '" text-anchor="middle" font-size="22" fill="' + BAR_COLORS[i] + '" font-weight="600" font-family="inter,sans-serif" opacity="0">' + val + '</text>';
@@ -98,11 +108,12 @@
 
   // ── GSAP timeline ──
   var tl = gsap.timeline({ paused: true });
-  var CHART_H_JS = SVG_H - 12 - 52;
+  var CHART_H_JS = 398;
   var PAD_T_JS = 12;
 
   tl
-    .to('#scene', { opacity:1, duration:0.5, ease:'power2.out' }, 0)
+    .to('#scene', { opacity:1, scale:1, duration:0.5, ease:'power2.out' }, 0)
+    .from('#scene', { scale:0.92 }, 0)
 
     .to('#ch', { opacity:1, y:0, duration:0.4, ease:'power2.out' }, 0.3)
     .from('#ch', { y:16 }, 0.3)
@@ -121,12 +132,18 @@
     var fullH = (val / BAR_MAX) * CHART_H_JS;
     var fullY = PAD_T_JS + CHART_H_JS - fullH;
     var at = 1.5 + i * 0.12;
-    tl.to('#bar' + i, { attr: { height: fullH, y: fullY }, duration: 0.65, ease: 'back.out(1.5)' }, at);
+    tl.to('#bar' + i, { attr: { height: fullH, y: fullY }, duration: 0.65, ease: 'back.out(1.6)' }, at);
     tl.to('#barlbl' + i, { opacity: 1, duration: 0.3 }, at + 0.3);
     tl.to('#barval' + i, { opacity: 1, duration: 0.3 }, at + 0.45);
   });
 
-  tl.to('#scene', { opacity:0, duration:0.4, ease:'power2.in' }, 5.6);
+  // Horizontal chart streak after bars animate
+  tl
+    .set('#csk', { left:'-100%', top:'50%' })
+    .to('#csk', { left:'200%', opacity:0.8, duration:1.0, ease:'power1.inOut' }, 3.4)
+    .to('#csk', { opacity:0, duration:0.3 }, 4.2)
+
+    .to('#scene', { opacity:0, duration:0.4, ease:'power2.in' }, 5.6);
 
   window.__timelines["beat-2-cliff"] = tl;
 </script>
