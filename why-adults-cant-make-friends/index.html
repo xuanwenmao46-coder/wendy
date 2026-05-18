@@ -34,8 +34,15 @@
         padding: 72px 140px;
       }
 
-      /* Animated children start hidden so GSAP can stagger them */
+      /* Group animated children start hidden */
       .a1,.a2,.a3,.a4,.a5 { opacity: 0; }
+
+      /* Individual pop-in elements start hidden */
+      #cv-l1,#cv-l2,#cv-l3,
+      #sc0,#sc1,#sc2,
+      #r0,#r1,#r2,#r3,#r4,
+      #fc0,#fc1,#fc2,
+      #st0,#st1,#st2 { opacity: 0; }
 
       .inner { width: 100%; max-width: 1560px; position: relative; z-index: 1; }
 
@@ -76,6 +83,7 @@
         font-size: 128px; line-height: .95; color: var(--paper);
       }
       #s0 h1 em { color: var(--warm2); font-style: italic; display: block; }
+      #s0 h1 span { display: block; }
       #s0 .cover-sub {
         margin-top: 44px; font-size: 23px;
         color: rgba(250,248,243,.42); letter-spacing: .5px;
@@ -204,33 +212,37 @@
       data-start="0" data-duration="75"
       data-width="1920" data-height="1080">
 
-      <!-- ══ S0: COVER  0-6s ══ -->
+      <!-- ══ S0: COVER  0-7s ══ -->
       <audio id="main-audio" src="assets/final-audio.wav" data-start="0" data-duration="75"></audio>
 
       <div id="s0" class="clip" data-start="0" data-duration="7" data-track-index="1">
         <div class="blob" style="width:900px;height:900px;background:#c9622a;opacity:.1;top:-300px;right:-280px;"></div>
         <div class="blob" style="width:600px;height:600px;background:#2a4c6e;opacity:.08;bottom:-200px;left:-150px;"></div>
         <span class="cover-eyebrow a1">A Story About Connection</span>
-        <h1 class="a2">Why Adults<br><em>Can't Make</em><br>Friends Anymore</h1>
+        <h1>
+          <span id="cv-l1">Why Adults</span>
+          <em id="cv-l2">Can't Make</em>
+          <span id="cv-l3">Friends Anymore</span>
+        </h1>
         <p class="cover-sub a3">The science, the statistics, and what you can do about it</p>
       </div>
 
-      <!-- ══ S1: STATS  6-12s ══ -->
+      <!-- ══ S1: STATS  7-19s ══ -->
       <div id="s1" class="clip" data-start="7" data-duration="12" data-track-index="1">
         <div class="inner">
           <span class="eyebrow a1">Chapter 1 · The Friendship Cliff</span>
           <h2 class="slide-title a2">After 25, the social<br>world shrinks — fast.</h2>
           <p class="slide-body a3">Research shows our social networks peak around age 25 and then contract with every decade. It's not laziness — it's structural. Life reorganizes itself around obligations that leave little room for the slow, uncertain work of building new bonds.</p>
-          <div class="stat-row a4">
-            <div class="stat-card">
+          <div class="stat-row">
+            <div class="stat-card" id="sc0">
               <div class="stat-num">49%</div>
               <div class="stat-lbl">of American adults report having 3 or fewer close friends — up from 27% in 1990</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" id="sc1">
               <div class="stat-num">12%</div>
               <div class="stat-lbl">report having no close friends at all — a 4× increase over 30 years</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" id="sc2">
               <div class="stat-num">200h</div>
               <div class="stat-lbl">of shared time researchers estimate it takes to form a genuine close friendship</div>
             </div>
@@ -238,7 +250,7 @@
         </div>
       </div>
 
-      <!-- ══ S2: BAR CHART  12-18s ══ -->
+      <!-- ══ S2: BAR CHART  19-32s ══ -->
       <div id="s2" class="clip" data-start="19" data-duration="13" data-track-index="1">
         <div class="inner">
           <span class="eyebrow a1">Chapter 2 · By the Numbers</span>
@@ -254,13 +266,13 @@
         </div>
       </div>
 
-      <!-- ══ S3: BLOCKERS  18-24s ══ -->
+      <!-- ══ S3: BLOCKERS  32-42s ══ -->
       <div id="s3" class="clip" data-start="32" data-duration="10" data-track-index="1">
         <div class="inner">
           <span class="eyebrow a1">Chapter 3 · The Three Walls</span>
           <h2 class="slide-title a2">Friendship requires three things<br>adults rarely have.</h2>
           <div class="blocker-grid">
-            <div class="blocker a3" id="b1">
+            <div class="blocker" id="b1">
               <div class="blocker-icon ic-orange">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <circle cx="12" cy="12" r="9" stroke="#c9622a" stroke-width="2"/>
@@ -270,7 +282,7 @@
               <h3>Proximity</h3>
               <p>Repeated, unplanned contact is how friendships naturally form. Adult life trades open-ended time for scheduled obligations — killing the serendipity that sparks connection.</p>
             </div>
-            <div class="blocker a4" id="b2">
+            <div class="blocker" id="b2">
               <div class="blocker-icon ic-blue">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <rect x="5" y="11" width="14" height="10" rx="2" stroke="#4a7fa8" stroke-width="2"/>
@@ -280,7 +292,7 @@
               <h3>Openness</h3>
               <p>Vulnerability accelerates closeness. Adults develop emotional armour — a protective layer of professionalism and self-sufficiency that keeps others at arm's length.</p>
             </div>
-            <div class="blocker a5" id="b3">
+            <div class="blocker" id="b3">
               <div class="blocker-icon ic-green">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path d="M17 1l4 4-4 4" stroke="#5a8a4a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -296,29 +308,29 @@
         </div>
       </div>
 
-      <!-- ══ S4: PIE CHART  24-30s ══ -->
+      <!-- ══ S4: PIE CHART  42-51s ══ -->
       <div id="s4" class="clip" data-start="42" data-duration="9" data-track-index="1">
         <div class="inner">
           <span class="eyebrow a1">Chapter 4 · What Gets in the Way</span>
           <h2 class="slide-title a2">Self-reported barriers<br>to making new friends</h2>
-          <div class="two-col a3">
+          <div class="two-col">
             <div class="pie-area">
               <svg id="pie-svg" width="460" height="460" viewBox="0 0 460 460" aria-label="Donut chart: barriers to friendship"></svg>
             </div>
             <div class="text-side">
               <ul class="reason-list">
-                <li><div class="r-dot" style="background:#c9622a"></div><div><strong>Too busy / no time — 34%</strong><span>Work and caregiving crowd out social investment</span></div></li>
-                <li><div class="r-dot" style="background:#4a7fa8"></div><div><strong>No shared context — 22%</strong><span>Without school or sport, strangers stay strangers</span></div></li>
-                <li><div class="r-dot" style="background:#8b4513"></div><div><strong>Social anxiety — 18%</strong><span>Rejection sensitivity rises without practice</span></div></li>
-                <li><div class="r-dot" style="background:#6a9e5a"></div><div><strong>Geographic mobility — 14%</strong><span>Moves reset social networks to zero</span></div></li>
-                <li><div class="r-dot" style="background:#a89060"></div><div><strong>Digital substitution — 12%</strong><span>Parasocial content mimics connection without effort</span></div></li>
+                <li id="r0"><div class="r-dot" style="background:#c9622a"></div><div><strong>Too busy / no time — 34%</strong><span>Work and caregiving crowd out social investment</span></div></li>
+                <li id="r1"><div class="r-dot" style="background:#4a7fa8"></div><div><strong>No shared context — 22%</strong><span>Without school or sport, strangers stay strangers</span></div></li>
+                <li id="r2"><div class="r-dot" style="background:#8b4513"></div><div><strong>Social anxiety — 18%</strong><span>Rejection sensitivity rises without practice</span></div></li>
+                <li id="r3"><div class="r-dot" style="background:#6a9e5a"></div><div><strong>Geographic mobility — 14%</strong><span>Moves reset social networks to zero</span></div></li>
+                <li id="r4"><div class="r-dot" style="background:#a89060"></div><div><strong>Digital substitution — 12%</strong><span>Parasocial content mimics connection without effort</span></div></li>
               </ul>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ══ S5: COST  30-36s ══ -->
+      <!-- ══ S5: COST  51-61s ══ -->
       <div id="s5" class="clip" data-start="51" data-duration="10" data-track-index="1">
         <div class="inner">
           <span class="eyebrow a1">Chapter 5 · The Hidden Cost</span>
@@ -327,16 +339,16 @@
             <blockquote>"Loneliness and weak social connections are associated with a reduction in lifespan similar to smoking 15 cigarettes a day — and more harmful than obesity."</blockquote>
             <cite>— Former US Surgeon General Vivek Murthy, 2023 Advisory on Loneliness</cite>
           </div>
-          <div class="fact-row a4">
-            <div class="fact">
+          <div class="fact-row">
+            <div class="fact" id="fc0">
               <strong>26%</strong>
               <span>Increased risk of premature death linked to social isolation — equivalent to heavy smoking</span>
             </div>
-            <div class="fact">
+            <div class="fact" id="fc1">
               <strong>50%</strong>
               <span>Of Gen Z adults say they always or sometimes feel alone, even with social media</span>
             </div>
-            <div class="fact">
+            <div class="fact" id="fc2">
               <strong>$6.7B</strong>
               <span>Annual productivity cost of loneliness in the US workplace due to absenteeism</span>
             </div>
@@ -344,22 +356,22 @@
         </div>
       </div>
 
-      <!-- ══ S6: PATH  36-42s ══ -->
+      <!-- ══ S6: PATH  61-70s ══ -->
       <div id="s6" class="clip" data-start="61" data-duration="9" data-track-index="1">
         <div class="inner">
           <span class="eyebrow a1">Chapter 6 · The Way Forward</span>
           <h2 class="slide-title a2">Friendship in adulthood<br>is an <em>act of will.</em></h2>
           <p class="slide-body a3">It doesn't happen by accident anymore. But the research is clear: intentional, consistent effort rebuilds what life eroded.</p>
-          <div class="steps a4">
-            <div class="step">
+          <div class="steps">
+            <div class="step" id="st0">
               <div class="step-num">01</div>
               <div class="step-txt"><h4>Create recurring contexts</h4><p>Join a club, class, or team that meets weekly. Repetition does the work that school once did automatically.</p></div>
             </div>
-            <div class="step">
+            <div class="step" id="st1">
               <div class="step-num">02</div>
               <div class="step-txt"><h4>Lower the bar for initiation</h4><p>A short walk, a coffee, a text. The ask doesn't have to be grand — it just has to happen. Rejection is rare and temporary.</p></div>
             </div>
-            <div class="step">
+            <div class="step" id="st2">
               <div class="step-num">03</div>
               <div class="step-txt"><h4>Be the one who shows up</h4><p>Consistency signals care. One reliable presence creates the safety that turns acquaintance into friend.</p></div>
             </div>
@@ -367,7 +379,7 @@
         </div>
       </div>
 
-      <!-- ══ S7: END CARD  42-46s ══ -->
+      <!-- ══ S7: END CARD  70-75s ══ -->
       <div id="s7" class="clip" data-start="70" data-duration="5" data-track-index="1">
         <h2 class="a1">Connection is<br>still possible.<br>It just takes<br>courage.</h2>
         <p class="a2">The biology never changed. Only the infrastructure did.<br>Rebuild it — one honest conversation at a time.</p>
@@ -393,13 +405,11 @@
         const slotW = CHART_W / n;
         const barW = slotW * 0.52;
         let html = '';
-        // Grid lines
         [0,2,4,6,8].forEach(v => {
           const y = PAD_T + CHART_H - (v / BAR_MAX) * CHART_H;
           html += `<line x1="${PAD_L}" y1="${y.toFixed(1)}" x2="${SVG_W - PAD_R}" y2="${y.toFixed(1)}" stroke="#d8d5cd" stroke-width="1.2"/>`;
           html += `<text x="${PAD_L - 10}" y="${(y+5).toFixed(1)}" text-anchor="end" font-size="15" fill="#7a7568">${v}</text>`;
         });
-        // Bars start at height=0; GSAP animates them
         BAR_VALS.forEach((val, i) => {
           const x = PAD_L + i * slotW + (slotW - barW) / 2;
           const fullH = (val / BAR_MAX) * CHART_H;
@@ -437,72 +447,127 @@
           paths += `<path d="M${fix(x1)},${fix(y1)} A${R},${R} 0 ${large} 1 ${fix(x2)},${fix(y2)} L${fix(x3)},${fix(y3)} A${r},${r} 0 ${large} 0 ${fix(x4)},${fix(y4)} Z" fill="${PIE_COLORS[i]}"/>`;
           angle = a2;
         });
-        // Center label
         paths += `<text x="${cx}" y="${cy - 8}" text-anchor="middle" font-size="54" font-weight="700" fill="#3a3830">34%</text>`;
         paths += `<text x="${cx}" y="${cy + 32}" text-anchor="middle" font-size="19" fill="#7a7568">Too busy</text>`;
         svg.innerHTML = paths;
       })();
 
-      // ── GSAP Timeline ──
+      // ── GSAP Timeline — 80 BPM beat-synced ──
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
       const DUR = 75;
+      const B = 0.75; // one beat at 80 BPM
 
       tl.to("#progress-track", { width: "100%", duration: DUR, ease: "none" }, 0);
 
-      // Reusable helpers
-      function scene(id, start, end) {
-        tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, start);
-        tl.to(id, { opacity: 0, duration: 0.45, ease: "power2.in" }, end - 0.45);
-        tl.set(id, { opacity: 0 }, end);
+      // Helpers
+      function sceneIn(id, at) {
+        tl.fromTo(id, { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.55, ease: "power2.out" }, at);
       }
-      function staggerIn(targets, at) {
-        tl.fromTo(targets, { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.55, stagger: 0.15, ease: "power2.out" }, at);
+      function sceneOut(id, at) {
+        tl.to(id, { opacity: 0, scale: 1.03, duration: 0.4, ease: "power2.in" }, at);
+        tl.set(id, { opacity: 0 }, at + 0.4);
+      }
+      function slideUp(target, at) {
+        tl.fromTo(target, { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, at);
+      }
+      function popIn(target, at) {
+        tl.fromTo(target,
+          { opacity: 0, y: 45, scale: 0.86 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "back.out(2.2)" },
+          at
+        );
       }
 
-      // Scene 0 — Cover (0-7s)
-      scene("#s0", 0, 7);
-      staggerIn(["#s0 .a1", "#s0 .a2", "#s0 .a3"], 0.3);
+      // ── S0: Cover (0–7s) ──
+      sceneIn("#s0", 0);
+      sceneOut("#s0", 6.4);
+      slideUp("#s0 .a1", 0.4);
+      popIn("#cv-l1", 1 * B);
+      popIn("#cv-l2", 2 * B);
+      popIn("#cv-l3", 3 * B);
+      slideUp("#s0 .a3", 4 * B);
 
-      // Scene 1 — Stats (7-19s)
-      scene("#s1", 7, 19);
-      staggerIn(["#s1 .a1", "#s1 .a2", "#s1 .a3", "#s1 .a4"], 7.3);
+      // ── S1: Stats (7–19s) ──
+      sceneIn("#s1", 7);
+      sceneOut("#s1", 18.5);
+      slideUp("#s1 .a1", 7 + 0.4);
+      slideUp("#s1 .a2", 7 + 1 * B);
+      slideUp("#s1 .a3", 7 + 2 * B);
+      popIn("#sc0", 7 + 3 * B);
+      popIn("#sc1", 7 + 4 * B);
+      popIn("#sc2", 7 + 5 * B);
 
-      // Scene 2 — Bar chart (19-32s)
-      scene("#s2", 19, 32);
-      staggerIn(["#s2 .a1", "#s2 .a2", "#s2 .a3", "#s2 .a4", "#s2 .a5"], 19.3);
+      // ── S2: Bar chart (19–32s) ──
+      sceneIn("#s2", 19);
+      sceneOut("#s2", 31.5);
+      slideUp("#s2 .a1", 19 + 0.4);
+      slideUp("#s2 .a2", 19 + 1 * B);
+      slideUp("#s2 .a3", 19 + 2 * B);
+      tl.fromTo("#s2 .a4", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 19 + 3 * B);
       BAR_VALS.forEach((val, i) => {
         const barH = (val / BAR_MAX) * CHART_H;
         const barY = PAD_T + CHART_H - barH;
-        tl.to(`#bar${i}`, { attr: { height: barH, y: barY }, duration: 0.65, ease: "power2.out" }, 19.8 + i * 0.1);
-        tl.to(`#barlbl${i}`, { opacity: 1, duration: 0.3 }, 20.1 + i * 0.1);
-        tl.to(`#barval${i}`, { opacity: 1, duration: 0.3 }, 20.25 + i * 0.1);
+        const at = 19 + 4 * B + i * B;
+        tl.to(`#bar${i}`, { attr: { height: barH, y: barY }, duration: 0.6, ease: "back.out(1.6)" }, at);
+        tl.to(`#barlbl${i}`, { opacity: 1, duration: 0.3 }, at + 0.2);
+        tl.to(`#barval${i}`, { opacity: 1, duration: 0.3 }, at + 0.35);
       });
+      tl.fromTo("#s2 .a5", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 19 + 4 * B + 6 * B);
 
-      // Scene 3 — Blockers (32-42s)
-      scene("#s3", 32, 42);
-      staggerIn(["#s3 .a1", "#s3 .a2"], 32.3);
-      tl.fromTo("#b1", { opacity: 0, y: 32 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, 32.8);
-      tl.fromTo("#b2", { opacity: 0, y: 32 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, 33.1);
-      tl.fromTo("#b3", { opacity: 0, y: 32 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, 33.4);
+      // ── S3: Blockers (32–42s) ──
+      sceneIn("#s3", 32);
+      sceneOut("#s3", 41.5);
+      slideUp("#s3 .a1", 32 + 0.4);
+      slideUp("#s3 .a2", 32 + 1 * B);
+      popIn("#b1", 32 + 2 * B);
+      popIn("#b2", 32 + 3 * B);
+      popIn("#b3", 32 + 4 * B);
 
-      // Scene 4 — Pie chart (42-51s)
-      scene("#s4", 42, 51);
-      staggerIn(["#s4 .a1", "#s4 .a2"], 42.3);
-      tl.fromTo("#s4 .a3", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.65 }, 42.7);
-      tl.fromTo("#pie-svg", { scale: 0.7, opacity: 0, transformOrigin: "center center" }, { scale: 1, opacity: 1, duration: 0.7, ease: "back.out(1.4)" }, 43.0);
+      // ── S4: Pie chart (42–51s) ──
+      sceneIn("#s4", 42);
+      sceneOut("#s4", 50.5);
+      slideUp("#s4 .a1", 42 + 0.4);
+      slideUp("#s4 .a2", 42 + 1 * B);
+      tl.fromTo("#pie-svg",
+        { scale: 0.1, opacity: 0, transformOrigin: "center center" },
+        { scale: 1, opacity: 1, duration: 0.8, ease: "back.out(1.8)" },
+        42 + 2 * B
+      );
+      popIn("#r0", 42 + 2 * B);
+      popIn("#r1", 42 + 3 * B);
+      popIn("#r2", 42 + 4 * B);
+      popIn("#r3", 42 + 5 * B);
+      popIn("#r4", 42 + 6 * B);
 
-      // Scene 5 — Cost (51-61s)
-      scene("#s5", 51, 61);
-      staggerIn(["#s5 .a1", "#s5 .a2", "#s5 .a3", "#s5 .a4"], 51.3);
+      // ── S5: Cost (51–61s) ──
+      sceneIn("#s5", 51);
+      sceneOut("#s5", 60.5);
+      slideUp("#s5 .a1", 51 + 0.4);
+      slideUp("#s5 .a2", 51 + 1 * B);
+      tl.fromTo("#s5 .a3",
+        { opacity: 0, x: -30 },
+        { opacity: 1, x: 0, duration: 0.65, ease: "power2.out" },
+        51 + 2 * B
+      );
+      popIn("#fc0", 51 + 3 * B);
+      popIn("#fc1", 51 + 4 * B);
+      popIn("#fc2", 51 + 5 * B);
 
-      // Scene 6 — Path forward (61-70s)
-      scene("#s6", 61, 70);
-      staggerIn(["#s6 .a1", "#s6 .a2", "#s6 .a3", "#s6 .a4"], 61.3);
+      // ── S6: Path forward (61–70s) ──
+      sceneIn("#s6", 61);
+      sceneOut("#s6", 69.5);
+      slideUp("#s6 .a1", 61 + 0.4);
+      slideUp("#s6 .a2", 61 + 1 * B);
+      slideUp("#s6 .a3", 61 + 2 * B);
+      popIn("#st0", 61 + 3 * B);
+      popIn("#st1", 61 + 4 * B);
+      popIn("#st2", 61 + 5 * B);
 
-      // Scene 7 — End card (70-75s)
-      scene("#s7", 70, 75);
-      staggerIn(["#s7 .a1", "#s7 .a2"], 70.5);
+      // ── S7: End card (70–75s) ──
+      sceneIn("#s7", 70);
+      popIn("#s7 .a1", 70 + 1 * B);
+      slideUp("#s7 .a2", 70 + 2 * B);
 
       window.__timelines["main"] = tl;
     </script>
