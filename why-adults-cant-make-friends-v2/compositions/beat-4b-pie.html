@@ -13,35 +13,46 @@
       display:grid; grid-template-columns:700px 1fr;
       align-items:center;
       opacity:0;
+      position:relative; overflow:hidden;
+    }
+
+    .streaks { position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:10; }
+    .sk {
+      position:absolute; width:3px; height:200%; top:-50%; left:0;
+      background: linear-gradient(to bottom, transparent 0%, rgba(30,168,192,0.6) 40%, rgba(255,255,255,0.9) 50%, rgba(30,168,192,0.6) 60%, transparent 100%);
+      transform: rotate(18deg); opacity:0;
     }
 
     .left {
       padding:0 60px 0 140px;
       display:flex; flex-direction:column; gap:32px;
+      position:relative; z-index:1;
     }
     .left::before {
       content:''; display:block;
-      width:48px; height:2px; background:#c9622a; border-radius:1px;
+      width:48px; height:2px; background:#1ea8c0; border-radius:1px;
     }
-    .chapter { font-size:22px; letter-spacing:5px; text-transform:uppercase; color:#c9622a; opacity:0; }
+    .chapter { font-size:22px; letter-spacing:5px; text-transform:uppercase; color:#1ea8c0; opacity:0; }
     .headline {
-      font-family:playfair-display, serif;
+      font-family:'playfair display', serif;
       font-size:80px; line-height:1.0; color:#faf8f3; opacity:0;
+      overflow:hidden;
     }
-    .headline em { color:#c9622a; font-style:italic; }
+    .headline em { color:#30cce0; font-style:italic; }
     .body-copy {
       font-size:28px; font-weight:300; line-height:1.65;
       color:rgba(250,248,243,0.5); opacity:0; max-width:520px;
     }
     .stat-row { display:flex; gap:32px; opacity:0; }
     .stat { display:flex; flex-direction:column; gap:6px; }
-    .stat-num { font-family:playfair-display, serif; font-size:64px; color:#c9622a; line-height:1; }
+    .stat-num { font-family:'playfair display', serif; font-size:64px; color:#1ea8c0; line-height:1; }
     .stat-label { font-size:20px; color:rgba(250,248,243,0.4); line-height:1.4; }
 
     .right {
       padding:80px 100px 80px 40px;
       display:flex; flex-direction:column; gap:32px;
       opacity:0;
+      position:relative; z-index:1;
     }
     .chart-label { font-size:22px; color:rgba(250,248,243,0.35); letter-spacing:1px; }
     .legend { display:flex; flex-direction:column; gap:14px; margin-top:16px; }
@@ -51,6 +62,10 @@
 </head>
 <body>
 <div class="scene" id="scene" data-composition-id="beat-4b-pie" data-width="1920" data-height="1080">
+  <div class="streaks">
+    <div class="sk" id="sk1"></div>
+    <div class="sk" id="sk2"></div>
+  </div>
   <div class="left" id="leftPanel">
     <span class="chapter" id="ch">Chapter 4 · The Barriers</span>
     <h2 class="headline" id="hl">Most adults know<br>what's missing.<br>Few know <em>why.</em></h2>
@@ -69,9 +84,9 @@
 
   <div class="right" id="rightPanel">
     <p class="chart-label">Self-reported barriers to new adult friendships</p>
-    <svg id="pie-svg" width="560" height="560" viewBox="0 0 560 560" aria-label="Donut: barriers to friendship"></svg>
+    <svg id="pie-svg" width="500" height="500" viewBox="0 0 500 500" aria-label="Donut: barriers to friendship"></svg>
     <div class="legend" id="lg">
-      <div class="leg-row"><div class="leg-sq" style="background:#c9622a"></div>Too busy / no time — 34%</div>
+      <div class="leg-row"><div class="leg-sq" style="background:#1ea8c0"></div>Too busy / no time — 34%</div>
       <div class="leg-row"><div class="leg-sq" style="background:#4a7fa8"></div>No shared context — 22%</div>
       <div class="leg-row"><div class="leg-sq" style="background:#7a5c38"></div>Social anxiety — 18%</div>
       <div class="leg-row"><div class="leg-sq" style="background:#5a8a4e"></div>Geographic mobility — 14%</div>
@@ -85,11 +100,11 @@
 
   // Deterministic donut
   var PIE_DATA   = [34, 22, 18, 14, 12];
-  var PIE_COLORS = ['#c9622a','#4a7fa8','#7a5c38','#5a8a4e','#6e6860'];
+  var PIE_COLORS = ['#1ea8c0','#4a7fa8','#7a5c38','#5a8a4e','#6e6860'];
 
   (function buildPie() {
     var svg = document.getElementById('pie-svg');
-    var cx = 280, cy = 280, R = 220, r = 130;
+    var cx = 250, cy = 250, R = 195, r = 116;
     var toRad = function(d) { return d * Math.PI / 180; };
     var angle = -90;
     var paths = '';
@@ -109,15 +124,19 @@
       paths += '<path d="M' + f(x1) + ',' + f(y1) + ' A' + R + ',' + R + ' 0 ' + large + ' 1 ' + f(x2) + ',' + f(y2) + ' L' + f(x3) + ',' + f(y3) + ' A' + r + ',' + r + ' 0 ' + large + ' 0 ' + f(x4) + ',' + f(y4) + ' Z" fill="' + PIE_COLORS[i] + '"/>';
       angle = a2;
     });
-    paths += '<text x="' + cx + '" y="' + (cy - 12) + '" text-anchor="middle" font-size="56" font-weight="700" fill="#faf8f3" font-family="playfair-display,serif">34%</text>';
+    paths += '<text x="' + cx + '" y="' + (cy - 12) + '" text-anchor="middle" font-size="56" font-weight="700" fill="#faf8f3" font-family="\'playfair display\',serif">34%</text>';
     paths += '<text x="' + cx + '" y="' + (cy + 34) + '" text-anchor="middle" font-size="20" fill="rgba(250,248,243,0.4)" font-family="inter,sans-serif">Too busy</text>';
     svg.innerHTML = paths;
   })();
 
   var tl = gsap.timeline({ paused: true });
 
+  gsap.set('#sk1', { x:-200 });
+  gsap.set('#sk2', { x:-400 });
+
   tl
-    .to('#scene', { opacity:1, duration:0.6, ease:'power2.out' }, 0)
+    .to('#scene', { opacity:1, scale:1, duration:0.6, ease:'power2.out' }, 0)
+    .from('#scene', { scale:0.92 }, 0)
 
     .to('#ch', { opacity:1, y:0, duration:0.45, ease:'power2.out' }, 0.3)
     .from('#ch', { y:16 }, 0.3)
@@ -135,6 +154,11 @@
 
     .to('#pie-svg', { scale:1, duration:0.6, ease:'back.out(1.5)' }, 1.1)
     .from('#pie-svg', { scale:0.6 }, 1.1)
+
+    .to('#sk1', { x:2400, opacity:0.7, duration:1.4, ease:'power1.inOut' }, 0.3)
+    .to('#sk1', { opacity:0, duration:0.4 }, 1.5)
+    .to('#sk2', { x:2600, opacity:0.5, duration:1.6, ease:'power1.inOut' }, 0.55)
+    .to('#sk2', { opacity:0, duration:0.4 }, 2.0)
 
     .to('#lg', { opacity:1, y:0, duration:0.5, ease:'power2.out' }, 2.4)
     .from('#lg', { y:20 }, 2.4)

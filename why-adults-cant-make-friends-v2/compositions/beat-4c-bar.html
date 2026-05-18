@@ -19,19 +19,27 @@
       padding:80px 40px 80px 140px;
       display:flex; flex-direction:column;
       opacity:0;
+      position:relative;
     }
     .chart-accent-line {
       width:100%; height:1px;
-      background:linear-gradient(90deg, rgba(201,98,42,0.5), transparent);
+      background:linear-gradient(90deg, rgba(232,160,32,0.5), transparent);
       margin-bottom:28px;
     }
     .chart-main-title {
-      font-family:playfair-display, serif;
+      font-family:'playfair display', serif;
       font-size:34px; color:#faf8f3; font-weight:400;
       line-height:1.3; margin-bottom:8px;
     }
     .chart-subtitle { font-size:20px; color:rgba(250,248,243,0.35); margin-bottom:28px; }
     .chart-source { font-size:17px; color:rgba(250,248,243,0.25); margin-top:18px; }
+
+    .chart-streak-wrap { position:absolute; left:140px; right:40px; top:80px; bottom:80px; overflow:hidden; pointer-events:none; }
+    .chart-streak {
+      position:absolute; height:2px; width:100%;
+      background: linear-gradient(to right, transparent 0%, rgba(232,160,32,0.4) 30%, rgba(255,255,255,0.8) 50%, rgba(232,160,32,0.4) 70%, transparent 100%);
+      top:50%; left:-100%; opacity:0;
+    }
 
     .right {
       padding:0 100px 0 40px;
@@ -39,12 +47,13 @@
     }
     .right::before {
       content:''; display:block;
-      width:48px; height:2px; background:#c9622a; border-radius:1px;
+      width:48px; height:2px; background:#e8a020; border-radius:1px;
     }
-    .chapter { font-size:22px; letter-spacing:5px; text-transform:uppercase; color:#c9622a; opacity:0; }
+    .chapter { font-size:22px; letter-spacing:5px; text-transform:uppercase; color:#e8a020; opacity:0; }
     .headline {
-      font-family:playfair-display, serif;
+      font-family:'playfair display', serif;
       font-size:78px; line-height:1.05; color:#faf8f3; opacity:0;
+      overflow:hidden;
     }
     .headline em { color:#c9622a; font-style:italic; }
     .body-copy {
@@ -53,12 +62,12 @@
     }
     .callout {
       display:inline-flex; align-items:center; gap:12px;
-      background:rgba(201,98,42,0.1);
-      border:1px solid rgba(201,98,42,0.25);
+      background:rgba(232,160,32,0.1);
+      border:1px solid rgba(232,160,32,0.4);
       border-radius:10px; padding:16px 24px;
       opacity:0;
     }
-    .callout-num { font-family:playfair-display, serif; font-size:48px; color:#c9622a; line-height:1; }
+    .callout-num { font-family:'playfair display', serif; font-size:48px; color:#e8a020; line-height:1; }
     .callout-text { font-size:21px; color:rgba(250,248,243,0.55); line-height:1.4; }
   </style>
 </head>
@@ -69,8 +78,11 @@
     <div class="chart-accent-line"></div>
     <p class="chart-main-title">% of Americans with no close friends</p>
     <p class="chart-subtitle">The isolation trend, 1990 – 2023</p>
-    <svg id="bar-svg" viewBox="0 0 1020 620" width="1020" height="620" aria-label="Bar chart: Americans with no close friends over time"></svg>
+    <svg id="bar-svg" viewBox="0 0 1000 480" width="1000" height="480" aria-label="Bar chart: Americans with no close friends over time"></svg>
     <p class="chart-source">Source: American Enterprise Institute / Survey Center on American Life</p>
+    <div class="chart-streak-wrap">
+      <div class="chart-streak" id="csk"></div>
+    </div>
   </div>
 
   <div class="right" id="rightPanel">
@@ -91,10 +103,9 @@
   var YEARS  = ['1990','1995','2000','2005','2010','2015','2020','2023'];
   var VALUES = [3, 4, 5, 7, 9, 10, 11, 12];
   var BAR_MAX = 14;
-  var SVG_W = 1020, SVG_H = 620;
+  var SVG_W = 1000, SVG_H = 480;
   var PAD_L = 60, PAD_R = 20, PAD_T = 16, PAD_B = 56;
-  var CHART_W = SVG_W - PAD_L - PAD_R;
-  var CHART_H = SVG_H - PAD_T - PAD_B;
+  var CHART_W = 920, CHART_H = 408;
 
   (function buildBar() {
     var svg = document.getElementById('bar-svg');
@@ -105,29 +116,30 @@
 
     [0, 4, 8, 12].forEach(function(v) {
       var y = (PAD_T + CHART_H - (v / BAR_MAX) * CHART_H).toFixed(1);
-      html += '<line x1="' + PAD_L + '" y1="' + y + '" x2="' + (SVG_W - PAD_R) + '" y2="' + y + '" stroke="rgba(250,248,243,0.05)" stroke-width="1" stroke-dasharray="4 4"/>';
-      html += '<text x="' + (PAD_L - 8) + '" y="' + (parseFloat(y) + 5).toFixed(1) + '" text-anchor="end" font-size="18" fill="rgba(250,248,243,0.25)" font-family="inter,sans-serif">' + v + '%</text>';
+      html += '<line x1="' + PAD_L + '" y1="' + y + '" x2="' + (SVG_W - PAD_R) + '" y2="' + y + '" stroke="rgba(232,160,32,0.12)" stroke-width="1" stroke-dasharray="4 4"/>';
+      html += '<text x="' + (PAD_L - 8) + '" y="' + (parseFloat(y) + 5).toFixed(1) + '" text-anchor="end" font-size="18" fill="rgba(232,160,32,0.5)" font-family="inter,sans-serif">' + v + '%</text>';
     });
 
     VALUES.forEach(function(val, i) {
       var x = PAD_L + i * slotW + (slotW - barW) / 2;
       var fullH = (val / BAR_MAX) * CHART_H;
       var fullY = PAD_T + CHART_H - fullH;
-      // accent last two bars (recent, alarming)
-      var color = i >= 6 ? '#c9622a' : 'rgba(250,248,243,0.18)';
+      var color = i >= 6 ? '#c9622a' : 'rgba(232,160,32,0.3)';
+      var labelColor = i >= 6 ? '#e8a020' : 'rgba(232,160,32,0.5)';
       html += '<rect id="tbar' + i + '" x="' + x.toFixed(1) + '" y="' + (PAD_T + CHART_H).toFixed(1) + '" width="' + barW.toFixed(1) + '" height="0" fill="' + color + '" rx="4"/>';
-      html += '<text id="tbarlbl' + i + '" x="' + (x + barW/2).toFixed(1) + '" y="' + (PAD_T + CHART_H + 38).toFixed(1) + '" text-anchor="middle" font-size="19" fill="rgba(250,248,243,0.35)" font-family="inter,sans-serif" opacity="0">' + YEARS[i] + '</text>';
-      html += '<text id="tbarval' + i + '" x="' + (x + barW/2).toFixed(1) + '" y="' + (fullY - 9).toFixed(1) + '" text-anchor="middle" font-size="19" fill="' + color + '" font-weight="600" font-family="inter,sans-serif" opacity="0">' + val + '%</text>';
+      html += '<text id="tbarlbl' + i + '" x="' + (x + barW/2).toFixed(1) + '" y="' + (PAD_T + CHART_H + 38).toFixed(1) + '" text-anchor="middle" font-size="19" fill="rgba(232,160,32,0.5)" font-family="inter,sans-serif" opacity="0">' + YEARS[i] + '</text>';
+      html += '<text id="tbarval' + i + '" x="' + (x + barW/2).toFixed(1) + '" y="' + (fullY - 9).toFixed(1) + '" text-anchor="middle" font-size="19" fill="' + labelColor + '" font-weight="600" font-family="inter,sans-serif" opacity="0">' + val + '%</text>';
     });
     svg.innerHTML = html;
   })();
 
   var tl = gsap.timeline({ paused: true });
-  var CH_JS = SVG_H - 16 - 56;
+  var CH_JS = 408;
   var PT_JS = 16;
 
   tl
-    .to('#scene', { opacity:1, duration:0.6, ease:'power2.out' }, 0)
+    .to('#scene', { opacity:1, scale:1, duration:0.6, ease:'power2.out' }, 0)
+    .from('#scene', { scale:0.92 }, 0)
 
     .to('#leftPanel', { opacity:1, x:0, duration:0.65, ease:'expo.out' }, 0.2)
     .from('#leftPanel', { x:-30 }, 0.2);
@@ -142,7 +154,12 @@
     tl.to('#tbarval' + i, { opacity: 1, duration: 0.3 }, at + 0.4);
   });
 
+  // Horizontal amber chart streak after bars animate
   tl
+    .set('#csk', { left:'-100%', top:'55%' })
+    .to('#csk', { left:'200%', opacity:0.8, duration:1.0, ease:'power1.inOut' }, 2.8)
+    .to('#csk', { opacity:0, duration:0.3 }, 3.6)
+
     .to('#ch', { opacity:1, y:0, duration:0.4, ease:'power2.out' }, 0.8)
     .from('#ch', { y:14 }, 0.8)
 
