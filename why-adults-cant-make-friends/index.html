@@ -201,11 +201,13 @@
   <body>
     <div id="root"
       data-composition-id="main"
-      data-start="0" data-duration="46"
+      data-start="0" data-duration="75"
       data-width="1920" data-height="1080">
 
       <!-- ══ S0: COVER  0-6s ══ -->
-      <div id="s0" class="clip" data-start="0" data-duration="6" data-track-index="1">
+      <audio id="main-audio" src="assets/final-audio.wav" data-start="0" data-duration="75"></audio>
+
+      <div id="s0" class="clip" data-start="0" data-duration="7" data-track-index="1">
         <div class="blob" style="width:900px;height:900px;background:#c9622a;opacity:.1;top:-300px;right:-280px;"></div>
         <div class="blob" style="width:600px;height:600px;background:#2a4c6e;opacity:.08;bottom:-200px;left:-150px;"></div>
         <span class="cover-eyebrow a1">A Story About Connection</span>
@@ -214,7 +216,7 @@
       </div>
 
       <!-- ══ S1: STATS  6-12s ══ -->
-      <div id="s1" class="clip" data-start="6" data-duration="6" data-track-index="1">
+      <div id="s1" class="clip" data-start="7" data-duration="12" data-track-index="1">
         <div class="inner">
           <span class="eyebrow a1">Chapter 1 · The Friendship Cliff</span>
           <h2 class="slide-title a2">After 25, the social<br>world shrinks — fast.</h2>
@@ -237,7 +239,7 @@
       </div>
 
       <!-- ══ S2: BAR CHART  12-18s ══ -->
-      <div id="s2" class="clip" data-start="12" data-duration="6" data-track-index="1">
+      <div id="s2" class="clip" data-start="19" data-duration="13" data-track-index="1">
         <div class="inner">
           <span class="eyebrow a1">Chapter 2 · By the Numbers</span>
           <h2 class="slide-title a2">Average close friends<br>across life stages</h2>
@@ -253,7 +255,7 @@
       </div>
 
       <!-- ══ S3: BLOCKERS  18-24s ══ -->
-      <div id="s3" class="clip" data-start="18" data-duration="6" data-track-index="1">
+      <div id="s3" class="clip" data-start="32" data-duration="10" data-track-index="1">
         <div class="inner">
           <span class="eyebrow a1">Chapter 3 · The Three Walls</span>
           <h2 class="slide-title a2">Friendship requires three things<br>adults rarely have.</h2>
@@ -295,7 +297,7 @@
       </div>
 
       <!-- ══ S4: PIE CHART  24-30s ══ -->
-      <div id="s4" class="clip" data-start="24" data-duration="6" data-track-index="1">
+      <div id="s4" class="clip" data-start="42" data-duration="9" data-track-index="1">
         <div class="inner">
           <span class="eyebrow a1">Chapter 4 · What Gets in the Way</span>
           <h2 class="slide-title a2">Self-reported barriers<br>to making new friends</h2>
@@ -317,7 +319,7 @@
       </div>
 
       <!-- ══ S5: COST  30-36s ══ -->
-      <div id="s5" class="clip" data-start="30" data-duration="6" data-track-index="1">
+      <div id="s5" class="clip" data-start="51" data-duration="10" data-track-index="1">
         <div class="inner">
           <span class="eyebrow a1">Chapter 5 · The Hidden Cost</span>
           <h2 class="slide-title a2">Loneliness is not just<br>uncomfortable. It's lethal.</h2>
@@ -343,7 +345,7 @@
       </div>
 
       <!-- ══ S6: PATH  36-42s ══ -->
-      <div id="s6" class="clip" data-start="36" data-duration="6" data-track-index="1">
+      <div id="s6" class="clip" data-start="61" data-duration="9" data-track-index="1">
         <div class="inner">
           <span class="eyebrow a1">Chapter 6 · The Way Forward</span>
           <h2 class="slide-title a2">Friendship in adulthood<br>is an <em>act of will.</em></h2>
@@ -366,7 +368,7 @@
       </div>
 
       <!-- ══ S7: END CARD  42-46s ══ -->
-      <div id="s7" class="clip" data-start="42" data-duration="4" data-track-index="1">
+      <div id="s7" class="clip" data-start="70" data-duration="5" data-track-index="1">
         <h2 class="a1">Connection is<br>still possible.<br>It just takes<br>courage.</h2>
         <p class="a2">The biology never changed. Only the infrastructure did.<br>Rebuild it — one honest conversation at a time.</p>
       </div>
@@ -444,7 +446,7 @@
       // ── GSAP Timeline ──
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
-      const DUR = 46;
+      const DUR = 75;
 
       tl.to("#progress-track", { width: "100%", duration: DUR, ease: "none" }, 0);
 
@@ -458,50 +460,49 @@
         tl.fromTo(targets, { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.55, stagger: 0.15, ease: "power2.out" }, at);
       }
 
-      // Scene 0 — Cover
-      scene("#s0", 0, 6);
+      // Scene 0 — Cover (0-7s)
+      scene("#s0", 0, 7);
       staggerIn(["#s0 .a1", "#s0 .a2", "#s0 .a3"], 0.3);
 
-      // Scene 1 — Stats
-      scene("#s1", 6, 12);
-      staggerIn(["#s1 .a1", "#s1 .a2", "#s1 .a3", "#s1 .a4"], 6.3);
+      // Scene 1 — Stats (7-19s)
+      scene("#s1", 7, 19);
+      staggerIn(["#s1 .a1", "#s1 .a2", "#s1 .a3", "#s1 .a4"], 7.3);
 
-      // Scene 2 — Bar chart
-      scene("#s2", 12, 18);
-      staggerIn(["#s2 .a1", "#s2 .a2", "#s2 .a3", "#s2 .a4", "#s2 .a5"], 12.3);
-      // Animate bars growing up
+      // Scene 2 — Bar chart (19-32s)
+      scene("#s2", 19, 32);
+      staggerIn(["#s2 .a1", "#s2 .a2", "#s2 .a3", "#s2 .a4", "#s2 .a5"], 19.3);
       BAR_VALS.forEach((val, i) => {
         const barH = (val / BAR_MAX) * CHART_H;
         const barY = PAD_T + CHART_H - barH;
-        tl.to(`#bar${i}`, { attr: { height: barH, y: barY }, duration: 0.65, ease: "power2.out" }, 12.7 + i * 0.1);
-        tl.to(`#barlbl${i}`, { opacity: 1, duration: 0.3 }, 13.0 + i * 0.1);
-        tl.to(`#barval${i}`, { opacity: 1, duration: 0.3 }, 13.15 + i * 0.1);
+        tl.to(`#bar${i}`, { attr: { height: barH, y: barY }, duration: 0.65, ease: "power2.out" }, 19.8 + i * 0.1);
+        tl.to(`#barlbl${i}`, { opacity: 1, duration: 0.3 }, 20.1 + i * 0.1);
+        tl.to(`#barval${i}`, { opacity: 1, duration: 0.3 }, 20.25 + i * 0.1);
       });
 
-      // Scene 3 — Blockers
-      scene("#s3", 18, 24);
-      staggerIn(["#s3 .a1", "#s3 .a2"], 18.3);
-      tl.fromTo("#b1", { opacity: 0, y: 32 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, 18.8);
-      tl.fromTo("#b2", { opacity: 0, y: 32 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, 19.05);
-      tl.fromTo("#b3", { opacity: 0, y: 32 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, 19.3);
+      // Scene 3 — Blockers (32-42s)
+      scene("#s3", 32, 42);
+      staggerIn(["#s3 .a1", "#s3 .a2"], 32.3);
+      tl.fromTo("#b1", { opacity: 0, y: 32 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, 32.8);
+      tl.fromTo("#b2", { opacity: 0, y: 32 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, 33.1);
+      tl.fromTo("#b3", { opacity: 0, y: 32 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, 33.4);
 
-      // Scene 4 — Pie chart
-      scene("#s4", 24, 30);
-      staggerIn(["#s4 .a1", "#s4 .a2"], 24.3);
-      tl.fromTo("#s4 .a3", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.65 }, 24.7);
-      tl.fromTo("#pie-svg", { scale: 0.7, opacity: 0, transformOrigin: "center center" }, { scale: 1, opacity: 1, duration: 0.7, ease: "back.out(1.4)" }, 25.0);
+      // Scene 4 — Pie chart (42-51s)
+      scene("#s4", 42, 51);
+      staggerIn(["#s4 .a1", "#s4 .a2"], 42.3);
+      tl.fromTo("#s4 .a3", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.65 }, 42.7);
+      tl.fromTo("#pie-svg", { scale: 0.7, opacity: 0, transformOrigin: "center center" }, { scale: 1, opacity: 1, duration: 0.7, ease: "back.out(1.4)" }, 43.0);
 
-      // Scene 5 — Cost
-      scene("#s5", 30, 36);
-      staggerIn(["#s5 .a1", "#s5 .a2", "#s5 .a3", "#s5 .a4"], 30.3);
+      // Scene 5 — Cost (51-61s)
+      scene("#s5", 51, 61);
+      staggerIn(["#s5 .a1", "#s5 .a2", "#s5 .a3", "#s5 .a4"], 51.3);
 
-      // Scene 6 — Path forward
-      scene("#s6", 36, 42);
-      staggerIn(["#s6 .a1", "#s6 .a2", "#s6 .a3", "#s6 .a4"], 36.3);
+      // Scene 6 — Path forward (61-70s)
+      scene("#s6", 61, 70);
+      staggerIn(["#s6 .a1", "#s6 .a2", "#s6 .a3", "#s6 .a4"], 61.3);
 
-      // Scene 7 — End card
-      scene("#s7", 42, 46);
-      staggerIn(["#s7 .a1", "#s7 .a2"], 42.5);
+      // Scene 7 — End card (70-75s)
+      scene("#s7", 70, 75);
+      staggerIn(["#s7 .a1", "#s7 .a2"], 70.5);
 
       window.__timelines["main"] = tl;
     </script>
