@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=1920, height=1080"/>
+  <script src="../node_modules/gsap/dist/gsap.min.js"></script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html, body { width:1920px; height:1080px; overflow:hidden; background:#0c0b09; font-family:inter,sans-serif; color:#faf8f3; }
+
+    .scene {
+      width:1920px; height:1080px;
+      display:grid; grid-template-columns:700px 1fr;
+      align-items:center;
+      opacity:0;
+    }
+
+    .left {
+      padding:0 60px 0 140px;
+      display:flex; flex-direction:column; gap:32px;
+    }
+    .left::before {
+      content:''; display:block;
+      width:48px; height:2px; background:#c9622a; border-radius:1px;
+    }
+    .chapter { font-size:22px; letter-spacing:5px; text-transform:uppercase; color:#c9622a; opacity:0; }
+    .headline {
+      font-family:playfair-display, serif;
+      font-size:80px; line-height:1.0; color:#faf8f3; opacity:0;
+    }
+    .headline em { color:#c9622a; font-style:italic; }
+    .body-copy {
+      font-size:28px; font-weight:300; line-height:1.65;
+      color:rgba(250,248,243,0.5); opacity:0; max-width:520px;
+    }
+    .stat-row { display:flex; gap:32px; opacity:0; }
+    .stat { display:flex; flex-direction:column; gap:6px; }
+    .stat-num { font-family:playfair-display, serif; font-size:64px; color:#c9622a; line-height:1; }
+    .stat-label { font-size:20px; color:rgba(250,248,243,0.4); line-height:1.4; }
+
+    .right {
+      padding:80px 100px 80px 40px;
+      display:flex; flex-direction:column; gap:32px;
+      opacity:0;
+    }
+    .chart-label { font-size:22px; color:rgba(250,248,243,0.35); letter-spacing:1px; }
+    .legend { display:flex; flex-direction:column; gap:14px; margin-top:16px; }
+    .leg-row { display:flex; align-items:center; gap:16px; font-size:22px; color:rgba(250,248,243,0.6); }
+    .leg-sq { width:16px; height:16px; border-radius:3px; flex-shrink:0; }
+  </style>
+</head>
+<body>
+<div class="scene" id="scene" data-composition-id="beat-4b-pie" data-width="1920" data-height="1080">
+  <div class="left" id="leftPanel">
+    <span class="chapter" id="ch">Chapter 4 · The Barriers</span>
+    <h2 class="headline" id="hl">Most adults know<br>what's missing.<br>Few know <em>why.</em></h2>
+    <p class="body-copy" id="bc">When asked, a third say they're simply too busy. But the deeper problem is context — adults lack the structures that once made connection effortless.</p>
+    <div class="stat-row" id="sr">
+      <div class="stat">
+        <span class="stat-num">34%</span>
+        <span class="stat-label">cite time as<br>the top barrier</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">22%</span>
+        <span class="stat-label">have no shared<br>context to start</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="right" id="rightPanel">
+    <p class="chart-label">Self-reported barriers to new adult friendships</p>
+    <svg id="pie-svg" width="560" height="560" viewBox="0 0 560 560" aria-label="Donut: barriers to friendship"></svg>
+    <div class="legend" id="lg">
+      <div class="leg-row"><div class="leg-sq" style="background:#c9622a"></div>Too busy / no time — 34%</div>
+      <div class="leg-row"><div class="leg-sq" style="background:#4a7fa8"></div>No shared context — 22%</div>
+      <div class="leg-row"><div class="leg-sq" style="background:#7a5c38"></div>Social anxiety — 18%</div>
+      <div class="leg-row"><div class="leg-sq" style="background:#5a8a4e"></div>Geographic mobility — 14%</div>
+      <div class="leg-row"><div class="leg-sq" style="background:#6e6860"></div>Digital substitution — 12%</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+
+  // Deterministic donut
+  var PIE_DATA   = [34, 22, 18, 14, 12];
+  var PIE_COLORS = ['#c9622a','#4a7fa8','#7a5c38','#5a8a4e','#6e6860'];
+
+  (function buildPie() {
+    var svg = document.getElementById('pie-svg');
+    var cx = 280, cy = 280, R = 220, r = 130;
+    var toRad = function(d) { return d * Math.PI / 180; };
+    var angle = -90;
+    var paths = '';
+    PIE_DATA.forEach(function(pct, i) {
+      var sweep = pct / 100 * 360;
+      var a1 = angle, a2 = angle + sweep;
+      var large = sweep > 180 ? 1 : 0;
+      var x1 = cx + R * Math.cos(toRad(a1));
+      var y1 = cy + R * Math.sin(toRad(a1));
+      var x2 = cx + R * Math.cos(toRad(a2));
+      var y2 = cy + R * Math.sin(toRad(a2));
+      var x3 = cx + r * Math.cos(toRad(a2));
+      var y3 = cy + r * Math.sin(toRad(a2));
+      var x4 = cx + r * Math.cos(toRad(a1));
+      var y4 = cy + r * Math.sin(toRad(a1));
+      var f = function(n) { return n.toFixed(2); };
+      paths += '<path d="M' + f(x1) + ',' + f(y1) + ' A' + R + ',' + R + ' 0 ' + large + ' 1 ' + f(x2) + ',' + f(y2) + ' L' + f(x3) + ',' + f(y3) + ' A' + r + ',' + r + ' 0 ' + large + ' 0 ' + f(x4) + ',' + f(y4) + ' Z" fill="' + PIE_COLORS[i] + '"/>';
+      angle = a2;
+    });
+    paths += '<text x="' + cx + '" y="' + (cy - 12) + '" text-anchor="middle" font-size="56" font-weight="700" fill="#faf8f3" font-family="playfair-display,serif">34%</text>';
+    paths += '<text x="' + cx + '" y="' + (cy + 34) + '" text-anchor="middle" font-size="20" fill="rgba(250,248,243,0.4)" font-family="inter,sans-serif">Too busy</text>';
+    svg.innerHTML = paths;
+  })();
+
+  var tl = gsap.timeline({ paused: true });
+
+  tl
+    .to('#scene', { opacity:1, duration:0.6, ease:'power2.out' }, 0)
+
+    .to('#ch', { opacity:1, y:0, duration:0.45, ease:'power2.out' }, 0.3)
+    .from('#ch', { y:16 }, 0.3)
+
+    .to('#hl', { opacity:1, y:0, duration:0.65, ease:'expo.out' }, 0.55)
+    .from('#hl', { y:36 }, 0.55)
+
+    .to('#bc', { opacity:1, y:0, duration:0.5, ease:'power2.out' }, 1.05)
+    .from('#bc', { y:20 }, 1.05)
+
+    .to('#sr', { opacity:1, y:0, duration:0.5, ease:'power2.out' }, 1.4)
+    .from('#sr', { y:20 }, 1.4)
+
+    .to('#rightPanel', { opacity:1, duration:0.5, ease:'power2.out' }, 0.9)
+
+    .to('#pie-svg', { scale:1, duration:0.6, ease:'back.out(1.5)' }, 1.1)
+    .from('#pie-svg', { scale:0.6 }, 1.1)
+
+    .to('#lg', { opacity:1, y:0, duration:0.5, ease:'power2.out' }, 2.4)
+    .from('#lg', { y:20 }, 2.4)
+
+    .to('.stat-num', { scale:1.04, duration:0.25, ease:'power2.out', stagger:0.2 }, 3.5)
+    .to('.stat-num', { scale:1.0,  duration:0.3,  ease:'power2.in',  stagger:0.2 }, 3.75)
+
+    .to('#scene', { opacity:0, duration:0.5, ease:'power2.in' }, 7.5);
+
+  window.__timelines['beat-4b-pie'] = tl;
+</script>
+</body>
+</html>

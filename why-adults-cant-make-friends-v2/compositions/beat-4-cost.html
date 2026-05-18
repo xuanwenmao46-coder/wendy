@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=1920, height=1080"/>
+  <script src="../node_modules/gsap/dist/gsap.min.js"></script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html, body { width:1920px; height:1080px; overflow:hidden; background:#0c0b09; font-family:inter,sans-serif; color:#faf8f3; }
+
+    .scene {
+      width:1920px; height:1080px;
+      display:grid; grid-template-columns:1fr 760px;
+      align-items:center;
+      opacity:0;
+    }
+
+    .left {
+      padding:0 80px 0 140px;
+      display:flex; flex-direction:column; gap:48px;
+    }
+    .chapter { font-size:22px; letter-spacing:5px; text-transform:uppercase; color:#c9622a; opacity:0; }
+    .headline {
+      font-family:playfair-display, serif;
+      font-size:86px; line-height:1.0; color:#faf8f3; opacity:0;
+    }
+    .headline em { color:#c9622a; font-style:italic; }
+    blockquote {
+      border-left:4px solid #c9622a;
+      padding:28px 40px;
+      background:rgba(201,98,42,0.07);
+      border-radius:0 16px 16px 0;
+      opacity:0;
+    }
+    blockquote p {
+      font-family:playfair-display, serif;
+      font-size:36px; line-height:1.55; color:#faf8f3; font-style:italic;
+    }
+    blockquote cite {
+      display:block; margin-top:16px;
+      font-size:22px; color:rgba(250,248,243,0.4); font-style:normal; letter-spacing:.5px;
+    }
+
+    .right {
+      padding:80px 80px 80px 40px;
+      display:flex; flex-direction:column; gap:40px;
+    }
+    .right-title { font-size:26px; color:rgba(250,248,243,0.4); letter-spacing:1px; opacity:0; }
+    .pie-wrap { position:relative; opacity:0; }
+    .legend { display:flex; flex-direction:column; gap:16px; opacity:0; }
+    .leg-row { display:flex; align-items:center; gap:16px; font-size:24px; color:rgba(250,248,243,0.65); }
+    .leg-sq { width:18px; height:18px; border-radius:4px; flex-shrink:0; }
+  </style>
+</head>
+<body>
+<div class="scene" id="scene" data-composition-id="beat-4-cost" data-width="1920" data-height="1080">
+  <div class="left">
+    <span class="chapter" id="ch">Chapter 3 · The Hidden Cost</span>
+    <h2 class="headline" id="hl">Loneliness isn't<br>just sad.<br><em>It's lethal.</em></h2>
+    <blockquote id="bq">
+      <p>"Social isolation carries a mortality risk equivalent to smoking 15 cigarettes a day — greater than obesity."</p>
+      <cite>— US Surgeon General Vivek Murthy, 2023</cite>
+    </blockquote>
+  </div>
+  <div class="right">
+    <p class="right-title" id="rt">Top barriers to new adult friendships</p>
+    <div class="pie-wrap" id="pw">
+      <svg id="pie-svg" width="580" height="580" viewBox="0 0 580 580" aria-label="Donut chart: barriers to adult friendship"></svg>
+    </div>
+    <div class="legend" id="lg">
+      <div class="leg-row"><div class="leg-sq" style="background:#c9622a"></div>Too busy / no time — 34%</div>
+      <div class="leg-row"><div class="leg-sq" style="background:#4a7fa8"></div>No shared context — 22%</div>
+      <div class="leg-row"><div class="leg-sq" style="background:#7a5c38"></div>Social anxiety — 18%</div>
+      <div class="leg-row"><div class="leg-sq" style="background:#5a8a4e"></div>Geographic mobility — 14%</div>
+      <div class="leg-row"><div class="leg-sq" style="background:#6e6860"></div>Digital substitution — 12%</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+
+  // ── Deterministic donut chart ──
+  var PIE_DATA   = [34, 22, 18, 14, 12];
+  var PIE_COLORS = ['#c9622a','#4a7fa8','#7a5c38','#5a8a4e','#6e6860'];
+
+  (function buildPie() {
+    var svg = document.getElementById('pie-svg');
+    var cx = 290, cy = 290, R = 230, r = 138;
+    var toRad = function(d) { return d * Math.PI / 180; };
+    var angle = -90;
+    var paths = '';
+    PIE_DATA.forEach(function(pct, i) {
+      var sweep = pct / 100 * 360;
+      var a1 = angle, a2 = angle + sweep;
+      var large = sweep > 180 ? 1 : 0;
+      var x1 = cx + R * Math.cos(toRad(a1));
+      var y1 = cy + R * Math.sin(toRad(a1));
+      var x2 = cx + R * Math.cos(toRad(a2));
+      var y2 = cy + R * Math.sin(toRad(a2));
+      var x3 = cx + r * Math.cos(toRad(a2));
+      var y3 = cy + r * Math.sin(toRad(a2));
+      var x4 = cx + r * Math.cos(toRad(a1));
+      var y4 = cy + r * Math.sin(toRad(a1));
+      var f = function(n) { return n.toFixed(2); };
+      paths += '<path d="M' + f(x1) + ',' + f(y1) + ' A' + R + ',' + R + ' 0 ' + large + ' 1 ' + f(x2) + ',' + f(y2) + ' L' + f(x3) + ',' + f(y3) + ' A' + r + ',' + r + ' 0 ' + large + ' 0 ' + f(x4) + ',' + f(y4) + ' Z" fill="' + PIE_COLORS[i] + '"/>';
+      angle = a2;
+    });
+    paths += '<text x="' + cx + '" y="' + (cy - 10) + '" text-anchor="middle" font-size="60" font-weight="700" fill="#faf8f3" font-family="playfair-display,serif">34%</text>';
+    paths += '<text x="' + cx + '" y="' + (cy + 36) + '" text-anchor="middle" font-size="22" fill="rgba(250,248,243,0.4)" font-family="inter,sans-serif">Too busy</text>';
+    svg.innerHTML = paths;
+  })();
+
+  var tl = gsap.timeline({ paused: true });
+
+  tl
+    .to('#scene', { opacity:1, duration:0.5, ease:'power2.out' }, 0)
+
+    .to('#ch', { opacity:1, y:0, duration:0.4, ease:'power2.out' }, 0.3)
+    .from('#ch', { y:16 }, 0.3)
+
+    .to('#hl', { opacity:1, y:0, duration:0.6, ease:'expo.out' }, 0.55)
+    .from('#hl', { y:32 }, 0.55)
+
+    .to('#bq', { opacity:1, x:0, duration:0.6, ease:'expo.out' }, 1.1)
+    .from('#bq', { x:-24 }, 1.1)
+
+    .to('#rt', { opacity:1, duration:0.4 }, 1.4)
+
+    .to('#pw', { opacity:1, scale:1, duration:0.5, ease:'back.out(1.5)' }, 1.6)
+    .from('#pw', { scale:0.7 }, 1.6)
+
+    .to('#lg', { opacity:1, y:0, duration:0.5, ease:'power2.out' }, 2.4)
+    .from('#lg', { y:20 }, 2.4)
+
+    .to('#scene', { opacity:0, duration:0.4, ease:'power2.in' }, 5.6);
+
+  window.__timelines["beat-4-cost"] = tl;
+</script>
+</body>
+</html>

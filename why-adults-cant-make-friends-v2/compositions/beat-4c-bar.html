@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=1920, height=1080"/>
+  <script src="../node_modules/gsap/dist/gsap.min.js"></script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html, body { width:1920px; height:1080px; overflow:hidden; background:#0c0b09; font-family:inter,sans-serif; color:#faf8f3; }
+
+    .scene {
+      width:1920px; height:1080px;
+      display:grid; grid-template-columns:1fr 620px;
+      align-items:center;
+      opacity:0;
+    }
+
+    .left {
+      padding:80px 40px 80px 140px;
+      display:flex; flex-direction:column;
+      opacity:0;
+    }
+    .chart-accent-line {
+      width:100%; height:1px;
+      background:linear-gradient(90deg, rgba(201,98,42,0.5), transparent);
+      margin-bottom:28px;
+    }
+    .chart-main-title {
+      font-family:playfair-display, serif;
+      font-size:34px; color:#faf8f3; font-weight:400;
+      line-height:1.3; margin-bottom:8px;
+    }
+    .chart-subtitle { font-size:20px; color:rgba(250,248,243,0.35); margin-bottom:28px; }
+    .chart-source { font-size:17px; color:rgba(250,248,243,0.25); margin-top:18px; }
+
+    .right {
+      padding:0 100px 0 40px;
+      display:flex; flex-direction:column; gap:32px;
+    }
+    .right::before {
+      content:''; display:block;
+      width:48px; height:2px; background:#c9622a; border-radius:1px;
+    }
+    .chapter { font-size:22px; letter-spacing:5px; text-transform:uppercase; color:#c9622a; opacity:0; }
+    .headline {
+      font-family:playfair-display, serif;
+      font-size:78px; line-height:1.05; color:#faf8f3; opacity:0;
+    }
+    .headline em { color:#c9622a; font-style:italic; }
+    .body-copy {
+      font-size:27px; font-weight:300; line-height:1.65;
+      color:rgba(250,248,243,0.5); opacity:0;
+    }
+    .callout {
+      display:inline-flex; align-items:center; gap:12px;
+      background:rgba(201,98,42,0.1);
+      border:1px solid rgba(201,98,42,0.25);
+      border-radius:10px; padding:16px 24px;
+      opacity:0;
+    }
+    .callout-num { font-family:playfair-display, serif; font-size:48px; color:#c9622a; line-height:1; }
+    .callout-text { font-size:21px; color:rgba(250,248,243,0.55); line-height:1.4; }
+  </style>
+</head>
+<body>
+<div class="scene" id="scene" data-composition-id="beat-4c-bar" data-width="1920" data-height="1080">
+
+  <div class="left" id="leftPanel">
+    <div class="chart-accent-line"></div>
+    <p class="chart-main-title">% of Americans with no close friends</p>
+    <p class="chart-subtitle">The isolation trend, 1990 – 2023</p>
+    <svg id="bar-svg" viewBox="0 0 1020 620" width="1020" height="620" aria-label="Bar chart: Americans with no close friends over time"></svg>
+    <p class="chart-source">Source: American Enterprise Institute / Survey Center on American Life</p>
+  </div>
+
+  <div class="right" id="rightPanel">
+    <span class="chapter" id="ch">Chapter 4b · The Trend</span>
+    <h2 class="headline" id="hl">The silence<br>is getting<br><em>louder.</em></h2>
+    <p class="body-copy" id="bc">The share of Americans with no close friends has quadrupled since 1990. In a hyper-connected world, loneliness has never been more widespread.</p>
+    <div class="callout" id="cl">
+      <span class="callout-num">4×</span>
+      <span class="callout-text">more people<br>completely alone</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+
+  // Deterministic trend bar chart
+  var YEARS  = ['1990','1995','2000','2005','2010','2015','2020','2023'];
+  var VALUES = [3, 4, 5, 7, 9, 10, 11, 12];
+  var BAR_MAX = 14;
+  var SVG_W = 1020, SVG_H = 620;
+  var PAD_L = 60, PAD_R = 20, PAD_T = 16, PAD_B = 56;
+  var CHART_W = SVG_W - PAD_L - PAD_R;
+  var CHART_H = SVG_H - PAD_T - PAD_B;
+
+  (function buildBar() {
+    var svg = document.getElementById('bar-svg');
+    var n = VALUES.length;
+    var slotW = CHART_W / n;
+    var barW = slotW * 0.54;
+    var html = '';
+
+    [0, 4, 8, 12].forEach(function(v) {
+      var y = (PAD_T + CHART_H - (v / BAR_MAX) * CHART_H).toFixed(1);
+      html += '<line x1="' + PAD_L + '" y1="' + y + '" x2="' + (SVG_W - PAD_R) + '" y2="' + y + '" stroke="rgba(250,248,243,0.05)" stroke-width="1" stroke-dasharray="4 4"/>';
+      html += '<text x="' + (PAD_L - 8) + '" y="' + (parseFloat(y) + 5).toFixed(1) + '" text-anchor="end" font-size="18" fill="rgba(250,248,243,0.25)" font-family="inter,sans-serif">' + v + '%</text>';
+    });
+
+    VALUES.forEach(function(val, i) {
+      var x = PAD_L + i * slotW + (slotW - barW) / 2;
+      var fullH = (val / BAR_MAX) * CHART_H;
+      var fullY = PAD_T + CHART_H - fullH;
+      // accent last two bars (recent, alarming)
+      var color = i >= 6 ? '#c9622a' : 'rgba(250,248,243,0.18)';
+      html += '<rect id="tbar' + i + '" x="' + x.toFixed(1) + '" y="' + (PAD_T + CHART_H).toFixed(1) + '" width="' + barW.toFixed(1) + '" height="0" fill="' + color + '" rx="4"/>';
+      html += '<text id="tbarlbl' + i + '" x="' + (x + barW/2).toFixed(1) + '" y="' + (PAD_T + CHART_H + 38).toFixed(1) + '" text-anchor="middle" font-size="19" fill="rgba(250,248,243,0.35)" font-family="inter,sans-serif" opacity="0">' + YEARS[i] + '</text>';
+      html += '<text id="tbarval' + i + '" x="' + (x + barW/2).toFixed(1) + '" y="' + (fullY - 9).toFixed(1) + '" text-anchor="middle" font-size="19" fill="' + color + '" font-weight="600" font-family="inter,sans-serif" opacity="0">' + val + '%</text>';
+    });
+    svg.innerHTML = html;
+  })();
+
+  var tl = gsap.timeline({ paused: true });
+  var CH_JS = SVG_H - 16 - 56;
+  var PT_JS = 16;
+
+  tl
+    .to('#scene', { opacity:1, duration:0.6, ease:'power2.out' }, 0)
+
+    .to('#leftPanel', { opacity:1, x:0, duration:0.65, ease:'expo.out' }, 0.2)
+    .from('#leftPanel', { x:-30 }, 0.2);
+
+  // Animate bars
+  VALUES.forEach(function(val, i) {
+    var fullH = (val / BAR_MAX) * CH_JS;
+    var fullY = PT_JS + CH_JS - fullH;
+    var at = 0.5 + i * 0.14;
+    tl.to('#tbar' + i, { attr: { height: fullH, y: fullY }, duration: 0.6, ease: 'back.out(1.4)' }, at);
+    tl.to('#tbarlbl' + i, { opacity: 1, duration: 0.3 }, at + 0.3);
+    tl.to('#tbarval' + i, { opacity: 1, duration: 0.3 }, at + 0.4);
+  });
+
+  tl
+    .to('#ch', { opacity:1, y:0, duration:0.4, ease:'power2.out' }, 0.8)
+    .from('#ch', { y:14 }, 0.8)
+
+    .to('#hl', { opacity:1, y:0, duration:0.65, ease:'expo.out' }, 1.05)
+    .from('#hl', { y:32 }, 1.05)
+
+    .to('#bc', { opacity:1, y:0, duration:0.5, ease:'power2.out' }, 1.5)
+    .from('#bc', { y:20 }, 1.5)
+
+    .to('#cl', { opacity:1, y:0, duration:0.5, ease:'expo.out' }, 2.0)
+    .from('#cl', { y:16 }, 2.0)
+
+    .to('#cl', { scale:1.03, duration:0.22, ease:'power2.out' }, 3.5)
+    .to('#cl', { scale:1.0,  duration:0.3,  ease:'power2.in'  }, 3.72)
+
+    .to('#scene', { opacity:0, duration:0.5, ease:'power2.in' }, 7.5);
+
+  window.__timelines['beat-4c-bar'] = tl;
+</script>
+</body>
+</html>

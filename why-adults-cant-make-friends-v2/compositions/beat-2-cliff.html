@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=1920, height=1080"/>
+  <script src="../node_modules/gsap/dist/gsap.min.js"></script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html, body { width:1920px; height:1080px; overflow:hidden; background:#0c0b09; font-family:inter,sans-serif; color:#faf8f3; }
+
+    .scene {
+      width:1920px; height:1080px;
+      display:grid;
+      grid-template-columns: 680px 1fr;
+      align-items:center;
+      opacity:0;
+    }
+
+    .left {
+      padding:0 80px 0 140px;
+      display:flex; flex-direction:column; gap:24px;
+    }
+
+    .chapter { font-size:22px; letter-spacing:5px; text-transform:uppercase; color:#c9622a; opacity:0; }
+    .headline {
+      font-family:playfair-display, serif;
+      font-size:96px; line-height:1.0;
+      color:#faf8f3; opacity:0;
+    }
+    .headline em { color:#c9622a; font-style:italic; }
+    .body-copy {
+      font-size:30px; font-weight:300; line-height:1.6;
+      color:rgba(250,248,243,0.55); opacity:0;
+      max-width:520px;
+    }
+
+    .right {
+      padding:80px 80px 80px 40px;
+      display:flex; flex-direction:column;
+    }
+    .chart-title { font-size:26px; color:rgba(250,248,243,0.4); letter-spacing:1px; margin-bottom:24px; opacity:0; }
+    .chart-wrap { position:relative; width:100%; opacity:0; }
+  </style>
+</head>
+<body>
+<div class="scene" id="scene" data-composition-id="beat-2-cliff" data-width="1920" data-height="1080">
+  <div class="left">
+    <span class="chapter" id="ch">Chapter 1</span>
+    <h2 class="headline" id="hl">Social networks<br>peak at <em>25.</em><br>Then shrink.</h2>
+    <p class="body-copy" id="bc">With every decade, the average adult loses close friends — not from conflict, but from circumstance.</p>
+  </div>
+  <div class="right">
+    <p class="chart-title" id="ct">Avg. close friends by age group</p>
+    <div class="chart-wrap" id="cw">
+      <svg id="bar-svg" viewBox="0 0 1060 560" width="1060" height="560" aria-label="Bar chart: average close friends by age group"></svg>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+
+  // ── Deterministic bar chart ──
+  var BAR_VALS   = [6.6, 5.2, 4.0, 3.1, 2.6, 2.1];
+  var BAR_LABELS = ['15–24','25–34','35–44','45–54','55–64','65+'];
+  var BAR_COLORS = ['#c9622a','#c9622a','#7a7568','#5f5e5a','#444441','#2c2c2a'];
+  var BAR_MAX = 8;
+  var SVG_W = 1060, SVG_H = 560;
+  var PAD_L = 55, PAD_R = 20, PAD_T = 12, PAD_B = 52;
+  var CHART_W = SVG_W - PAD_L - PAD_R;
+  var CHART_H = SVG_H - PAD_T - PAD_B;
+
+  (function buildBar() {
+    var svg = document.getElementById('bar-svg');
+    var n = BAR_VALS.length;
+    var slotW = CHART_W / n;
+    var barW = slotW * 0.52;
+    var html = '';
+
+    // Grid lines
+    [0, 2, 4, 6, 8].forEach(function(v) {
+      var y = (PAD_T + CHART_H - (v / BAR_MAX) * CHART_H).toFixed(1);
+      html += '<line x1="' + PAD_L + '" y1="' + y + '" x2="' + (SVG_W - PAD_R) + '" y2="' + y + '" stroke="rgba(250,248,243,0.06)" stroke-width="1.2"/>';
+      html += '<text x="' + (PAD_L - 10) + '" y="' + (parseFloat(y) + 5).toFixed(1) + '" text-anchor="end" font-size="20" fill="rgba(250,248,243,0.3)" font-family="inter,sans-serif">' + v + '</text>';
+    });
+
+    BAR_VALS.forEach(function(val, i) {
+      var x = PAD_L + i * slotW + (slotW - barW) / 2;
+      var fullH = (val / BAR_MAX) * CHART_H;
+      var fullY = PAD_T + CHART_H - fullH;
+      // bar starts at height=0; GSAP animates to fullH
+      html += '<rect id="bar' + i + '" x="' + x.toFixed(1) + '" y="' + (PAD_T + CHART_H).toFixed(1) + '" width="' + barW.toFixed(1) + '" height="0" fill="' + BAR_COLORS[i] + '" rx="6"/>';
+      html += '<text id="barlbl' + i + '" x="' + (x + barW/2).toFixed(1) + '" y="' + (PAD_T + CHART_H + 38).toFixed(1) + '" text-anchor="middle" font-size="22" fill="rgba(250,248,243,0.4)" font-family="inter,sans-serif" opacity="0">' + BAR_LABELS[i] + '</text>';
+      html += '<text id="barval' + i + '" x="' + (x + barW/2).toFixed(1) + '" y="' + (fullY - 10).toFixed(1) + '" text-anchor="middle" font-size="22" fill="' + BAR_COLORS[i] + '" font-weight="600" font-family="inter,sans-serif" opacity="0">' + val + '</text>';
+    });
+    svg.innerHTML = html;
+  })();
+
+  // ── GSAP timeline ──
+  var tl = gsap.timeline({ paused: true });
+  var CHART_H_JS = SVG_H - 12 - 52;
+  var PAD_T_JS = 12;
+
+  tl
+    .to('#scene', { opacity:1, duration:0.5, ease:'power2.out' }, 0)
+
+    .to('#ch', { opacity:1, y:0, duration:0.4, ease:'power2.out' }, 0.3)
+    .from('#ch', { y:16 }, 0.3)
+
+    .to('#hl', { opacity:1, y:0, duration:0.6, ease:'expo.out' }, 0.55)
+    .from('#hl', { y:40 }, 0.55)
+
+    .to('#bc', { opacity:1, y:0, duration:0.5, ease:'power2.out' }, 1.0)
+    .from('#bc', { y:20 }, 1.0)
+
+    .to('#ct', { opacity:1, duration:0.4 }, 1.2)
+    .to('#cw', { opacity:1, duration:0.4 }, 1.4);
+
+  // Animate bars one by one
+  BAR_VALS.forEach(function(val, i) {
+    var fullH = (val / BAR_MAX) * CHART_H_JS;
+    var fullY = PAD_T_JS + CHART_H_JS - fullH;
+    var at = 1.5 + i * 0.12;
+    tl.to('#bar' + i, { attr: { height: fullH, y: fullY }, duration: 0.65, ease: 'back.out(1.5)' }, at);
+    tl.to('#barlbl' + i, { opacity: 1, duration: 0.3 }, at + 0.3);
+    tl.to('#barval' + i, { opacity: 1, duration: 0.3 }, at + 0.45);
+  });
+
+  tl.to('#scene', { opacity:0, duration:0.4, ease:'power2.in' }, 5.6);
+
+  window.__timelines["beat-2-cliff"] = tl;
+</script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="./node_modules/gsap/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #0c0b09; }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-width="1920"
+      data-height="1080"
+      data-start="0"
+      data-duration="46"
+    >
+      <!-- Beat 1: Hook — "The Number" (0 – 4s) -->
+      <div class="clip"
+        id="beat-1"
+        data-composition-id="beat-1-hook"
+        data-composition-src="compositions/beat-1-hook.html"
+        data-start="0" data-duration="4.0" data-track-index="1"
+        data-width="1920" data-height="1080"
+      ></div>
+
+      <!-- Beat 2: The Cliff — "Peak at 25" (4 – 10s) -->
+      <div class="clip"
+        id="beat-2"
+        data-composition-id="beat-2-cliff"
+        data-composition-src="compositions/beat-2-cliff.html"
+        data-start="4.0" data-duration="6.0" data-track-index="1"
+        data-width="1920" data-height="1080"
+      ></div>
+
+      <!-- Beat 3: The Three Walls (10 – 18s) -->
+      <div class="clip"
+        id="beat-3"
+        data-composition-id="beat-3-walls"
+        data-composition-src="compositions/beat-3-walls.html"
+        data-start="10.0" data-duration="8.0" data-track-index="1"
+        data-width="1920" data-height="1080"
+      ></div>
+
+      <!-- Beat 4: The Cost (18 – 24s) -->
+      <div class="clip"
+        id="beat-4"
+        data-composition-id="beat-4-cost"
+        data-composition-src="compositions/beat-4-cost.html"
+        data-start="18.0" data-duration="6.0" data-track-index="1"
+        data-width="1920" data-height="1080"
+      ></div>
+
+      <!-- Beat 4b: Barriers Pie (24 – 32s) -->
+      <div class="clip"
+        id="beat-4b"
+        data-composition-id="beat-4b-pie"
+        data-composition-src="compositions/beat-4b-pie.html"
+        data-start="24.0" data-duration="8.0" data-track-index="1"
+        data-width="1920" data-height="1080"
+      ></div>
+
+      <!-- Beat 4c: Isolation Trend Bar (32 – 40s) -->
+      <div class="clip"
+        id="beat-4c"
+        data-composition-id="beat-4c-bar"
+        data-composition-src="compositions/beat-4c-bar.html"
+        data-start="32.0" data-duration="8.0" data-track-index="1"
+        data-width="1920" data-height="1080"
+      ></div>
+
+      <!-- Beat 5: CTA — "The Way Forward" (40 – 46s) -->
+      <div class="clip"
+        id="beat-5"
+        data-composition-id="beat-5-cta"
+        data-composition-src="compositions/beat-5-cta.html"
+        data-start="40.0" data-duration="6.0" data-track-index="1"
+        data-width="1920" data-height="1080"
+      ></div>
+
+      <!-- BGM: relaxing piano + strings (track 2) -->
+      <audio id="bgm" src="audio/bgm.wav"
+        data-start="0" data-duration="46" data-track-index="2" data-volume="0.55"></audio>
+
+      <!-- Per-beat TTS narration (track 0) -->
+      <audio id="vo-1"  src="audio/beat-1.wav"  data-start="0"    data-duration="4.0" data-track-index="0" data-volume="1"></audio>
+      <audio id="vo-2"  src="audio/beat-2.wav"  data-start="4.0"  data-duration="6.0" data-track-index="0" data-volume="1"></audio>
+      <audio id="vo-3"  src="audio/beat-3.wav"  data-start="10.0" data-duration="8.0" data-track-index="0" data-volume="1"></audio>
+      <audio id="vo-4"  src="audio/beat-4.wav"  data-start="18.0" data-duration="6.0" data-track-index="0" data-volume="1"></audio>
+      <audio id="vo-4b" src="audio/beat-4b.wav" data-start="24.0" data-duration="8.0" data-track-index="0" data-volume="1"></audio>
+      <audio id="vo-4c" src="audio/beat-4c.wav" data-start="32.0" data-duration="8.0" data-track-index="0" data-volume="1"></audio>
+      <audio id="vo-5"  src="audio/beat-5.wav"  data-start="40.0" data-duration="6.0" data-track-index="0" data-volume="1"></audio>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>
