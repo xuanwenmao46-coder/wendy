@@ -1,312 +1,507 @@
 <!doctype html>
-<html lang="zh">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1920, height=1080" />
     <script src="./node_modules/gsap/dist/gsap.min.js"></script>
     <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      :root {
+        --ink:   #0f0e0c;
+        --ink2:  #3a3830;
+        --ink3:  #7a7568;
+        --paper: #faf8f3;
+        --warm:  #c9622a;
+        --warm2: #e8844e;
+        --cool:  #2a4c6e;
+        --cool2: #4a7fa8;
+        --line:  #e0ddd5;
+      }
+
       html, body {
-        width: 1920px;
-        height: 1080px;
+        width: 1920px; height: 1080px;
         overflow: hidden;
-        background: #0f1117;
-        font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+        background: var(--paper);
+        font-family: inter, sans-serif;
       }
 
-      .bg {
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(ellipse 100% 70% at 50% 100%, #1a1030 0%, #0f1117 60%);
-      }
-      .orb {
-        position: absolute;
-        border-radius: 50%;
-        filter: blur(140px);
-        pointer-events: none;
-        opacity: 0;
-      }
-      #orb-a { width: 900px; height: 900px; background: #3b1f6a; top: -300px; left: -200px; }
-      #orb-b { width: 700px; height: 700px; background: #1a3a5c; bottom: -200px; right: -100px; }
-      #orb-c { width: 500px; height: 500px; background: #6a1f3b; top: 200px; right: 300px; }
-
-      .clip { position: absolute; opacity: 0; }
-
-      /* Scene 1: Title */
-      #s1 {
-        top: 50%; left: 50%;
-        text-align: center;
-        width: 1600px;
-      }
-      .s1-en {
-        font-size: 28px;
-        letter-spacing: 10px;
-        color: #8b7cf8;
-        text-transform: uppercase;
-        margin-bottom: 28px;
-      }
-      .s1-zh {
-        font-size: 110px;
-        font-weight: 700;
-        color: #fff;
-        letter-spacing: -2px;
-        line-height: 1.1;
-      }
-      .s1-zh .hl { color: #8b7cf8; }
-      .s1-sub {
-        margin-top: 32px;
-        font-size: 32px;
-        color: #6b7280;
-        letter-spacing: 2px;
+      /* Full-bleed clip — each scene covers the whole canvas */
+      .clip {
+        position: absolute; inset: 0; opacity: 0;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        padding: 72px 140px;
       }
 
-      /* Scene 2: Big stat */
-      #s2 {
-        top: 50%; left: 50%;
-        text-align: center;
-        width: 1400px;
-      }
-      .s2-num {
-        font-size: 200px;
-        font-weight: 800;
-        color: #8b7cf8;
-        line-height: 1;
-        letter-spacing: -8px;
-      }
-      .s2-unit { font-size: 56px; font-weight: 400; letter-spacing: 0; }
-      .s2-label {
-        font-size: 44px;
-        color: #d1d5db;
-        margin-top: 20px;
-        line-height: 1.5;
-      }
-      .s2-src { font-size: 22px; color: #9ca3af; margin-top: 16px; letter-spacing: 1px; }
+      /* Animated children start hidden so GSAP can stagger them */
+      .a1,.a2,.a3,.a4,.a5 { opacity: 0; }
 
-      /* Reason scenes */
-      .reason-wrap {
-        top: 50%; left: 50%;
-        width: 1560px;
-        display: flex;
-        align-items: center;
-        gap: 80px;
-      }
-      .reason-num {
-        font-size: 200px;
-        font-weight: 800;
-        color: #8b7cf8;
-        opacity: 0.15;
-        line-height: 1;
-        flex-shrink: 0;
-        width: 220px;
-        text-align: right;
-      }
-      .reason-body { flex: 1; }
-      .reason-tag {
-        display: inline-block;
-        font-size: 20px;
-        letter-spacing: 6px;
-        color: #8b7cf8;
-        text-transform: uppercase;
-        border: 1px solid rgba(139,124,248,0.3);
-        border-radius: 100px;
-        padding: 6px 24px;
-        margin-bottom: 28px;
-      }
-      .reason-title {
-        font-size: 88px;
-        font-weight: 700;
-        color: #fff;
-        line-height: 1.1;
-        letter-spacing: -2px;
-        margin-bottom: 24px;
-      }
-      .reason-desc {
-        font-size: 34px;
-        color: #9ca3af;
-        line-height: 1.8;
-      }
-      .reason-desc em { color: #f5f3ff; font-style: normal; }
+      .inner { width: 100%; max-width: 1560px; position: relative; z-index: 1; }
 
-      /* Scene 7: Outro */
-      #s7 {
-        top: 50%; left: 50%;
-        text-align: center;
-        width: 1560px;
+      .blob {
+        position: absolute; border-radius: 50%;
+        filter: blur(120px); pointer-events: none;
       }
-      .s7-tag {
-        font-size: 24px;
-        letter-spacing: 6px;
-        color: #8b7cf8;
-        text-transform: uppercase;
-        margin-bottom: 32px;
-      }
-      .s7-title {
-        font-size: 88px;
-        font-weight: 700;
-        color: #fff;
-        letter-spacing: -3px;
-        line-height: 1.2;
-        margin-bottom: 52px;
-      }
-      .s7-title .hl { color: #8b7cf8; }
-      .s7-steps { display: flex; gap: 40px; justify-content: center; }
-      .s7-step {
-        background: rgba(139,124,248,0.08);
-        border: 1px solid rgba(139,124,248,0.2);
-        border-radius: 20px;
-        padding: 36px 44px;
-        flex: 1;
-        text-align: left;
-        opacity: 0;
-      }
-      .s7-step-num { font-size: 44px; font-weight: 800; color: #8b7cf8; margin-bottom: 12px; }
-      .s7-step-text { font-size: 28px; color: #d1d5db; line-height: 1.6; }
 
       #progress-track {
-        position: absolute;
-        bottom: 0; left: 0;
+        position: absolute; bottom: 0; left: 0;
         width: 0; height: 4px;
-        background: linear-gradient(90deg, #8b7cf8, #c4b5fd);
+        background: var(--warm); z-index: 999;
+      }
+
+      /* ─── Typography ─── */
+      .eyebrow {
+        font-size: 17px; letter-spacing: 5px; text-transform: uppercase;
+        color: var(--warm); margin-bottom: 24px; display: block;
+      }
+      .slide-title {
+        font-family: playfair-display, serif;
+        font-size: 68px; line-height: 1.1; color: var(--ink);
+        margin-bottom: 18px;
+      }
+      .slide-body {
+        font-size: 23px; line-height: 1.85; color: var(--ink2);
+        max-width: 900px; margin-bottom: 32px;
+      }
+
+      /* ══════ SCENE 0 — COVER ══════ */
+      #s0 { background: var(--ink); text-align: center; }
+      #s0 .cover-eyebrow {
+        font-size: 17px; letter-spacing: 6px; text-transform: uppercase;
+        color: var(--warm2); margin-bottom: 40px; display: block;
+      }
+      #s0 h1 {
+        font-family: playfair-display, serif;
+        font-size: 128px; line-height: .95; color: var(--paper);
+      }
+      #s0 h1 em { color: var(--warm2); font-style: italic; display: block; }
+      #s0 .cover-sub {
+        margin-top: 44px; font-size: 23px;
+        color: rgba(250,248,243,.42); letter-spacing: .5px;
+      }
+
+      /* ══════ SCENE 1 — STATS ══════ */
+      #s1 { background: var(--paper); }
+      .stat-row { display: flex; gap: 24px; margin-top: 24px; }
+      .stat-card {
+        flex: 1; background: #fff;
+        border: 1.5px solid var(--line); border-radius: 18px; padding: 36px 40px;
+      }
+      .stat-num {
+        font-family: playfair-display, serif;
+        font-size: 76px; line-height: 1; color: var(--warm);
+      }
+      .stat-lbl { font-size: 19px; color: var(--ink3); margin-top: 8px; line-height: 1.6; }
+
+      /* ══════ SCENE 2 — BAR CHART ══════ */
+      #s2 { background: #f5f2eb; }
+      .chart-area { width: 100%; margin-top: 20px; }
+      .legend { display: flex; gap: 28px; margin-top: 12px; }
+      .leg-item { display: flex; align-items: center; gap: 9px; font-size: 17px; color: var(--ink3); }
+      .leg-sq { width: 13px; height: 13px; border-radius: 3px; flex-shrink: 0; }
+
+      /* ══════ SCENE 3 — BLOCKERS ══════ */
+      #s3 { background: var(--paper); }
+      .blocker-grid { display: flex; gap: 22px; margin-top: 24px; }
+      .blocker {
+        flex: 1; background: #fff;
+        border: 1.5px solid var(--line); border-radius: 18px; padding: 40px 36px;
+      }
+      .blocker-icon {
+        width: 58px; height: 58px; border-radius: 13px;
+        display: flex; align-items: center; justify-content: center;
+        margin-bottom: 22px;
+      }
+      .ic-orange { background: #fdeee6; }
+      .ic-blue   { background: #e8f0f8; }
+      .ic-green  { background: #eef5e8; }
+      .blocker h3 {
+        font-family: playfair-display, serif;
+        font-size: 32px; color: var(--ink); margin-bottom: 12px;
+      }
+      .blocker p { font-size: 19px; color: var(--ink3); line-height: 1.72; }
+
+      /* ══════ SCENE 4 — PIE ══════ */
+      #s4 { background: var(--paper); }
+      .two-col { display: flex; gap: 72px; align-items: center; margin-top: 24px; }
+      .pie-area { flex: 0 0 460px; }
+      .text-side { flex: 1; }
+      .reason-list { list-style: none; display: flex; flex-direction: column; gap: 18px; }
+      .reason-list li {
+        display: flex; align-items: flex-start; gap: 14px;
+        font-size: 21px; color: var(--ink2); line-height: 1.5;
+      }
+      .r-dot { width: 13px; height: 13px; border-radius: 3px; flex-shrink: 0; margin-top: 5px; }
+      .reason-list li strong { display: block; font-weight: 600; }
+      .reason-list li span { color: var(--ink3); font-size: 18px; }
+
+      /* ══════ SCENE 5 — COST ══════ */
+      #s5 { background: var(--paper); }
+      .quote-block {
+        border-left: 4px solid var(--warm); padding: 22px 32px;
+        background: rgba(201,98,42,.06);
+        border-radius: 0 12px 12px 0; margin: 18px 0 26px;
+      }
+      .quote-block blockquote {
+        font-family: playfair-display, serif;
+        font-size: 26px; color: var(--ink);
+        font-style: italic; line-height: 1.6;
+      }
+      .quote-block cite {
+        display: block; margin-top: 10px;
+        font-size: 15px; color: var(--ink3);
+        font-style: normal; letter-spacing: .5px;
+      }
+      .fact-row { display: flex; gap: 22px; }
+      .fact {
+        flex: 1; padding: 28px; border-radius: 16px;
+        border: 1.5px solid var(--line); background: #fff;
+      }
+      .fact strong {
+        display: block; font-family: playfair-display, serif;
+        font-size: 54px; color: var(--cool); margin-bottom: 6px;
+      }
+      .fact span { font-size: 18px; color: var(--ink3); line-height: 1.55; }
+
+      /* ══════ SCENE 6 — PATH ══════ */
+      #s6 { background: var(--ink); }
+      #s6 .eyebrow    { color: var(--warm2); }
+      #s6 .slide-title { color: var(--paper); }
+      #s6 .slide-title em { color: var(--warm2); font-style: italic; }
+      #s6 .slide-body  { color: rgba(250,248,243,.55); }
+      .steps { display: flex; flex-direction: column; gap: 14px; margin-top: 18px; }
+      .step {
+        display: flex; gap: 26px; align-items: flex-start;
+        background: rgba(255,255,255,.05);
+        border: 1px solid rgba(255,255,255,.1);
+        border-radius: 14px; padding: 22px 28px;
+      }
+      .step-num {
+        font-family: playfair-display, serif;
+        font-size: 46px; color: var(--warm2);
+        line-height: 1; flex-shrink: 0; width: 46px;
+      }
+      .step-txt h4 { font-size: 22px; color: var(--paper); margin-bottom: 5px; font-weight: 500; }
+      .step-txt p  { font-size: 19px; color: rgba(250,248,243,.5); line-height: 1.6; }
+
+      /* ══════ SCENE 7 — END CARD ══════ */
+      #s7 { background: var(--warm); text-align: center; }
+      #s7 h2 {
+        font-family: playfair-display, serif;
+        font-size: 116px; color: #fff; line-height: 1.05;
+        max-width: 1200px;
+      }
+      #s7 p {
+        font-size: 27px; color: rgba(255,255,255,.72);
+        margin-top: 30px; max-width: 720px; line-height: 1.72;
       }
     </style>
   </head>
   <body>
-    <div
-      id="root"
+    <div id="root"
       data-composition-id="main"
-      data-start="0"
-      data-duration="35"
-      data-width="1920"
-      data-height="1080"
-    >
-      <div class="bg"></div>
-      <div class="orb" id="orb-a"></div>
-      <div class="orb" id="orb-b"></div>
-      <div class="orb" id="orb-c"></div>
+      data-start="0" data-duration="46"
+      data-width="1920" data-height="1080">
 
-      <!-- Scene 1: 标题 0-5s -->
-      <div id="s1" class="clip" data-start="0" data-duration="5" data-track-index="1">
-        <div class="s1-en">Social Science &middot; 社交研究</div>
-        <div class="s1-zh">为什么成年人<br><span class="hl">难以交友？</span></div>
-        <div class="s1-sub">四个被忽视的真相</div>
+      <!-- ══ S0: COVER  0-6s ══ -->
+      <div id="s0" class="clip" data-start="0" data-duration="6" data-track-index="1">
+        <div class="blob" style="width:900px;height:900px;background:#c9622a;opacity:.1;top:-300px;right:-280px;"></div>
+        <div class="blob" style="width:600px;height:600px;background:#2a4c6e;opacity:.08;bottom:-200px;left:-150px;"></div>
+        <span class="cover-eyebrow a1">A Story About Connection</span>
+        <h1 class="a2">Why Adults<br><em>Can't Make</em><br>Friends Anymore</h1>
+        <p class="cover-sub a3">The science, the statistics, and what you can do about it</p>
       </div>
 
-      <!-- Scene 2: 核心数据 5-10s -->
-      <div id="s2" class="clip" data-start="5" data-duration="5" data-track-index="1">
-        <div class="s2-num">200<span class="s2-unit">小时</span></div>
-        <div class="s2-label">成为亲密好友所需的相处时间</div>
-        <div class="s2-src">Journal of Social and Personal Relationships, 2018</div>
-      </div>
-
-      <!-- Scene 3: 原因1 10-17s -->
-      <div id="s3" class="clip reason-wrap" data-start="10" data-duration="7" data-track-index="1">
-        <div class="reason-num">01</div>
-        <div class="reason-body">
-          <div class="reason-tag">Reason 01</div>
-          <div class="reason-title">失去了<br>第三场所</div>
-          <div class="reason-desc">
-            成年后，我们只剩下<em>家</em>和<em>工作</em>。<br>
-            咖啡馆、社区中心、兴趣小组——<br>
-            自然相遇的空间正在消失。
+      <!-- ══ S1: STATS  6-12s ══ -->
+      <div id="s1" class="clip" data-start="6" data-duration="6" data-track-index="1">
+        <div class="inner">
+          <span class="eyebrow a1">Chapter 1 · The Friendship Cliff</span>
+          <h2 class="slide-title a2">After 25, the social<br>world shrinks — fast.</h2>
+          <p class="slide-body a3">Research shows our social networks peak around age 25 and then contract with every decade. It's not laziness — it's structural. Life reorganizes itself around obligations that leave little room for the slow, uncertain work of building new bonds.</p>
+          <div class="stat-row a4">
+            <div class="stat-card">
+              <div class="stat-num">49%</div>
+              <div class="stat-lbl">of American adults report having 3 or fewer close friends — up from 27% in 1990</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num">12%</div>
+              <div class="stat-lbl">report having no close friends at all — a 4× increase over 30 years</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num">200h</div>
+              <div class="stat-lbl">of shared time researchers estimate it takes to form a genuine close friendship</div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Scene 4: 原因2 17-23s -->
-      <div id="s4" class="clip reason-wrap" data-start="17" data-duration="6" data-track-index="1">
-        <div class="reason-num">02</div>
-        <div class="reason-body">
-          <div class="reason-tag">Reason 02</div>
-          <div class="reason-title">时间<br>被吞噬了</div>
-          <div class="reason-desc">
-            工作、家庭、账单……<br>
-            友谊需要<em>反复出现</em>才能生长，<br>
-            但成年人的日历里没有留白。
+      <!-- ══ S2: BAR CHART  12-18s ══ -->
+      <div id="s2" class="clip" data-start="12" data-duration="6" data-track-index="1">
+        <div class="inner">
+          <span class="eyebrow a1">Chapter 2 · By the Numbers</span>
+          <h2 class="slide-title a2">Average close friends<br>across life stages</h2>
+          <p class="slide-body a3" style="margin-bottom:0;font-size:20px;">Adults over 45 report dramatically fewer close friendships — a gap that widens with every decade.</p>
+          <div class="chart-area a4">
+            <svg id="bar-svg" width="1540" height="290" viewBox="0 0 1540 290" aria-label="Bar chart: close friends by age group"></svg>
+          </div>
+          <div class="legend a5">
+            <div class="leg-item"><div class="leg-sq" style="background:#c9622a"></div>Younger adults (more friends)</div>
+            <div class="leg-item"><div class="leg-sq" style="background:#4a7fa8"></div>Older adults (fewer friends)</div>
           </div>
         </div>
       </div>
 
-      <!-- Scene 5: 原因3 23-29s -->
-      <div id="s5" class="clip reason-wrap" data-start="23" data-duration="6" data-track-index="1">
-        <div class="reason-num">03</div>
-        <div class="reason-body">
-          <div class="reason-tag">Reason 03</div>
-          <div class="reason-title">害怕<br>脆弱</div>
-          <div class="reason-desc">
-            小时候我们毫无防备地靠近彼此，<br>
-            长大后却害怕<em>主动示好显得奇怪</em>。<br>
-            社会规则让亲近变得尴尬。
+      <!-- ══ S3: BLOCKERS  18-24s ══ -->
+      <div id="s3" class="clip" data-start="18" data-duration="6" data-track-index="1">
+        <div class="inner">
+          <span class="eyebrow a1">Chapter 3 · The Three Walls</span>
+          <h2 class="slide-title a2">Friendship requires three things<br>adults rarely have.</h2>
+          <div class="blocker-grid">
+            <div class="blocker a3" id="b1">
+              <div class="blocker-icon ic-orange">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9" stroke="#c9622a" stroke-width="2"/>
+                  <path d="M12 7v5l3 3" stroke="#c9622a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <h3>Proximity</h3>
+              <p>Repeated, unplanned contact is how friendships naturally form. Adult life trades open-ended time for scheduled obligations — killing the serendipity that sparks connection.</p>
+            </div>
+            <div class="blocker a4" id="b2">
+              <div class="blocker-icon ic-blue">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <rect x="5" y="11" width="14" height="10" rx="2" stroke="#4a7fa8" stroke-width="2"/>
+                  <path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="#4a7fa8" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <h3>Openness</h3>
+              <p>Vulnerability accelerates closeness. Adults develop emotional armour — a protective layer of professionalism and self-sufficiency that keeps others at arm's length.</p>
+            </div>
+            <div class="blocker a5" id="b3">
+              <div class="blocker-icon ic-green">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M17 1l4 4-4 4" stroke="#5a8a4a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M3 11V9a4 4 0 0 1 4-4h14" stroke="#5a8a4a" stroke-width="2" stroke-linecap="round"/>
+                  <path d="M7 23l-4-4 4-4" stroke="#5a8a4a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M21 13v2a4 4 0 0 1-4 4H3" stroke="#5a8a4a" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <h3>Repetition</h3>
+              <p>Familiarity builds trust. But adult schedules are siloed — work, gym, commute — with few recurring contexts where someone encounters the same new person again and again.</p>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Scene 7: 结语 29-35s -->
-      <div id="s7" class="clip" data-start="29" data-duration="6" data-track-index="1">
-        <div class="s7-tag">那我们能做什么</div>
-        <div class="s7-title">友谊不会自然发生，<br>它需要被<span class="hl">刻意创造</span>。</div>
-        <div class="s7-steps">
-          <div class="s7-step" id="step1">
-            <div class="s7-step-num">01</div>
-            <div class="s7-step-text">主动约人，<br>哪怕有点奇怪</div>
-          </div>
-          <div class="s7-step" id="step2">
-            <div class="s7-step-num">02</div>
-            <div class="s7-step-text">找一个固定的<br>第三场所</div>
-          </div>
-          <div class="s7-step" id="step3">
-            <div class="s7-step-num">03</div>
-            <div class="s7-step-text">允许自己<br>慢慢靠近</div>
+      <!-- ══ S4: PIE CHART  24-30s ══ -->
+      <div id="s4" class="clip" data-start="24" data-duration="6" data-track-index="1">
+        <div class="inner">
+          <span class="eyebrow a1">Chapter 4 · What Gets in the Way</span>
+          <h2 class="slide-title a2">Self-reported barriers<br>to making new friends</h2>
+          <div class="two-col a3">
+            <div class="pie-area">
+              <svg id="pie-svg" width="460" height="460" viewBox="0 0 460 460" aria-label="Donut chart: barriers to friendship"></svg>
+            </div>
+            <div class="text-side">
+              <ul class="reason-list">
+                <li><div class="r-dot" style="background:#c9622a"></div><div><strong>Too busy / no time — 34%</strong><span>Work and caregiving crowd out social investment</span></div></li>
+                <li><div class="r-dot" style="background:#4a7fa8"></div><div><strong>No shared context — 22%</strong><span>Without school or sport, strangers stay strangers</span></div></li>
+                <li><div class="r-dot" style="background:#8b4513"></div><div><strong>Social anxiety — 18%</strong><span>Rejection sensitivity rises without practice</span></div></li>
+                <li><div class="r-dot" style="background:#6a9e5a"></div><div><strong>Geographic mobility — 14%</strong><span>Moves reset social networks to zero</span></div></li>
+                <li><div class="r-dot" style="background:#a89060"></div><div><strong>Digital substitution — 12%</strong><span>Parasocial content mimics connection without effort</span></div></li>
+              </ul>
+            </div>
           </div>
         </div>
+      </div>
+
+      <!-- ══ S5: COST  30-36s ══ -->
+      <div id="s5" class="clip" data-start="30" data-duration="6" data-track-index="1">
+        <div class="inner">
+          <span class="eyebrow a1">Chapter 5 · The Hidden Cost</span>
+          <h2 class="slide-title a2">Loneliness is not just<br>uncomfortable. It's lethal.</h2>
+          <div class="quote-block a3">
+            <blockquote>"Loneliness and weak social connections are associated with a reduction in lifespan similar to smoking 15 cigarettes a day — and more harmful than obesity."</blockquote>
+            <cite>— Former US Surgeon General Vivek Murthy, 2023 Advisory on Loneliness</cite>
+          </div>
+          <div class="fact-row a4">
+            <div class="fact">
+              <strong>26%</strong>
+              <span>Increased risk of premature death linked to social isolation — equivalent to heavy smoking</span>
+            </div>
+            <div class="fact">
+              <strong>50%</strong>
+              <span>Of Gen Z adults say they always or sometimes feel alone, even with social media</span>
+            </div>
+            <div class="fact">
+              <strong>$6.7B</strong>
+              <span>Annual productivity cost of loneliness in the US workplace due to absenteeism</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ S6: PATH  36-42s ══ -->
+      <div id="s6" class="clip" data-start="36" data-duration="6" data-track-index="1">
+        <div class="inner">
+          <span class="eyebrow a1">Chapter 6 · The Way Forward</span>
+          <h2 class="slide-title a2">Friendship in adulthood<br>is an <em>act of will.</em></h2>
+          <p class="slide-body a3">It doesn't happen by accident anymore. But the research is clear: intentional, consistent effort rebuilds what life eroded.</p>
+          <div class="steps a4">
+            <div class="step">
+              <div class="step-num">01</div>
+              <div class="step-txt"><h4>Create recurring contexts</h4><p>Join a club, class, or team that meets weekly. Repetition does the work that school once did automatically.</p></div>
+            </div>
+            <div class="step">
+              <div class="step-num">02</div>
+              <div class="step-txt"><h4>Lower the bar for initiation</h4><p>A short walk, a coffee, a text. The ask doesn't have to be grand — it just has to happen. Rejection is rare and temporary.</p></div>
+            </div>
+            <div class="step">
+              <div class="step-num">03</div>
+              <div class="step-txt"><h4>Be the one who shows up</h4><p>Consistency signals care. One reliable presence creates the safety that turns acquaintance into friend.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ S7: END CARD  42-46s ══ -->
+      <div id="s7" class="clip" data-start="42" data-duration="4" data-track-index="1">
+        <h2 class="a1">Connection is<br>still possible.<br>It just takes<br>courage.</h2>
+        <p class="a2">The biology never changed. Only the infrastructure did.<br>Rebuild it — one honest conversation at a time.</p>
       </div>
 
       <div id="progress-track"></div>
     </div>
 
     <script>
+      // ── Bar chart (deterministic SVG) ──
+      const BAR_VALS   = [6.6, 5.2, 4.0, 3.1, 2.6, 2.1];
+      const BAR_LABELS = ['15–24','25–34','35–44','45–54','55–64','65+'];
+      const BAR_COLORS = ['#c9622a','#d47048','#de8060','#4a7fa8','#3d6e95','#2a4c6e'];
+      const BAR_MAX = 8;
+      const SVG_W = 1540, SVG_H = 290;
+      const PAD_L = 50, PAD_R = 20, PAD_T = 8, PAD_B = 44;
+      const CHART_W = SVG_W - PAD_L - PAD_R;
+      const CHART_H = SVG_H - PAD_T - PAD_B;
+
+      (function buildBar() {
+        const svg = document.getElementById('bar-svg');
+        const n = BAR_VALS.length;
+        const slotW = CHART_W / n;
+        const barW = slotW * 0.52;
+        let html = '';
+        // Grid lines
+        [0,2,4,6,8].forEach(v => {
+          const y = PAD_T + CHART_H - (v / BAR_MAX) * CHART_H;
+          html += `<line x1="${PAD_L}" y1="${y.toFixed(1)}" x2="${SVG_W - PAD_R}" y2="${y.toFixed(1)}" stroke="#d8d5cd" stroke-width="1.2"/>`;
+          html += `<text x="${PAD_L - 10}" y="${(y+5).toFixed(1)}" text-anchor="end" font-size="15" fill="#7a7568">${v}</text>`;
+        });
+        // Bars start at height=0; GSAP animates them
+        BAR_VALS.forEach((val, i) => {
+          const x = PAD_L + i * slotW + (slotW - barW) / 2;
+          const fullH = (val / BAR_MAX) * CHART_H;
+          const fullY = PAD_T + CHART_H - fullH;
+          html += `<rect id="bar${i}" x="${x.toFixed(1)}" y="${(PAD_T + CHART_H).toFixed(1)}" width="${barW.toFixed(1)}" height="0" fill="${BAR_COLORS[i]}" rx="5"/>`;
+          html += `<text id="barlbl${i}" x="${(x + barW/2).toFixed(1)}" y="${(PAD_T + CHART_H + 34).toFixed(1)}" text-anchor="middle" font-size="17" fill="#7a7568" opacity="0">${BAR_LABELS[i]}</text>`;
+          html += `<text id="barval${i}" x="${(x + barW/2).toFixed(1)}" y="${(fullY - 8).toFixed(1)}" text-anchor="middle" font-size="17" fill="${BAR_COLORS[i]}" font-weight="600" opacity="0">${val}</text>`;
+        });
+        svg.innerHTML = html;
+      })();
+
+      // ── Donut chart (deterministic SVG) ──
+      const PIE_DATA   = [34, 22, 18, 14, 12];
+      const PIE_COLORS = ['#c9622a','#4a7fa8','#8b4513','#6a9e5a','#a89060'];
+
+      (function buildPie() {
+        const svg = document.getElementById('pie-svg');
+        const cx = 230, cy = 230, R = 200, r = 118;
+        const toRad = d => d * Math.PI / 180;
+        let angle = -90;
+        let paths = '';
+        PIE_DATA.forEach((pct, i) => {
+          const sweep = pct / 100 * 360;
+          const a1 = angle, a2 = angle + sweep;
+          const large = sweep > 180 ? 1 : 0;
+          const x1 = cx + R * Math.cos(toRad(a1));
+          const y1 = cy + R * Math.sin(toRad(a1));
+          const x2 = cx + R * Math.cos(toRad(a2));
+          const y2 = cy + R * Math.sin(toRad(a2));
+          const x3 = cx + r * Math.cos(toRad(a2));
+          const y3 = cy + r * Math.sin(toRad(a2));
+          const x4 = cx + r * Math.cos(toRad(a1));
+          const y4 = cy + r * Math.sin(toRad(a1));
+          const fix = n => n.toFixed(2);
+          paths += `<path d="M${fix(x1)},${fix(y1)} A${R},${R} 0 ${large} 1 ${fix(x2)},${fix(y2)} L${fix(x3)},${fix(y3)} A${r},${r} 0 ${large} 0 ${fix(x4)},${fix(y4)} Z" fill="${PIE_COLORS[i]}"/>`;
+          angle = a2;
+        });
+        // Center label
+        paths += `<text x="${cx}" y="${cy - 8}" text-anchor="middle" font-size="54" font-weight="700" fill="#3a3830">34%</text>`;
+        paths += `<text x="${cx}" y="${cy + 32}" text-anchor="middle" font-size="19" fill="#7a7568">Too busy</text>`;
+        svg.innerHTML = paths;
+      })();
+
+      // ── GSAP Timeline ──
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
-      const DUR = 35;
+      const DUR = 46;
 
-      // Progress bar
       tl.to("#progress-track", { width: "100%", duration: DUR, ease: "none" }, 0);
 
-      // Orbs
-      tl.to("#orb-a", { opacity: 0.6, duration: 3 }, 0);
-      tl.to("#orb-b", { opacity: 0.5, duration: 3 }, 0.5);
-      tl.to("#orb-c", { opacity: 0.4, duration: 3 }, 10);
-      tl.to("#orb-c", { opacity: 0, duration: 2 }, 22);
+      // Reusable helpers
+      function scene(id, start, end) {
+        tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, start);
+        tl.to(id, { opacity: 0, duration: 0.45, ease: "power2.in" }, end - 0.45);
+        tl.set(id, { opacity: 0 }, end);
+      }
+      function staggerIn(targets, at) {
+        tl.fromTo(targets, { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.55, stagger: 0.15, ease: "power2.out" }, at);
+      }
 
-      // Scene 1 — xPercent/yPercent handle centering (no CSS transform)
-      tl.fromTo("#s1", { opacity: 0, xPercent: -50, yPercent: -50, y: 50 }, { opacity: 1, xPercent: -50, yPercent: -50, y: 0, duration: 1, ease: "power3.out" }, 0.3);
-      tl.to("#s1", { opacity: 0, xPercent: -50, yPercent: -50, y: -30, duration: 0.6, ease: "power2.in" }, 4.4);
-      tl.set("#s1", { opacity: 0 }, 5);
+      // Scene 0 — Cover
+      scene("#s0", 0, 6);
+      staggerIn(["#s0 .a1", "#s0 .a2", "#s0 .a3"], 0.3);
 
-      // Scene 2
-      tl.fromTo("#s2", { opacity: 0, xPercent: -50, yPercent: -50, scale: 0.8 }, { opacity: 1, xPercent: -50, yPercent: -50, scale: 1, duration: 0.8, ease: "back.out(1.5)" }, 5.3);
-      tl.to("#s2", { opacity: 0, xPercent: -50, yPercent: -50, scale: 1.05, duration: 0.5, ease: "power2.in" }, 9.5);
-      tl.set("#s2", { opacity: 0 }, 10);
+      // Scene 1 — Stats
+      scene("#s1", 6, 12);
+      staggerIn(["#s1 .a1", "#s1 .a2", "#s1 .a3", "#s1 .a4"], 6.3);
 
-      // Scene 3
-      tl.fromTo("#s3", { opacity: 0, xPercent: -50, yPercent: -50, x: -80 }, { opacity: 1, xPercent: -50, yPercent: -50, x: 0, duration: 0.8, ease: "power3.out" }, 10.3);
-      tl.to("#s3", { opacity: 0, xPercent: -50, yPercent: -50, x: 60, duration: 0.5, ease: "power2.in" }, 16.5);
-      tl.set("#s3", { opacity: 0 }, 17);
+      // Scene 2 — Bar chart
+      scene("#s2", 12, 18);
+      staggerIn(["#s2 .a1", "#s2 .a2", "#s2 .a3", "#s2 .a4", "#s2 .a5"], 12.3);
+      // Animate bars growing up
+      BAR_VALS.forEach((val, i) => {
+        const barH = (val / BAR_MAX) * CHART_H;
+        const barY = PAD_T + CHART_H - barH;
+        tl.to(`#bar${i}`, { attr: { height: barH, y: barY }, duration: 0.65, ease: "power2.out" }, 12.7 + i * 0.1);
+        tl.to(`#barlbl${i}`, { opacity: 1, duration: 0.3 }, 13.0 + i * 0.1);
+        tl.to(`#barval${i}`, { opacity: 1, duration: 0.3 }, 13.15 + i * 0.1);
+      });
 
-      // Scene 4
-      tl.fromTo("#s4", { opacity: 0, xPercent: -50, yPercent: -50, x: 80 }, { opacity: 1, xPercent: -50, yPercent: -50, x: 0, duration: 0.8, ease: "power3.out" }, 17.3);
-      tl.to("#s4", { opacity: 0, xPercent: -50, yPercent: -50, x: -60, duration: 0.5, ease: "power2.in" }, 22.5);
-      tl.set("#s4", { opacity: 0 }, 23);
+      // Scene 3 — Blockers
+      scene("#s3", 18, 24);
+      staggerIn(["#s3 .a1", "#s3 .a2"], 18.3);
+      tl.fromTo("#b1", { opacity: 0, y: 32 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, 18.8);
+      tl.fromTo("#b2", { opacity: 0, y: 32 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, 19.05);
+      tl.fromTo("#b3", { opacity: 0, y: 32 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, 19.3);
 
-      // Scene 5
-      tl.fromTo("#s5", { opacity: 0, xPercent: -50, yPercent: -50, x: -80 }, { opacity: 1, xPercent: -50, yPercent: -50, x: 0, duration: 0.8, ease: "power3.out" }, 23.3);
-      tl.to("#s5", { opacity: 0, xPercent: -50, yPercent: -50, y: -30, duration: 0.5, ease: "power2.in" }, 28.5);
-      tl.set("#s5", { opacity: 0 }, 29);
+      // Scene 4 — Pie chart
+      scene("#s4", 24, 30);
+      staggerIn(["#s4 .a1", "#s4 .a2"], 24.3);
+      tl.fromTo("#s4 .a3", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.65 }, 24.7);
+      tl.fromTo("#pie-svg", { scale: 0.7, opacity: 0, transformOrigin: "center center" }, { scale: 1, opacity: 1, duration: 0.7, ease: "back.out(1.4)" }, 25.0);
 
-      // Scene 7 (outro)
-      tl.fromTo("#s7", { opacity: 0, xPercent: -50, yPercent: -50, y: 40 }, { opacity: 1, xPercent: -50, yPercent: -50, y: 0, duration: 0.9, ease: "power2.out" }, 29.4);
-      tl.fromTo("#step1", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, 30.2);
-      tl.fromTo("#step2", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, 30.5);
-      tl.fromTo("#step3", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, 30.8);
+      // Scene 5 — Cost
+      scene("#s5", 30, 36);
+      staggerIn(["#s5 .a1", "#s5 .a2", "#s5 .a3", "#s5 .a4"], 30.3);
+
+      // Scene 6 — Path forward
+      scene("#s6", 36, 42);
+      staggerIn(["#s6 .a1", "#s6 .a2", "#s6 .a3", "#s6 .a4"], 36.3);
+
+      // Scene 7 — End card
+      scene("#s7", 42, 46);
+      staggerIn(["#s7 .a1", "#s7 .a2"], 42.5);
 
       window.__timelines["main"] = tl;
     </script>
