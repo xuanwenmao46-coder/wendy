@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="./node_modules/gsap/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #0f1117;
+        font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+      }
+
+      .bg {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse 100% 70% at 50% 100%, #1a1030 0%, #0f1117 60%);
+      }
+      .orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(140px);
+        pointer-events: none;
+        opacity: 0;
+      }
+      #orb-a { width: 900px; height: 900px; background: #3b1f6a; top: -300px; left: -200px; }
+      #orb-b { width: 700px; height: 700px; background: #1a3a5c; bottom: -200px; right: -100px; }
+      #orb-c { width: 500px; height: 500px; background: #6a1f3b; top: 200px; right: 300px; }
+
+      .clip { position: absolute; opacity: 0; }
+
+      /* Scene 1: Title */
+      #s1 {
+        top: 50%; left: 50%;
+        text-align: center;
+        width: 1600px;
+      }
+      .s1-en {
+        font-size: 28px;
+        letter-spacing: 10px;
+        color: #8b7cf8;
+        text-transform: uppercase;
+        margin-bottom: 28px;
+      }
+      .s1-zh {
+        font-size: 110px;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: -2px;
+        line-height: 1.1;
+      }
+      .s1-zh .hl { color: #8b7cf8; }
+      .s1-sub {
+        margin-top: 32px;
+        font-size: 32px;
+        color: #6b7280;
+        letter-spacing: 2px;
+      }
+
+      /* Scene 2: Big stat */
+      #s2 {
+        top: 50%; left: 50%;
+        text-align: center;
+        width: 1400px;
+      }
+      .s2-num {
+        font-size: 200px;
+        font-weight: 800;
+        color: #8b7cf8;
+        line-height: 1;
+        letter-spacing: -8px;
+      }
+      .s2-unit { font-size: 56px; font-weight: 400; letter-spacing: 0; }
+      .s2-label {
+        font-size: 44px;
+        color: #d1d5db;
+        margin-top: 20px;
+        line-height: 1.5;
+      }
+      .s2-src { font-size: 22px; color: #9ca3af; margin-top: 16px; letter-spacing: 1px; }
+
+      /* Reason scenes */
+      .reason-wrap {
+        top: 50%; left: 50%;
+        width: 1560px;
+        display: flex;
+        align-items: center;
+        gap: 80px;
+      }
+      .reason-num {
+        font-size: 200px;
+        font-weight: 800;
+        color: #8b7cf8;
+        opacity: 0.15;
+        line-height: 1;
+        flex-shrink: 0;
+        width: 220px;
+        text-align: right;
+      }
+      .reason-body { flex: 1; }
+      .reason-tag {
+        display: inline-block;
+        font-size: 20px;
+        letter-spacing: 6px;
+        color: #8b7cf8;
+        text-transform: uppercase;
+        border: 1px solid rgba(139,124,248,0.3);
+        border-radius: 100px;
+        padding: 6px 24px;
+        margin-bottom: 28px;
+      }
+      .reason-title {
+        font-size: 88px;
+        font-weight: 700;
+        color: #fff;
+        line-height: 1.1;
+        letter-spacing: -2px;
+        margin-bottom: 24px;
+      }
+      .reason-desc {
+        font-size: 34px;
+        color: #9ca3af;
+        line-height: 1.8;
+      }
+      .reason-desc em { color: #f5f3ff; font-style: normal; }
+
+      /* Scene 7: Outro */
+      #s7 {
+        top: 50%; left: 50%;
+        text-align: center;
+        width: 1560px;
+      }
+      .s7-tag {
+        font-size: 24px;
+        letter-spacing: 6px;
+        color: #8b7cf8;
+        text-transform: uppercase;
+        margin-bottom: 32px;
+      }
+      .s7-title {
+        font-size: 88px;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: -3px;
+        line-height: 1.2;
+        margin-bottom: 52px;
+      }
+      .s7-title .hl { color: #8b7cf8; }
+      .s7-steps { display: flex; gap: 40px; justify-content: center; }
+      .s7-step {
+        background: rgba(139,124,248,0.08);
+        border: 1px solid rgba(139,124,248,0.2);
+        border-radius: 20px;
+        padding: 36px 44px;
+        flex: 1;
+        text-align: left;
+        opacity: 0;
+      }
+      .s7-step-num { font-size: 44px; font-weight: 800; color: #8b7cf8; margin-bottom: 12px; }
+      .s7-step-text { font-size: 28px; color: #d1d5db; line-height: 1.6; }
+
+      #progress-track {
+        position: absolute;
+        bottom: 0; left: 0;
+        width: 0; height: 4px;
+        background: linear-gradient(90deg, #8b7cf8, #c4b5fd);
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="35"
+      data-width="1920"
+      data-height="1080"
+    >
+      <div class="bg"></div>
+      <div class="orb" id="orb-a"></div>
+      <div class="orb" id="orb-b"></div>
+      <div class="orb" id="orb-c"></div>
+
+      <!-- Scene 1: 标题 0-5s -->
+      <div id="s1" class="clip" data-start="0" data-duration="5" data-track-index="1">
+        <div class="s1-en">Social Science &middot; 社交研究</div>
+        <div class="s1-zh">为什么成年人<br><span class="hl">难以交友？</span></div>
+        <div class="s1-sub">四个被忽视的真相</div>
+      </div>
+
+      <!-- Scene 2: 核心数据 5-10s -->
+      <div id="s2" class="clip" data-start="5" data-duration="5" data-track-index="1">
+        <div class="s2-num">200<span class="s2-unit">小时</span></div>
+        <div class="s2-label">成为亲密好友所需的相处时间</div>
+        <div class="s2-src">Journal of Social and Personal Relationships, 2018</div>
+      </div>
+
+      <!-- Scene 3: 原因1 10-17s -->
+      <div id="s3" class="clip reason-wrap" data-start="10" data-duration="7" data-track-index="1">
+        <div class="reason-num">01</div>
+        <div class="reason-body">
+          <div class="reason-tag">Reason 01</div>
+          <div class="reason-title">失去了<br>第三场所</div>
+          <div class="reason-desc">
+            成年后，我们只剩下<em>家</em>和<em>工作</em>。<br>
+            咖啡馆、社区中心、兴趣小组——<br>
+            自然相遇的空间正在消失。
+          </div>
+        </div>
+      </div>
+
+      <!-- Scene 4: 原因2 17-23s -->
+      <div id="s4" class="clip reason-wrap" data-start="17" data-duration="6" data-track-index="1">
+        <div class="reason-num">02</div>
+        <div class="reason-body">
+          <div class="reason-tag">Reason 02</div>
+          <div class="reason-title">时间<br>被吞噬了</div>
+          <div class="reason-desc">
+            工作、家庭、账单……<br>
+            友谊需要<em>反复出现</em>才能生长，<br>
+            但成年人的日历里没有留白。
+          </div>
+        </div>
+      </div>
+
+      <!-- Scene 5: 原因3 23-29s -->
+      <div id="s5" class="clip reason-wrap" data-start="23" data-duration="6" data-track-index="1">
+        <div class="reason-num">03</div>
+        <div class="reason-body">
+          <div class="reason-tag">Reason 03</div>
+          <div class="reason-title">害怕<br>脆弱</div>
+          <div class="reason-desc">
+            小时候我们毫无防备地靠近彼此，<br>
+            长大后却害怕<em>主动示好显得奇怪</em>。<br>
+            社会规则让亲近变得尴尬。
+          </div>
+        </div>
+      </div>
+
+      <!-- Scene 7: 结语 29-35s -->
+      <div id="s7" class="clip" data-start="29" data-duration="6" data-track-index="1">
+        <div class="s7-tag">那我们能做什么</div>
+        <div class="s7-title">友谊不会自然发生，<br>它需要被<span class="hl">刻意创造</span>。</div>
+        <div class="s7-steps">
+          <div class="s7-step" id="step1">
+            <div class="s7-step-num">01</div>
+            <div class="s7-step-text">主动约人，<br>哪怕有点奇怪</div>
+          </div>
+          <div class="s7-step" id="step2">
+            <div class="s7-step-num">02</div>
+            <div class="s7-step-text">找一个固定的<br>第三场所</div>
+          </div>
+          <div class="s7-step" id="step3">
+            <div class="s7-step-num">03</div>
+            <div class="s7-step-text">允许自己<br>慢慢靠近</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="progress-track"></div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const DUR = 35;
+
+      // Progress bar
+      tl.to("#progress-track", { width: "100%", duration: DUR, ease: "none" }, 0);
+
+      // Orbs
+      tl.to("#orb-a", { opacity: 0.6, duration: 3 }, 0);
+      tl.to("#orb-b", { opacity: 0.5, duration: 3 }, 0.5);
+      tl.to("#orb-c", { opacity: 0.4, duration: 3 }, 10);
+      tl.to("#orb-c", { opacity: 0, duration: 2 }, 22);
+
+      // Scene 1 — xPercent/yPercent handle centering (no CSS transform)
+      tl.fromTo("#s1", { opacity: 0, xPercent: -50, yPercent: -50, y: 50 }, { opacity: 1, xPercent: -50, yPercent: -50, y: 0, duration: 1, ease: "power3.out" }, 0.3);
+      tl.to("#s1", { opacity: 0, xPercent: -50, yPercent: -50, y: -30, duration: 0.6, ease: "power2.in" }, 4.4);
+      tl.set("#s1", { opacity: 0 }, 5);
+
+      // Scene 2
+      tl.fromTo("#s2", { opacity: 0, xPercent: -50, yPercent: -50, scale: 0.8 }, { opacity: 1, xPercent: -50, yPercent: -50, scale: 1, duration: 0.8, ease: "back.out(1.5)" }, 5.3);
+      tl.to("#s2", { opacity: 0, xPercent: -50, yPercent: -50, scale: 1.05, duration: 0.5, ease: "power2.in" }, 9.5);
+      tl.set("#s2", { opacity: 0 }, 10);
+
+      // Scene 3
+      tl.fromTo("#s3", { opacity: 0, xPercent: -50, yPercent: -50, x: -80 }, { opacity: 1, xPercent: -50, yPercent: -50, x: 0, duration: 0.8, ease: "power3.out" }, 10.3);
+      tl.to("#s3", { opacity: 0, xPercent: -50, yPercent: -50, x: 60, duration: 0.5, ease: "power2.in" }, 16.5);
+      tl.set("#s3", { opacity: 0 }, 17);
+
+      // Scene 4
+      tl.fromTo("#s4", { opacity: 0, xPercent: -50, yPercent: -50, x: 80 }, { opacity: 1, xPercent: -50, yPercent: -50, x: 0, duration: 0.8, ease: "power3.out" }, 17.3);
+      tl.to("#s4", { opacity: 0, xPercent: -50, yPercent: -50, x: -60, duration: 0.5, ease: "power2.in" }, 22.5);
+      tl.set("#s4", { opacity: 0 }, 23);
+
+      // Scene 5
+      tl.fromTo("#s5", { opacity: 0, xPercent: -50, yPercent: -50, x: -80 }, { opacity: 1, xPercent: -50, yPercent: -50, x: 0, duration: 0.8, ease: "power3.out" }, 23.3);
+      tl.to("#s5", { opacity: 0, xPercent: -50, yPercent: -50, y: -30, duration: 0.5, ease: "power2.in" }, 28.5);
+      tl.set("#s5", { opacity: 0 }, 29);
+
+      // Scene 7 (outro)
+      tl.fromTo("#s7", { opacity: 0, xPercent: -50, yPercent: -50, y: 40 }, { opacity: 1, xPercent: -50, yPercent: -50, y: 0, duration: 0.9, ease: "power2.out" }, 29.4);
+      tl.fromTo("#step1", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, 30.2);
+      tl.fromTo("#step2", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, 30.5);
+      tl.fromTo("#step3", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, 30.8);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>
