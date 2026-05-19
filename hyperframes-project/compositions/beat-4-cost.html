@@ -4,161 +4,151 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=1920, height=1080"/>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    html, body { width:1920px; height:1080px; overflow:hidden; background:#0c0b09; font-family:'DM Sans',sans-serif; color:#faf8f3; }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{width:1920px;height:1080px;overflow:hidden;background:#0c0b09;font-family:'DM Sans',sans-serif;color:#faf8f3}
 
-    .scene {
-      width:1920px; height:1080px;
-      display:grid; grid-template-columns:1fr 760px;
-      align-items:center;
-      opacity:0;
-      position:relative; overflow:hidden;
-    }
-
-    /* flowing light beam */
-    .flow-beam {
-      position:absolute;
-      top:-10%; left:0;
-      width:300px; height:120%;
-      background:linear-gradient(90deg,
-        transparent 0%,
-        rgba(201,98,42,0.05) 25%,
-        rgba(255,190,120,0.12) 50%,
-        rgba(201,98,42,0.05) 75%,
-        transparent 100%);
-      transform:skewX(-12deg);
-      pointer-events:none;
-      z-index:50;
-      will-change:transform;
-    }
-    /* ambient glow on accents */
-    .glow-accent { text-shadow: 0 0 40px rgba(201,98,42,0.5), 0 0 80px rgba(201,98,42,0.2); }
-
-    /* ── LEFT: quote block ── */
-    .left {
-      padding:0 80px 0 140px;
-      display:flex; flex-direction:column; gap:48px;
-    }
-    .chapter { font-size:22px; letter-spacing:5px; text-transform:uppercase; color:#c9622a; opacity:0; }
-    .headline {
-      font-family:'DM Serif Display',serif;
-      font-size:86px; line-height:1.0; color:#faf8f3; opacity:0;
-    }
-    .headline em { color:#c9622a; font-style:italic; }
-    blockquote {
-      border-left:4px solid #c9622a;
-      padding:28px 40px;
-      background:rgba(201,98,42,0.07);
-      border-radius:0 16px 16px 0;
-      opacity:0;
-    }
-    blockquote p {
-      font-family:'DM Serif Display',serif;
-      font-size:36px; line-height:1.55; color:#faf8f3; font-style:italic;
-    }
-    blockquote cite {
-      display:block; margin-top:16px;
-      font-size:22px; color:rgba(250,248,243,0.4); font-style:normal; letter-spacing:.5px;
+    .scene{
+      width:1920px;height:1080px;
+      display:grid;grid-template-columns:1fr 800px;
+      align-items:center;opacity:0;
+      position:relative;overflow:hidden;
     }
 
-    /* ── RIGHT: pie + legend ── */
-    .right {
-      padding:80px 100px 80px 40px;
-      display:flex; flex-direction:column; gap:40px;
+    .flow-beam{
+      position:absolute;top:-10%;left:0;width:300px;height:120%;
+      background:linear-gradient(90deg,transparent 0%,rgba(201,98,42,0.05) 25%,rgba(255,190,120,0.12) 50%,rgba(201,98,42,0.05) 75%,transparent 100%);
+      transform:skewX(-12deg);pointer-events:none;z-index:50;will-change:transform;
     }
-    .right-title {
-      font-size:26px; color:rgba(250,248,243,0.4); letter-spacing:1px; opacity:0;
+    .glow-accent{text-shadow:0 0 40px rgba(201,98,42,0.5),0 0 80px rgba(201,98,42,0.2)}
+
+    /* LEFT: quote + headline */
+    .left{padding:0 60px 0 140px;display:flex;flex-direction:column;gap:40px}
+    .chapter{font-size:22px;letter-spacing:5px;text-transform:uppercase;color:#c9622a;opacity:0}
+    .headline{font-family:'DM Serif Display',serif;font-size:86px;line-height:1.0;color:#faf8f3;opacity:0}
+    .headline em{color:#c9622a;font-style:italic}
+    blockquote{
+      border-left:4px solid #c9622a;padding:28px 36px;
+      background:rgba(201,98,42,0.07);border-radius:0 16px 16px 0;opacity:0;
     }
-    .pie-wrap { position:relative; width:560px; height:560px; opacity:0; }
-    .legend { display:flex; flex-direction:column; gap:16px; opacity:0; }
-    .leg-row { display:flex; align-items:center; gap:16px; font-size:26px; color:rgba(250,248,243,0.65); }
-    .leg-sq { width:20px; height:20px; border-radius:4px; flex-shrink:0; }
+    blockquote p{font-family:'DM Serif Display',serif;font-size:34px;line-height:1.55;color:#faf8f3;font-style:italic}
+    blockquote cite{display:block;margin-top:14px;font-size:20px;color:rgba(250,248,243,0.4);font-style:normal;letter-spacing:.5px}
+
+    /* RIGHT: horizontal barrier bars */
+    .right{padding:60px 120px 60px 40px;display:flex;flex-direction:column;gap:0;opacity:0}
+    .barriers-title{font-size:22px;color:rgba(250,248,243,0.35);letter-spacing:1px;margin-bottom:32px}
+
+    .barrier-list{display:flex;flex-direction:column;gap:20px}
+    .barrier-row{display:flex;flex-direction:column;gap:9px;opacity:0}
+    .barrier-meta{display:flex;justify-content:space-between;align-items:center}
+    .barrier-name{font-size:23px;color:rgba(250,248,243,0.65);font-weight:400}
+    .barrier-pct{font-size:22px;font-weight:500;font-family:'DM Serif Display',serif}
+    .barrier-track{height:10px;background:rgba(255,255,255,0.06);border-radius:5px;overflow:hidden}
+    .barrier-bar{height:100%;border-radius:5px;transform-origin:left center;transform:scaleX(0)}
   </style>
 </head>
 <body>
 <div class="scene" id="scene">
   <div class="flow-beam" id="flow-beam"></div>
+
   <div class="left">
-    <span class="chapter" id="ch">Chapter 3 · The Hidden Cost</span>
+    <span class="chapter" id="ch">Chapter 3 &#xB7; The Hidden Cost</span>
     <h2 class="headline glow-accent" id="hl">Loneliness isn't<br>just sad.<br><em>It's lethal.</em></h2>
     <blockquote id="bq">
-      <p>"Social isolation carries a mortality risk equivalent to smoking 15 cigarettes a day — greater than obesity."</p>
-      <cite>— US Surgeon General Vivek Murthy, 2023</cite>
+      <p>"Social isolation carries a mortality risk equivalent to smoking 15 cigarettes a day &#x2014; greater than obesity."</p>
+      <cite>&#x2014; US Surgeon General Vivek Murthy, 2023</cite>
     </blockquote>
   </div>
-  <div class="right">
-    <p class="right-title" id="rt">Top barriers to new adult friendships</p>
-    <div class="pie-wrap" id="pw">
-      <canvas id="pieChart"></canvas>
-    </div>
-    <div class="legend" id="lg">
-      <div class="leg-row"><div class="leg-sq" style="background:#c9622a"></div>Too busy / no time — 34%</div>
-      <div class="leg-row"><div class="leg-sq" style="background:#4a7fa8"></div>No shared context — 22%</div>
-      <div class="leg-row"><div class="leg-sq" style="background:#7a5c38"></div>Social anxiety — 18%</div>
-      <div class="leg-row"><div class="leg-sq" style="background:#5a8a4e"></div>Geographic mobility — 14%</div>
-      <div class="leg-row"><div class="leg-sq" style="background:#6e6860"></div>Digital substitution — 12%</div>
+
+  <div class="right" id="rightPanel">
+    <p class="barriers-title">Top barriers to new adult friendships</p>
+    <div class="barrier-list">
+      <div class="barrier-row" id="br0">
+        <div class="barrier-meta">
+          <span class="barrier-name">Too busy / no time</span>
+          <span class="barrier-pct" style="color:#c9622a">34%</span>
+        </div>
+        <div class="barrier-track"><div class="barrier-bar" id="bb0" style="width:34%;background:#c9622a"></div></div>
+      </div>
+      <div class="barrier-row" id="br1">
+        <div class="barrier-meta">
+          <span class="barrier-name">No shared context</span>
+          <span class="barrier-pct" style="color:#4a7fa8">22%</span>
+        </div>
+        <div class="barrier-track"><div class="barrier-bar" id="bb1" style="width:22%;background:#4a7fa8"></div></div>
+      </div>
+      <div class="barrier-row" id="br2">
+        <div class="barrier-meta">
+          <span class="barrier-name">Social anxiety</span>
+          <span class="barrier-pct" style="color:#7a8a5c">18%</span>
+        </div>
+        <div class="barrier-track"><div class="barrier-bar" id="bb2" style="width:18%;background:#7a8a5c"></div></div>
+      </div>
+      <div class="barrier-row" id="br3">
+        <div class="barrier-meta">
+          <span class="barrier-name">Geographic mobility</span>
+          <span class="barrier-pct" style="color:#5a8a7e">14%</span>
+        </div>
+        <div class="barrier-track"><div class="barrier-bar" id="bb3" style="width:14%;background:#5a8a7e"></div></div>
+      </div>
+      <div class="barrier-row" id="br4">
+        <div class="barrier-meta">
+          <span class="barrier-name">Digital substitution</span>
+          <span class="barrier-pct" style="color:#6e6860">12%</span>
+        </div>
+        <div class="barrier-track"><div class="barrier-bar" id="bb4" style="width:12%;background:#6e6860"></div></div>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
   window.__timelines = window.__timelines || {};
-  var chartDrawn = false;
-
-  function drawPie() {
-    if (chartDrawn) return;
-    chartDrawn = true;
-    new Chart(document.getElementById('pieChart'), {
-      type: 'doughnut',
-      data: {
-        labels: ['Too busy','No context','Social anxiety','Mobility','Digital sub.'],
-        datasets: [{
-          data: [34, 22, 18, 14, 12],
-          backgroundColor: ['#c9622a','#4a7fa8','#7a5c38','#5a8a4e','#6e6860'],
-          borderWidth: 0,
-          hoverOffset: 12,
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        cutout: '58%',
-        animation: { duration: 1200, easing: 'easeOutQuart' },
-        plugins: { legend: { display: false }, tooltip: { enabled: false } }
-      }
-    });
-  }
 
   var tl = gsap.timeline({ paused: true });
 
   tl
     .fromTo('#flow-beam', { x:-400 }, { x:2500, duration:2.0, ease:'power1.inOut' }, 0)
-
     .to('#scene', { opacity:1, duration:0.5, ease:'power2.out' }, 0)
 
     .to('#ch', { opacity:1, y:0, duration:0.4, ease:'power2.out' }, 0.3)
     .from('#ch', { y:16 }, 0.3)
-
     .to('#hl', { opacity:1, y:0, duration:0.6, ease:'expo.out' }, 0.55)
     .from('#hl', { y:32 }, 0.55)
-
     .to('#bq', { opacity:1, x:0, duration:0.6, ease:'expo.out' }, 1.1)
     .from('#bq', { x:-24 }, 1.1)
 
-    .to('#rt', { opacity:1, duration:0.4 }, 1.4)
+    .to('#rightPanel', { opacity:1, duration:0.4 }, 0.9)
 
-    .to('#pw', { opacity:1, duration:0.4 }, 1.6)
-    .add(function() { drawPie(); }, 1.6)
+    /* each barrier row slides in, then its bar grows */
+    .to('#br0', { opacity:1, x:0, duration:0.35, ease:'power2.out' }, 1.5)
+    .from('#br0', { x:20 }, 1.5)
+    .to('#bb0', { scaleX:1, duration:0.55, ease:'power2.out' }, 1.65)
 
-    .to('#lg', { opacity:1, y:0, duration:0.5, ease:'power2.out' }, 2.6)
-    .from('#lg', { y:20 }, 2.6)
+    .to('#br1', { opacity:1, x:0, duration:0.35, ease:'power2.out' }, 1.78)
+    .from('#br1', { x:20 }, 1.78)
+    .to('#bb1', { scaleX:1, duration:0.5, ease:'power2.out' }, 1.93)
+
+    .to('#br2', { opacity:1, x:0, duration:0.35, ease:'power2.out' }, 2.06)
+    .from('#br2', { x:20 }, 2.06)
+    .to('#bb2', { scaleX:1, duration:0.45, ease:'power2.out' }, 2.21)
+
+    .to('#br3', { opacity:1, x:0, duration:0.35, ease:'power2.out' }, 2.34)
+    .from('#br3', { x:20 }, 2.34)
+    .to('#bb3', { scaleX:1, duration:0.4, ease:'power2.out' }, 2.49)
+
+    .to('#br4', { opacity:1, x:0, duration:0.35, ease:'power2.out' }, 2.62)
+    .from('#br4', { x:20 }, 2.62)
+    .to('#bb4', { scaleX:1, duration:0.38, ease:'power2.out' }, 2.77)
+
+    /* pulse the top bar */
+    .to('#bb0', { filter:'brightness(1.4)', duration:0.25, ease:'power2.out' }, 3.4)
+    .to('#bb0', { filter:'brightness(1.0)', duration:0.4, ease:'power2.in'  }, 3.65)
 
     .to('#scene', { opacity:0, duration:0.4, ease:'power2.in' }, 5.6);
 
-  window.__timelines["beat-4-cost"] = tl;
+  window.__timelines['beat-4-cost'] = tl;
 </script>
 </body>
 </html>

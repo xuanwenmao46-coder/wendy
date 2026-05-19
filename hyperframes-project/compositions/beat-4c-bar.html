@@ -4,111 +4,55 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=1920, height=1080"/>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    html, body {
-      width:1920px; height:1080px; overflow:hidden;
-      background:#0c0b09;
-      font-family:'DM Sans', -apple-system, sans-serif;
-      color:#faf8f3;
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{width:1920px;height:1080px;overflow:hidden;background:#0c0b09;font-family:'DM Sans',sans-serif;color:#faf8f3}
+
+    .scene{
+      width:1920px;height:1080px;
+      display:grid;grid-template-columns:1fr 640px;
+      align-items:center;opacity:0;
+      position:relative;overflow:hidden;
     }
 
-    .scene {
-      width:1920px; height:1080px;
-      display:grid;
-      grid-template-columns: 1fr 660px;
-      align-items:center;
-      opacity:0;
-      position:relative; overflow:hidden;
+    .flow-beam{
+      position:absolute;top:-10%;left:0;width:300px;height:120%;
+      background:linear-gradient(90deg,transparent 0%,rgba(201,98,42,0.05) 25%,rgba(255,190,120,0.12) 50%,rgba(201,98,42,0.05) 75%,transparent 100%);
+      transform:skewX(-12deg);pointer-events:none;z-index:50;will-change:transform;
     }
+    .glow-accent{text-shadow:0 0 40px rgba(201,98,42,0.5),0 0 80px rgba(201,98,42,0.2)}
 
-    /* flowing light beam */
-    .flow-beam {
-      position:absolute;
-      top:-10%; left:0;
-      width:300px; height:120%;
-      background:linear-gradient(90deg,
-        transparent 0%,
-        rgba(201,98,42,0.05) 25%,
-        rgba(255,190,120,0.12) 50%,
-        rgba(201,98,42,0.05) 75%,
-        transparent 100%);
-      transform:skewX(-12deg);
-      pointer-events:none;
-      z-index:50;
-      will-change:transform;
-    }
-    /* ambient glow on accents */
-    .glow-accent { text-shadow: 0 0 40px rgba(201,98,42,0.5), 0 0 80px rgba(201,98,42,0.2); }
+    /* LEFT: chart */
+    .left{padding:60px 20px 60px 140px;display:flex;flex-direction:column;opacity:0}
+    .chart-header{margin-bottom:20px}
+    .chart-main-title{font-family:'DM Serif Display',serif;font-size:30px;color:#faf8f3;font-weight:400;line-height:1.3}
+    .chart-subtitle{font-size:18px;color:rgba(250,248,243,0.3);margin-top:6px;letter-spacing:.5px}
+    .chart-accent-line{width:100%;height:1px;background:linear-gradient(90deg,rgba(201,98,42,0.4),transparent);margin-bottom:20px}
 
-    /* ── LEFT: chart panel ── */
-    .left {
-      padding:80px 40px 80px 140px;
-      display:flex; flex-direction:column; gap:0;
-      opacity:0;
-    }
-    .chart-title-block { margin-bottom:28px; }
-    .chart-main-title {
-      font-family:'DM Serif Display', serif;
-      font-size:34px; color:#faf8f3; font-weight:400;
-      letter-spacing:.5px; line-height:1.3;
-    }
-    .chart-subtitle {
-      font-size:20px; color:rgba(250,248,243,0.35); margin-top:8px; letter-spacing:.5px;
-    }
-    .chart-accent-line {
-      width:100%; height:1px;
-      background:linear-gradient(90deg, rgba(201,98,42,0.4), transparent);
-      margin-bottom:24px;
-    }
-    #lineContainer {
-      width:1060px; height:700px;
-    }
+    /* SVG chart container */
+    .chart-svg-wrap{position:relative}
+    svg text{font-family:'DM Sans',sans-serif}
 
-    /* ── RIGHT copy panel ── */
-    .right {
-      padding:0 100px 0 40px;
-      display:flex; flex-direction:column; gap:32px;
-    }
-    .chapter {
-      font-size:22px; letter-spacing:5px; text-transform:uppercase;
-      color:#c9622a; opacity:0;
-    }
-    .headline {
-      font-family:'DM Serif Display', serif;
-      font-size:80px; line-height:1.05;
-      color:#faf8f3; opacity:0;
-    }
-    .headline em { color:#c9622a; font-style:italic; }
-    .body-copy {
-      font-size:26px; font-weight:300; line-height:1.65;
-      color:rgba(250,248,243,0.5); opacity:0;
-    }
+    /* legend */
+    .chart-legend{display:flex;gap:32px;margin-top:16px}
+    .leg-item{display:flex;align-items:center;gap:8px;font-size:17px;color:rgba(250,248,243,0.45)}
+    .leg-line{width:28px;height:3px;border-radius:2px;flex-shrink:0}
 
-    .callout {
-      display:inline-flex; align-items:center; gap:12px;
-      background:rgba(201,98,42,0.1);
-      border:1px solid rgba(201,98,42,0.25);
-      border-radius:10px; padding:16px 24px;
-      opacity:0;
+    /* RIGHT: copy */
+    .right{padding:0 120px 0 40px;display:flex;flex-direction:column;gap:32px}
+    .right::before{content:'';display:block;width:48px;height:2px;background:#c9622a;border-radius:1px}
+    .chapter{font-size:22px;letter-spacing:5px;text-transform:uppercase;color:#c9622a;opacity:0}
+    .headline{font-family:'DM Serif Display',serif;font-size:80px;line-height:1.05;color:#faf8f3;opacity:0}
+    .headline em{color:#c9622a;font-style:italic}
+    .body-copy{font-size:25px;font-weight:300;line-height:1.65;color:rgba(250,248,243,0.5);opacity:0}
+    .callout{
+      display:inline-flex;align-items:center;gap:12px;
+      background:rgba(201,98,42,0.1);border:1px solid rgba(201,98,42,0.25);
+      border-radius:10px;padding:16px 24px;opacity:0;
     }
-    .callout-num {
-      font-family:'DM Serif Display', serif;
-      font-size:48px; color:#c9622a; line-height:1;
-    }
-    .callout-text {
-      font-size:22px; color:rgba(250,248,243,0.55); line-height:1.4;
-    }
-
-    .right::before {
-      content:'';
-      display:block;
-      width:48px; height:2px;
-      background:#c9622a;
-      border-radius:1px;
-    }
+    .callout-num{font-family:'DM Serif Display',serif;font-size:48px;color:#c9622a;line-height:1}
+    .callout-text{font-size:21px;color:rgba(250,248,243,0.55);line-height:1.4}
   </style>
 </head>
 <body>
@@ -117,15 +61,99 @@
 
   <div class="left" id="leftPanel">
     <div class="chart-accent-line"></div>
-    <div class="chart-title-block">
+    <div class="chart-header">
       <p class="chart-main-title">Friendship closeness score over time without contact</p>
-      <p class="chart-subtitle">Score 0–100 — how emotional intimacy fades by relationship type</p>
+      <p class="chart-subtitle">Score 0&#x2013;100 &#xB7; emotional intimacy by relationship type</p>
     </div>
-    <div id="lineContainer"></div>
+
+    <!--
+      SVG coordinate math (W=1000, H=500):
+      Padding: t=30 r=20 b=70 l=80   Plot: 900w x 400h
+      6 x-points  spacing = 900/5 = 180
+      x: [80, 260, 440, 620, 800, 980]
+      y for value v: 30 + (100-v)/100 * 400
+
+      Series 1 [100,88,68,42,24,12]:  y=[30,78,158,262,334,382]
+      Series 2 [70,58,38,20,10,5]:    y=[150,198,278,350,390,410]
+      Series 3 [35,20,8,3,1,0]:       y=[290,350,397,418,426,430]
+      plot bottom y=430
+    -->
+    <div class="chart-svg-wrap">
+      <svg id="chartSvg" width="1000" height="500" viewBox="0 0 1000 500">
+
+        <!-- grid lines at y=30(100) y=130(75) y=230(50) y=330(25) y=430(0) -->
+        <line x1="80" y1="30"  x2="980" y2="30"  stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+        <line x1="80" y1="130" x2="980" y2="130" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+        <line x1="80" y1="230" x2="980" y2="230" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+        <line x1="80" y1="330" x2="980" y2="330" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+        <line x1="80" y1="430" x2="980" y2="430" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+
+        <!-- y-axis labels -->
+        <text x="68" y="34"  text-anchor="end" fill="rgba(250,248,243,0.25)" font-size="16">100</text>
+        <text x="68" y="134" text-anchor="end" fill="rgba(250,248,243,0.25)" font-size="16">75</text>
+        <text x="68" y="234" text-anchor="end" fill="rgba(250,248,243,0.25)" font-size="16">50</text>
+        <text x="68" y="334" text-anchor="end" fill="rgba(250,248,243,0.25)" font-size="16">25</text>
+        <text x="68" y="434" text-anchor="end" fill="rgba(250,248,243,0.25)" font-size="16">0</text>
+
+        <!-- x-axis labels -->
+        <text x="80"  y="468" text-anchor="middle" fill="rgba(250,248,243,0.35)" font-size="17">0 mo</text>
+        <text x="260" y="468" text-anchor="middle" fill="rgba(250,248,243,0.35)" font-size="17">1 mo</text>
+        <text x="440" y="468" text-anchor="middle" fill="rgba(250,248,243,0.35)" font-size="17">3 mo</text>
+        <text x="620" y="468" text-anchor="middle" fill="rgba(250,248,243,0.35)" font-size="17">6 mo</text>
+        <text x="800" y="468" text-anchor="middle" fill="rgba(250,248,243,0.35)" font-size="17">9 mo</text>
+        <text x="980" y="468" text-anchor="middle" fill="rgba(250,248,243,0.35)" font-size="17">12 mo</text>
+
+        <!-- area fills (opacity=0 initially, fade in after lines draw) -->
+        <path id="area1" d="M 80,430 L 80,30  L 260,78  L 440,158 L 620,262 L 800,334 L 980,382 L 980,430 Z"
+              fill="rgba(201,98,42,0.12)" opacity="0"/>
+        <path id="area2" d="M 80,430 L 80,150 L 260,198 L 440,278 L 620,350 L 800,390 L 980,410 L 980,430 Z"
+              fill="rgba(74,127,168,0.12)" opacity="0"/>
+        <path id="area3" d="M 80,430 L 80,290 L 260,350 L 440,397 L 620,418 L 800,426 L 980,430 L 980,430 Z"
+              fill="rgba(90,90,90,0.12)" opacity="0"/>
+
+        <!-- series lines (strokeDashoffset animated by GSAP) -->
+        <path id="line1" d="M 80,30 L 260,78 L 440,158 L 620,262 L 800,334 L 980,382"
+              fill="none" stroke="#c9622a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <path id="line2" d="M 80,150 L 260,198 L 440,278 L 620,350 L 800,390 L 980,410"
+              fill="none" stroke="#4a7fa8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <path id="line3" d="M 80,290 L 260,350 L 440,397 L 620,418 L 800,426 L 980,430"
+              fill="none" stroke="#5a5a5a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <!-- data dots series 1 (scale from 0) -->
+        <circle class="dot1" cx="80"  cy="30"  r="6" fill="#c9622a" transform="scale(0)" transform-origin="80 30"/>
+        <circle class="dot1" cx="260" cy="78"  r="6" fill="#c9622a" transform="scale(0)" transform-origin="260 78"/>
+        <circle class="dot1" cx="440" cy="158" r="6" fill="#c9622a" transform="scale(0)" transform-origin="440 158"/>
+        <circle class="dot1" cx="620" cy="262" r="6" fill="#c9622a" transform="scale(0)" transform-origin="620 262"/>
+        <circle class="dot1" cx="800" cy="334" r="6" fill="#c9622a" transform="scale(0)" transform-origin="800 334"/>
+        <circle class="dot1" cx="980" cy="382" r="6" fill="#c9622a" transform="scale(0)" transform-origin="980 382"/>
+
+        <!-- data dots series 2 -->
+        <circle class="dot2" cx="80"  cy="150" r="5" fill="#4a7fa8" transform="scale(0)" transform-origin="80 150"/>
+        <circle class="dot2" cx="260" cy="198" r="5" fill="#4a7fa8" transform="scale(0)" transform-origin="260 198"/>
+        <circle class="dot2" cx="440" cy="278" r="5" fill="#4a7fa8" transform="scale(0)" transform-origin="440 278"/>
+        <circle class="dot2" cx="620" cy="350" r="5" fill="#4a7fa8" transform="scale(0)" transform-origin="620 350"/>
+        <circle class="dot2" cx="800" cy="390" r="5" fill="#4a7fa8" transform="scale(0)" transform-origin="800 390"/>
+        <circle class="dot2" cx="980" cy="410" r="5" fill="#4a7fa8" transform="scale(0)" transform-origin="980 410"/>
+
+        <!-- data dots series 3 -->
+        <circle class="dot3" cx="80"  cy="290" r="5" fill="#5a5a5a" transform="scale(0)" transform-origin="80 290"/>
+        <circle class="dot3" cx="260" cy="350" r="5" fill="#5a5a5a" transform="scale(0)" transform-origin="260 350"/>
+        <circle class="dot3" cx="440" cy="397" r="5" fill="#5a5a5a" transform="scale(0)" transform-origin="440 397"/>
+        <circle class="dot3" cx="620" cy="418" r="5" fill="#5a5a5a" transform="scale(0)" transform-origin="620 418"/>
+        <circle class="dot3" cx="800" cy="426" r="5" fill="#5a5a5a" transform="scale(0)" transform-origin="800 426"/>
+        <circle class="dot3" cx="980" cy="430" r="5" fill="#5a5a5a" transform="scale(0)" transform-origin="980 430"/>
+      </svg>
+    </div>
+
+    <div class="chart-legend">
+      <div class="leg-item"><div class="leg-line" style="background:#c9622a"></div>Close friend</div>
+      <div class="leg-item"><div class="leg-line" style="background:#4a7fa8"></div>Good friend</div>
+      <div class="leg-item"><div class="leg-line" style="background:#5a5a5a"></div>Acquaintance</div>
+    </div>
   </div>
 
   <div class="right" id="rightPanel">
-    <span class="chapter" id="ch">Chapter 4b · The Drift</span>
+    <span class="chapter" id="ch">Chapter 4b &#xB7; The Drift</span>
     <h2 class="headline glow-accent" id="hl">Without contact,<br>even close<br>friendships <em>fade.</em></h2>
     <p class="body-copy" id="bc">Research by sociologist William Rawlins: without recurring contact, most close friendships lose the majority of their emotional intimacy within one year.</p>
     <div class="callout" id="cl">
@@ -138,115 +166,52 @@
 <script>
   window.__timelines = window.__timelines || {};
 
-  var chartInited = false;
-
-  function initChart() {
-    if (chartInited) return;
-    chartInited = true;
-
-    var chart = echarts.init(document.getElementById('lineContainer'), null, {
-      renderer: 'canvas',
-      width: 1060, height: 700
-    });
-
-    chart.setOption({
-      backgroundColor: 'transparent',
-      tooltip: {
-        trigger: 'axis',
-        backgroundColor: 'rgba(12,11,9,0.95)',
-        borderColor: 'rgba(201,98,42,0.3)',
-        textStyle: { color: '#faf8f3', fontSize: 18 }
-      },
-      legend: {
-        data: ['Close friend', 'Good friend', 'Acquaintance'],
-        top: 8, right: 20,
-        textStyle: { color: 'rgba(250,248,243,0.55)', fontSize: 18 },
-        itemWidth: 14, itemHeight: 14
-      },
-      grid: { top: '12%', bottom: '12%', left: '8%', right: '4%' },
-      xAxis: {
-        type: 'category',
-        data: ['0 mo', '1 mo', '3 mo', '6 mo', '9 mo', '12 mo'],
-        axisLine: { lineStyle: { color: 'rgba(250,248,243,0.1)' } },
-        axisTick: { show: false },
-        axisLabel: {
-          color: 'rgba(250,248,243,0.5)',
-          fontSize: 20,
-          fontFamily: 'DM Sans, sans-serif'
-        }
-      },
-      yAxis: {
-        type: 'value',
-        name: 'Closeness Score (0–100)',
-        nameTextStyle: { color: 'rgba(250,248,243,0.35)', fontSize: 16 },
-        min: 0, max: 100,
-        splitLine: { lineStyle: { color: 'rgba(250,248,243,0.05)', type: 'dashed' } },
-        axisLabel: {
-          color: 'rgba(250,248,243,0.35)',
-          fontSize: 18,
-          fontFamily: 'DM Sans, sans-serif'
-        }
-      },
-      animationDuration: 2000,
-      animationEasing: 'cubicOut',
-      series: [
-        {
-          name: 'Close friend',
-          type: 'line',
-          smooth: true,
-          data: [100, 88, 68, 42, 24, 12],
-          lineStyle: { color: '#c9622a', width: 3 },
-          itemStyle: { color: '#c9622a' },
-          areaStyle: { color: 'rgba(201,98,42,0.15)' },
-          symbol: 'circle', symbolSize: 8
-        },
-        {
-          name: 'Good friend',
-          type: 'line',
-          smooth: true,
-          data: [70, 58, 38, 20, 10, 5],
-          lineStyle: { color: '#4a7fa8', width: 3 },
-          itemStyle: { color: '#4a7fa8' },
-          areaStyle: { color: 'rgba(74,127,168,0.15)' },
-          symbol: 'circle', symbolSize: 8
-        },
-        {
-          name: 'Acquaintance',
-          type: 'line',
-          smooth: true,
-          data: [35, 20, 8, 3, 1, 0],
-          lineStyle: { color: '#5a5a5a', width: 3 },
-          itemStyle: { color: '#5a5a5a' },
-          areaStyle: { color: 'rgba(90,90,90,0.15)' },
-          symbol: 'circle', symbolSize: 8
-        }
-      ]
+  /* Set up strokeDashoffset on lines so GSAP can draw them */
+  function initLines() {
+    ['#line1','#line2','#line3'].forEach(function(sel) {
+      var p = document.querySelector(sel);
+      var len = p.getTotalLength();
+      p.style.strokeDasharray  = len;
+      p.style.strokeDashoffset = len;
     });
   }
+  initLines();
 
   var tl = gsap.timeline({ paused: true });
 
   tl
     .fromTo('#flow-beam', { x:-400 }, { x:2500, duration:2.0, ease:'power1.inOut' }, 0)
+    .to('#scene',     { opacity:1, duration:0.6, ease:'power2.out' }, 0)
 
-    .to('#scene', { opacity:1, duration:0.6, ease:'power2.out' }, 0)
+    .to('#leftPanel', { opacity:1, x:0, duration:0.6, ease:'expo.out' }, 0.2)
+    .from('#leftPanel',{ x:-24 }, 0.2)
 
-    .to('#leftPanel', { opacity:1, x:0, duration:0.65, ease:'expo.out' }, 0.2)
-    .from('#leftPanel', { x:-30 }, 0.2)
-    .add(function() { initChart(); }, 0.4)
+    /* lines draw one by one */
+    .to('#line1', { strokeDashoffset:0, duration:2.2, ease:'power2.inOut' }, 0.5)
+    .to('#line2', { strokeDashoffset:0, duration:2.2, ease:'power2.inOut' }, 0.85)
+    .to('#line3', { strokeDashoffset:0, duration:2.2, ease:'power2.inOut' }, 1.2)
 
+    /* dots pop in along each line, staggered to match draw speed */
+    .to('.dot1', { scale:1, duration:0.28, ease:'back.out(1.8)', stagger:0.42 }, 0.5)
+    .to('.dot2', { scale:1, duration:0.28, ease:'back.out(1.8)', stagger:0.42 }, 0.85)
+    .to('.dot3', { scale:1, duration:0.28, ease:'back.out(1.8)', stagger:0.42 }, 1.2)
+
+    /* area fills fade in after lines are mostly drawn */
+    .to('#area1', { opacity:1, duration:0.5, ease:'power2.out' }, 2.5)
+    .to('#area2', { opacity:1, duration:0.5, ease:'power2.out' }, 2.8)
+    .to('#area3', { opacity:1, duration:0.5, ease:'power2.out' }, 3.1)
+
+    /* right copy staggers in */
     .to('#ch', { opacity:1, y:0, duration:0.4, ease:'power2.out' }, 0.8)
-    .from('#ch', { y:14 }, 0.8)
-
+    .from('#ch',{ y:14 }, 0.8)
     .to('#hl', { opacity:1, y:0, duration:0.65, ease:'expo.out' }, 1.05)
-    .from('#hl', { y:32 }, 1.05)
-
+    .from('#hl',{ y:32 }, 1.05)
     .to('#bc', { opacity:1, y:0, duration:0.5, ease:'power2.out' }, 1.5)
-    .from('#bc', { y:20 }, 1.5)
-
+    .from('#bc',{ y:20 }, 1.5)
     .to('#cl', { opacity:1, y:0, duration:0.5, ease:'expo.out' }, 2.0)
-    .from('#cl', { y:16 }, 2.0)
+    .from('#cl',{ y:16 }, 2.0)
 
+    /* callout pulse */
     .to('#cl', { scale:1.03, duration:0.22, ease:'power2.out' }, 3.5)
     .to('#cl', { scale:1.0,  duration:0.3,  ease:'power2.in'  }, 3.72)
 

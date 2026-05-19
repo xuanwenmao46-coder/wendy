@@ -4,86 +4,112 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=1920, height=1080"/>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    html, body { width:1920px; height:1080px; overflow:hidden; background:#0c0b09; font-family:'DM Sans',sans-serif; color:#faf8f3; }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{width:1920px;height:1080px;overflow:hidden;background:#0c0b09;font-family:'DM Sans',sans-serif;color:#faf8f3}
 
-    .scene {
-      width:1920px; height:1080px;
-      display:grid;
-      grid-template-columns: 680px 1fr;
-      align-items:center;
-      opacity:0;
-      position:relative; overflow:hidden;
+    .scene{
+      width:1920px;height:1080px;
+      display:grid;grid-template-columns:680px 1fr;
+      align-items:center;opacity:0;
+      position:relative;overflow:hidden;
     }
 
-    /* flowing light beam */
-    .flow-beam {
-      position:absolute;
-      top:-10%; left:0;
-      width:300px; height:120%;
-      background:linear-gradient(90deg,
-        transparent 0%,
-        rgba(201,98,42,0.05) 25%,
-        rgba(255,190,120,0.12) 50%,
-        rgba(201,98,42,0.05) 75%,
-        transparent 100%);
-      transform:skewX(-12deg);
+    .flow-beam{
+      position:absolute;top:-10%;left:0;width:300px;height:120%;
+      background:linear-gradient(90deg,transparent 0%,rgba(201,98,42,0.05) 25%,rgba(255,190,120,0.12) 50%,rgba(201,98,42,0.05) 75%,transparent 100%);
+      transform:skewX(-12deg);pointer-events:none;z-index:50;will-change:transform;
+    }
+    .glow-accent{text-shadow:0 0 40px rgba(201,98,42,0.5),0 0 80px rgba(201,98,42,0.2)}
+
+    .left{padding:0 80px 0 140px;display:flex;flex-direction:column;gap:24px}
+    .chapter{font-size:22px;letter-spacing:5px;text-transform:uppercase;color:#c9622a;opacity:0}
+    .headline{font-family:'DM Serif Display',serif;font-size:96px;line-height:1.0;color:#faf8f3;opacity:0}
+    .headline em{color:#c9622a;font-style:italic}
+    .body-copy{font-size:30px;font-weight:300;line-height:1.6;color:rgba(250,248,243,0.55);opacity:0;max-width:520px}
+
+    .right{padding:60px 100px 60px 40px;display:flex;flex-direction:column;opacity:0}
+    .chart-title{font-size:24px;color:rgba(250,248,243,0.35);letter-spacing:1px;margin-bottom:28px}
+
+    .chart-area{
+      position:relative;display:flex;align-items:flex-end;gap:16px;
+      height:560px;padding:0 0 0 56px;
+    }
+    .grid-lines{
+      position:absolute;left:56px;right:0;top:0;bottom:60px;
+      display:flex;flex-direction:column;justify-content:space-between;
       pointer-events:none;
-      z-index:50;
-      will-change:transform;
     }
-    /* ambient glow on accents */
-    .glow-accent { text-shadow: 0 0 40px rgba(201,98,42,0.5), 0 0 80px rgba(201,98,42,0.2); }
-
-    .left {
-      padding:0 80px 0 140px;
-      display:flex; flex-direction:column; gap:24px;
+    .grid-line{width:100%;height:1px;background:rgba(250,248,243,0.05);position:relative}
+    .grid-line span{
+      position:absolute;right:calc(100% + 12px);top:-10px;
+      font-size:18px;color:rgba(250,248,243,0.25);white-space:nowrap;
     }
-
-    .chapter {
-      font-size:22px; letter-spacing:5px; text-transform:uppercase;
-      color:#c9622a; opacity:0;
+    .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;position:relative}
+    .bar-val{
+      font-family:'DM Serif Display',serif;font-size:26px;
+      color:rgba(250,248,243,0.7);margin-bottom:8px;opacity:0;
     }
-    .headline {
-      font-family:'DM Serif Display',serif;
-      font-size:96px; line-height:1.0;
-      color:#faf8f3; opacity:0;
-    }
-    .headline em { color:#c9622a; font-style:italic; }
-    .body-copy {
-      font-size:30px; font-weight:300; line-height:1.6;
-      color:rgba(250,248,243,0.55); opacity:0;
-      max-width:520px;
-    }
-
-    .right {
-      padding:80px 100px 80px 60px;
-      display:flex; flex-direction:column;
-    }
-    .chart-title {
-      font-size:26px; color:rgba(250,248,243,0.4);
-      letter-spacing:1px; margin-bottom:32px; opacity:0;
-    }
-    .chart-wrap {
-      position:relative; width:100%; height:680px; opacity:0;
+    .bar-fill{width:72%;border-radius:6px 6px 0 0;transform-origin:bottom center;transform:scaleY(0)}
+    .bar-label{
+      font-size:20px;color:rgba(250,248,243,0.35);
+      padding-top:10px;text-align:center;
+      border-top:1px solid rgba(255,255,255,0.06);width:100%;
     }
   </style>
 </head>
 <body>
 <div class="scene" id="scene">
   <div class="flow-beam" id="flow-beam"></div>
+
   <div class="left">
     <span class="chapter" id="ch">Chapter 1</span>
     <h2 class="headline glow-accent" id="hl">Social networks<br>peak at <em>25.</em><br>Then shrink.</h2>
-    <p class="body-copy" id="bc">With every decade, the average adult loses close friends — not from conflict, but from circumstance.</p>
+    <p class="body-copy" id="bc">With every decade, the average adult loses close friends &#x2014; not from conflict, but from circumstance.</p>
   </div>
-  <div class="right">
-    <p class="chart-title" id="ct">Avg. close friends by age group</p>
-    <div class="chart-wrap" id="cw">
-      <canvas id="barChart"></canvas>
+
+  <div class="right" id="rightPanel">
+    <p class="chart-title">Avg. close friends by age group</p>
+    <div class="chart-area">
+      <div class="grid-lines">
+        <div class="grid-line"><span>8</span></div>
+        <div class="grid-line"><span>6</span></div>
+        <div class="grid-line"><span>4</span></div>
+        <div class="grid-line"><span>2</span></div>
+        <div class="grid-line"><span>0</span></div>
+      </div>
+      <!-- bar height = value/8 * 500px -->
+      <div class="bar-col">
+        <div class="bar-val" id="v0">6.6</div>
+        <div class="bar-fill" id="b0" style="height:413px;background:#c9622a"></div>
+        <div class="bar-label">15&#x2013;24</div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-val" id="v1">5.2</div>
+        <div class="bar-fill" id="b1" style="height:325px;background:#c9622a"></div>
+        <div class="bar-label">25&#x2013;34</div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-val" id="v2">4.0</div>
+        <div class="bar-fill" id="b2" style="height:250px;background:#7a7568"></div>
+        <div class="bar-label">35&#x2013;44</div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-val" id="v3">3.1</div>
+        <div class="bar-fill" id="b3" style="height:194px;background:#5f5e5a"></div>
+        <div class="bar-label">45&#x2013;54</div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-val" id="v4">2.6</div>
+        <div class="bar-fill" id="b4" style="height:163px;background:#444441"></div>
+        <div class="bar-label">55&#x2013;64</div>
+      </div>
+      <div class="bar-col">
+        <div class="bar-val" id="v5">2.1</div>
+        <div class="bar-fill" id="b5" style="height:131px;background:#2c2c2a"></div>
+        <div class="bar-label">65+</div>
+      </div>
     </div>
   </div>
 </div>
@@ -91,84 +117,53 @@
 <script>
   window.__timelines = window.__timelines || {};
 
-  var chartDrawn = false;
-
-  function drawChart() {
-    if (chartDrawn) return;
-    chartDrawn = true;
-
-    var ctx = document.getElementById('barChart');
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['15–24', '25–34', '35–44', '45–54', '55–64', '65+'],
-        datasets: [{
-          label: 'Avg. close friends',
-          data: [6.6, 5.2, 4.0, 3.1, 2.6, 2.1],
-          backgroundColor: [
-            '#c9622a','#c9622a',
-            '#7a7568','#5f5e5a','#444441','#2c2c2a'
-          ],
-          borderRadius: 8,
-          borderSkipped: false,
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: { duration: 1400, easing: 'easeOutQuart' },
-        plugins: {
-          legend: { display: false },
-          tooltip: { enabled: false }
-        },
-        scales: {
-          x: {
-            grid: { display: false },
-            border: { display: false },
-            ticks: {
-              color: 'rgba(250,248,243,0.4)',
-              font: { size: 26, family: "'DM Sans', sans-serif" }
-            }
-          },
-          y: {
-            min: 0, max: 8,
-            grid: { color: 'rgba(250,248,243,0.06)' },
-            border: { display: false },
-            ticks: {
-              color: 'rgba(250,248,243,0.3)',
-              font: { size: 24, family: "'DM Sans', sans-serif" },
-              stepSize: 2
-            }
-          }
-        }
-      }
-    });
-  }
-
   var tl = gsap.timeline({ paused: true });
 
   tl
     .fromTo('#flow-beam', { x:-400 }, { x:2500, duration:2.0, ease:'power1.inOut' }, 0)
-
     .to('#scene', { opacity:1, duration:0.5, ease:'power2.out' }, 0)
 
     .to('#ch', { opacity:1, y:0, duration:0.4, ease:'power2.out' }, 0.3)
     .from('#ch', { y:16 }, 0.3)
-
     .to('#hl', { opacity:1, y:0, duration:0.6, ease:'expo.out' }, 0.55)
     .from('#hl', { y:40 }, 0.55)
-
     .to('#bc', { opacity:1, y:0, duration:0.5, ease:'power2.out' }, 1.0)
     .from('#bc', { y:20 }, 1.0)
 
-    .to('#ct', { opacity:1, duration:0.4 }, 1.2)
-    .to('#cw', { opacity:1, duration:0.4 }, 1.4)
+    .to('#rightPanel', { opacity:1, duration:0.4 }, 0.8)
 
-    .add(function() { drawChart(); }, 1.4)
+    /* bars pop up one by one */
+    .to('#b0', { scaleY:1, duration:0.45, ease:'back.out(1.4)' }, 1.2)
+    .to('#v0', { opacity:1, y:0, duration:0.25, ease:'power2.out' }, 1.46)
+    .from('#v0', { y:8 }, 1.46)
+
+    .to('#b1', { scaleY:1, duration:0.45, ease:'back.out(1.4)' }, 1.38)
+    .to('#v1', { opacity:1, y:0, duration:0.25, ease:'power2.out' }, 1.64)
+    .from('#v1', { y:8 }, 1.64)
+
+    .to('#b2', { scaleY:1, duration:0.45, ease:'back.out(1.4)' }, 1.56)
+    .to('#v2', { opacity:1, y:0, duration:0.25, ease:'power2.out' }, 1.82)
+    .from('#v2', { y:8 }, 1.82)
+
+    .to('#b3', { scaleY:1, duration:0.45, ease:'back.out(1.4)' }, 1.74)
+    .to('#v3', { opacity:1, y:0, duration:0.25, ease:'power2.out' }, 2.0)
+    .from('#v3', { y:8 }, 2.0)
+
+    .to('#b4', { scaleY:1, duration:0.45, ease:'back.out(1.4)' }, 1.92)
+    .to('#v4', { opacity:1, y:0, duration:0.25, ease:'power2.out' }, 2.18)
+    .from('#v4', { y:8 }, 2.18)
+
+    .to('#b5', { scaleY:1, duration:0.45, ease:'back.out(1.4)' }, 2.1)
+    .to('#v5', { opacity:1, y:0, duration:0.25, ease:'power2.out' }, 2.36)
+    .from('#v5', { y:8 }, 2.36)
+
+    /* glow pulse on peak bars */
+    .to('#b0,#b1', { filter:'brightness(1.3)', duration:0.3, ease:'power2.out' }, 3.2)
+    .to('#b0,#b1', { filter:'brightness(1.0)', duration:0.5, ease:'power2.in'  }, 3.5)
 
     .to('#scene', { opacity:0, duration:0.4, ease:'power2.in' }, 5.6);
 
-  window.__timelines["beat-2-cliff"] = tl;
+  window.__timelines['beat-2-cliff'] = tl;
 </script>
 </body>
 </html>

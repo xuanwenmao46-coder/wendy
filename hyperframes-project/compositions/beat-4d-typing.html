@@ -7,111 +7,68 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
-    html,body{
-      width:1920px;height:1080px;overflow:hidden;
-      background:#0a0906;
-      font-family:'DM Sans',sans-serif;
-    }
+    html,body{width:1920px;height:1080px;overflow:hidden;background:#0a0906;font-family:'DM Sans',sans-serif}
 
     .scene{
       width:1920px;height:1080px;
       position:relative;
       display:flex;align-items:center;justify-content:center;
-      opacity:0;
-      overflow:hidden;
+      opacity:0;overflow:hidden;
     }
 
-    /* flowing light beam */
-    .flow-beam {
-      position:absolute;
-      top:-10%; left:0;
-      width:300px; height:120%;
-      background:linear-gradient(90deg,
-        transparent 0%,
-        rgba(201,98,42,0.05) 25%,
-        rgba(255,190,120,0.12) 50%,
-        rgba(201,98,42,0.05) 75%,
-        transparent 100%);
-      transform:skewX(-12deg);
-      pointer-events:none;
-      z-index:50;
-      will-change:transform;
+    .flow-beam{
+      position:absolute;top:-10%;left:0;
+      width:300px;height:120%;
+      background:linear-gradient(90deg,transparent 0%,rgba(201,98,42,0.05) 25%,rgba(255,190,120,0.12) 50%,rgba(201,98,42,0.05) 75%,transparent 100%);
+      transform:skewX(-12deg);pointer-events:none;z-index:50;will-change:transform;
     }
-    /* ambient glow on accents */
-    .glow-accent { text-shadow: 0 0 40px rgba(201,98,42,0.5), 0 0 80px rgba(201,98,42,0.2); }
+    .glow-accent{text-shadow:0 0 40px rgba(201,98,42,0.5),0 0 80px rgba(201,98,42,0.2)}
 
-    /* ── subtle vignette ── */
-    .vignette{
-      position:absolute;inset:0;
-      background:radial-gradient(ellipse 70% 70% at 50% 50%, transparent 40%, rgba(0,0,0,0.7) 100%);
-      pointer-events:none;z-index:0;
-    }
+    .vignette{position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 50% 50%,transparent 40%,rgba(0,0,0,0.7) 100%);pointer-events:none;z-index:0}
 
-    /* ── background city silhouette (pure CSS) ── */
     .city-bg{
-      position:absolute;
-      bottom:0;left:0;right:0;height:380px;
+      position:absolute;bottom:0;left:0;right:0;height:380px;
       background:
-        radial-gradient(circle 3px at 18% 60%, rgba(255,220,120,0.15) 0%,transparent 100%),
-        radial-gradient(circle 2px at 22% 45%, rgba(255,200,100,0.12) 0%,transparent 100%),
-        radial-gradient(circle 3px at 31% 55%, rgba(255,230,140,0.1) 0%,transparent 100%),
-        radial-gradient(circle 2px at 38% 40%, rgba(255,210,110,0.14) 0%,transparent 100%),
-        radial-gradient(circle 4px at 45% 62%, rgba(255,220,130,0.11) 0%,transparent 100%),
-        radial-gradient(circle 2px at 52% 48%, rgba(255,200,100,0.13) 0%,transparent 100%),
-        radial-gradient(circle 3px at 60% 58%, rgba(255,215,120,0.12) 0%,transparent 100%),
-        radial-gradient(circle 2px at 68% 42%, rgba(255,205,105,0.15) 0%,transparent 100%),
-        radial-gradient(circle 4px at 74% 65%, rgba(255,225,135,0.1) 0%,transparent 100%),
-        radial-gradient(circle 2px at 82% 50%, rgba(255,210,110,0.13) 0%,transparent 100%);
-      opacity:0.6;
-      pointer-events:none;z-index:0;
+        radial-gradient(circle 3px at 18% 60%,rgba(255,220,120,0.15) 0%,transparent 100%),
+        radial-gradient(circle 2px at 22% 45%,rgba(255,200,100,0.12) 0%,transparent 100%),
+        radial-gradient(circle 3px at 31% 55%,rgba(255,230,140,0.1) 0%,transparent 100%),
+        radial-gradient(circle 2px at 38% 40%,rgba(255,210,110,0.14) 0%,transparent 100%),
+        radial-gradient(circle 4px at 45% 62%,rgba(255,220,130,0.11) 0%,transparent 100%),
+        radial-gradient(circle 2px at 52% 48%,rgba(255,200,100,0.13) 0%,transparent 100%),
+        radial-gradient(circle 3px at 60% 58%,rgba(255,215,120,0.12) 0%,transparent 100%),
+        radial-gradient(circle 2px at 68% 42%,rgba(255,205,105,0.15) 0%,transparent 100%),
+        radial-gradient(circle 4px at 74% 65%,rgba(255,225,135,0.1) 0%,transparent 100%),
+        radial-gradient(circle 2px at 82% 50%,rgba(255,210,110,0.13) 0%,transparent 100%);
+      opacity:0.6;pointer-events:none;z-index:0;
     }
 
-    /* ── main layout: phone left, copy right ── */
     .layout{
       position:relative;z-index:1;
-      display:grid;
-      grid-template-columns:700px 1fr;
-      gap:0;
-      align-items:center;
-      width:100%;
-      padding:0 140px;
+      display:grid;grid-template-columns:700px 1fr;gap:0;
+      align-items:center;width:100%;padding:0 140px;
     }
 
-    /* ── PHONE FRAME ── */
-    .phone{
-      display:flex;justify-content:center;align-items:center;
-    }
+    .phone{display:flex;justify-content:center;align-items:center}
     .phone-frame{
-      width:400px;height:720px;
-      background:#111;
-      border-radius:52px;
+      width:400px;height:760px;
+      background:#111;border-radius:52px;
       border:2px solid rgba(255,255,255,0.08);
       position:relative;
       box-shadow:0 0 60px rgba(0,0,0,0.8),inset 0 0 1px rgba(255,255,255,0.05);
       overflow:hidden;
     }
-    /* notch */
     .phone-frame::before{
-      content:'';
-      position:absolute;top:16px;left:50%;transform:translateX(-50%);
-      width:100px;height:28px;
-      background:#000;
-      border-radius:14px;
-      z-index:10;
+      content:'';position:absolute;top:16px;left:50%;transform:translateX(-50%);
+      width:100px;height:28px;background:#000;border-radius:14px;z-index:10;
     }
-    /* screen */
     .phone-screen{
       position:absolute;inset:0;
-      background:linear-gradient(180deg, #1a1a1f 0%, #12121a 100%);
-      border-radius:52px;
-      overflow:hidden;
-      display:flex;flex-direction:column;
+      background:linear-gradient(180deg,#1a1a1f 0%,#12121a 100%);
+      border-radius:52px;overflow:hidden;display:flex;flex-direction:column;
     }
 
-    /* chat header */
     .chat-header{
-      padding:60px 20px 16px;
-      display:flex;align-items:center;gap:12px;
+      padding:60px 20px 16px;display:flex;align-items:center;gap:12px;
       border-bottom:1px solid rgba(255,255,255,0.06);
       background:rgba(255,255,255,0.02);
     }
@@ -119,120 +76,86 @@
       width:38px;height:38px;border-radius:50%;
       background:rgba(255,255,255,0.1);
       display:flex;align-items:center;justify-content:center;
-      font-size:16px;color:rgba(255,255,255,0.5);
-      flex-shrink:0;
+      font-size:16px;color:rgba(255,255,255,0.5);flex-shrink:0;
     }
     .chat-name{font-size:14px;font-weight:500;color:rgba(255,255,255,0.75)}
     .chat-status{font-size:11px;color:rgba(255,255,255,0.3);margin-top:1px}
 
-    /* messages area */
     .messages{
-      flex:1;padding:20px 16px;
-      display:flex;flex-direction:column;gap:10px;
+      flex:1;padding:16px 16px;
+      display:flex;flex-direction:column;gap:8px;
       overflow:hidden;
     }
-    /* received bubble */
     .msg-recv{
       align-self:flex-start;
       background:rgba(255,255,255,0.08);
       border-radius:18px 18px 18px 4px;
-      padding:10px 14px;
-      max-width:72%;
-      font-size:14px;color:rgba(255,255,255,0.75);
-      line-height:1.4;
-      opacity:0;
+      padding:9px 13px;max-width:78%;
+      font-size:13px;color:rgba(255,255,255,0.75);line-height:1.4;
+      opacity:0;transform:translateY(8px) scale(0.95);transform-origin:left center;
     }
-    .msg-time{
-      font-size:10px;color:rgba(255,255,255,0.2);
-      margin-top:4px;text-align:center;
+    .msg-sent{
+      align-self:flex-end;
+      background:rgba(201,98,42,0.35);
+      border-radius:18px 18px 4px 18px;
+      padding:9px 13px;max-width:78%;
+      font-size:13px;color:rgba(255,255,255,0.85);line-height:1.4;
+      opacity:0;transform:translateY(8px) scale(0.95);transform-origin:right center;
     }
+    .msg-time{font-size:10px;color:rgba(255,255,255,0.2);text-align:center;opacity:0}
+    .msg-time.spaced{margin-top:10px}
 
-    /* typing input area */
     .chat-input-wrap{
-      padding:12px 16px;
-      border-top:1px solid rgba(255,255,255,0.06);
+      padding:12px 16px;border-top:1px solid rgba(255,255,255,0.06);
       display:flex;align-items:center;gap:10px;
     }
     .chat-input{
-      flex:1;
-      background:rgba(255,255,255,0.06);
+      flex:1;background:rgba(255,255,255,0.06);
       border:1px solid rgba(255,255,255,0.1);
-      border-radius:22px;
-      padding:10px 16px;
-      font-size:14px;color:rgba(255,255,255,0.8);
-      font-family:'DM Sans',sans-serif;
-      min-height:40px;
-      display:flex;align-items:center;
-      position:relative;
+      border-radius:22px;padding:10px 16px;
+      font-size:13px;color:rgba(255,255,255,0.8);
+      font-family:'DM Sans',sans-serif;min-height:40px;
+      display:flex;align-items:center;position:relative;
     }
-    .typed-text{
-      display:inline;
-    }
-    /* blinking cursor */
+    .typed-text{display:inline}
     .cursor{
-      display:inline-block;
-      width:2px;height:16px;
-      background:rgba(255,255,255,0.7);
-      margin-left:1px;
-      vertical-align:middle;
-      animation:blink 0.9s step-end infinite;
+      display:inline-block;width:2px;height:15px;
+      background:rgba(255,255,255,0.7);margin-left:1px;
+      vertical-align:middle;animation:blink 0.9s step-end infinite;
     }
     @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
-    /* send button */
     .send-btn{
       width:36px;height:36px;border-radius:50%;
       background:rgba(255,255,255,0.08);
       display:flex;align-items:center;justify-content:center;
-      font-size:16px;color:rgba(255,255,255,0.3);
-      flex-shrink:0;
-      transition:background .2s,color .2s;
+      font-size:16px;color:rgba(255,255,255,0.3);flex-shrink:0;
     }
-    .send-btn.active{
-      background:#c9622a;color:#fff;
-    }
+    .send-btn.active{background:#c9622a;color:#fff}
 
-    /* delete flash overlay */
     .delete-overlay{
       position:absolute;inset:0;
       background:rgba(200,50,30,0.04);
-      opacity:0;
-      border-radius:22px;
+      opacity:0;border-radius:22px;
     }
 
-    /* ── RIGHT copy ── */
-    .copy{
-      display:flex;flex-direction:column;gap:28px;
-      padding-left:60px;
-    }
+    .copy{display:flex;flex-direction:column;gap:28px;padding-left:60px}
     .chapter{font-size:22px;letter-spacing:5px;text-transform:uppercase;color:#c9622a;opacity:0}
-    .headline{
-      font-family:'DM Serif Display',serif;
-      font-size:80px;line-height:1.0;color:#f8f9fa;opacity:0;
-    }
+    .headline{font-family:'DM Serif Display',serif;font-size:80px;line-height:1.0;color:#f8f9fa;opacity:0}
     .headline em{color:#c9622a;font-style:italic}
     .pull-quote{
-      font-family:'DM Serif Display',serif;
-      font-size:32px;font-style:italic;
-      color:rgba(248,249,250,0.45);
-      line-height:1.5;
-      border-left:3px solid rgba(201,98,42,0.4);
-      padding-left:24px;
-      opacity:0;
+      font-family:'DM Serif Display',serif;font-size:32px;font-style:italic;
+      color:rgba(248,249,250,0.45);line-height:1.5;
+      border-left:3px solid rgba(201,98,42,0.4);padding-left:24px;opacity:0;
     }
     .pull-quote em{color:rgba(248,249,250,0.7);font-style:normal}
 
-    /* ── SEQUENCE LABELS ── */
     .seq-label{
-      position:absolute;
-      font-size:18px;font-weight:300;
-      color:rgba(248,249,250,0.3);
-      letter-spacing:1px;
-      opacity:0;
+      position:absolute;font-size:18px;font-weight:300;
+      color:rgba(248,249,250,0.3);letter-spacing:1px;opacity:0;
     }
-    #lbl-typing{ bottom:120px;left:50%;transform:translateX(-50%);white-space:nowrap; }
-    #lbl-erasing{ bottom:120px;left:50%;transform:translateX(-50%);white-space:nowrap;color:rgba(201,98,42,0.5); }
-    #lbl-sent{ bottom:120px;left:50%;transform:translateX(-50%);white-space:nowrap; }
+    #lbl-typing{bottom:110px;left:50%;transform:translateX(-50%);white-space:nowrap}
+    #lbl-erasing{bottom:110px;left:50%;transform:translateX(-50%);white-space:nowrap;color:rgba(201,98,42,0.5)}
   </style>
 </head>
 <body>
@@ -242,13 +165,10 @@
   <div class="city-bg"></div>
 
   <div class="layout">
-
-    <!-- PHONE -->
     <div class="phone" id="phone">
       <div class="phone-frame">
         <div class="phone-screen">
 
-          <!-- header -->
           <div class="chat-header">
             <div class="chat-avatar">J</div>
             <div>
@@ -257,14 +177,15 @@
             </div>
           </div>
 
-          <!-- messages -->
           <div class="messages">
-            <div class="msg-time" id="msg-time-old" style="opacity:0">3 weeks ago</div>
-            <div class="msg-recv" id="msg-old">"Dude we HAVE to catch up soon haha"</div>
-            <div class="msg-time" id="msg-time-now" style="opacity:0;margin-top:16px">Now</div>
+            <div class="msg-time" id="t1">2 months ago</div>
+            <div class="msg-recv" id="m1">"Man it's been SO long &#x2014; what's going on with you?!"</div>
+            <div class="msg-sent" id="m2">"I know right!! We should definitely fix that soon &#x1F44D;"</div>
+            <div class="msg-time spaced" id="t2">3 weeks ago</div>
+            <div class="msg-recv" id="m3">"Dude we HAVE to catch up soon haha"</div>
+            <div class="msg-time spaced" id="t3">Now</div>
           </div>
 
-          <!-- input -->
           <div class="chat-input-wrap">
             <div class="chat-input">
               <span class="typed-text" id="typed"></span>
@@ -277,61 +198,32 @@
         </div>
       </div>
 
-      <!-- floating sequence labels -->
       <div class="seq-label" id="lbl-typing">typing&#x2026;</div>
       <div class="seq-label" id="lbl-erasing">deleting&#x2026;</div>
     </div>
 
-    <!-- COPY -->
     <div class="copy">
-      <span class="chapter" id="ch">Chapter 4 · What Gets Lost</span>
+      <span class="chapter" id="ch">Chapter 4 &#xB7; What Gets Lost</span>
       <h2 class="headline glow-accent" id="hl">What adults lose<br>isn't friends.<br>It's <em>continuity.</em></h2>
       <p class="pull-quote" id="pq">The slow accumulation<br>of <em>shared experiences.</em><br>The random conversations.<br>The ability to just<br><em>exist</em> around someone.</p>
     </div>
-
   </div>
 </div>
 
 <script>
   window.__timelines = window.__timelines || {};
 
-  /* The full message to type */
   var MESSAGE = 'We should hang out soon';
-  var el = document.getElementById('typed');
+  var el      = document.getElementById('typed');
   var sendBtn = document.getElementById('send-btn');
-  var delOverlay = document.getElementById('del-overlay');
-  var typeTimer = null;
 
-  function typeMessage(done) {
-    var i = 0;
-    function step() {
-      if (i <= MESSAGE.length) {
-        el.textContent = MESSAGE.slice(0, i);
-        /* activate send button once message has content */
-        if (i > 0) sendBtn.classList.add('active');
-        i++;
-        typeTimer = setTimeout(step, 55 + Math.random() * 35);
-      } else {
-        if (done) done();
-      }
-    }
-    step();
-  }
-
-  function eraseMessage(done) {
-    var txt = el.textContent;
-    var i = txt.length;
-    function step() {
-      if (i >= 0) {
-        el.textContent = MESSAGE.slice(0, i);
-        if (i === 0) sendBtn.classList.remove('active');
-        i--;
-        typeTimer = setTimeout(step, 28 + Math.random() * 18);
-      } else {
-        if (done) done();
-      }
-    }
-    step();
+  /* GSAP proxy drives typing/erasing — fully seekable, no setTimeout needed */
+  var proxy = { chars: 0 };
+  function applyChars() {
+    var n = Math.max(0, Math.min(MESSAGE.length, Math.round(proxy.chars)));
+    el.textContent = MESSAGE.slice(0, n);
+    if (n > 0) sendBtn.classList.add('active');
+    else       sendBtn.classList.remove('active');
   }
 
   var tl = gsap.timeline({ paused: true });
@@ -339,63 +231,56 @@
   tl
     .fromTo('#flow-beam', { x:-400 }, { x:2500, duration:2.0, ease:'power1.inOut' }, 0)
 
-    /* scene fade in */
+    /* scene in */
     .to('#scene', { opacity:1, duration:0.7, ease:'power2.out' }, 0)
 
     /* phone slides in */
-    .to('#phone', { opacity:1, x:0, duration:0.7, ease:'expo.out' }, 0.3)
-    .from('#phone', { opacity:0, x:-40 }, 0.3)
+    .fromTo('#phone', { opacity:0, x:-40 }, { opacity:1, x:0, duration:0.7, ease:'expo.out' }, 0.3)
 
-    /* old message thread appears */
-    .to('#msg-time-old', { opacity:1, duration:0.3 }, 0.8)
-    .to('#msg-old', { opacity:1, y:0, duration:0.5, ease:'power2.out' }, 1.0)
-    .from('#msg-old', { y:10 }, 1.0)
-    .to('#msg-time-now', { opacity:1, duration:0.3 }, 1.4)
+    /* messages pop in one by one */
+    .to('#t1', { opacity:1, duration:0.25 }, 0.8)
+    .to('#m1', { opacity:1, y:0, scale:1, duration:0.38, ease:'back.out(1.6)' }, 1.0)
+    .to('#m2', { opacity:1, y:0, scale:1, duration:0.38, ease:'back.out(1.6)' }, 1.35)
+    .to('#t2', { opacity:1, duration:0.25 }, 1.65)
+    .to('#m3', { opacity:1, y:0, scale:1, duration:0.38, ease:'back.out(1.6)' }, 1.85)
+    .to('#t3', { opacity:1, duration:0.25 }, 2.1)
 
-    /* "typing..." label */
-    .to('#lbl-typing', { opacity:1, duration:0.3 }, 1.6)
+    /* typing label */
+    .to('#lbl-typing', { opacity:1, duration:0.3 }, 2.3)
 
-    /* START TYPING */
-    .add(function() { typeMessage(null); }, 1.7)
+    /* GSAP-driven typing (seekable) */
+    .to(proxy, { chars: MESSAGE.length, duration:1.8, ease:'none', onUpdate: applyChars }, 2.5)
 
-    /* left copy staggers in while typing plays */
-    .to('#ch',  { opacity:1, y:0, duration:0.4, ease:'power2.out' }, 2.0)
-    .from('#ch',{ y:14 }, 2.0)
-    .to('#hl',  { opacity:1, y:0, duration:0.6, ease:'expo.out' }, 2.3)
-    .from('#hl',{ y:32 }, 2.3)
+    /* left copy comes in while typing */
+    .to('#ch', { opacity:1, y:0, duration:0.4, ease:'power2.out' }, 2.6)
+    .from('#ch', { y:14 }, 2.6)
+    .to('#hl', { opacity:1, y:0, duration:0.6, ease:'expo.out' }, 2.9)
+    .from('#hl', { y:32 }, 2.9)
 
-    /* typing finishes ~2.5s after start — message complete at ~4.2s */
-    /* hold for 1.5s — let it breathe */
+    /* typing complete ~t=4.3 — brief pause */
 
-    /* "deleting..." label swap */
-    .to('#lbl-typing',  { opacity:0, duration:0.2 }, 4.4)
-    .to('#lbl-erasing', { opacity:1, duration:0.2 }, 4.5)
+    /* switch to deleting label */
+    .to('#lbl-typing',  { opacity:0, duration:0.2 }, 4.6)
+    .to('#lbl-erasing', { opacity:1, duration:0.2 }, 4.7)
 
     /* flash delete overlay */
-    .to('#del-overlay', { opacity:1, duration:0.1 }, 4.5)
-    .to('#del-overlay', { opacity:0, duration:0.4 }, 4.6)
+    .to('#del-overlay', { opacity:1, duration:0.1 }, 4.7)
+    .to('#del-overlay', { opacity:0, duration:0.4 }, 4.8)
 
-    /* START ERASING */
-    .add(function() {
-      if (typeTimer) clearTimeout(typeTimer);
-      eraseMessage(null);
-    }, 4.5)
+    /* GSAP-driven erasing (seekable) */
+    .to(proxy, { chars:0, duration:1.0, ease:'none', onUpdate: applyChars }, 4.7)
 
-    /* erasing finishes ~1.8s later — ~6.3s */
+    /* labels fade out */
+    .to('#lbl-erasing', { opacity:0, duration:0.4 }, 5.9)
 
-    /* both labels fade out */
-    .to('#lbl-erasing', { opacity:0, duration:0.4 }, 6.2)
+    /* pull quote — emotional conclusion */
+    .to('#pq', { opacity:1, x:0, duration:0.6, ease:'expo.out' }, 6.1)
+    .from('#pq', { x:-20 }, 6.1)
 
-    /* pull quote appears — the emotional conclusion */
-    .to('#pq', { opacity:1, x:0, duration:0.6, ease:'expo.out' }, 6.3)
-    .from('#pq',{ x:-20 }, 6.3)
+    /* cursor goes dark — conversation abandoned */
+    .to('#cursor', { opacity:0, duration:0.3 }, 6.6)
 
-    /* cursor stops blinking (conversation abandoned) */
-    .to('#cursor', { opacity:0, duration:0.3 }, 6.8)
-
-    /* hold on empty input + pull quote */
-
-    /* scene fade out */
+    /* fade out */
     .to('#scene', { opacity:0, duration:0.6, ease:'power2.in' }, 9.4);
 
   window.__timelines['beat-4d-typing'] = tl;

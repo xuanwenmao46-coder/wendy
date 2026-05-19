@@ -4,103 +4,86 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=1920, height=1080"/>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    html, body {
-      width:1920px; height:1080px; overflow:hidden;
-      background:#0c0b09;
-      font-family:'DM Sans', -apple-system, sans-serif;
-      color:#faf8f3;
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{width:1920px;height:1080px;overflow:hidden;background:#0c0b09;font-family:'DM Sans',sans-serif;color:#faf8f3}
+
+    .scene{
+      width:1920px;height:1080px;
+      display:grid;grid-template-columns:680px 1fr;
+      align-items:center;opacity:0;
+      position:relative;overflow:hidden;
     }
 
-    .scene {
-      width:1920px; height:1080px;
-      display:grid;
-      grid-template-columns: 700px 1fr;
-      align-items:center;
-      opacity:0;
-      position:relative; overflow:hidden;
+    .flow-beam{
+      position:absolute;top:-10%;left:0;width:300px;height:120%;
+      background:linear-gradient(90deg,transparent 0%,rgba(201,98,42,0.05) 25%,rgba(255,190,120,0.12) 50%,rgba(201,98,42,0.05) 75%,transparent 100%);
+      transform:skewX(-12deg);pointer-events:none;z-index:50;will-change:transform;
     }
+    .glow-accent{text-shadow:0 0 40px rgba(201,98,42,0.5),0 0 80px rgba(201,98,42,0.2)}
 
-    /* flowing light beam */
-    .flow-beam {
-      position:absolute;
-      top:-10%; left:0;
-      width:300px; height:120%;
-      background:linear-gradient(90deg,
-        transparent 0%,
-        rgba(201,98,42,0.05) 25%,
-        rgba(255,190,120,0.12) 50%,
-        rgba(201,98,42,0.05) 75%,
-        transparent 100%);
-      transform:skewX(-12deg);
+    /* LEFT copy */
+    .left{padding:0 60px 0 140px;display:flex;flex-direction:column;gap:28px}
+    .left::before{content:'';display:block;width:48px;height:2px;background:#c9622a;border-radius:1px}
+    .chapter{font-size:22px;letter-spacing:5px;text-transform:uppercase;color:#c9622a;opacity:0}
+    .headline{font-family:'DM Serif Display',serif;font-size:76px;line-height:1.0;color:#faf8f3;opacity:0}
+    .headline em{color:#c9622a;font-style:italic}
+    .body-copy{font-size:27px;font-weight:300;line-height:1.65;color:rgba(250,248,243,0.5);opacity:0;max-width:500px}
+    .stat-row{display:flex;gap:48px;opacity:0}
+    .stat{display:flex;flex-direction:column;gap:6px}
+    .stat-num{font-family:'DM Serif Display',serif;font-size:60px;color:#c9622a;line-height:1}
+    .stat-label{font-size:18px;color:rgba(250,248,243,0.4);line-height:1.4}
+
+    /* RIGHT: grouped bar chart (DOM) */
+    .right{padding:50px 80px 50px 40px;display:flex;flex-direction:column;opacity:0}
+    .chart-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:16px}
+    .chart-heading{font-size:21px;color:rgba(250,248,243,0.35);letter-spacing:1px;line-height:1.4}
+    .legend{display:flex;gap:28px}
+    .leg-item{display:flex;align-items:center;gap:8px;font-size:18px;color:rgba(250,248,243,0.45)}
+    .leg-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+
+    .chart-area{
+      position:relative;display:flex;align-items:flex-end;gap:32px;
+      height:520px;padding-left:0;
+    }
+    /* y-axis grid lines */
+    .grid-bg{
+      position:absolute;inset:0 0 58px 0;
+      display:flex;flex-direction:column;justify-content:space-between;
       pointer-events:none;
-      z-index:50;
-      will-change:transform;
     }
-    /* ambient glow on accents */
-    .glow-accent { text-shadow: 0 0 40px rgba(201,98,42,0.5), 0 0 80px rgba(201,98,42,0.2); }
+    .grid-bg div{width:100%;height:1px;background:rgba(250,248,243,0.05)}
 
-    /* ── LEFT copy panel ── */
-    .left {
-      padding: 0 60px 0 140px;
-      display:flex; flex-direction:column; gap:28px;
+    /* each generation group */
+    .gen-group{
+      flex:1;display:flex;flex-direction:column;align-items:center;gap:0;
     }
-    .chapter {
-      font-size:22px; letter-spacing:5px; text-transform:uppercase;
-      color:#c9622a; opacity:0;
+    .bars-pair{
+      display:flex;align-items:flex-end;gap:8px;width:100%;justify-content:center;
+      /* bars grow from bottom */
     }
-    .headline {
-      font-family:'DM Serif Display', serif;
-      font-size:80px; line-height:1.0;
-      color:#faf8f3; opacity:0;
+    .bar-wrap{
+      display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;max-width:90px;
     }
-    .headline em { color:#c9622a; font-style:italic; }
-    .body-copy {
-      font-size:28px; font-weight:300; line-height:1.65;
-      color:rgba(250,248,243,0.5); opacity:0;
-      max-width:520px;
+    .bar-tag{
+      font-size:16px;font-weight:500;opacity:0;
+      white-space:nowrap;
     }
-    .stat-row {
-      display:flex; gap:32px; opacity:0;
+    .bar-body{
+      width:100%;border-radius:6px 6px 0 0;
+      transform-origin:bottom center;transform:scaleY(0);
     }
-    .stat {
-      display:flex; flex-direction:column; gap:6px;
-    }
-    .stat-num {
-      font-family:'DM Serif Display', serif;
-      font-size:64px; color:#c9622a; line-height:1;
-    }
-    .stat-label {
-      font-size:20px; color:rgba(250,248,243,0.4); line-height:1.4;
+    .gen-label{
+      font-size:20px;color:rgba(250,248,243,0.4);
+      padding-top:10px;text-align:center;
+      border-top:1px solid rgba(255,255,255,0.06);width:100%;
+      margin-top:2px;
     }
 
-    .left::before {
-      content:'';
-      display:block;
-      width:48px; height:2px;
-      background:#c9622a;
-      border-radius:1px;
-    }
-
-    /* ── RIGHT chart panel ── */
-    .right {
-      padding:80px 100px 80px 40px;
-      display:flex; flex-direction:column; gap:0;
-      opacity:0;
-    }
-    .chart-label {
-      font-size:22px; color:rgba(250,248,243,0.35);
-      letter-spacing:1px; margin-bottom:24px;
-    }
-    .chart-source {
-      font-size:18px; color:rgba(250,248,243,0.25);
-      margin-top:20px; letter-spacing:.5px;
-    }
-    #chartContainer {
-      width:960px; height:720px;
+    /* dual axis note */
+    .axis-note{
+      margin-top:14px;font-size:16px;color:rgba(250,248,243,0.2);letter-spacing:.5px;text-align:right;
     }
   </style>
 </head>
@@ -108,10 +91,10 @@
 <div class="scene" id="scene">
   <div class="flow-beam" id="flow-beam"></div>
 
-  <div class="left" id="leftPanel">
-    <span class="chapter" id="ch">Chapter 4 · The Digital Illusion</span>
+  <div class="left">
+    <span class="chapter" id="ch">Chapter 4 &#xB7; The Digital Illusion</span>
     <h2 class="headline glow-accent" id="hl">We have hundreds<br>of followers.<br>And <em>3</em> close friends.</h2>
-    <p class="body-copy" id="bc">Social media creates the sensation of connection — while eroding the conditions that make real friendship possible.</p>
+    <p class="body-copy" id="bc">Social media creates the sensation of connection &#x2014; while eroding the conditions that make real friendship possible.</p>
     <div class="stat-row" id="sr">
       <div class="stat">
         <span class="stat-num">342</span>
@@ -125,152 +108,128 @@
   </div>
 
   <div class="right" id="rightPanel">
-    <p class="chart-label">Online connections vs. close friends by generation</p>
-    <div id="chartContainer"></div>
-    <p class="chart-source">Survey data — digital connections &amp; social trust, 2024</p>
+    <div class="chart-top">
+      <p class="chart-heading">Online connections vs. close friends<br>by generation</p>
+      <div class="legend">
+        <div class="leg-item"><div class="leg-dot" style="background:#4a7fa8"></div>Online connections</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#c9622a"></div>Close friends</div>
+      </div>
+    </div>
+
+    <div class="chart-area">
+      <div class="grid-bg">
+        <div></div><div></div><div></div><div></div><div></div>
+      </div>
+
+      <!-- GEN Z: online=487 → 487/500*460=448px; friends=2.8 → 2.8/8*460=161px -->
+      <div class="gen-group">
+        <div class="bars-pair">
+          <div class="bar-wrap">
+            <div class="bar-tag" id="ot0" style="color:#4a7fa8">487</div>
+            <div class="bar-body" id="ob0" style="height:448px;background:rgba(74,127,168,0.75)"></div>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar-tag" id="ft0" style="color:#c9622a">2.8</div>
+            <div class="bar-body" id="fb0" style="height:161px;background:rgba(201,98,42,0.85)"></div>
+          </div>
+        </div>
+        <div class="gen-label">Gen Z</div>
+      </div>
+
+      <!-- MILLENNIALS: online=342→315px; friends=3.1→179px -->
+      <div class="gen-group">
+        <div class="bars-pair">
+          <div class="bar-wrap">
+            <div class="bar-tag" id="ot1" style="color:#4a7fa8">342</div>
+            <div class="bar-body" id="ob1" style="height:315px;background:rgba(74,127,168,0.75)"></div>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar-tag" id="ft1" style="color:#c9622a">3.1</div>
+            <div class="bar-body" id="fb1" style="height:179px;background:rgba(201,98,42,0.85)"></div>
+          </div>
+        </div>
+        <div class="gen-label">Millennials</div>
+      </div>
+
+      <!-- GEN X: online=198→182px; friends=3.4→196px -->
+      <div class="gen-group">
+        <div class="bars-pair">
+          <div class="bar-wrap">
+            <div class="bar-tag" id="ot2" style="color:#4a7fa8">198</div>
+            <div class="bar-body" id="ob2" style="height:182px;background:rgba(74,127,168,0.75)"></div>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar-tag" id="ft2" style="color:#c9622a">3.4</div>
+            <div class="bar-body" id="fb2" style="height:196px;background:rgba(201,98,42,0.85)"></div>
+          </div>
+        </div>
+        <div class="gen-label">Gen X</div>
+      </div>
+
+      <!-- BOOMERS: online=87→80px; friends=3.9→225px -->
+      <div class="gen-group">
+        <div class="bars-pair">
+          <div class="bar-wrap">
+            <div class="bar-tag" id="ot3" style="color:#4a7fa8">87</div>
+            <div class="bar-body" id="ob3" style="height:80px;background:rgba(74,127,168,0.75)"></div>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar-tag" id="ft3" style="color:#c9622a">3.9</div>
+            <div class="bar-body" id="fb3" style="height:225px;background:rgba(201,98,42,0.85)"></div>
+          </div>
+        </div>
+        <div class="gen-label">Boomers</div>
+      </div>
+    </div>
+
+    <p class="axis-note">Left scale: online connections (0&#x2013;500) &#xB7; Right scale: close friends (0&#x2013;8)</p>
   </div>
 </div>
 
 <script>
   window.__timelines = window.__timelines || {};
 
-  var chartInited = false;
-
-  function initChart() {
-    if (chartInited) return;
-    chartInited = true;
-
-    var chart = echarts.init(document.getElementById('chartContainer'), null, {
-      renderer: 'canvas',
-      width: 960, height: 720
-    });
-
-    chart.setOption({
-      backgroundColor: 'transparent',
-      tooltip: {
-        trigger: 'axis',
-        axisPointer: { type: 'shadow' },
-        backgroundColor: 'rgba(12,11,9,0.95)',
-        borderColor: 'rgba(201,98,42,0.3)',
-        textStyle: { color: '#faf8f3', fontSize: 18 }
-      },
-      legend: {
-        data: ['Online connections', 'Close friends'],
-        top: 8,
-        right: 20,
-        textStyle: { color: 'rgba(250,248,243,0.55)', fontSize: 18 },
-        itemWidth: 14,
-        itemHeight: 14
-      },
-      grid: {
-        top: '14%', bottom: '12%', left: '8%', right: '12%'
-      },
-      xAxis: {
-        type: 'category',
-        data: ['Gen Z', 'Millennials', 'Gen X', 'Boomers'],
-        axisLine: { lineStyle: { color: 'rgba(250,248,243,0.1)' } },
-        axisTick: { show: false },
-        axisLabel: {
-          color: 'rgba(250,248,243,0.5)',
-          fontSize: 22,
-          fontFamily: 'DM Sans, sans-serif'
-        }
-      },
-      yAxis: [
-        {
-          type: 'value',
-          name: 'Online connections',
-          min: 0, max: 600,
-          nameTextStyle: { color: 'rgba(74,127,168,0.7)', fontSize: 16 },
-          splitLine: { lineStyle: { color: 'rgba(250,248,243,0.05)', type: 'dashed' } },
-          axisLabel: {
-            color: 'rgba(74,127,168,0.6)',
-            fontSize: 18,
-            fontFamily: 'DM Sans, sans-serif'
-          }
-        },
-        {
-          type: 'value',
-          name: 'Close friends',
-          min: 0, max: 8,
-          nameTextStyle: { color: 'rgba(201,98,42,0.7)', fontSize: 16 },
-          splitLine: { show: false },
-          axisLabel: {
-            color: 'rgba(201,98,42,0.6)',
-            fontSize: 18,
-            fontFamily: 'DM Sans, sans-serif'
-          }
-        }
-      ],
-      animationDuration: 1600,
-      animationEasing: 'cubicOut',
-      animationDelay: function(idx) { return idx * 120; },
-      series: [
-        {
-          name: 'Online connections',
-          type: 'bar',
-          yAxisIndex: 0,
-          barWidth: '28%',
-          data: [487, 342, 198, 87],
-          itemStyle: {
-            color: '#4a7fa8',
-            borderRadius: [6, 6, 0, 0]
-          },
-          label: {
-            show: true,
-            position: 'top',
-            color: 'rgba(74,127,168,0.8)',
-            fontSize: 18,
-            fontFamily: 'DM Sans, sans-serif'
-          }
-        },
-        {
-          name: 'Close friends',
-          type: 'bar',
-          yAxisIndex: 1,
-          barWidth: '28%',
-          data: [2.8, 3.1, 3.4, 3.9],
-          itemStyle: {
-            color: '#c9622a',
-            borderRadius: [6, 6, 0, 0]
-          },
-          label: {
-            show: true,
-            position: 'top',
-            color: 'rgba(201,98,42,0.9)',
-            fontSize: 18,
-            fontFamily: 'DM Sans, sans-serif',
-            formatter: function(params) { return params.value.toFixed(1); }
-          }
-        }
-      ]
-    });
-  }
-
   var tl = gsap.timeline({ paused: true });
 
   tl
     .fromTo('#flow-beam', { x:-400 }, { x:2500, duration:2.0, ease:'power1.inOut' }, 0)
-
     .to('#scene', { opacity:1, duration:0.6, ease:'power2.out' }, 0)
 
-    .to('#ch', { opacity:1, y:0, duration:0.45, ease:'power2.out' }, 0.3)
-    .from('#ch', { y:16 }, 0.3)
+    .to('#ch',  { opacity:1, y:0, duration:0.45, ease:'power2.out' }, 0.3)
+    .from('#ch',{ y:16 }, 0.3)
+    .to('#hl',  { opacity:1, y:0, duration:0.65, ease:'expo.out' }, 0.55)
+    .from('#hl',{ y:36 }, 0.55)
+    .to('#bc',  { opacity:1, y:0, duration:0.5, ease:'power2.out' }, 1.05)
+    .from('#bc',{ y:20 }, 1.05)
+    .to('#sr',  { opacity:1, y:0, duration:0.5, ease:'power2.out' }, 1.4)
+    .from('#sr',{ y:20 }, 1.4)
 
-    .to('#hl', { opacity:1, y:0, duration:0.65, ease:'expo.out' }, 0.55)
-    .from('#hl', { y:36 }, 0.55)
+    .to('#rightPanel', { opacity:1, duration:0.4 }, 0.9)
 
-    .to('#bc', { opacity:1, y:0, duration:0.5, ease:'power2.out' }, 1.05)
-    .from('#bc', { y:20 }, 1.05)
+    /* Gen Z bars pop up together, then label; repeat per generation */
+    .to('#ob0', { scaleY:1, duration:0.5, ease:'back.out(1.3)' }, 1.3)
+    .to('#fb0', { scaleY:1, duration:0.5, ease:'back.out(1.3)' }, 1.42)
+    .to('#ot0,#ft0', { opacity:1, y:0, duration:0.25, ease:'power2.out' }, 1.68)
+    .from('#ot0,#ft0', { y:8 }, 1.68)
 
-    .to('#sr', { opacity:1, y:0, duration:0.5, ease:'power2.out' }, 1.4)
-    .from('#sr', { y:20 }, 1.4)
+    .to('#ob1', { scaleY:1, duration:0.5, ease:'back.out(1.3)' }, 1.72)
+    .to('#fb1', { scaleY:1, duration:0.5, ease:'back.out(1.3)' }, 1.84)
+    .to('#ot1,#ft1', { opacity:1, y:0, duration:0.25, ease:'power2.out' }, 2.1)
+    .from('#ot1,#ft1', { y:8 }, 2.1)
 
-    .to('#rightPanel', { opacity:1, duration:0.5, ease:'power2.out' }, 0.9)
-    .add(function() { initChart(); }, 1.0)
+    .to('#ob2', { scaleY:1, duration:0.5, ease:'back.out(1.3)' }, 2.14)
+    .to('#fb2', { scaleY:1, duration:0.5, ease:'back.out(1.3)' }, 2.26)
+    .to('#ot2,#ft2', { opacity:1, y:0, duration:0.25, ease:'power2.out' }, 2.52)
+    .from('#ot2,#ft2', { y:8 }, 2.52)
 
-    .to('.stat-num', { scale:1.04, duration:0.25, ease:'power2.out', stagger:0.2 }, 3.2)
-    .to('.stat-num', { scale:1.0,  duration:0.3,  ease:'power2.in',  stagger:0.2 }, 3.45)
+    .to('#ob3', { scaleY:1, duration:0.5, ease:'back.out(1.3)' }, 2.56)
+    .to('#fb3', { scaleY:1, duration:0.5, ease:'back.out(1.3)' }, 2.68)
+    .to('#ot3,#ft3', { opacity:1, y:0, duration:0.25, ease:'power2.out' }, 2.94)
+    .from('#ot3,#ft3', { y:8 }, 2.94)
+
+    /* pulse orange (close friends) bars — they stay stubby while blue towers */
+    .to('#fb0,#fb1,#fb2,#fb3', { filter:'brightness(1.35)', duration:0.3, ease:'power2.out' }, 4.0)
+    .to('#fb0,#fb1,#fb2,#fb3', { filter:'brightness(1.0)',  duration:0.5, ease:'power2.in'  }, 4.3)
 
     .to('#scene', { opacity:0, duration:0.5, ease:'power2.in' }, 7.5);
 
