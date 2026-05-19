@@ -15,7 +15,27 @@
       display:grid; grid-template-columns:1fr 760px;
       align-items:center;
       opacity:0;
+      position:relative; overflow:hidden;
     }
+
+    /* flowing light beam */
+    .flow-beam {
+      position:absolute;
+      top:-10%; left:0;
+      width:300px; height:120%;
+      background:linear-gradient(90deg,
+        transparent 0%,
+        rgba(201,98,42,0.05) 25%,
+        rgba(255,190,120,0.12) 50%,
+        rgba(201,98,42,0.05) 75%,
+        transparent 100%);
+      transform:skewX(-12deg);
+      pointer-events:none;
+      z-index:50;
+      will-change:transform;
+    }
+    /* ambient glow on accents */
+    .glow-accent { text-shadow: 0 0 40px rgba(201,98,42,0.5), 0 0 80px rgba(201,98,42,0.2); }
 
     /* ── LEFT: quote block ── */
     .left {
@@ -60,9 +80,10 @@
 </head>
 <body>
 <div class="scene" id="scene">
+  <div class="flow-beam" id="flow-beam"></div>
   <div class="left">
     <span class="chapter" id="ch">Chapter 3 · The Hidden Cost</span>
-    <h2 class="headline" id="hl">Loneliness isn't<br>just sad.<br><em>It's lethal.</em></h2>
+    <h2 class="headline glow-accent" id="hl">Loneliness isn't<br>just sad.<br><em>It's lethal.</em></h2>
     <blockquote id="bq">
       <p>"Social isolation carries a mortality risk equivalent to smoking 15 cigarettes a day — greater than obesity."</p>
       <cite>— US Surgeon General Vivek Murthy, 2023</cite>
@@ -114,6 +135,8 @@
   var tl = gsap.timeline({ paused: true });
 
   tl
+    .fromTo('#flow-beam', { x:-400 }, { x:2500, duration:2.0, ease:'power1.inOut' }, 0)
+
     .to('#scene', { opacity:1, duration:0.5, ease:'power2.out' }, 0)
 
     .to('#ch', { opacity:1, y:0, duration:0.4, ease:'power2.out' }, 0.3)

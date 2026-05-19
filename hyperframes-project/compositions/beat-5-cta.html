@@ -14,7 +14,27 @@
       display:grid; grid-template-columns:1fr 1fr;
       align-items:center;
       opacity:0;
+      position:relative; overflow:hidden;
     }
+
+    /* flowing light beam — white/lighter for orange background */
+    .flow-beam {
+      position:absolute;
+      top:-10%; left:0;
+      width:300px; height:120%;
+      background:linear-gradient(90deg,
+        transparent 0%,
+        rgba(255,255,255,0.08) 25%,
+        rgba(255,255,255,0.15) 50%,
+        rgba(255,255,255,0.08) 75%,
+        transparent 100%);
+      transform:skewX(-12deg);
+      pointer-events:none;
+      z-index:50;
+      will-change:transform;
+    }
+    /* ambient glow on accents */
+    .glow-accent { text-shadow: 0 0 40px rgba(255,255,255,0.3), 0 0 80px rgba(255,255,255,0.1); }
 
     .left {
       padding:0 80px 0 140px;
@@ -66,9 +86,10 @@
 </head>
 <body>
 <div class="scene" id="scene">
+  <div class="flow-beam" id="flow-beam"></div>
   <div class="left">
-    <span class="chapter" id="ch">Chapter 4 · The Way Forward</span>
-    <h2 class="headline" id="hl">Friendship<br>is now an<br>act of will.</h2>
+    <span class="chapter" id="ch">Chapter 5 · The Way Forward</span>
+    <h2 class="headline glow-accent" id="hl">Friendship<br>is now an<br>act of will.</h2>
     <p class="sub" id="sub">It won't happen by accident. But intentional, consistent effort rebuilds what life eroded.</p>
   </div>
   <div class="right">
@@ -105,6 +126,8 @@
   var tl = gsap.timeline({ paused: true });
 
   tl
+    .fromTo('#flow-beam', { x:-400 }, { x:2500, duration:2.0, ease:'power1.inOut' }, 0)
+
     .to('#scene', { opacity:1, duration:0.5, ease:'power2.out' }, 0)
 
     .to('#ch', { opacity:1, y:0, duration:0.4, ease:'power2.out' }, 0.3)

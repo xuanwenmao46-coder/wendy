@@ -10,8 +10,9 @@
     * { margin:0; padding:0; box-sizing:border-box; }
     html, body {
       width:1920px; height:1080px; overflow:hidden;
-      background:#0f1115;
+      background:#0c0b09;
       font-family:'DM Sans', -apple-system, sans-serif;
+      color:#faf8f3;
     }
 
     .scene {
@@ -20,30 +21,49 @@
       grid-template-columns: 1fr 660px;
       align-items:center;
       opacity:0;
+      position:relative; overflow:hidden;
     }
 
-    /* ── LEFT: full-width chart ── */
+    /* flowing light beam */
+    .flow-beam {
+      position:absolute;
+      top:-10%; left:0;
+      width:300px; height:120%;
+      background:linear-gradient(90deg,
+        transparent 0%,
+        rgba(201,98,42,0.05) 25%,
+        rgba(255,190,120,0.12) 50%,
+        rgba(201,98,42,0.05) 75%,
+        transparent 100%);
+      transform:skewX(-12deg);
+      pointer-events:none;
+      z-index:50;
+      will-change:transform;
+    }
+    /* ambient glow on accents */
+    .glow-accent { text-shadow: 0 0 40px rgba(201,98,42,0.5), 0 0 80px rgba(201,98,42,0.2); }
+
+    /* ── LEFT: chart panel ── */
     .left {
       padding:80px 40px 80px 140px;
       display:flex; flex-direction:column; gap:0;
       opacity:0;
     }
-    .chart-title-block { margin-bottom:32px; }
+    .chart-title-block { margin-bottom:28px; }
     .chart-main-title {
       font-family:'DM Serif Display', serif;
-      font-size:36px; color:#f8f9fa; font-weight:400;
+      font-size:34px; color:#faf8f3; font-weight:400;
       letter-spacing:.5px; line-height:1.3;
     }
     .chart-subtitle {
-      font-size:20px; color:#6c757d; margin-top:8px; letter-spacing:.5px;
+      font-size:20px; color:rgba(250,248,243,0.35); margin-top:8px; letter-spacing:.5px;
     }
-    /* gold accent top-line like the original .chart-wrapper::after */
     .chart-accent-line {
       width:100%; height:1px;
-      background:linear-gradient(90deg, rgba(212,163,115,0.5), transparent);
-      margin-bottom:28px;
+      background:linear-gradient(90deg, rgba(201,98,42,0.4), transparent);
+      margin-bottom:24px;
     }
-    #barContainer {
+    #lineContainer {
       width:1060px; height:700px;
     }
 
@@ -54,64 +74,63 @@
     }
     .chapter {
       font-size:22px; letter-spacing:5px; text-transform:uppercase;
-      color:#d4a373; opacity:0;
+      color:#c9622a; opacity:0;
     }
     .headline {
       font-family:'DM Serif Display', serif;
       font-size:80px; line-height:1.05;
-      color:#f8f9fa; opacity:0;
+      color:#faf8f3; opacity:0;
     }
-    .headline em { color:#d4a373; font-style:italic; }
+    .headline em { color:#c9622a; font-style:italic; }
     .body-copy {
-      font-size:28px; font-weight:300; line-height:1.65;
-      color:rgba(248,249,250,0.5); opacity:0;
+      font-size:26px; font-weight:300; line-height:1.65;
+      color:rgba(250,248,243,0.5); opacity:0;
     }
 
-    /* highlighted callout pill */
     .callout {
       display:inline-flex; align-items:center; gap:12px;
-      background:rgba(212,163,115,0.1);
-      border:1px solid rgba(212,163,115,0.25);
+      background:rgba(201,98,42,0.1);
+      border:1px solid rgba(201,98,42,0.25);
       border-radius:10px; padding:16px 24px;
       opacity:0;
     }
     .callout-num {
       font-family:'DM Serif Display', serif;
-      font-size:48px; color:#d4a373; line-height:1;
+      font-size:48px; color:#c9622a; line-height:1;
     }
     .callout-text {
-      font-size:22px; color:rgba(248,249,250,0.55); line-height:1.4;
+      font-size:22px; color:rgba(250,248,243,0.55); line-height:1.4;
     }
 
-    /* gold accent */
     .right::before {
       content:'';
       display:block;
       width:48px; height:2px;
-      background:#d4a373;
+      background:#c9622a;
       border-radius:1px;
     }
   </style>
 </head>
 <body>
 <div class="scene" id="scene">
+  <div class="flow-beam" id="flow-beam"></div>
 
   <div class="left" id="leftPanel">
     <div class="chart-accent-line"></div>
     <div class="chart-title-block">
-      <p class="chart-main-title">不同面料降解所需时间 (年)</p>
-      <p class="chart-subtitle">对比明显：天然纤维 VS 合成纤维</p>
+      <p class="chart-main-title">Friendship closeness score over time without contact</p>
+      <p class="chart-subtitle">Score 0–100 — how emotional intimacy fades by relationship type</p>
     </div>
-    <div id="barContainer"></div>
+    <div id="lineContainer"></div>
   </div>
 
   <div class="right" id="rightPanel">
-    <span class="chapter" id="ch">Chapter 4b · The Evidence</span>
-    <h2 class="headline" id="hl">Some fabrics<br>outlive entire<br><em>civilisations.</em></h2>
-    <p class="body-copy" id="bc">Polyester takes up to 200 years to decompose. Nylon, 40. Meanwhile linen is gone in months — yet the fashion industry produces 60% more synthetic garments than it did 15 years ago.</p>
+    <span class="chapter" id="ch">Chapter 4b · The Drift</span>
+    <h2 class="headline glow-accent" id="hl">Without contact,<br>even close<br>friendships <em>fade.</em></h2>
+    <p class="body-copy" id="bc">Research by sociologist William Rawlins: without recurring contact, most close friendships lose the majority of their emotional intimacy within one year.</p>
     <div class="callout" id="cl">
-      <span class="callout-num">200×</span>
-      <span class="callout-text">longer than<br>natural fibres</span>
+      <span class="callout-num">88%</span>
+      <span class="callout-text">intimacy lost<br>within 12 months</span>
     </div>
   </div>
 </div>
@@ -119,103 +138,103 @@
 <script>
   window.__timelines = window.__timelines || {};
 
-  var barInited = false;
+  var chartInited = false;
 
-  function initBar() {
-    if (barInited) return;
-    barInited = true;
+  function initChart() {
+    if (chartInited) return;
+    chartInited = true;
 
-    var chart = echarts.init(document.getElementById('barContainer'), null, {
+    var chart = echarts.init(document.getElementById('lineContainer'), null, {
       renderer: 'canvas',
       width: 1060, height: 700
     });
 
     chart.setOption({
       backgroundColor: 'transparent',
-      grid: { top:'8%', bottom:'14%', left:'6%', right:'4%' },
+      tooltip: {
+        trigger: 'axis',
+        backgroundColor: 'rgba(12,11,9,0.95)',
+        borderColor: 'rgba(201,98,42,0.3)',
+        textStyle: { color: '#faf8f3', fontSize: 18 }
+      },
+      legend: {
+        data: ['Close friend', 'Good friend', 'Acquaintance'],
+        top: 8, right: 20,
+        textStyle: { color: 'rgba(250,248,243,0.55)', fontSize: 18 },
+        itemWidth: 14, itemHeight: 14
+      },
+      grid: { top: '12%', bottom: '12%', left: '8%', right: '4%' },
       xAxis: {
         type: 'category',
-        data: ['亚麻', '纯棉', '羊毛', '锦纶(尼龙)', '涤纶(聚酯)'],
-        axisLine: { lineStyle:{ color:'rgba(255,255,255,0.1)' } },
-        axisTick: { show:false },
+        data: ['0 mo', '1 mo', '3 mo', '6 mo', '9 mo', '12 mo'],
+        axisLine: { lineStyle: { color: 'rgba(250,248,243,0.1)' } },
+        axisTick: { show: false },
         axisLabel: {
-          color:'#adb5bd',
-          fontSize:22,
-          margin:18,
-          fontFamily:'DM Sans, sans-serif'
+          color: 'rgba(250,248,243,0.5)',
+          fontSize: 20,
+          fontFamily: 'DM Sans, sans-serif'
         }
       },
       yAxis: {
         type: 'value',
-        splitLine: {
-          lineStyle:{ color:'rgba(255,255,255,0.04)', type:'dashed' }
-        },
+        name: 'Closeness Score (0–100)',
+        nameTextStyle: { color: 'rgba(250,248,243,0.35)', fontSize: 16 },
+        min: 0, max: 100,
+        splitLine: { lineStyle: { color: 'rgba(250,248,243,0.05)', type: 'dashed' } },
         axisLabel: {
-          color:'#6c757d',
-          fontSize:18,
-          fontFamily:'DM Sans, sans-serif'
+          color: 'rgba(250,248,243,0.35)',
+          fontSize: 18,
+          fontFamily: 'DM Sans, sans-serif'
         }
       },
-      tooltip: {
-        trigger: 'axis',
-        axisPointer: { type:'none' },
-        backgroundColor:'rgba(20,22,26,0.95)',
-        borderColor:'rgba(255,255,255,0.1)',
-        textStyle:{ color:'#f8f9fa', fontSize:18 },
-        formatter: function(params) {
-          var p = params[0];
-          return p.name + ': <b style="color:#d4a373">' + p.value + ' 年</b>';
-        }
-      },
-      /* Q弹弹入 — elasticOut, 延迟分段揭示 */
       animationDuration: 2000,
-      animationEasing: 'elasticOut',
-      animationDelay: function(idx) { return idx * 180; },
-      series: [{
-        data: [0.5, 1, 5, 40, 200],
-        type: 'bar',
-        barWidth: '32%',
-        itemStyle: {
-          borderRadius: [6, 6, 0, 0],
-          /* 科普色彩逻辑：天然=高级灰，合成=警戒金 */
-          color: function(params) {
-            return params.value >= 40 ? '#d4a373' : 'rgba(255,255,255,0.18)';
-          }
+      animationEasing: 'cubicOut',
+      series: [
+        {
+          name: 'Close friend',
+          type: 'line',
+          smooth: true,
+          data: [100, 88, 68, 42, 24, 12],
+          lineStyle: { color: '#c9622a', width: 3 },
+          itemStyle: { color: '#c9622a' },
+          areaStyle: { color: 'rgba(201,98,42,0.15)' },
+          symbol: 'circle', symbolSize: 8
         },
-        emphasis: {
-          itemStyle: {
-            color: function(params) {
-              return params.value >= 40 ? '#ffe3c2' : 'rgba(255,255,255,0.45)';
-            }
-          }
+        {
+          name: 'Good friend',
+          type: 'line',
+          smooth: true,
+          data: [70, 58, 38, 20, 10, 5],
+          lineStyle: { color: '#4a7fa8', width: 3 },
+          itemStyle: { color: '#4a7fa8' },
+          areaStyle: { color: 'rgba(74,127,168,0.15)' },
+          symbol: 'circle', symbolSize: 8
         },
-        label: {
-          show: true,
-          position: 'top',
-          color: '#f8f9fa',
-          fontSize: 22,
-          fontFamily: 'DM Serif Display, serif',
-          distance: 12,
-          formatter: function(params) {
-            return params.value < 1 ? '< 1 年' : params.value + ' 年';
-          }
+        {
+          name: 'Acquaintance',
+          type: 'line',
+          smooth: true,
+          data: [35, 20, 8, 3, 1, 0],
+          lineStyle: { color: '#5a5a5a', width: 3 },
+          itemStyle: { color: '#5a5a5a' },
+          areaStyle: { color: 'rgba(90,90,90,0.15)' },
+          symbol: 'circle', symbolSize: 8
         }
-      }]
+      ]
     });
   }
 
-  /* ── GSAP Timeline ── */
   var tl = gsap.timeline({ paused: true });
 
   tl
+    .fromTo('#flow-beam', { x:-400 }, { x:2500, duration:2.0, ease:'power1.inOut' }, 0)
+
     .to('#scene', { opacity:1, duration:0.6, ease:'power2.out' }, 0)
 
-    /* chart panel enters first — ECharts bar animates itself */
     .to('#leftPanel', { opacity:1, x:0, duration:0.65, ease:'expo.out' }, 0.2)
     .from('#leftPanel', { x:-30 }, 0.2)
-    .add(function() { initBar(); }, 0.4)
+    .add(function() { initChart(); }, 0.4)
 
-    /* right copy staggers in */
     .to('#ch', { opacity:1, y:0, duration:0.4, ease:'power2.out' }, 0.8)
     .from('#ch', { y:14 }, 0.8)
 
@@ -228,7 +247,6 @@
     .to('#cl', { opacity:1, y:0, duration:0.5, ease:'expo.out' }, 2.0)
     .from('#cl', { y:16 }, 2.0)
 
-    /* callout pulse to reinforce 200× */
     .to('#cl', { scale:1.03, duration:0.22, ease:'power2.out' }, 3.5)
     .to('#cl', { scale:1.0,  duration:0.3,  ease:'power2.in'  }, 3.72)
 

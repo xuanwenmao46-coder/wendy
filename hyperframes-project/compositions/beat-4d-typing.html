@@ -18,7 +18,27 @@
       position:relative;
       display:flex;align-items:center;justify-content:center;
       opacity:0;
+      overflow:hidden;
     }
+
+    /* flowing light beam */
+    .flow-beam {
+      position:absolute;
+      top:-10%; left:0;
+      width:300px; height:120%;
+      background:linear-gradient(90deg,
+        transparent 0%,
+        rgba(201,98,42,0.05) 25%,
+        rgba(255,190,120,0.12) 50%,
+        rgba(201,98,42,0.05) 75%,
+        transparent 100%);
+      transform:skewX(-12deg);
+      pointer-events:none;
+      z-index:50;
+      will-change:transform;
+    }
+    /* ambient glow on accents */
+    .glow-accent { text-shadow: 0 0 40px rgba(201,98,42,0.5), 0 0 80px rgba(201,98,42,0.2); }
 
     /* ── subtle vignette ── */
     .vignette{
@@ -32,7 +52,6 @@
       position:absolute;
       bottom:0;left:0;right:0;height:380px;
       background:
-        /* window glows — scattered warm dots */
         radial-gradient(circle 3px at 18% 60%, rgba(255,220,120,0.15) 0%,transparent 100%),
         radial-gradient(circle 2px at 22% 45%, rgba(255,200,100,0.12) 0%,transparent 100%),
         radial-gradient(circle 3px at 31% 55%, rgba(255,230,140,0.1) 0%,transparent 100%),
@@ -218,6 +237,7 @@
 </head>
 <body>
 <div class="scene" id="scene">
+  <div class="flow-beam" id="flow-beam"></div>
   <div class="vignette"></div>
   <div class="city-bg"></div>
 
@@ -251,21 +271,21 @@
               <span class="cursor" id="cursor"></span>
               <div class="delete-overlay" id="del-overlay"></div>
             </div>
-            <div class="send-btn" id="send-btn">↑</div>
+            <div class="send-btn" id="send-btn">&#x2191;</div>
           </div>
 
         </div>
       </div>
 
       <!-- floating sequence labels -->
-      <div class="seq-label" id="lbl-typing">typing…</div>
-      <div class="seq-label" id="lbl-erasing">deleting…</div>
+      <div class="seq-label" id="lbl-typing">typing&#x2026;</div>
+      <div class="seq-label" id="lbl-erasing">deleting&#x2026;</div>
     </div>
 
     <!-- COPY -->
     <div class="copy">
       <span class="chapter" id="ch">Chapter 4 · What Gets Lost</span>
-      <h2 class="headline" id="hl">What adults lose<br>isn't friends.<br>It's <em>continuity.</em></h2>
+      <h2 class="headline glow-accent" id="hl">What adults lose<br>isn't friends.<br>It's <em>continuity.</em></h2>
       <p class="pull-quote" id="pq">The slow accumulation<br>of <em>shared experiences.</em><br>The random conversations.<br>The ability to just<br><em>exist</em> around someone.</p>
     </div>
 
@@ -317,6 +337,8 @@
   var tl = gsap.timeline({ paused: true });
 
   tl
+    .fromTo('#flow-beam', { x:-400 }, { x:2500, duration:2.0, ease:'power1.inOut' }, 0)
+
     /* scene fade in */
     .to('#scene', { opacity:1, duration:0.7, ease:'power2.out' }, 0)
 
@@ -330,7 +352,7 @@
     .from('#msg-old', { y:10 }, 1.0)
     .to('#msg-time-now', { opacity:1, duration:0.3 }, 1.4)
 
-    /* "typing…" label */
+    /* "typing..." label */
     .to('#lbl-typing', { opacity:1, duration:0.3 }, 1.6)
 
     /* START TYPING */
@@ -342,10 +364,10 @@
     .to('#hl',  { opacity:1, y:0, duration:0.6, ease:'expo.out' }, 2.3)
     .from('#hl',{ y:32 }, 2.3)
 
-    /* typing finishes ~2.5s after start → message complete at ~4.2s */
+    /* typing finishes ~2.5s after start — message complete at ~4.2s */
     /* hold for 1.5s — let it breathe */
 
-    /* "deleting…" label swap */
+    /* "deleting..." label swap */
     .to('#lbl-typing',  { opacity:0, duration:0.2 }, 4.4)
     .to('#lbl-erasing', { opacity:1, duration:0.2 }, 4.5)
 
@@ -359,7 +381,7 @@
       eraseMessage(null);
     }, 4.5)
 
-    /* erasing finishes ~1.8s later → ~6.3s */
+    /* erasing finishes ~1.8s later — ~6.3s */
 
     /* both labels fade out */
     .to('#lbl-erasing', { opacity:0, duration:0.4 }, 6.2)
