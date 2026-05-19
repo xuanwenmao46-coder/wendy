@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=1920, height=1080"/>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{width:1920px;height:1080px;overflow:hidden;background:#0c0b09;font-family:'DM Sans',sans-serif}
+
+    .scene{
+      width:1920px;height:1080px;
+      display:grid;
+      grid-template-columns:680px 1fr;
+      align-items:center;
+      opacity:0;
+    }
+
+    /* ── LEFT copy ── */
+    .left{
+      padding:0 60px 0 140px;
+      display:flex;flex-direction:column;gap:28px;
+    }
+    .chapter{font-size:22px;letter-spacing:5px;text-transform:uppercase;color:#c9622a;opacity:0}
+    .headline{
+      font-family:'DM Serif Display',serif;
+      font-size:80px;line-height:1.0;color:#f8f9fa;opacity:0;
+    }
+    .headline em{color:#c9622a;font-style:italic}
+    .body-copy{
+      font-size:28px;font-weight:300;line-height:1.65;
+      color:rgba(248,249,250,0.5);opacity:0;max-width:500px;
+    }
+    .verdict{
+      display:inline-flex;align-items:center;gap:12px;
+      background:rgba(201,98,42,0.1);
+      border:1px solid rgba(201,98,42,0.25);
+      border-radius:10px;padding:16px 24px;
+      opacity:0;
+    }
+    .verdict-icon{font-size:28px}
+    .verdict-text{font-size:22px;color:rgba(248,249,250,0.7);line-height:1.4}
+    .verdict-text strong{color:#c9622a;font-weight:500}
+
+    /* ── RIGHT: calendar ── */
+    .right{
+      padding:60px 100px 60px 40px;
+      display:flex;flex-direction:column;gap:0;
+      opacity:0;
+    }
+
+    /* calendar header */
+    .cal-header{
+      display:flex;justify-content:space-between;align-items:center;
+      margin-bottom:20px;
+    }
+    .cal-month{
+      font-family:'DM Serif Display',serif;
+      font-size:36px;color:#f8f9fa;
+    }
+    .cal-nav{
+      display:flex;gap:12px;align-items:center;
+    }
+    .cal-nav span{
+      font-size:18px;color:rgba(248,249,250,0.3);
+    }
+
+    /* day labels */
+    .day-labels{
+      display:grid;grid-template-columns:repeat(7,1fr);
+      gap:4px;margin-bottom:8px;
+    }
+    .day-label{
+      text-align:center;font-size:16px;
+      color:rgba(248,249,250,0.25);letter-spacing:2px;
+      text-transform:uppercase;padding-bottom:8px;
+    }
+
+    /* grid */
+    .cal-grid{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      grid-template-rows:repeat(5,1fr);
+      gap:6px;
+      flex:1;
+    }
+    .cal-day{
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(255,255,255,0.05);
+      border-radius:8px;
+      padding:8px 6px 6px;
+      min-height:140px;
+      display:flex;flex-direction:column;
+      gap:4px;
+      position:relative;
+    }
+    .cal-day.weekend{background:rgba(255,255,255,0.015)}
+    .cal-day.today{border-color:rgba(201,98,42,0.4)}
+    .day-num{
+      font-size:16px;color:rgba(248,249,250,0.25);
+      margin-bottom:4px;font-weight:500;
+    }
+    .cal-day.today .day-num{color:#c9622a}
+
+    /* event blocks */
+    .evt{
+      font-size:13px;font-weight:500;
+      padding:5px 8px;border-radius:4px;
+      line-height:1.2;
+      opacity:0;transform:scaleY(0.4);transform-origin:top;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    }
+    /* event colors */
+    .evt.work    {background:rgba(255,255,255,0.12);color:rgba(248,249,250,0.6)}
+    .evt.commute {background:rgba(80,80,90,0.5);color:rgba(200,200,210,0.7)}
+    .evt.gym     {background:rgba(42,76,110,0.5);color:rgba(150,190,230,0.8)}
+    .evt.social  {background:rgba(201,98,42,0.4);color:rgba(248,180,130,0.9)}
+    .evt.meeting {background:rgba(255,255,255,0.07);color:rgba(248,249,250,0.45)}
+    .evt.empty   {background:rgba(201,98,42,0.08);border:1px dashed rgba(201,98,42,0.2);color:rgba(201,98,42,0.4);font-weight:300;font-style:italic}
+
+    /* "No space" final label */
+    .no-space{
+      position:absolute;bottom:0;left:0;right:0;
+      background:rgba(201,98,42,0.15);
+      border-top:1px solid rgba(201,98,42,0.3);
+      border-radius:0 0 8px 8px;
+      padding:6px 8px;
+      font-size:12px;color:rgba(201,98,42,0.8);
+      text-align:center;
+      opacity:0;
+    }
+
+    /* annotation */
+    .annotation{
+      display:flex;gap:16px;margin-top:16px;flex-wrap:wrap;opacity:0;
+    }
+    .ann-item{display:flex;align-items:center;gap:8px;font-size:16px;color:rgba(248,249,250,0.4)}
+    .ann-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+  </style>
+</head>
+<body>
+<div class="scene" id="scene">
+
+  <!-- LEFT -->
+  <div class="left">
+    <span class="chapter" id="ch">Chapter 3 · The Mechanism</span>
+    <h2 class="headline" id="hl">Once time becomes<br><em>scheduled…</em><br>connection becomes<br>conditional.</h2>
+    <p class="body-copy" id="bc">A typical adult week leaves no unstructured time — the kind friendships actually need to form.</p>
+    <div class="verdict" id="vd">
+      <span class="verdict-icon">📅</span>
+      <span class="verdict-text"><strong>0 hours</strong> of unplanned<br>social time this week</span>
+    </div>
+  </div>
+
+  <!-- RIGHT: Calendar -->
+  <div class="right" id="rightPanel">
+    <div class="cal-header">
+      <span class="cal-month">October 2026</span>
+      <div class="cal-nav">
+        <span>‹</span>
+        <span style="font-size:16px;color:rgba(248,249,250,0.2)">Week view</span>
+        <span>›</span>
+      </div>
+    </div>
+    <div class="day-labels">
+      <div class="day-label">MON</div>
+      <div class="day-label">TUE</div>
+      <div class="day-label">WED</div>
+      <div class="day-label">THU</div>
+      <div class="day-label">FRI</div>
+      <div class="day-label">SAT</div>
+      <div class="day-label">SUN</div>
+    </div>
+    <div class="cal-grid" id="calGrid">
+
+      <!-- MON 5 -->
+      <div class="cal-day today">
+        <div class="day-num">5</div>
+        <div class="evt commute" id="e-mon-1">Commute 8:00</div>
+        <div class="evt work" id="e-mon-2">9:00 Team standup</div>
+        <div class="evt meeting" id="e-mon-3">10:30 1:1 w/ Sarah</div>
+        <div class="evt work" id="e-mon-4">12:00 Lunch (desk)</div>
+        <div class="evt meeting" id="e-mon-5">14:00 Strategy review</div>
+        <div class="evt meeting" id="e-mon-6">16:00 All-hands</div>
+        <div class="evt commute" id="e-mon-7">Commute 18:30</div>
+        <div class="evt gym" id="e-mon-8">20:00 Gym</div>
+      </div>
+
+      <!-- TUE 6 -->
+      <div class="cal-day">
+        <div class="day-num">6</div>
+        <div class="evt commute" id="e-tue-1">Commute 8:15</div>
+        <div class="evt work" id="e-tue-2">9:00 Deep work</div>
+        <div class="evt meeting" id="e-tue-3">11:00 Client call</div>
+        <div class="evt work" id="e-tue-4">12:30 Working lunch</div>
+        <div class="evt meeting" id="e-tue-5">14:30 Product sync</div>
+        <div class="evt work" id="e-tue-6">16:30 Emails</div>
+        <div class="evt commute" id="e-tue-7">Commute 18:45</div>
+      </div>
+
+      <!-- WED 7 -->
+      <div class="cal-day">
+        <div class="day-num">7</div>
+        <div class="evt commute" id="e-wed-1">Commute 8:00</div>
+        <div class="evt meeting" id="e-wed-2">9:00 Weekly planning</div>
+        <div class="evt work" id="e-wed-3">10:00 Deep work</div>
+        <div class="evt meeting" id="e-wed-4">12:00 Lunch w/ team</div>
+        <div class="evt meeting" id="e-wed-5">14:00 Design review</div>
+        <div class="evt meeting" id="e-wed-6">16:00 Retrospective</div>
+        <div class="evt commute" id="e-wed-7">Commute 18:30</div>
+        <div class="evt gym" id="e-wed-8">20:30 Gym</div>
+      </div>
+
+      <!-- THU 8 -->
+      <div class="cal-day">
+        <div class="day-num">8</div>
+        <div class="evt commute" id="e-thu-1">Commute 8:30</div>
+        <div class="evt work" id="e-thu-2">9:30 Focus block</div>
+        <div class="evt meeting" id="e-thu-3">11:30 Stakeholder mtg</div>
+        <div class="evt work" id="e-thu-4">13:00 Lunch (desk)</div>
+        <div class="evt meeting" id="e-thu-5">14:00 Sprint review</div>
+        <div class="evt work" id="e-thu-6">16:30 Report writing</div>
+        <div class="evt commute" id="e-thu-7">Commute 19:00</div>
+      </div>
+
+      <!-- FRI 9 -->
+      <div class="cal-day">
+        <div class="day-num">9</div>
+        <div class="evt commute" id="e-fri-1">Commute 8:00</div>
+        <div class="evt meeting" id="e-fri-2">9:00 Standup</div>
+        <div class="evt work" id="e-fri-3">10:00 Q4 planning</div>
+        <div class="evt meeting" id="e-fri-4">12:00 Team lunch</div>
+        <div class="evt meeting" id="e-fri-5">14:30 End of week sync</div>
+        <div class="evt commute" id="e-fri-6">Commute 18:00</div>
+        <div class="evt empty" id="e-fri-7">free time?</div>
+        <div class="no-space" id="e-fri-ns">— no social slots —</div>
+      </div>
+
+      <!-- SAT 10 -->
+      <div class="cal-day weekend">
+        <div class="day-num">10</div>
+        <div class="evt work" id="e-sat-1">Errands 10:00</div>
+        <div class="evt gym" id="e-sat-2">12:00 Gym</div>
+        <div class="evt work" id="e-sat-3">14:00 Chores</div>
+        <div class="evt meeting" id="e-sat-4">16:00 Family call</div>
+        <div class="evt work" id="e-sat-5">Grocery run 18:00</div>
+        <div class="evt empty" id="e-sat-6">hang out?</div>
+        <div class="no-space" id="e-sat-ns">— too exhausted —</div>
+      </div>
+
+      <!-- SUN 11 -->
+      <div class="cal-day weekend">
+        <div class="day-num">11</div>
+        <div class="evt work" id="e-sun-1">Laundry 10:00</div>
+        <div class="evt work" id="e-sun-2">Meal prep 12:00</div>
+        <div class="evt meeting" id="e-sun-3">Admin/bills 14:00</div>
+        <div class="evt work" id="e-sun-4">16:00 Rest</div>
+        <div class="evt work" id="e-sun-5">Prep for Monday 20:00</div>
+        <div class="evt empty" id="e-sun-6">next week?</div>
+        <div class="no-space" id="e-sun-ns">— same story —</div>
+      </div>
+
+    </div><!-- /cal-grid -->
+
+    <!-- Legend -->
+    <div class="annotation" id="annot">
+      <div class="ann-item"><div class="ann-dot" style="background:rgba(255,255,255,0.25)"></div>Work</div>
+      <div class="ann-item"><div class="ann-dot" style="background:rgba(80,80,90,0.7)"></div>Commute</div>
+      <div class="ann-item"><div class="ann-dot" style="background:rgba(42,76,110,0.7)"></div>Exercise</div>
+      <div class="ann-item"><div class="ann-dot" style="background:rgba(201,98,42,0.5)"></div>Social (0)</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+
+  /* All event selectors, grouped by "wave" of reveal */
+  var wave1 = ['#e-mon-1','#e-tue-1','#e-wed-1','#e-thu-1','#e-fri-1','#e-sat-1','#e-sun-1'];
+  var wave2 = ['#e-mon-2','#e-tue-2','#e-wed-2','#e-thu-2','#e-fri-2','#e-sat-2','#e-sun-2',
+               '#e-mon-3','#e-tue-3','#e-wed-3','#e-thu-3','#e-fri-3','#e-sat-3','#e-sun-3'];
+  var wave3 = ['#e-mon-4','#e-tue-4','#e-wed-4','#e-thu-4','#e-fri-4','#e-sat-4','#e-sun-4',
+               '#e-mon-5','#e-tue-5','#e-wed-5','#e-thu-5','#e-fri-5','#e-sat-5','#e-sun-5'];
+  var wave4 = ['#e-mon-6','#e-tue-6','#e-wed-6','#e-thu-6','#e-fri-6','#e-sat-6','#e-sun-6',
+               '#e-mon-7','#e-tue-7','#e-wed-7','#e-thu-7','#e-fri-6',
+               '#e-mon-8','#e-wed-8'];
+  var empties = ['#e-fri-7','#e-sat-6','#e-sun-6'];
+  var noSpaces = ['#e-fri-ns','#e-sat-ns','#e-sun-ns'];
+
+  function showEvents(sels, delay) {
+    gsap.to(sels.join(','), {
+      opacity:1, scaleY:1,
+      duration:0.3, ease:'back.out(1.4)',
+      stagger:0.04, delay:delay
+    });
+  }
+
+  var tl = gsap.timeline({ paused: true });
+
+  tl
+    /* scene in */
+    .to('#scene', { opacity:1, duration:0.5, ease:'power2.out' }, 0)
+
+    /* left copy */
+    .to('#ch',  { opacity:1, y:0, duration:0.4, ease:'power2.out' }, 0.3)
+    .from('#ch',{ y:14 }, 0.3)
+    .to('#hl',  { opacity:1, y:0, duration:0.6, ease:'expo.out' }, 0.55)
+    .from('#hl',{ y:32 }, 0.55)
+    .to('#bc',  { opacity:1, y:0, duration:0.5, ease:'power2.out' }, 1.0)
+    .from('#bc',{ y:20 }, 1.0)
+
+    /* calendar panel */
+    .to('#rightPanel', { opacity:1, duration:0.5, ease:'power2.out' }, 0.6)
+
+    /* wave 1 — commute blocks first (most oppressive visually) */
+    .add(function(){ showEvents(wave1, 0); }, 0.9)
+
+    /* wave 2 — work blocks flood in */
+    .add(function(){ showEvents(wave2, 0); }, 1.5)
+
+    /* wave 3 — meetings layer on top */
+    .add(function(){ showEvents(wave3, 0); }, 2.2)
+
+    /* wave 4 — remaining items, calendar now choked */
+    .add(function(){ showEvents(wave4, 0); }, 2.9)
+
+    /* empty/social slots appear last — highlighted as missing */
+    .add(function(){ showEvents(empties, 0); }, 3.6)
+
+    /* "no space" labels stamp over the empty slots */
+    .to(noSpaces.join(','), { opacity:1, duration:0.4, ease:'power2.out', stagger:0.15 }, 4.0)
+
+    /* verdict card slams in */
+    .to('#vd', { opacity:1, y:0, duration:0.5, ease:'expo.out' }, 4.5)
+    .from('#vd',{ y:16 }, 4.5)
+
+    /* annotation */
+    .to('#annot', { opacity:1, duration:0.4 }, 5.0)
+
+    /* subtle pulse on "0 hours" to drive the point */
+    .to('#vd', { scale:1.02, duration:0.2, ease:'power2.out' }, 5.5)
+    .to('#vd', { scale:1.0,  duration:0.3, ease:'power2.in'  }, 5.7)
+
+    /* fade out */
+    .to('#scene', { opacity:0, duration:0.5, ease:'power2.in' }, 7.5);
+
+  window.__timelines['beat-3b-calendar'] = tl;
+</script>
+</body>
+</html>

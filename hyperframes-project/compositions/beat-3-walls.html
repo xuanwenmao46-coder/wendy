@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=1920, height=1080"/>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html, body { width:1920px; height:1080px; overflow:hidden; background:#0c0b09; font-family:'DM Sans',sans-serif; color:#faf8f3; }
+
+    .scene {
+      width:1920px; height:1080px;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      gap:64px; padding:0 140px;
+      opacity:0;
+    }
+
+    .top { text-align:center; }
+    .chapter { font-size:22px; letter-spacing:5px; text-transform:uppercase; color:#c9622a; display:block; margin-bottom:20px; }
+    .headline {
+      font-family:'DM Serif Display',serif;
+      font-size:88px; line-height:1.05; color:#faf8f3;
+    }
+    .headline em { color:#c9622a; font-style:italic; }
+
+    .cards { display:flex; gap:40px; width:100%; }
+
+    .card {
+      flex:1;
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:24px;
+      padding:56px 52px 52px;
+      display:flex; flex-direction:column; gap:20px;
+      opacity:0; transform:translateY(40px);
+    }
+    .card-number {
+      font-family:'DM Serif Display',serif;
+      font-size:72px; color:#c9622a; line-height:1;
+    }
+    .card-title {
+      font-family:'DM Serif Display',serif;
+      font-size:52px; color:#faf8f3; line-height:1.1;
+    }
+    .card-body {
+      font-size:27px; font-weight:300;
+      color:rgba(250,248,243,0.5); line-height:1.6;
+    }
+    .card-accent {
+      width:48px; height:3px;
+      background:#c9622a; border-radius:2px;
+    }
+  </style>
+</head>
+<body>
+<div class="scene" id="scene">
+  <div class="top">
+    <span class="chapter">Chapter 2 · The Three Walls</span>
+    <h2 class="headline">Friendship needs three things<br><em>adults rarely have.</em></h2>
+  </div>
+  <div class="cards">
+    <div class="card" id="c1">
+      <div class="card-number">01</div>
+      <div class="card-accent"></div>
+      <h3 class="card-title">Proximity</h3>
+      <p class="card-body">Repeated, unplanned contact is how bonds form. Adult schedules replace serendipity with obligations — killing the accidental encounters that spark friendship.</p>
+    </div>
+    <div class="card" id="c2">
+      <div class="card-number">02</div>
+      <div class="card-accent"></div>
+      <h3 class="card-title">Openness</h3>
+      <p class="card-body">Vulnerability accelerates closeness. But adults build emotional armour — professionalism, self-sufficiency — that keeps even well-meaning people at arm's length.</p>
+    </div>
+    <div class="card" id="c3">
+      <div class="card-number">03</div>
+      <div class="card-accent"></div>
+      <h3 class="card-title">Repetition</h3>
+      <p class="card-body">Familiarity builds trust. Adult life is siloed — work, gym, commute — with almost no recurring contexts where you encounter the same new person again and again.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+
+  var tl = gsap.timeline({ paused: true });
+
+  tl
+    .to('#scene', { opacity:1, duration:0.5, ease:'power2.out' }, 0)
+
+    .to('.top', { opacity:1, y:0, duration:0.6, ease:'expo.out' }, 0.3)
+    .from('.top', { opacity:0, y:30 }, 0.3)
+
+    .to('#c1', { opacity:1, y:0, duration:0.55, ease:'expo.out' }, 1.0)
+    .to('#c2', { opacity:1, y:0, duration:0.55, ease:'expo.out' }, 1.35)
+    .to('#c3', { opacity:1, y:0, duration:0.55, ease:'expo.out' }, 1.70)
+
+    /* subtle pulse on each card number to emphasize the beat */
+    .to('.card-number', { color:'#e8844e', duration:0.3, stagger:0.35, ease:'power2.out' }, 2.6)
+    .to('.card-number', { color:'#c9622a', duration:0.5, stagger:0.35, ease:'power2.in' }, 2.9)
+
+    .to('#scene', { opacity:0, duration:0.4, ease:'power2.in' }, 7.6);
+
+  window.__timelines["beat-3-walls"] = tl;
+</script>
+</body>
+</html>

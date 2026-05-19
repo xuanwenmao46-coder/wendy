@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=1920, height=1080"/>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html, body {
+      width:1920px; height:1080px; overflow:hidden;
+      background:#0f1115;
+      font-family:'DM Sans', -apple-system, sans-serif;
+    }
+
+    .scene {
+      width:1920px; height:1080px;
+      display:grid;
+      grid-template-columns: 700px 1fr;
+      align-items:center;
+      opacity:0;
+    }
+
+    /* ── LEFT copy panel ── */
+    .left {
+      padding: 0 60px 0 140px;
+      display:flex; flex-direction:column; gap:28px;
+    }
+    .chapter {
+      font-size:22px; letter-spacing:5px; text-transform:uppercase;
+      color:#d4a373; opacity:0;
+    }
+    .headline {
+      font-family:'DM Serif Display', serif;
+      font-size:80px; line-height:1.0;
+      color:#f8f9fa; opacity:0;
+    }
+    .headline em { color:#d4a373; font-style:italic; }
+    .body-copy {
+      font-size:28px; font-weight:300; line-height:1.65;
+      color:rgba(248,249,250,0.5); opacity:0;
+      max-width:520px;
+    }
+    .stat-row {
+      display:flex; gap:32px; opacity:0;
+    }
+    .stat {
+      display:flex; flex-direction:column; gap:6px;
+    }
+    .stat-num {
+      font-family:'DM Serif Display', serif;
+      font-size:64px; color:#d4a373; line-height:1;
+    }
+    .stat-label {
+      font-size:20px; color:rgba(248,249,250,0.4); line-height:1.4;
+    }
+
+    /* gold top accent (matches original ::after trick) */
+    .left::before {
+      content:'';
+      display:block;
+      width:48px; height:2px;
+      background:#d4a373;
+      border-radius:1px;
+    }
+
+    /* ── RIGHT chart panel ── */
+    .right {
+      padding:80px 100px 80px 40px;
+      display:flex; flex-direction:column; gap:0;
+      opacity:0;
+    }
+    .chart-label {
+      font-size:22px; color:rgba(248,249,250,0.35);
+      letter-spacing:1px; margin-bottom:24px;
+    }
+    .chart-source {
+      font-size:18px; color:rgba(108,117,125,0.8);
+      margin-top:20px; letter-spacing:.5px;
+    }
+    /* ECharts container: matches original 560×440 ratio scaled to 1920 canvas */
+    #pieContainer {
+      width:900px; height:720px;
+    }
+  </style>
+</head>
+<body>
+<div class="scene" id="scene">
+
+  <div class="left" id="leftPanel">
+    <span class="chapter" id="ch">Chapter 4 · The Data</span>
+    <h2 class="headline" id="hl">Fashion's carbon<br>problem is hiding<br>in the <em>fabric.</em></h2>
+    <p class="body-copy" id="bc">38% of the industry's entire carbon footprint comes from just one step — dyeing and treating the fibers we never think about.</p>
+    <div class="stat-row" id="sr">
+      <div class="stat">
+        <span class="stat-num">10%</span>
+        <span class="stat-label">of global CO₂<br>from fashion</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">70%</span>
+        <span class="stat-label">from just the<br>top three steps</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="right" id="rightPanel">
+    <p class="chart-label">全球服装碳足迹构成占比</p>
+    <div id="pieContainer"></div>
+    <p class="chart-source">数据来源：时尚环境基金会 2026 报告</p>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+
+  /* ── ECharts Pie (exact style from reference) ── */
+  var pieInited = false;
+
+  function initPie() {
+    if (pieInited) return;
+    pieInited = true;
+
+    var colorPalette = ['#e9ecef','#ced4da','#adb5bd','#6c757d','#d4a373'];
+    var chart = echarts.init(document.getElementById('pieContainer'), null, {
+      renderer: 'canvas',
+      width: 900, height: 720
+    });
+
+    chart.setOption({
+      backgroundColor: 'transparent',
+      tooltip: {
+        trigger: 'item',
+        backgroundColor: 'rgba(20,22,26,0.95)',
+        borderColor: 'rgba(255,255,255,0.1)',
+        textStyle: { color:'#f8f9fa', fontSize:18 },
+        formatter: '{b}: <b style="color:#d4a373">{c}%</b>'
+      },
+      graphic: [
+        {
+          type: 'text',
+          left: 'center',
+          top: '50%',
+          style: {
+            text: '70%',
+            textAlign: 'center',
+            fill: '#f8f9fa',
+            fontSize: 52,
+            fontWeight: '300',
+            fontFamily: 'DM Serif Display, serif'
+          }
+        },
+        {
+          type: 'text',
+          left: 'center',
+          top: '60%',
+          style: {
+            text: '前三项占比之和',
+            textAlign: 'center',
+            fill: '#6c757d',
+            fontSize: 20,
+            letterSpacing: 2
+          }
+        }
+      ],
+      series: [{
+        type: 'pie',
+        radius: ['42%', '62%'],
+        center: ['50%', '54%'],
+        avoidLabelOverlap: true,
+        itemStyle: {
+          borderColor: '#0f1115',
+          borderWidth: 6
+        },
+        label: {
+          show: true,
+          position: 'outside',
+          formatter: '{b}\n{d}%',
+          fontSize: 18,
+          lineHeight: 26
+        },
+        labelLine: {
+          lineStyle: { color:'rgba(255,255,255,0.15)' },
+          smooth: 0.2
+        },
+        animationDuration: 1800,
+        animationEasing: 'exponentialOut',
+        animationDelay: 200,
+        data: [
+          { value:38, name:'面料生产与染色',
+            itemStyle:{ color: colorPalette[4] },
+            label:{ color:'#d4a373', fontWeight:'500', fontSize:20 }
+          },
+          { value:20, name:'原材料种植/提取',
+            itemStyle:{ color: colorPalette[0] },
+            label:{ color:'#e9ecef' }
+          },
+          { value:12, name:'成衣运输与物流',
+            itemStyle:{ color: colorPalette[1] },
+            label:{ color:'#ced4da' }
+          },
+          { value:18, name:'消费者日常洗涤',
+            itemStyle:{ color: colorPalette[2] },
+            label:{ color:'#adb5bd' }
+          },
+          { value:12, name:'废弃与循环回收',
+            itemStyle:{ color: colorPalette[3] },
+            label:{ color:'#6c757d' }
+          }
+        ]
+      }]
+    });
+  }
+
+  /* ── GSAP Timeline ── */
+  var tl = gsap.timeline({ paused: true });
+
+  tl
+    /* scene fade in */
+    .to('#scene', { opacity:1, duration:0.6, ease:'power2.out' }, 0)
+
+    /* left copy stagger */
+    .to('#ch', { opacity:1, y:0, duration:0.45, ease:'power2.out' }, 0.3)
+    .from('#ch', { y:16 }, 0.3)
+
+    .to('#hl', { opacity:1, y:0, duration:0.65, ease:'expo.out' }, 0.55)
+    .from('#hl', { y:36 }, 0.55)
+
+    .to('#bc', { opacity:1, y:0, duration:0.5, ease:'power2.out' }, 1.05)
+    .from('#bc', { y:20 }, 1.05)
+
+    .to('#sr', { opacity:1, y:0, duration:0.5, ease:'power2.out' }, 1.4)
+    .from('#sr', { y:20 }, 1.4)
+
+    /* right panel + init chart */
+    .to('#rightPanel', { opacity:1, duration:0.5, ease:'power2.out' }, 0.9)
+    .add(function() { initPie(); }, 1.0)
+
+    /* subtle gold pulse on stat numbers to call attention */
+    .to('.stat-num', { scale:1.04, duration:0.25, ease:'power2.out', stagger:0.2 }, 3.2)
+    .to('.stat-num', { scale:1.0,  duration:0.3,  ease:'power2.in',  stagger:0.2 }, 3.45)
+
+    /* fade out */
+    .to('#scene', { opacity:0, duration:0.5, ease:'power2.in' }, 7.5);
+
+  window.__timelines['beat-4b-pie'] = tl;
+</script>
+</body>
+</html>

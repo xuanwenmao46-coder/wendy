@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=1920, height=1080"/>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html, body { width:1920px; height:1080px; overflow:hidden; background:#0c0b09; font-family:'DM Sans',sans-serif; color:#faf8f3; }
+
+    .scene {
+      width:1920px; height:1080px;
+      display:grid;
+      grid-template-columns: 680px 1fr;
+      align-items:center;
+      opacity:0;
+    }
+
+    .left {
+      padding:0 80px 0 140px;
+      display:flex; flex-direction:column; gap:24px;
+    }
+
+    .chapter {
+      font-size:22px; letter-spacing:5px; text-transform:uppercase;
+      color:#c9622a; opacity:0;
+    }
+    .headline {
+      font-family:'DM Serif Display',serif;
+      font-size:96px; line-height:1.0;
+      color:#faf8f3; opacity:0;
+    }
+    .headline em { color:#c9622a; font-style:italic; }
+    .body-copy {
+      font-size:30px; font-weight:300; line-height:1.6;
+      color:rgba(250,248,243,0.55); opacity:0;
+      max-width:520px;
+    }
+
+    .right {
+      padding:80px 100px 80px 60px;
+      display:flex; flex-direction:column;
+    }
+    .chart-title {
+      font-size:26px; color:rgba(250,248,243,0.4);
+      letter-spacing:1px; margin-bottom:32px; opacity:0;
+    }
+    .chart-wrap {
+      position:relative; width:100%; height:680px; opacity:0;
+    }
+  </style>
+</head>
+<body>
+<div class="scene" id="scene">
+  <div class="left">
+    <span class="chapter" id="ch">Chapter 1</span>
+    <h2 class="headline" id="hl">Social networks<br>peak at <em>25.</em><br>Then shrink.</h2>
+    <p class="body-copy" id="bc">With every decade, the average adult loses close friends — not from conflict, but from circumstance.</p>
+  </div>
+  <div class="right">
+    <p class="chart-title" id="ct">Avg. close friends by age group</p>
+    <div class="chart-wrap" id="cw">
+      <canvas id="barChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+
+  var chartDrawn = false;
+
+  function drawChart() {
+    if (chartDrawn) return;
+    chartDrawn = true;
+
+    var ctx = document.getElementById('barChart');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['15–24', '25–34', '35–44', '45–54', '55–64', '65+'],
+        datasets: [{
+          label: 'Avg. close friends',
+          data: [6.6, 5.2, 4.0, 3.1, 2.6, 2.1],
+          backgroundColor: [
+            '#c9622a','#c9622a',
+            '#7a7568','#5f5e5a','#444441','#2c2c2a'
+          ],
+          borderRadius: 8,
+          borderSkipped: false,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 1400, easing: 'easeOutQuart' },
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: false }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            border: { display: false },
+            ticks: {
+              color: 'rgba(250,248,243,0.4)',
+              font: { size: 26, family: "'DM Sans', sans-serif" }
+            }
+          },
+          y: {
+            min: 0, max: 8,
+            grid: { color: 'rgba(250,248,243,0.06)' },
+            border: { display: false },
+            ticks: {
+              color: 'rgba(250,248,243,0.3)',
+              font: { size: 24, family: "'DM Sans', sans-serif" },
+              stepSize: 2
+            }
+          }
+        }
+      }
+    });
+  }
+
+  var tl = gsap.timeline({ paused: true });
+
+  tl
+    .to('#scene', { opacity:1, duration:0.5, ease:'power2.out' }, 0)
+
+    .to('#ch', { opacity:1, y:0, duration:0.4, ease:'power2.out' }, 0.3)
+    .from('#ch', { y:16 }, 0.3)
+
+    .to('#hl', { opacity:1, y:0, duration:0.6, ease:'expo.out' }, 0.55)
+    .from('#hl', { y:40 }, 0.55)
+
+    .to('#bc', { opacity:1, y:0, duration:0.5, ease:'power2.out' }, 1.0)
+    .from('#bc', { y:20 }, 1.0)
+
+    .to('#ct', { opacity:1, duration:0.4 }, 1.2)
+    .to('#cw', { opacity:1, duration:0.4 }, 1.4)
+
+    .add(function() { drawChart(); }, 1.4)
+
+    .to('#scene', { opacity:0, duration:0.4, ease:'power2.in' }, 5.6);
+
+  window.__timelines["beat-2-cliff"] = tl;
+</script>
+</body>
+</html>
