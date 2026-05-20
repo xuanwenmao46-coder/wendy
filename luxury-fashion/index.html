@@ -6,142 +6,293 @@
   <script src="./node_modules/gsap/dist/gsap.min.js"></script>
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
-    html, body { width:1920px; height:1080px; overflow:hidden; background:#ffffff; }
+    html, body { width:1920px; height:1080px; overflow:hidden; }
 
     .scene {
       position:relative;
       width:1920px; height:1080px;
+      background:#ffffff;
       opacity:0;
     }
 
-    /* subtle grain */
+    /* Micro paper grain */
     .grain {
       position:absolute; inset:0;
-      background-image:radial-gradient(#000 0.5px, transparent 0.5px);
-      background-size:6px 6px;
-      opacity:0.03;
+      background-image:radial-gradient(rgba(0,0,0,0.48) 0.28px, transparent 0.28px);
+      background-size:2.8px 2.8px;
+      opacity:0.038;
       pointer-events:none;
+      z-index:12;
     }
 
-    /* quarter-arc corner decorations */
-    .deco {
+    /* Soft editorial vignette */
+    .vignette {
+      position:absolute; inset:0;
+      background:radial-gradient(ellipse 82% 76% at 50% 50%,
+        transparent 55%,
+        rgba(220,210,198,0.20) 80%,
+        rgba(200,188,175,0.32) 100%);
+      pointer-events:none;
+      z-index:11;
+    }
+
+    /* Ambient warm glow orb — follows cursor */
+    .amb-orb {
       position:absolute;
-      width:140px; height:140px;
-      border:1px solid rgba(188,172,150,0.35);
+      width:760px; height:760px;
       border-radius:50%;
+      background:radial-gradient(circle,
+        rgba(225,208,185,0.16) 0%,
+        rgba(218,198,172,0.07) 45%,
+        transparent 70%);
       pointer-events:none;
+      z-index:1;
     }
-    .deco-l { left:-40px; top:280px; border-right:none; border-bottom:none; transform:rotate(-25deg); }
-    .deco-r { right:-40px; bottom:120px; border-left:none; border-top:none; transform:rotate(-25deg); }
 
-    /* header */
+    /* Decorative botanical overlay */
+    .deco-svg {
+      position:absolute; inset:0;
+      pointer-events:none;
+      z-index:2;
+    }
+
+    /* ── Header ──────────────────────────────────────────── */
     .header {
       position:absolute;
-      left:0; right:0; top:46px;
+      left:0; right:0; top:34px;
       text-align:center;
-    }
-    .header h1 {
-      font-family:'Times New Roman', serif;
-      font-size:72px;
-      font-weight:400;
-      color:#4b4848;
-      letter-spacing:-2px;
-      line-height:1;
-      opacity:0;
-    }
-    .header p {
-      font-family:Helvetica, sans-serif;
-      font-size:18px;
-      letter-spacing:6px;
-      color:#8b847d;
-      margin-top:14px;
-      opacity:0;
+      z-index:5;
     }
 
-    /* legend */
-    .legend {
-      position:absolute;
-      left:0; right:0;
-      top:822px;
-      display:flex;
-      justify-content:center;
-      gap:80px;
-      align-items:center;
-      opacity:0;
+    .orn-row {
+      display:flex; align-items:center; justify-content:center;
+      gap:13px;
     }
-    .leg-item {
-      display:flex;
-      align-items:center;
-      gap:14px;
-      font-family:Helvetica, sans-serif;
-      font-size:22px;
-      font-weight:300;
-      color:#6f665e;
+    .orn-line { height:0.8px; background:rgba(188,168,148,0.52); flex-shrink:0; }
+    .orn-diamond {
+      width:5px; height:5px;
+      transform:rotate(45deg);
+      border:0.7px solid rgba(188,168,148,0.58);
+      flex-shrink:0;
     }
-    .leg-dot {
-      width:14px; height:14px;
+    .orn-dot {
+      width:2.5px; height:2.5px;
       border-radius:50%;
+      background:rgba(188,168,148,0.52);
       flex-shrink:0;
     }
 
-    /* footer */
-    .footer {
-      position:absolute;
-      left:0; right:0;
-      top:940px;
-      text-align:center;
-      font-family:Helvetica, sans-serif;
-      font-size:20px;
-      font-weight:300;
-      color:#8f8a84;
-      line-height:1.9;
+    .main-title {
+      font-family:'playfair display', Didot, Georgia, serif;
+      font-size:66px;
+      font-weight:400;
+      color:#302c29;
+      letter-spacing:-1.8px;
+      line-height:1;
+      margin-top:15px;
       opacity:0;
     }
+
+    .subtitle {
+      font-family:Helvetica, 'Helvetica Neue', sans-serif;
+      font-size:12px;
+      font-weight:400;
+      letter-spacing:9px;
+      color:#8a7d72;
+      margin-top:11px;
+      text-transform:uppercase;
+      opacity:0;
+    }
+
+    /* ── Legend ──────────────────────────────────────────── */
+    .legend {
+      position:absolute;
+      left:0; right:0; top:840px;
+      display:flex; justify-content:center;
+      gap:68px; align-items:center;
+      opacity:0;
+      z-index:5;
+    }
+    .leg-item {
+      display:flex; align-items:center; gap:11px;
+      font-family:Helvetica, sans-serif;
+      font-size:19px; font-weight:300;
+      color:#706660; letter-spacing:0.4px;
+    }
+    .leg-dot {
+      width:11px; height:11px;
+      border-radius:50%; flex-shrink:0;
+    }
+
+    /* ── Footer ──────────────────────────────────────────── */
+    .footer {
+      position:absolute;
+      left:0; right:0; top:944px;
+      text-align:center;
+      font-family:Helvetica, sans-serif;
+      font-size:17px; font-weight:300;
+      color:#887e78; line-height:1.88;
+      letter-spacing:0.2px;
+      opacity:0;
+      z-index:5;
+    }
+
+    /* ── Bar hover (CSS glow transition) ─────────────────── */
+    .bw { cursor:pointer; }
   </style>
 </head>
 <body>
+
 <div class="scene" id="scene"
      data-composition-id="luxury-fashion-chart"
      data-width="1920" data-height="1080"
      data-start="0" data-duration="10">
 
   <div class="grain"></div>
-  <div class="deco deco-l"></div>
-  <div class="deco deco-r"></div>
+  <div class="vignette"></div>
+  <div class="amb-orb" id="amb-orb" style="left:610px;top:190px;"></div>
 
-  <div class="header">
-    <h1 id="ttl">Best Seller Product</h1>
-    <p id="sub">STUDIO SHODWE</p>
-  </div>
+  <!-- ── Botanical corner decorations ──────────────────────── -->
+  <svg class="deco-svg" viewBox="0 0 1920 1080" width="1920" height="1080">
 
-  <!-- chart SVG sits in the middle band (y 165–815 of the 1080px canvas) -->
-  <svg id="bar-svg" width="1920" height="650"
-       style="position:absolute;left:0;top:165px;"
-       viewBox="0 0 1920 650"
-       aria-label="Grouped bar chart: best seller fashion products by item">
-    <defs>
-      <!-- userSpaceOnUse spans the full chart height so taller bars show more of the light top -->
-      <linearGradient id="g-brown" x1="0" y1="30" x2="0" y2="550" gradientUnits="userSpaceOnUse">
-        <stop offset="0%"   stop-color="#b87860"/>
-        <stop offset="100%" stop-color="#7b4f3d"/>
-      </linearGradient>
-      <linearGradient id="g-clay" x1="0" y1="30" x2="0" y2="550" gradientUnits="userSpaceOnUse">
-        <stop offset="0%"   stop-color="#d4a080"/>
-        <stop offset="100%" stop-color="#b07b60"/>
-      </linearGradient>
-      <linearGradient id="g-cream" x1="0" y1="30" x2="0" y2="550" gradientUnits="userSpaceOnUse">
-        <stop offset="0%"   stop-color="#d9cebc"/>
-        <stop offset="100%" stop-color="#b0a088"/>
-      </linearGradient>
-    </defs>
+    <!-- Top-left botanical -->
+    <g id="dtl" opacity="0">
+      <path d="M 52,28 C 52,78 34,145 52,218 C 62,262 44,296 30,338"
+            stroke="#c4ae98" stroke-width="0.75" fill="none" stroke-linecap="round"/>
+      <path d="M 50,136 C 86,120 112,132 104,158 C 96,178 60,168 50,136 Z"
+            fill="rgba(196,174,152,0.09)" stroke="#c4ae98" stroke-width="0.6" stroke-linecap="round"/>
+      <path d="M 54,200 C 92,185 118,200 110,226 C 102,246 66,236 54,200 Z"
+            fill="rgba(196,174,152,0.07)" stroke="#c4ae98" stroke-width="0.55" stroke-linecap="round"/>
+      <path d="M 50,136 Q 86,120 112,132"
+            stroke="#c4ae98" stroke-width="0.45" fill="none" stroke-linecap="round"/>
+      <circle cx="52" cy="28" r="1.7" fill="#c4ae98" opacity="0.55"/>
+      <circle cx="30" cy="338" r="1.2" fill="#c4ae98" opacity="0.38"/>
+    </g>
+
+    <!-- Bottom-right botanical -->
+    <g id="dbr" opacity="0">
+      <path d="M 1868,1052 C 1868,1002 1886,935 1868,862 C 1858,818 1876,784 1890,742"
+            stroke="#c4ae98" stroke-width="0.75" fill="none" stroke-linecap="round"/>
+      <path d="M 1870,944 C 1834,960 1808,948 1816,922 C 1824,902 1860,914 1870,944 Z"
+            fill="rgba(196,174,152,0.09)" stroke="#c4ae98" stroke-width="0.6" stroke-linecap="round"/>
+      <path d="M 1866,880 C 1828,896 1802,882 1812,856 C 1820,836 1856,850 1866,880 Z"
+            fill="rgba(196,174,152,0.07)" stroke="#c4ae98" stroke-width="0.55" stroke-linecap="round"/>
+      <circle cx="1868" cy="1052" r="1.7" fill="#c4ae98" opacity="0.55"/>
+      <circle cx="1890" cy="742" r="1.2" fill="#c4ae98" opacity="0.38"/>
+    </g>
+
+    <!-- Top-right thin accent -->
+    <g id="dtr" opacity="0">
+      <path d="M 1882,46 C 1882,96 1896,128 1880,168"
+            stroke="#c4ae98" stroke-width="0.5" fill="none" stroke-linecap="round"/>
+      <circle cx="1882" cy="46" r="1.2" fill="#c4ae98" opacity="0.45"/>
+      <circle cx="1880" cy="168" r="0.9" fill="#c4ae98" opacity="0.32"/>
+    </g>
+
+    <!-- Bottom-left thin accent -->
+    <g id="dbl" opacity="0">
+      <path d="M 38,922 C 38,962 24,992 38,1034"
+            stroke="#c4ae98" stroke-width="0.5" fill="none" stroke-linecap="round"/>
+      <circle cx="38" cy="922" r="1.2" fill="#c4ae98" opacity="0.45"/>
+      <circle cx="38" cy="1034" r="0.9" fill="#c4ae98" opacity="0.32"/>
+    </g>
+
   </svg>
 
-  <div class="legend" id="leg">
-    <div class="leg-item"><span class="leg-dot" style="background:#9a6752"></span>T-shirt</div>
-    <div class="leg-item"><span class="leg-dot" style="background:#cf9c80"></span>Sweater</div>
-    <div class="leg-item"><span class="leg-dot" style="background:#c0b09a"></span>Jeans</div>
+  <!-- ── Header ─────────────────────────────────────────────── -->
+  <div class="header">
+    <div class="orn-row" id="orn-top" style="opacity:0;">
+      <div class="orn-line" style="width:72px;"></div>
+      <div class="orn-dot"></div>
+      <div class="orn-diamond"></div>
+      <div class="orn-dot"></div>
+      <div class="orn-line" style="width:72px;"></div>
+    </div>
+
+    <h1 class="main-title" id="ttl">Best Seller Product</h1>
+    <p class="subtitle" id="sub">Studio Shodwe</p>
+
+    <div class="orn-row" id="orn-bot" style="opacity:0;margin-top:15px;">
+      <div class="orn-line" style="width:44px;"></div>
+      <div class="orn-diamond"></div>
+      <div class="orn-line" style="width:44px;"></div>
+    </div>
   </div>
 
+  <!-- ── Bar chart SVG ──────────────────────────────────────── -->
+  <svg id="chart-svg" width="1920" height="680"
+       style="position:absolute;left:0;top:168px;z-index:3;"
+       viewBox="0 0 1920 680"
+       aria-label="Grouped bar chart showing best seller fashion products">
+    <defs>
+
+      <!-- Glass bar gradients (objectBoundingBox: highlight always at top of each bar) -->
+      <linearGradient id="gb0" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"   stop-color="rgba(255,255,255,0.54)"/>
+        <stop offset="6%"   stop-color="#c49272"/>
+        <stop offset="42%"  stop-color="#a87058"/>
+        <stop offset="100%" stop-color="#6a3d2e"/>
+      </linearGradient>
+
+      <linearGradient id="gb1" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"   stop-color="rgba(255,255,255,0.54)"/>
+        <stop offset="6%"   stop-color="#e2ba9a"/>
+        <stop offset="42%"  stop-color="#cb997e"/>
+        <stop offset="100%" stop-color="#9a6244"/>
+      </linearGradient>
+
+      <linearGradient id="gb2" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"   stop-color="rgba(255,255,255,0.50)"/>
+        <stop offset="6%"   stop-color="#b9c7c0"/>
+        <stop offset="42%"  stop-color="#9baaa4"/>
+        <stop offset="100%" stop-color="#628090"/>
+      </linearGradient>
+
+      <!-- Horizontal light sweep (left → right) -->
+      <linearGradient id="sg" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%"   stop-color="white" stop-opacity="0"/>
+        <stop offset="50%"  stop-color="white" stop-opacity="0.44"/>
+        <stop offset="100%" stop-color="white" stop-opacity="0"/>
+      </linearGradient>
+
+      <!-- Drop shadow filter for bars -->
+      <filter id="fs" x="-18%" y="-8%" width="136%" height="130%">
+        <feDropShadow dx="0" dy="5" stdDeviation="9"
+                      flood-color="rgba(90,55,38,0.15)"/>
+      </filter>
+
+      <!-- Glow filter for hover -->
+      <filter id="fg" x="-38%" y="-38%" width="176%" height="176%">
+        <feGaussianBlur stdDeviation="13" result="blur"/>
+        <feFlood flood-color="rgba(195,145,108,0.40)" result="col"/>
+        <feComposite in="col" in2="blur" operator="in" result="glow"/>
+        <feMerge>
+          <feMergeNode in="glow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+
+    </defs>
+    <!-- chart elements inserted by JS -->
+  </svg>
+
+  <!-- ── Legend ─────────────────────────────────────────────── -->
+  <div class="legend" id="leg">
+    <div class="leg-item">
+      <span class="leg-dot" style="background:linear-gradient(140deg,#c49272,#6a3d2e);"></span>
+      T-shirt
+    </div>
+    <div class="leg-item">
+      <span class="leg-dot" style="background:linear-gradient(140deg,#e2ba9a,#9a6244);"></span>
+      Sweater
+    </div>
+    <div class="leg-item">
+      <span class="leg-dot" style="background:linear-gradient(140deg,#b9c7c0,#628090);"></span>
+      Jeans
+    </div>
+  </div>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
   <div class="footer" id="footer">
     Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>
     Donec quis erat et quam iaculis faucibus at sit amet nibh.
@@ -152,100 +303,219 @@
 <script>
   window.__timelines = window.__timelines || {};
 
-  // ── Chart geometry (SVG-local coords, SVG starts at canvas y=165) ──
-  var CL  = 300;   // chart left x
-  var CT  = 30;    // chart top y
-  var CW  = 1320;  // chart width
-  var CH  = 520;   // chart height
-  var CB  = 550;   // chart bottom y = CT + CH
+  // ── Chart geometry ────────────────────────────────────────────────
+  var CL  = 280;    // chart left x (SVG-local)
+  var CT  = 18;     // chart top y
+  var CW  = 1360;   // chart width
+  var CH  = 572;    // chart height
+  var CB  = 590;    // chart bottom = CT + CH
   var MAX = 25;
-  var PPU = CH / MAX; // px per unit = 20.8
+  var PPU = CH / MAX;  // px per unit ≈ 22.88
 
   var LABELS   = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5'];
   var T_SHIRT  = [5,  8, 10, 14, 20];
   var SWEATER  = [5,  4,  5,  8,  8];
   var JEANS    = [0,  8, 15, 18, 22];
   var DATASETS = [T_SHIRT, SWEATER, JEANS];
-  var FILLS    = ['url(#g-brown)', 'url(#g-clay)', 'url(#g-cream)'];
+  var FILLS    = ['url(#gb0)', 'url(#gb1)', 'url(#gb2)'];
+  var VCOLS    = ['#a87058', '#cb997e', '#9baaa4'];  // value-label colors
 
-  var GW   = CW / 5;              // group width = 264
-  var BW   = 70;                   // bar width
-  var BGAP = 16;                   // gap between bars in a group
-  var TBW  = 3 * BW + 2 * BGAP;  // total bars width = 242
-  var GM   = (GW - TBW) / 2;     // group left margin = 11
+  var GW   = CW / 5;               // group width = 272
+  var BW   = 68;                    // bar width
+  var BGAP = 18;                    // gap between bars in group
+  var TBW  = 3 * BW + 2 * BGAP;   // total bars width = 240
+  var GM   = (GW - TBW) / 2;      // group margin = 16
 
-  var svg  = document.getElementById('bar-svg');
+  var svg  = document.getElementById('chart-svg');
   var html = '';
 
-  // Grid lines + y-axis labels (start opacity 0 for staggered reveal)
+  // ── Grid lines + y-axis labels ───────────────────────────────────
   [0, 5, 10, 15, 20, 25].forEach(function(v) {
-    var y = (CB - v * PPU).toFixed(1);
-    html += '<line id="gv' + v + '" x1="' + CL + '" y1="' + y + '" x2="' + (CL + CW) + '" y2="' + y
-          + '" stroke="rgba(160,145,130,0.18)" stroke-width="1" opacity="0"/>';
-    html += '<text x="' + (CL - 14) + '" y="' + (+y + 5).toFixed(1) + '" text-anchor="end"'
-          + ' font-family="Helvetica,sans-serif" font-size="16" fill="#9d958e" opacity="0" id="gy' + v + '">' + v + '</text>';
+    var y   = (CB - v * PPU).toFixed(1);
+    var isBase = (v === 0);
+    html += '<line id="gv' + v + '"'
+          + ' x1="' + CL + '" y1="' + y + '"'
+          + ' x2="' + (CL + CW) + '" y2="' + y + '"'
+          + ' stroke="' + (isBase ? 'rgba(170,152,135,0.32)' : 'rgba(170,152,135,0.11)') + '"'
+          + ' stroke-width="' + (isBase ? '0.9' : '0.7') + '"'
+          + ' opacity="0"/>';
+    html += '<text id="gy' + v + '"'
+          + ' x="' + (CL - 18) + '" y="' + (+y + 5).toFixed(1) + '"'
+          + ' text-anchor="end"'
+          + ' font-family="Helvetica,sans-serif" font-size="13"'
+          + ' fill="#b2a49c" opacity="0">' + v + '</text>';
   });
 
-  // Bars and x-axis labels
+  // ── Bars, x-axis labels, value labels ────────────────────────────
   LABELS.forEach(function(lbl, i) {
-    var gx = CL + i * GW + GM;
-    var cx = (CL + i * GW + GW / 2).toFixed(1);
+    var gx  = CL + i * GW + GM;
+    var gcx = (CL + i * GW + GW / 2).toFixed(1);
 
-    html += '<text id="xl' + i + '" x="' + cx + '" y="' + (CB + 42) + '" text-anchor="middle"'
-          + ' font-family="Helvetica,sans-serif" font-size="18" fill="#6e665f" opacity="0">' + lbl + '</text>';
+    html += '<text id="xl' + i + '"'
+          + ' x="' + gcx + '" y="' + (CB + 44) + '"'
+          + ' text-anchor="middle"'
+          + ' font-family="Helvetica,sans-serif" font-size="15"'
+          + ' fill="#8c8078" opacity="0">' + lbl + '</text>';
 
     DATASETS.forEach(function(ds, j) {
-      var bx = (gx + j * (BW + BGAP)).toFixed(1);
-      html += '<rect id="b' + i + j + '" x="' + bx + '" y="' + CB + '" width="' + BW + '" height="0"'
-            + ' fill="' + FILLS[j] + '" rx="8"/>';
+      var val  = ds[i];
+      var bx   = (gx + j * (BW + BGAP)).toFixed(1);
+      var bcx  = (+bx + BW / 2).toFixed(1);
+      var fh   = +(val * PPU).toFixed(1);
+      var fy   = +(CB - fh).toFixed(1);
+
+      html += '<g class="bw" id="bw' + i + j + '"'
+            + ' data-i="' + i + '" data-j="' + j + '">';
+
+      // Bar (starts as 1-height to avoid objectBoundingBox gradient artefact)
+      html += '<rect id="b' + i + j + '" class="br"'
+            + ' x="' + bx + '" y="' + (CB - 1) + '"'
+            + ' width="' + BW + '" height="1"'
+            + ' fill="' + FILLS[j] + '" rx="10"'
+            + ' stroke="rgba(255,255,255,0.28)" stroke-width="1"'
+            + ' filter="url(#fs)"/>';
+
+      // Value label (positioned at final bar top, initially invisible)
+      if (val > 0) {
+        html += '<text id="vl' + i + j + '"'
+              + ' x="' + bcx + '" y="' + (fy - 11) + '"'
+              + ' text-anchor="middle"'
+              + ' font-family="Helvetica,sans-serif" font-size="12"'
+              + ' font-weight="500" letter-spacing="0.6"'
+              + ' fill="' + VCOLS[j] + '" opacity="0">' + val + '</text>';
+      }
+
+      html += '</g>';
     });
   });
+
+  // ── Light sweep rect (spans full chart width, slides left → right) ─
+  html += '<rect id="sweep"'
+        + ' x="-270" y="' + CT + '" width="270" height="' + CH + '"'
+        + ' fill="url(#sg)" opacity="0"/>';
 
   svg.insertAdjacentHTML('beforeend', html);
 
-  // ── GSAP timeline ──────────────────────────────────────────────────
+  // ── GSAP main timeline ────────────────────────────────────────────
   var tl = gsap.timeline({ paused: true });
 
-  // Scene fade-in
-  tl.to('#scene', { opacity: 1, duration: 0.6, ease: 'power2.out' }, 0);
+  // Scene
+  tl.to('#scene', { opacity: 1, duration: 0.75, ease: 'power2.out' }, 0);
 
-  // Header
-  tl.to('#ttl', { opacity: 1, duration: 0.75, ease: 'expo.out' }, 0.35);
-  tl.from('#ttl', { y: 22 }, 0.35);
-  tl.to('#sub', { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.85);
+  // Botanical decor
+  tl.to('#dtl, #dbr', { opacity: 1, duration: 1.4, ease: 'power2.out', stagger: 0.2 }, 0.15);
+  tl.to('#dtr, #dbl', { opacity: 1, duration: 1.0, ease: 'power2.out', stagger: 0.15 }, 0.25);
 
-  // Grid lines (staggered)
+  // Header ornament top
+  tl.to('#orn-top', { opacity: 1, duration: 0.55, ease: 'power2.out' }, 0.32);
+  tl.from('#orn-top', { y: -10 }, 0.32);
+
+  // Title
+  tl.to('#ttl', { opacity: 1, duration: 0.9, ease: 'expo.out' }, 0.5);
+  tl.from('#ttl', { y: 28 }, 0.5);
+
+  // Subtitle + ornament bottom
+  tl.to('#sub', { opacity: 1, duration: 0.55, ease: 'power2.out' }, 1.1);
+  tl.to('#orn-bot', { opacity: 1, duration: 0.45, ease: 'power2.out' }, 1.18);
+  tl.from('#orn-bot', { y: 8 }, 1.18);
+
+  // Grid lines (staggered, bottom-up order feels more natural)
   [0, 5, 10, 15, 20, 25].forEach(function(v, idx) {
-    var at = 0.95 + idx * 0.04;
-    tl.to('#gv' + v, { opacity: 1, duration: 0.3 }, at);
-    tl.to('#gy' + v, { opacity: 1, duration: 0.3 }, at);
+    var at = 1.05 + idx * 0.055;
+    tl.to('#gv' + v + ', #gy' + v, { opacity: 1, duration: 0.38, ease: 'power2.out' }, at);
   });
 
-  // Bars (staggered by item group)
+  // Bars (staggered by group, then within group)
   LABELS.forEach(function(_, i) {
-    var at = 1.3 + i * 0.18;
+    var atGrp = 1.38 + i * 0.15;
     DATASETS.forEach(function(ds, j) {
       var val = ds[i];
-      if (val === 0) return; // skip zero-value bars
-      var fh = +(val * PPU).toFixed(1);
-      var fy = +(CB - fh).toFixed(1);
-      tl.to('#b' + i + j, { attr: { height: fh, y: fy }, duration: 0.65, ease: 'back.out(1.4)' }, at + j * 0.06);
+      if (val === 0) return;
+      var fh  = +(val * PPU).toFixed(1);
+      var fy  = +(CB - fh).toFixed(1);
+      tl.to('#b' + i + j, {
+        attr: { height: fh, y: fy },
+        duration: 0.72,
+        ease: 'back.out(1.55)'
+      }, atGrp + j * 0.07);
     });
-    tl.to('#xl' + i, { opacity: 1, duration: 0.3 }, at + 0.5);
+    // X-label after group bars start
+    tl.to('#xl' + i, { opacity: 1, duration: 0.3 }, atGrp + 0.45);
+  });
+
+  // Value labels above bars
+  LABELS.forEach(function(_, i) {
+    DATASETS.forEach(function(ds, j) {
+      if (ds[i] === 0) return;
+      tl.to('#vl' + i + j, {
+        opacity: 1, duration: 0.32, ease: 'power2.out'
+      }, 2.28 + i * 0.07 + j * 0.04);
+    });
   });
 
   // Legend
-  tl.to('#leg', { opacity: 1, duration: 0.5, ease: 'power2.out' }, 2.6);
-  tl.from('#leg', { y: 14 }, 2.6);
+  tl.to('#leg', { opacity: 1, duration: 0.58, ease: 'power2.out' }, 2.75);
+  tl.from('#leg', { y: 16 }, 2.75);
 
   // Footer
-  tl.to('#footer', { opacity: 1, duration: 0.5, ease: 'power2.out' }, 3.1);
-  tl.from('#footer', { y: 12 }, 3.1);
+  tl.to('#footer', { opacity: 1, duration: 0.52, ease: 'power2.out' }, 3.15);
+  tl.from('#footer', { y: 12 }, 3.15);
 
-  // Fade out
-  tl.to('#scene', { opacity: 0, duration: 0.5, ease: 'power2.in' }, 9.0);
+  // Glass light sweep (after all bars are up)
+  tl.set('#sweep', { opacity: 0.82 }, 3.05);
+  tl.to('#sweep', { x: CW + 460, duration: 1.85, ease: 'power2.inOut' }, 3.05);
+  tl.to('#sweep', { opacity: 0, duration: 0.38 }, 4.72);
+
+  // Subtle ambient light drift
+  tl.to('#amb-orb', { left: 690, top: 148, duration: 5.5, ease: 'sine.inOut' }, 1.8);
+
+  // Scene fade-out
+  tl.to('#scene', { opacity: 0, duration: 0.65, ease: 'power2.in' }, 9.35);
 
   window.__timelines['luxury-fashion-chart'] = tl;
+
+  // ── Browser-only interactions ─────────────────────────────────────
+
+  // Hover: glow filter + value label nudge
+  document.querySelectorAll('.bw').forEach(function(wrap) {
+    var rect = wrap.querySelector('.br');
+    var i = wrap.getAttribute('data-i');
+    var j = wrap.getAttribute('data-j');
+    var vl  = document.getElementById('vl' + i + j);
+
+    wrap.addEventListener('mouseenter', function() {
+      if (rect) rect.setAttribute('filter', 'url(#fg)');
+      if (vl)   gsap.to(vl, { y: -5, duration: 0.28, ease: 'power2.out' });
+    });
+    wrap.addEventListener('mouseleave', function() {
+      if (rect) rect.setAttribute('filter', 'url(#fs)');
+      if (vl)   gsap.to(vl, { y: 0,  duration: 0.38, ease: 'power2.inOut' });
+    });
+  });
+
+  // Ambient orb follows cursor with soft lag
+  document.addEventListener('mousemove', function(e) {
+    gsap.to('#amb-orb', {
+      left: e.clientX - 380,
+      top:  e.clientY - 380,
+      duration: 1.9,
+      ease: 'power1.out'
+    });
+  });
+
+  // Idle float (browser preview — finite repeat fits within remaining duration)
+  // Start: 4.8s, end: 9.35s → 4.55s available; cycle = 0.9 * 2 = 1.8s
+  // Math.floor(4.55 / 1.8) - 1 = 2 - 1 = 1 repeat
+  tl.call(function() {
+    gsap.to('.br', {
+      y: -7,
+      duration: 0.9,
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: Math.floor((9.35 - 4.8) / (0.9 * 2)) - 1,
+      stagger: 0.06
+    });
+  }, [], 4.8);
 </script>
 </body>
 </html>
