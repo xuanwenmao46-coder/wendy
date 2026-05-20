@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=1920, height=1080"/>
+  <script src="./node_modules/gsap/dist/gsap.min.js"></script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html, body { width:1920px; height:1080px; overflow:hidden; background:#ffffff; }
+
+    .scene {
+      position:relative;
+      width:1920px; height:1080px;
+      opacity:0;
+    }
+
+    /* subtle grain */
+    .grain {
+      position:absolute; inset:0;
+      background-image:radial-gradient(#000 0.5px, transparent 0.5px);
+      background-size:6px 6px;
+      opacity:0.03;
+      pointer-events:none;
+    }
+
+    /* quarter-arc corner decorations */
+    .deco {
+      position:absolute;
+      width:140px; height:140px;
+      border:1px solid rgba(188,172,150,0.35);
+      border-radius:50%;
+      pointer-events:none;
+    }
+    .deco-l { left:-40px; top:280px; border-right:none; border-bottom:none; transform:rotate(-25deg); }
+    .deco-r { right:-40px; bottom:120px; border-left:none; border-top:none; transform:rotate(-25deg); }
+
+    /* header */
+    .header {
+      position:absolute;
+      left:0; right:0; top:46px;
+      text-align:center;
+    }
+    .header h1 {
+      font-family:'Times New Roman', serif;
+      font-size:72px;
+      font-weight:400;
+      color:#4b4848;
+      letter-spacing:-2px;
+      line-height:1;
+      opacity:0;
+    }
+    .header p {
+      font-family:Helvetica, sans-serif;
+      font-size:18px;
+      letter-spacing:6px;
+      color:#8b847d;
+      margin-top:14px;
+      opacity:0;
+    }
+
+    /* legend */
+    .legend {
+      position:absolute;
+      left:0; right:0;
+      top:822px;
+      display:flex;
+      justify-content:center;
+      gap:80px;
+      align-items:center;
+      opacity:0;
+    }
+    .leg-item {
+      display:flex;
+      align-items:center;
+      gap:14px;
+      font-family:Helvetica, sans-serif;
+      font-size:22px;
+      font-weight:300;
+      color:#6f665e;
+    }
+    .leg-dot {
+      width:14px; height:14px;
+      border-radius:50%;
+      flex-shrink:0;
+    }
+
+    /* footer */
+    .footer {
+      position:absolute;
+      left:0; right:0;
+      top:940px;
+      text-align:center;
+      font-family:Helvetica, sans-serif;
+      font-size:20px;
+      font-weight:300;
+      color:#8f8a84;
+      line-height:1.9;
+      opacity:0;
+    }
+  </style>
+</head>
+<body>
+<div class="scene" id="scene"
+     data-composition-id="luxury-fashion-chart"
+     data-width="1920" data-height="1080"
+     data-start="0" data-duration="10">
+
+  <div class="grain"></div>
+  <div class="deco deco-l"></div>
+  <div class="deco deco-r"></div>
+
+  <div class="header">
+    <h1 id="ttl">Best Seller Product</h1>
+    <p id="sub">STUDIO SHODWE</p>
+  </div>
+
+  <!-- chart SVG sits in the middle band (y 165–815 of the 1080px canvas) -->
+  <svg id="bar-svg" width="1920" height="650"
+       style="position:absolute;left:0;top:165px;"
+       viewBox="0 0 1920 650"
+       aria-label="Grouped bar chart: best seller fashion products by item">
+    <defs>
+      <!-- userSpaceOnUse spans the full chart height so taller bars show more of the light top -->
+      <linearGradient id="g-brown" x1="0" y1="30" x2="0" y2="550" gradientUnits="userSpaceOnUse">
+        <stop offset="0%"   stop-color="#b87860"/>
+        <stop offset="100%" stop-color="#7b4f3d"/>
+      </linearGradient>
+      <linearGradient id="g-clay" x1="0" y1="30" x2="0" y2="550" gradientUnits="userSpaceOnUse">
+        <stop offset="0%"   stop-color="#d4a080"/>
+        <stop offset="100%" stop-color="#b07b60"/>
+      </linearGradient>
+      <linearGradient id="g-cream" x1="0" y1="30" x2="0" y2="550" gradientUnits="userSpaceOnUse">
+        <stop offset="0%"   stop-color="#d9cebc"/>
+        <stop offset="100%" stop-color="#b0a088"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <div class="legend" id="leg">
+    <div class="leg-item"><span class="leg-dot" style="background:#9a6752"></span>T-shirt</div>
+    <div class="leg-item"><span class="leg-dot" style="background:#cf9c80"></span>Sweater</div>
+    <div class="leg-item"><span class="leg-dot" style="background:#c0b09a"></span>Jeans</div>
+  </div>
+
+  <div class="footer" id="footer">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>
+    Donec quis erat et quam iaculis faucibus at sit amet nibh.
+  </div>
+
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+
+  // ── Chart geometry (SVG-local coords, SVG starts at canvas y=165) ──
+  var CL  = 300;   // chart left x
+  var CT  = 30;    // chart top y
+  var CW  = 1320;  // chart width
+  var CH  = 520;   // chart height
+  var CB  = 550;   // chart bottom y = CT + CH
+  var MAX = 25;
+  var PPU = CH / MAX; // px per unit = 20.8
+
+  var LABELS   = ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5'];
+  var T_SHIRT  = [5,  8, 10, 14, 20];
+  var SWEATER  = [5,  4,  5,  8,  8];
+  var JEANS    = [0,  8, 15, 18, 22];
+  var DATASETS = [T_SHIRT, SWEATER, JEANS];
+  var FILLS    = ['url(#g-brown)', 'url(#g-clay)', 'url(#g-cream)'];
+
+  var GW   = CW / 5;              // group width = 264
+  var BW   = 70;                   // bar width
+  var BGAP = 16;                   // gap between bars in a group
+  var TBW  = 3 * BW + 2 * BGAP;  // total bars width = 242
+  var GM   = (GW - TBW) / 2;     // group left margin = 11
+
+  var svg  = document.getElementById('bar-svg');
+  var html = '';
+
+  // Grid lines + y-axis labels (start opacity 0 for staggered reveal)
+  [0, 5, 10, 15, 20, 25].forEach(function(v) {
+    var y = (CB - v * PPU).toFixed(1);
+    html += '<line id="gv' + v + '" x1="' + CL + '" y1="' + y + '" x2="' + (CL + CW) + '" y2="' + y
+          + '" stroke="rgba(160,145,130,0.18)" stroke-width="1" opacity="0"/>';
+    html += '<text x="' + (CL - 14) + '" y="' + (+y + 5).toFixed(1) + '" text-anchor="end"'
+          + ' font-family="Helvetica,sans-serif" font-size="16" fill="#9d958e" opacity="0" id="gy' + v + '">' + v + '</text>';
+  });
+
+  // Bars and x-axis labels
+  LABELS.forEach(function(lbl, i) {
+    var gx = CL + i * GW + GM;
+    var cx = (CL + i * GW + GW / 2).toFixed(1);
+
+    html += '<text id="xl' + i + '" x="' + cx + '" y="' + (CB + 42) + '" text-anchor="middle"'
+          + ' font-family="Helvetica,sans-serif" font-size="18" fill="#6e665f" opacity="0">' + lbl + '</text>';
+
+    DATASETS.forEach(function(ds, j) {
+      var bx = (gx + j * (BW + BGAP)).toFixed(1);
+      html += '<rect id="b' + i + j + '" x="' + bx + '" y="' + CB + '" width="' + BW + '" height="0"'
+            + ' fill="' + FILLS[j] + '" rx="8"/>';
+    });
+  });
+
+  svg.insertAdjacentHTML('beforeend', html);
+
+  // ── GSAP timeline ──────────────────────────────────────────────────
+  var tl = gsap.timeline({ paused: true });
+
+  // Scene fade-in
+  tl.to('#scene', { opacity: 1, duration: 0.6, ease: 'power2.out' }, 0);
+
+  // Header
+  tl.to('#ttl', { opacity: 1, duration: 0.75, ease: 'expo.out' }, 0.35);
+  tl.from('#ttl', { y: 22 }, 0.35);
+  tl.to('#sub', { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.85);
+
+  // Grid lines (staggered)
+  [0, 5, 10, 15, 20, 25].forEach(function(v, idx) {
+    var at = 0.95 + idx * 0.04;
+    tl.to('#gv' + v, { opacity: 1, duration: 0.3 }, at);
+    tl.to('#gy' + v, { opacity: 1, duration: 0.3 }, at);
+  });
+
+  // Bars (staggered by item group)
+  LABELS.forEach(function(_, i) {
+    var at = 1.3 + i * 0.18;
+    DATASETS.forEach(function(ds, j) {
+      var val = ds[i];
+      if (val === 0) return; // skip zero-value bars
+      var fh = +(val * PPU).toFixed(1);
+      var fy = +(CB - fh).toFixed(1);
+      tl.to('#b' + i + j, { attr: { height: fh, y: fy }, duration: 0.65, ease: 'back.out(1.4)' }, at + j * 0.06);
+    });
+    tl.to('#xl' + i, { opacity: 1, duration: 0.3 }, at + 0.5);
+  });
+
+  // Legend
+  tl.to('#leg', { opacity: 1, duration: 0.5, ease: 'power2.out' }, 2.6);
+  tl.from('#leg', { y: 14 }, 2.6);
+
+  // Footer
+  tl.to('#footer', { opacity: 1, duration: 0.5, ease: 'power2.out' }, 3.1);
+  tl.from('#footer', { y: 12 }, 3.1);
+
+  // Fade out
+  tl.to('#scene', { opacity: 0, duration: 0.5, ease: 'power2.in' }, 9.0);
+
+  window.__timelines['luxury-fashion-chart'] = tl;
+</script>
+</body>
+</html>
