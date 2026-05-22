@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infographic — Bar Charts</title>
+<style>
+/* ── Reset ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ── Tokens ── */
+:root {
+  --bg:             #f4f3f0;
+  --bg-input:       #eeece8;
+  --groove:         #e0ddd8;
+  --groove-inner:   #d8d5cf;
+  --fill:           #1c1c1e;
+  --fill-peak:      #0d0d0f;
+  --text-h:         #1c1c1e;
+  --text-md:        #6b6b70;
+  --text-lo:        #b0ada6;
+  --border:         #dbd8d2;
+  --radius-groove:  3px;
+  --radius-fill:    2px 2px 0 0;
+  --font:           -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Inter', Arial, sans-serif;
+  --font-mono:      'SF Mono', 'Fira Code', 'Courier New', monospace;
+}
+
+/* ── Base ── */
+body {
+  background: var(--bg);
+  font-family: var(--font);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px 80px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Container ── */
+.container {
+  width: 100%;
+  max-width: 980px;
+  opacity: 0;
+  animation: wrapIn 1s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
+}
+
+@keyframes wrapIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Header ── */
+.header {
+  margin-bottom: 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.eyebrow {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.42em;
+  color: var(--text-lo);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.title-main {
+  font-size: clamp(52px, 9vw, 96px);
+  font-weight: 100;
+  letter-spacing: 0.1em;
+  color: var(--text-h);
+  line-height: 0.92;
+  margin-bottom: 10px;
+}
+
+.title-sub {
+  font-size: clamp(10px, 1.4vw, 13px);
+  font-weight: 700;
+  letter-spacing: 0.38em;
+  color: var(--text-md);
+  text-transform: uppercase;
+}
+
+/* ── Chart wrapper ── */
+.chart-wrapper {
+  position: relative;
+}
+
+.chart-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.meta-tag {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.35em;
+  color: var(--text-lo);
+  text-transform: uppercase;
+}
+
+/* ── Chart area ── */
+.chart-area {
+  position: relative;
+  height: 360px;
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  /* subtle ambient breath */
+  animation: breath 10s ease-in-out 5s infinite;
+}
+
+@keyframes breath {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.94; }
+}
+
+/* ── Grid lines ── */
+.grid-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.g-line {
+  width: 100%;
+  height: 1px;
+  background: var(--border);
+  opacity: 0;
+  transition: opacity 0.55s ease;
+}
+.g-line.show { opacity: 1; }
+
+/* ── Bar column ── */
+.bar-col {
+  flex: 1;
+  min-width: 0;
+  max-width: 76px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  gap: 8px;
+  position: relative;
+}
+
+/* Value label above groove */
+.val-label {
+  font-size: clamp(9px, 1.1vw, 12px);
+  font-weight: 500;
+  color: var(--text-h);
+  letter-spacing: 0.03em;
+  line-height: 1;
+  flex-shrink: 0;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  text-align: center;
+}
+.val-label.show { opacity: 1; transform: translateY(0); }
+
+/* Percentage badge */
+.pct-badge {
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-lo);
+  display: block;
+  margin-top: 2px;
+}
+
+/* ── Groove track ── */
+.groove {
+  flex: 1;
+  width: 100%;
+  background: var(--groove);
+  border-radius: var(--radius-groove);
+  box-shadow:
+    inset 0 2px 5px rgba(0,0,0,0.07),
+    inset 0 0 0 1px rgba(0,0,0,0.045);
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.groove.show { opacity: 1; transform: translateY(0); }
+
+/* Sub-surface texture inside groove */
+.groove::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--groove-inner) 0%, transparent 60%);
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* ── Fill bar ── */
+.fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0%;
+  background: var(--fill);
+  border-radius: var(--radius-fill);
+  transition: height 1.15s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1;
+}
+.fill.peak { background: var(--fill-peak); }
+
+/* Sheen at top of fill bar */
+.fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(255,255,255,0.07);
+}
+
+/* ── Peak indicator ── */
+.peak-ring {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(28,28,30,0.5);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 2;
+}
+.peak-ring.show { opacity: 1; }
+
+/* ── Category label ── */
+.cat-label {
+  font-size: clamp(7px, 0.9vw, 9px);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--text-lo);
+  text-transform: uppercase;
+  text-align: center;
+  flex-shrink: 0;
+  opacity: 0;
+  transform: translateY(5px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.cat-label.show { opacity: 1; transform: translateY(0); }
+
+/* ── Horizontal rule ── */
+.rule {
+  height: 1px;
+  background: var(--border);
+  margin: 64px 0 48px;
+}
+
+/* ── Data input panel ── */
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.panel-title {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.36em;
+  color: var(--text-lo);
+  text-transform: uppercase;
+}
+
+.panel-hint {
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  color: var(--text-lo);
+}
+
+textarea {
+  width: 100%;
+  min-height: 92px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 16px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: #555;
+  line-height: 1.75;
+  letter-spacing: 0.03em;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+textarea:focus    { border-color: #b2afa9; background: #ece9e5; }
+textarea.error    { border-color: #c09a8a !important; }
+textarea::placeholder { color: #c2bfb9; }
+
+.controls {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.btn {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 3px;
+  padding: 11px 22px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+  -webkit-font-smoothing: antialiased;
+}
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: var(--fill);
+  color: var(--bg);
+}
+.btn-primary:hover { background: #333; }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-md);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { border-color: #a8a49e; color: var(--text-h); }
+
+/* ── Format pills ── */
+.format-pills {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.pill {
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-lo);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 10px;
+}
+
+/* ── Footer ── */
+.footer {
+  margin-top: 64px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-txt {
+  font-size: 8px;
+  letter-spacing: 0.32em;
+  color: var(--text-lo);
+  text-transform: uppercase;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .chart-area { gap: 8px; }
+  .bar-col    { max-width: 52px; }
+  .controls   { flex-direction: column; align-items: stretch; }
+  .btn        { text-align: center; }
+  .format-pills { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ─── Header ─── -->
+  <header class="header">
+    <span class="eyebrow">Dynamic Data Visualization</span>
+    <h1 class="title-main">Infographic</h1>
+    <span class="title-sub">Bar Charts</span>
+  </header>
+
+  <!-- ─── Chart ─── -->
+  <div class="chart-wrapper">
+    <div class="chart-topbar">
+      <span class="meta-tag" id="chartLabel">Monthly Overview</span>
+      <span class="meta-tag" id="itemCount">12 Items</span>
+    </div>
+
+    <div class="chart-area" id="chartArea">
+      <!-- grid lines injected here -->
+      <div class="grid-lines" id="gridLines">
+        <div class="g-line" id="gTop"></div>
+        <div class="g-line" id="g75"></div>
+        <div class="g-line" id="g50"></div>
+        <div class="g-line" id="g25"></div>
+        <div class="g-line" id="gBot"></div>
+      </div>
+      <!-- bar columns injected by JS -->
+    </div>
+  </div>
+
+  <!-- ─── Divider ─── -->
+  <div class="rule"></div>
+
+  <!-- ─── Data Panel ─── -->
+  <div class="data-panel">
+    <div class="panel-head">
+      <span class="panel-title">Data Input</span>
+      <span class="panel-hint">⌘ + Enter to update</span>
+    </div>
+
+    <textarea id="dataInput"
+      placeholder="Label, Value&#10;Jan, 72&#10;Feb, 58&#10;Mar, 85&#10;&#10;Or paste JSON array: [{&quot;label&quot;:&quot;Q1&quot;,&quot;value&quot;:91}, ...]"></textarea>
+
+    <div class="controls">
+      <button class="btn btn-primary" onclick="updateChart()">Update Chart</button>
+      <button class="btn btn-ghost"   onclick="resetDefault()">Reset</button>
+      <button class="btn btn-ghost"   onclick="document.getElementById('fileUpload').click()">
+        Upload File
+      </button>
+      <input type="file" id="fileUpload" accept=".csv,.json,.txt" style="display:none" onchange="handleFile(event)">
+
+      <div class="format-pills">
+        <span class="pill">CSV</span>
+        <span class="pill">JSON</span>
+        <span class="pill">TSV</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Footer ─── -->
+  <footer class="footer">
+    <span class="footer-txt">Premium Infographic System</span>
+    <span class="footer-txt" id="footerDate"></span>
+  </footer>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════
+const DEFAULT_DATA = [
+  { label: 'JAN', value: 72  },
+  { label: 'FEB', value: 58  },
+  { label: 'MAR', value: 85  },
+  { label: 'APR', value: 91  },
+  { label: 'MAY', value: 63  },
+  { label: 'JUN', value: 78  },
+  { label: 'JUL', value: 54  },
+  { label: 'AUG', value: 88  },
+  { label: 'SEP', value: 95  },
+  { label: 'OCT', value: 70  },
+  { label: 'NOV', value: 82  },
+  { label: 'DEC', value: 67  },
+];
+
+// ═══════════════════════════════════════
+//  PARSERS
+// ═══════════════════════════════════════
+function parseCSV(text) {
+  const rows = text.trim().split(/\r?\n/).filter(r => r.trim());
+  const result = [];
+  // Skip header if first numeric column is NaN
+  let start = 0;
+  const sample = rows[0].split(/[,\t]/).map(s => s.trim());
+  if (sample.length >= 2 && isNaN(parseFloat(sample[sample.length - 1]))) start = 1;
+
+  for (let i = start; i < rows.length; i++) {
+    const parts = rows[i].split(/[,\t]/).map(s => s.trim());
+    if (parts.length < 2) continue;
+    const val = parseFloat(parts[parts.length - 1]);
+    if (!isNaN(val)) {
+      result.push({ label: parts[0].toUpperCase().slice(0, 8), value: val });
+    }
+  }
+  return result;
+}
+
+function parseJSON(text) {
+  try {
+    let raw = JSON.parse(text);
+    if (!Array.isArray(raw)) {
+      raw = raw.data || raw.items || raw.values || raw.records || Object.values(raw);
+    }
+    if (!Array.isArray(raw)) return null;
+
+    return raw.map(item => {
+      if (typeof item === 'number') return null;
+      const keys = Object.keys(item);
+      const labelKey = keys.find(k => /^(label|name|cat|key|month|year|period|title|x)$/i.test(k)) || keys[0];
+      const numKey   = keys.find(k => typeof item[k] === 'number' && !/id|idx|index/i.test(k));
+      if (!numKey) return null;
+      return {
+        label: String(item[labelKey]).toUpperCase().slice(0, 8),
+        value: item[numKey],
+      };
+    }).filter(Boolean);
+  } catch { return null; }
+}
+
+function autoparse(text) {
+  text = text.trim();
+  if (text[0] === '[' || text[0] === '{') {
+    const j = parseJSON(text);
+    if (j && j.length) return j;
+  }
+  return parseCSV(text);
+}
+
+// ═══════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════
+function renderChart(data, animate = true) {
+  const area = document.getElementById('chartArea');
+  const grid = document.getElementById('gridLines');
+
+  // Remove old bar columns (keep grid)
+  [...area.children].forEach(c => { if (c !== grid) c.remove(); });
+
+  if (!data || !data.length) return;
+
+  const max  = Math.max(...data.map(d => d.value));
+  const min  = Math.min(...data.map(d => d.value));
+  const n    = data.length;
+
+  document.getElementById('itemCount').textContent = `${n} ${n === 1 ? 'Item' : 'Items'}`;
+
+  // ── Grid lines ──
+  ['gTop','g75','g50','g25','gBot'].forEach((id, i) => {
+    const el = document.getElementById(id);
+    el.classList.remove('show');
+    if (animate) {
+      setTimeout(() => el.classList.add('show'), 250 + i * 55);
+    } else {
+      el.classList.add('show');
+    }
+  });
+
+  // ── Bar columns ──
+  // Stagger timings (ms)
+  const T_GROOVE = animate ? 450  : 0;   // grooves start appearing
+  const T_FILL   = animate ? 950  : 0;   // fills start growing
+  const T_LABEL  = animate ? 1350 : 0;   // labels appear
+  const STAGGER  = animate ? Math.max(35, Math.min(80, 900 / n)) : 0;
+
+  data.forEach((item, i) => {
+    const fillPct = (item.value / max) * 100;
+    const pct     = Math.round(fillPct);
+    const isPeak  = item.value === max;
+
+    const gDelay = T_GROOVE + i * STAGGER;
+    const fDelay = T_FILL   + i * STAGGER;
+    const lDelay = T_LABEL  + i * STAGGER * 0.4;
+
+    // Column
+    const col = document.createElement('div');
+    col.className = 'bar-col';
+
+    // ── Value label ──
+    const valEl = document.createElement('div');
+    valEl.className = 'val-label';
+    const displayVal = Number.isInteger(item.value) ? item.value : item.value.toFixed(1);
+    valEl.innerHTML = `${displayVal}<span class="pct-badge">${pct}%</span>`;
+
+    // ── Groove ──
+    const groove = document.createElement('div');
+    groove.className = 'groove';
+
+    // Peak ring
+    if (isPeak) {
+      const ring = document.createElement('div');
+      ring.className = 'peak-ring';
+      groove.appendChild(ring);
+      if (animate) {
+        setTimeout(() => ring.classList.add('show'), lDelay + 250);
+      } else {
+        ring.classList.add('show');
+      }
+    }
+
+    // Fill bar
+    const fill = document.createElement('div');
+    fill.className = `fill${isPeak ? ' peak' : ''}`;
+    groove.appendChild(fill);
+
+    // ── Category label ──
+    const catEl = document.createElement('div');
+    catEl.className = 'cat-label';
+    catEl.textContent = item.label;
+
+    col.appendChild(valEl);
+    col.appendChild(groove);
+    col.appendChild(catEl);
+    area.appendChild(col);
+
+    // ── Trigger animations ──
+    if (animate) {
+      setTimeout(() => groove.classList.add('show'), gDelay);
+      setTimeout(() => { fill.style.height = `${fillPct}%`; }, fDelay);
+      setTimeout(() => { valEl.classList.add('show'); catEl.classList.add('show'); }, lDelay);
+    } else {
+      groove.classList.add('show');
+      fill.style.transition = 'none';
+      fill.style.height = `${fillPct}%`;
+      valEl.classList.add('show');
+      catEl.classList.add('show');
+    }
+  });
+}
+
+// ═══════════════════════════════════════
+//  USER ACTIONS
+// ═══════════════════════════════════════
+function updateChart() {
+  const raw = document.getElementById('dataInput').value.trim();
+  if (!raw) return;
+
+  const data = autoparse(raw);
+  const ta   = document.getElementById('dataInput');
+
+  if (data && data.length) {
+    ta.classList.remove('error');
+    document.getElementById('chartLabel').textContent = 'Custom Data';
+    renderChart(data, true);
+  } else {
+    ta.classList.add('error');
+    setTimeout(() => ta.classList.remove('error'), 900);
+  }
+}
+
+function resetDefault() {
+  document.getElementById('dataInput').value = '';
+  document.getElementById('chartLabel').textContent = 'Monthly Overview';
+  renderChart(DEFAULT_DATA, true);
+}
+
+function handleFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById('dataInput').value = ev.target.result;
+    updateChart();
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+// Keyboard shortcut ⌘+Enter / Ctrl+Enter
+document.getElementById('dataInput').addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    updateChart();
+  }
+});
+
+// ═══════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════
+document.getElementById('footerDate').textContent =
+  new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+
+// Initial render after container fade-in
+setTimeout(() => renderChart(DEFAULT_DATA, true), 550);
+</script>
+</body>
+</html>
