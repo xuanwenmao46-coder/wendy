@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>西安文化机构导视系统调研报告</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#F7F4EF;--dark:#1E1A17;--terra:#C4612A;
+  --cel:#6B9E8E;--gold:#B08A25;--gray:#8A857E;
+  --lgray:#D8D3CC;--wh:#FFFFFF;--ink:#2C1810;
+}
+html,body{width:100%;height:100%;background:#111;display:flex;
+  align-items:center;justify-content:center;overflow:hidden;
+  font-family:'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif;}
+
+.stage{position:relative;width:1280px;height:720px;transform-origin:top left;}
+
+.slide{position:absolute;inset:0;background:var(--bg);
+  opacity:0;pointer-events:none;transition:opacity .45s ease;z-index:1;overflow:hidden;}
+.slide.active{opacity:1;pointer-events:all;z-index:2;}
+
+.nav-bar{position:fixed;bottom:0;left:0;right:0;height:52px;
+  display:flex;align-items:center;justify-content:center;gap:24px;z-index:999;}
+.nav-btn{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.25);
+  background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);font-size:15px;
+  cursor:pointer;transition:.2s;backdrop-filter:blur(4px);}
+.nav-btn:hover{background:rgba(255,255,255,.2);}
+.snum{color:rgba(255,255,255,.4);font-size:11px;letter-spacing:3px;
+  font-family:monospace;min-width:70px;text-align:center;}
+
+.sdots{position:fixed;right:18px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:8px;}
+.sdot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.2);
+  cursor:pointer;transition:.3s;}
+.sdot.on{background:rgba(255,255,255,.75);transform:scale(1.4);}
+
+/* ──────── SHARED ──────── */
+.tag-en{font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--terra);}
+.rule{width:36px;height:1.5px;background:var(--terra);margin:18px 0;}
+.rule-gray{width:100%;height:1px;background:var(--lgray);}
+.chip{display:inline-block;padding:4px 14px;border:1px solid var(--lgray);
+  font-size:11px;letter-spacing:2px;color:var(--gray);border-radius:20px;}
+
+/* ─── SLIDE 1 · COVER ─── */
+#s0{background:var(--bg);}
+.s0-grid{display:grid;grid-template-columns:1fr 420px;height:720px;}
+.s0-left{padding:80px 80px 64px;display:flex;flex-direction:column;justify-content:space-between;}
+.s0-title{font-size:64px;font-weight:200;line-height:1.18;color:var(--dark);letter-spacing:-1px;margin-top:40px;}
+.s0-title b{font-weight:700;color:var(--terra);}
+.s0-sub{font-size:18px;font-weight:300;color:var(--gray);letter-spacing:5px;margin-top:20px;}
+.s0-chips{display:flex;gap:12px;margin-top:32px;}
+.s0-right{position:relative;overflow:hidden;background:#F0EBE4;}
+.s0-year{font-size:10px;letter-spacing:3px;color:var(--lgray);}
+
+/* ─── SLIDE 2 · KEYWORDS ─── */
+#s1{background:var(--wh);}
+.s1-bg-word{position:absolute;font-size:420px;font-weight:900;color:#F0EDE8;
+  right:-40px;top:-60px;line-height:1;pointer-events:none;letter-spacing:-10px;}
+.s1-content{padding:60px 80px;position:relative;z-index:2;height:720px;
+  display:flex;flex-direction:column;justify-content:center;}
+.s1-title{font-size:13px;letter-spacing:6px;color:var(--terra);text-transform:uppercase;}
+.s1-h{font-size:52px;font-weight:200;color:var(--dark);margin-top:8px;letter-spacing:-1px;}
+.kw-tiers{margin-top:48px;display:flex;flex-direction:column;gap:22px;}
+.kw-tier{display:flex;align-items:baseline;gap:0;}
+.kw-label{font-size:9px;letter-spacing:3px;color:var(--lgray);text-transform:uppercase;
+  width:80px;flex-shrink:0;}
+.kw-words{display:flex;flex-wrap:wrap;gap:6px 20px;}
+.kw-a{font-size:38px;font-weight:700;color:var(--dark);letter-spacing:-1px;}
+.kw-b{font-size:22px;font-weight:400;color:var(--terra);}
+.kw-c{font-size:15px;font-weight:300;color:var(--gray);letter-spacing:1px;}
+.kw-d{font-size:12px;font-weight:300;color:var(--lgray);letter-spacing:2px;}
+
+/* ─── SLIDE 3 · MUSEUM CASES ─── */
+#s2{background:var(--bg);}
+.s2-layout{display:grid;grid-template-columns:240px 1fr;height:720px;}
+.s2-aside{padding:64px 40px;background:var(--dark);display:flex;flex-direction:column;justify-content:space-between;}
+.s2-aside-title{font-size:36px;font-weight:200;color:var(--wh);line-height:1.3;}
+.s2-aside-title b{color:var(--terra);font-weight:700;}
+.s2-aside-sub{font-size:11px;letter-spacing:3px;color:rgba(255,255,255,.3);text-transform:uppercase;}
+.s2-cards{padding:40px 48px;display:flex;flex-direction:column;gap:16px;justify-content:center;}
+.museum-card{display:grid;grid-template-columns:6px 180px 1fr;background:var(--wh);
+  border-radius:4px;overflow:hidden;min-height:118px;}
+.mc-accent{} /* color set inline */
+.mc-visual{padding:18px 20px;display:flex;flex-direction:column;justify-content:space-between;}
+.mc-name{font-size:18px;font-weight:600;color:var(--dark);}
+.mc-loc{font-size:10px;letter-spacing:2px;color:var(--gray);text-transform:uppercase;}
+.mc-palette{display:flex;gap:4px;margin-top:8px;}
+.mc-swatch{width:18px;height:18px;border-radius:3px;}
+.mc-info{padding:18px 24px;border-left:1px solid var(--bg);display:flex;flex-direction:column;gap:8px;justify-content:center;}
+.mc-pattern-row{display:flex;gap:8px;align-items:center;}
+.mc-tag{font-size:9px;letter-spacing:2px;color:var(--gray);text-transform:uppercase;background:var(--bg);
+  padding:3px 8px;border-radius:2px;}
+.mc-desc{font-size:12px;color:var(--gray);line-height:1.7;margin-top:4px;}
+
+/* ─── SLIDE 4 · THEME CONNECTION ─── */
+#s3{background:var(--wh);}
+.s3-layout{display:grid;grid-template-columns:300px 1fr;height:720px;}
+.s3-left{padding:60px 50px;background:var(--terra);display:flex;flex-direction:column;justify-content:center;}
+.s3-left-num{font-size:120px;font-weight:900;color:rgba(255,255,255,.12);line-height:1;}
+.s3-left-title{font-size:32px;font-weight:200;color:var(--wh);line-height:1.3;margin-top:-20px;}
+.s3-left-sub{font-size:11px;letter-spacing:3px;color:rgba(255,255,255,.5);text-transform:uppercase;margin-top:16px;}
+.s3-right{padding:48px 52px;overflow:hidden;}
+.s3-table-header{display:grid;grid-template-columns:110px 140px 200px 1fr;gap:0;
+  padding-bottom:12px;border-bottom:2px solid var(--dark);}
+.s3-th{font-size:9px;letter-spacing:3px;color:var(--gray);text-transform:uppercase;}
+.s3-rows{display:flex;flex-direction:column;}
+.s3-row{display:grid;grid-template-columns:110px 140px 200px 1fr;gap:0;
+  padding:16px 0;border-bottom:1px solid var(--lgray);align-items:center;}
+.s3-type{font-size:16px;font-weight:600;color:var(--dark);}
+.s3-colors{display:flex;gap:5px;}
+.s3-col-dot{width:22px;height:22px;border-radius:50%;}
+.s3-lang{font-size:12px;color:var(--gray);line-height:1.6;}
+.s3-eg{font-size:11px;color:var(--terra);letter-spacing:1px;}
+
+/* ─── SLIDE 5 · FUNCTIONS ─── */
+#s4{background:var(--bg);}
+.s4-top{padding:52px 80px 32px;border-bottom:1px solid var(--lgray);}
+.s4-top-tag{font-size:10px;letter-spacing:5px;color:var(--terra);text-transform:uppercase;}
+.s4-top-h{font-size:52px;font-weight:200;color:var(--dark);margin-top:6px;}
+.s4-top-h b{font-weight:700;}
+.s4-funcs{display:grid;grid-template-columns:repeat(5,1fr);height:460px;}
+.func-item{padding:40px 32px;border-right:1px solid var(--lgray);display:flex;
+  flex-direction:column;justify-content:space-between;}
+.func-item:last-child{border-right:none;}
+.func-num{font-size:48px;font-weight:900;color:var(--lgray);line-height:1;}
+.func-icon{width:44px;height:44px;}
+.func-name{font-size:20px;font-weight:600;color:var(--dark);margin-top:16px;}
+.func-desc{font-size:12px;color:var(--gray);line-height:1.8;margin-top:8px;}
+.func-item:hover .func-num{color:var(--terra);transition:.3s;}
+
+/* ─── SLIDE 6 · CONSIDERATIONS ─── */
+#s5{background:var(--wh);}
+.s5-layout{display:grid;grid-template-columns:1fr 380px;height:720px;}
+.s5-main{padding:56px 64px;}
+.s5-tag{font-size:10px;letter-spacing:5px;color:var(--terra);text-transform:uppercase;}
+.s5-h{font-size:48px;font-weight:200;color:var(--dark);margin-top:8px;}
+.s5-h b{font-weight:700;}
+.s5-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:36px;}
+.consider-item{padding:20px 24px;border:1px solid var(--lgray);border-radius:4px;
+  transition:border-color .3s;}
+.consider-item:hover{border-color:var(--terra);}
+.ci-num{font-size:11px;letter-spacing:2px;color:var(--terra);font-family:monospace;}
+.ci-title{font-size:17px;font-weight:600;color:var(--dark);margin-top:6px;}
+.ci-desc{font-size:12px;color:var(--gray);line-height:1.7;margin-top:6px;}
+.s5-aside{background:var(--dark);padding:56px 40px;display:flex;flex-direction:column;justify-content:center;}
+.s5-aside-q{font-size:28px;font-weight:200;color:var(--wh);line-height:1.5;}
+.s5-aside-q b{color:var(--terra);}
+.s5-aside-list{margin-top:32px;display:flex;flex-direction:column;gap:14px;}
+.s5-check{display:flex;align-items:flex-start;gap:10px;}
+.s5-check-dot{width:6px;height:6px;border-radius:50%;background:var(--terra);
+  margin-top:6px;flex-shrink:0;}
+.s5-check-text{font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;}
+
+/* ─── SLIDE 7 · XI'AN SURVEY ─── */
+#s6{background:var(--bg);}
+.s6-top{padding:44px 64px 28px;display:flex;justify-content:space-between;align-items:flex-end;
+  border-bottom:1px solid var(--lgray);}
+.s6-top-h{font-size:42px;font-weight:200;color:var(--dark);}
+.s6-top-h b{font-weight:700;color:var(--terra);}
+.s6-top-sub{font-size:11px;letter-spacing:3px;color:var(--gray);}
+.s6-venues{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);
+  height:556px;gap:0;}
+.venue-card{padding:28px 32px;border-right:1px solid var(--lgray);border-bottom:1px solid var(--lgray);
+  display:flex;flex-direction:column;justify-content:space-between;}
+.venue-card:nth-child(3n){border-right:none;}
+.venue-card:nth-child(4),.venue-card:nth-child(5),.venue-card:nth-child(6){border-bottom:none;}
+.vc-top{display:flex;justify-content:space-between;align-items:flex-start;}
+.vc-num{font-size:32px;font-weight:900;color:var(--lgray);}
+.vc-color-dot{width:12px;height:12px;border-radius:50%;margin-top:8px;}
+.vc-name{font-size:19px;font-weight:600;color:var(--dark);margin-top:8px;line-height:1.3;}
+.vc-type{font-size:10px;letter-spacing:2px;color:var(--gray);text-transform:uppercase;margin-top:4px;}
+.vc-findings{margin-top:12px;display:flex;flex-direction:column;gap:5px;}
+.vc-finding{font-size:11px;color:var(--gray);line-height:1.5;
+  padding-left:12px;position:relative;}
+.vc-finding::before{content:'';position:absolute;left:0;top:7px;
+  width:5px;height:1px;background:var(--terra);}
+.vc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+.vc-tag{font-size:9px;letter-spacing:1px;padding:3px 8px;border-radius:2px;
+  background:var(--lg);color:var(--gray);border:1px solid var(--lgray);}
+
+/* ─── SLIDE 8 · CERAMIC INNOVATION ─── */
+#s7{background:var(--wh);}
+.s7-layout{display:grid;grid-template-columns:340px 1fr;height:720px;}
+.s7-left{padding:56px 44px;background:var(--ink);display:flex;flex-direction:column;justify-content:space-between;}
+.s7-left-tag{font-size:10px;letter-spacing:4px;color:var(--terra);text-transform:uppercase;}
+.s7-left-h{font-size:38px;font-weight:200;color:var(--wh);line-height:1.3;margin-top:12px;}
+.s7-left-h b{font-weight:700;color:var(--terra);}
+.s7-vessel{width:100%;flex:1;display:flex;align-items:center;justify-content:center;}
+.s7-right{padding:40px 48px;overflow:hidden;}
+.s7-right-tag{font-size:10px;letter-spacing:4px;color:var(--gray);text-transform:uppercase;margin-bottom:20px;}
+.innov-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(2,1fr);
+  height:580px;gap:16px;}
+.innov-item{padding:20px;background:var(--bg);border-radius:4px;
+  display:flex;flex-direction:column;gap:8px;transition:.3s;}
+.innov-item:hover{background:#FFF;box-shadow:0 4px 20px rgba(0,0,0,.06);}
+.ii-icon{width:40px;height:40px;}
+.ii-num{font-size:10px;letter-spacing:2px;color:var(--terra);font-family:monospace;}
+.ii-title{font-size:15px;font-weight:600;color:var(--dark);line-height:1.3;}
+.ii-desc{font-size:11px;color:var(--gray);line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+
+<!-- ═══════════════ SLIDE 1 · COVER ═══════════════ -->
+<div class="slide active" id="s0">
+<div class="s0-grid">
+  <div class="s0-left">
+    <div>
+      <div class="tag-en">Wayfinding System Survey · Xi'an · 2025</div>
+      <div class="s0-title">西安<br>公共文化机构<br><b>导视系统</b></div>
+      <div class="s0-sub">实地考察与调研报告</div>
+      <div class="s0-chips" style="margin-top:28px;">
+        <span class="chip">博物馆</span>
+        <span class="chip">文化馆</span>
+        <span class="chip">图书馆</span>
+      </div>
+    </div>
+    <div>
+      <div class="rule"></div>
+      <div style="font-size:11px;color:var(--lgray);letter-spacing:2px;">陶瓷体验博物馆导视创新研究</div>
+    </div>
+  </div>
+  <div class="s0-right">
+    <svg viewBox="0 0 420 720" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+      <!-- Concentric rings — pottery wheel metaphor -->
+      <circle cx="280" cy="380" r="380" fill="none" stroke="#C4612A" stroke-width=".8" opacity=".08"/>
+      <circle cx="280" cy="380" r="300" fill="none" stroke="#C4612A" stroke-width=".8" opacity=".11"/>
+      <circle cx="280" cy="380" r="220" fill="none" stroke="#C4612A" stroke-width="1" opacity=".14"/>
+      <circle cx="280" cy="380" r="150" fill="none" stroke="#C4612A" stroke-width="1.2" opacity=".18"/>
+      <circle cx="280" cy="380" r="88" fill="none" stroke="#C4612A" stroke-width="1.5" opacity=".25"/>
+      <circle cx="280" cy="380" r="36" fill="none" stroke="#C4612A" stroke-width="2" opacity=".35"/>
+      <circle cx="280" cy="380" r="8" fill="#C4612A" opacity=".3"/>
+      <!-- Ceramic vessel silhouette -->
+      <path d="M 210,580 C 192,552 184,512 188,472 C 190,450 197,432 202,422 C 207,412 207,402 202,395 C 197,388 196,381 200,376 C 204,371 214,368 225,368 C 236,368 246,371 250,376 C 254,381 253,388 248,395 C 243,402 243,412 248,422 C 253,432 260,450 262,472 C 266,512 258,552 240,580 C 234,592 225,598 225,598 C 225,598 216,592 210,580 Z"
+        fill="#C4612A" opacity=".15"/>
+      <!-- Vessel mouth -->
+      <ellipse cx="225" cy="368" rx="28" ry="5" fill="#C4612A" opacity=".2"/>
+      <!-- Vessel base -->
+      <ellipse cx="225" cy="596" rx="20" ry="4" fill="#C4612A" opacity=".22"/>
+      <!-- Decorative band -->
+      <path d="M 194,490 Q 225,499 256,490" fill="none" stroke="#C4612A" stroke-width="1.5" opacity=".3"/>
+      <path d="M 191,506 Q 225,516 259,506" fill="none" stroke="#C4612A" stroke-width="1" opacity=".2"/>
+      <!-- Diagonal rule -->
+      <line x1="20" y1="680" x2="200" y2="680" stroke="#D8D3CC" stroke-width="1"/>
+      <line x1="20" y1="690" x2="140" y2="690" stroke="#C4612A" stroke-width="2"/>
+    </svg>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ SLIDE 2 · KEYWORDS ═══════════════ -->
+<div class="slide" id="s1">
+<div class="s1-bg-word">导</div>
+<div class="s1-content">
+  <div class="s1-title">WAYFINDING · KEYWORDS</div>
+  <div class="s1-h">导视<b style="font-weight:700;color:var(--terra);">关键词</b></div>
+  <div class="kw-tiers">
+    <div class="kw-tier">
+      <span class="kw-label">核心概念</span>
+      <div class="kw-words">
+        <span class="kw-a">引导</span>
+        <span class="kw-a" style="color:var(--terra);">叙事</span>
+        <span class="kw-a">识别</span>
+        <span class="kw-a" style="color:var(--cel);">体验</span>
+      </div>
+    </div>
+    <div style="width:100%;height:1px;background:var(--lgray);margin:4px 0;"></div>
+    <div class="kw-tier">
+      <span class="kw-label">设计原则</span>
+      <div class="kw-words">
+        <span class="kw-b">系统性</span>
+        <span class="kw-b">一致性</span>
+        <span class="kw-b">在地性</span>
+        <span class="kw-b">可读性</span>
+        <span class="kw-b">无障碍</span>
+      </div>
+    </div>
+    <div class="kw-tier">
+      <span class="kw-label">功能维度</span>
+      <div class="kw-words">
+        <span class="kw-c">空间定向</span>
+        <span class="kw-c">文化表达</span>
+        <span class="kw-c">信息层级</span>
+        <span class="kw-c">情绪引导</span>
+        <span class="kw-c">品牌塑造</span>
+      </div>
+    </div>
+    <div class="kw-tier">
+      <span class="kw-label">物质语言</span>
+      <div class="kw-words">
+        <span class="kw-d">材质语言</span>
+        <span class="kw-d">色彩编码</span>
+        <span class="kw-d">形式语言</span>
+        <span class="kw-d">比例关系</span>
+        <span class="kw-d">字体系统</span>
+        <span class="kw-d">图形符号</span>
+        <span class="kw-d">空间尺度</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ SLIDE 3 · MUSEUM CASES ═══════════════ -->
+<div class="slide" id="s2">
+<div class="s2-layout">
+  <div class="s2-aside">
+    <div>
+      <div class="s2-aside-sub">MUSEUM WAYFINDING</div>
+      <div class="s2-aside-title" style="margin-top:16px;">中国<br>博物馆<br><b>导视内容</b></div>
+    </div>
+    <div style="font-size:11px;color:rgba(255,255,255,.25);line-height:2;">
+      <div>导览总图</div><div>楼层索引</div><div>展厅标牌</div>
+      <div>方向箭头</div><div>展品说明</div><div>服务设施</div>
+      <div>禁止标识</div><div>安全出口</div>
+    </div>
+  </div>
+  <div class="s2-cards">
+    <!-- 故宫 -->
+    <div class="museum-card">
+      <div style="background:#C41E3A;"></div>
+      <div class="mc-visual">
+        <div>
+          <div class="mc-name">故宫博物院</div>
+          <div class="mc-loc">Beijing · Imperial Palace</div>
+        </div>
+        <div class="mc-palette">
+          <div class="mc-swatch" style="background:#C41E3A;"></div>
+          <div class="mc-swatch" style="background:#B8860B;"></div>
+          <div class="mc-swatch" style="background:#2C1810;"></div>
+          <div class="mc-swatch" style="background:#F0E68C;"></div>
+        </div>
+      </div>
+      <div class="mc-info">
+        <div class="mc-pattern-row">
+          <svg width="60" height="30" viewBox="0 0 60 30"><path d="M5,15 Q15,5 25,15 Q35,25 45,15 Q55,5 60,15" fill="none" stroke="#C41E3A" stroke-width="1.5"/><path d="M0,20 Q10,10 20,20 Q30,30 40,20 Q50,10 60,20" fill="none" stroke="#B8860B" stroke-width="1" opacity=".6"/></svg>
+          <span class="mc-tag">云纹卷草</span><span class="mc-tag">宫廷红金</span>
+        </div>
+        <div class="mc-desc">以朱红、金色为主色系，引入卷云纹、回纹等传统纹样；<br>字体选用宋体+隶书，材质多为铜质鎏金，强调皇家礼制氛围。</div>
+      </div>
+    </div>
+    <!-- 苏州博物馆 -->
+    <div class="museum-card">
+      <div style="background:#1A1A1A;"></div>
+      <div class="mc-visual">
+        <div>
+          <div class="mc-name">苏州博物馆</div>
+          <div class="mc-loc">Suzhou · I.M.Pei Design</div>
+        </div>
+        <div class="mc-palette">
+          <div class="mc-swatch" style="background:#1A1A1A;"></div>
+          <div class="mc-swatch" style="background:#FFFFFF;border:1px solid #ddd;"></div>
+          <div class="mc-swatch" style="background:#888888;"></div>
+          <div class="mc-swatch" style="background:#D4C5A9;"></div>
+        </div>
+      </div>
+      <div class="mc-info">
+        <div class="mc-pattern-row">
+          <svg width="60" height="30" viewBox="0 0 60 30"><rect x="5" y="5" width="18" height="18" fill="none" stroke="#1A1A1A" stroke-width="1.5" transform="rotate(45 14 14)"/><rect x="32" y="5" width="14" height="14" fill="none" stroke="#888" stroke-width="1" transform="rotate(45 39 12)"/></svg>
+          <span class="mc-tag">几何抽象</span><span class="mc-tag">黑白灰</span>
+        </div>
+        <div class="mc-desc">贝聿铭设计语言延伸，以菱形几何为核心图形元素；<br>极简黑白色系呼应粉墙黛瓦，字体纤细、大量留白，高度克制。</div>
+      </div>
+    </div>
+    <!-- 上海博物馆 -->
+    <div class="museum-card">
+      <div style="background:#5C3D2E;"></div>
+      <div class="mc-visual">
+        <div>
+          <div class="mc-name">上海博物馆</div>
+          <div class="mc-loc">Shanghai · Bronze Culture</div>
+        </div>
+        <div class="mc-palette">
+          <div class="mc-swatch" style="background:#5C3D2E;"></div>
+          <div class="mc-swatch" style="background:#7B9E87;"></div>
+          <div class="mc-swatch" style="background:#B08A25;"></div>
+          <div class="mc-swatch" style="background:#F5F0E8;"></div>
+        </div>
+      </div>
+      <div class="mc-info">
+        <div class="mc-pattern-row">
+          <svg width="60" height="30" viewBox="0 0 60 30"><path d="M10,25 L10,8 Q10,5 13,5 L25,5 Q30,5 30,10 Q30,15 25,15 L13,15 L13,25 Z" fill="none" stroke="#5C3D2E" stroke-width="1.5"/><path d="M5,18 Q15,12 20,18 Q25,24 30,18" fill="none" stroke="#7B9E87" stroke-width="1" opacity=".7"/></svg>
+          <span class="mc-tag">青铜纹饰</span><span class="mc-tag">棕金体系</span>
+        </div>
+        <div class="mc-desc">以青铜器轮廓为视觉标识原型，提取饕餮纹、云雷纹再设计；<br>铜绿色与暖棕色形成稳重历史感，兼顾现代简洁性。</div>
+      </div>
+    </div>
+    <!-- 良渚博物院 -->
+    <div class="museum-card" style="border-bottom:none;">
+      <div style="background:#5B8A7A;"></div>
+      <div class="mc-visual">
+        <div>
+          <div class="mc-name">良渚博物院</div>
+          <div class="mc-loc">Hangzhou · Jade Culture</div>
+        </div>
+        <div class="mc-palette">
+          <div class="mc-swatch" style="background:#5B8A7A;"></div>
+          <div class="mc-swatch" style="background:#8FAF9F;"></div>
+          <div class="mc-swatch" style="background:#C4B89A;"></div>
+          <div class="mc-swatch" style="background:#F8F4EE;"></div>
+        </div>
+      </div>
+      <div class="mc-info">
+        <div class="mc-pattern-row">
+          <svg width="60" height="30" viewBox="0 0 60 30"><rect x="12" y="3" width="18" height="24" fill="none" stroke="#5B8A7A" stroke-width="1.5" rx="1"/><rect x="18" y="9" width="6" height="12" fill="none" stroke="#5B8A7A" stroke-width="1"/><line x1="4" y1="15" x2="11" y2="15" stroke="#5B8A7A" stroke-width="1.5"/><line x1="31" y1="15" x2="38" y2="15" stroke="#5B8A7A" stroke-width="1.5"/></svg>
+          <span class="mc-tag">玉琮形态</span><span class="mc-tag">青绿玉色</span>
+        </div>
+        <div class="mc-desc">从玉琮（方圆组合）提炼核心图形语言，象征天地融合；<br>玉绿色系传递史前文明的神秘与沉静，字体轻盈现代。</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ SLIDE 4 · THEME CONNECTION ═══════════════ -->
+<div class="slide" id="s3">
+<div class="s3-layout">
+  <div class="s3-left">
+    <div class="s3-left-num">04</div>
+    <div>
+      <div class="s3-left-title">导视与<br>博物馆主题<br>的联系</div>
+      <div class="s3-left-sub">Theme · Connection</div>
+      <div style="margin-top:28px;font-size:12px;color:rgba(255,255,255,.45);line-height:1.9;">
+        博物馆的文化属性<br>决定导视的<br>色彩、纹样与材质
+      </div>
+    </div>
+  </div>
+  <div class="s3-right">
+    <div class="s3-table-header">
+      <span class="s3-th">馆藏类型</span>
+      <span class="s3-th">色彩语言</span>
+      <span class="s3-th">图形/形式语言</span>
+      <span class="s3-th">代表案例</span>
+    </div>
+    <div class="s3-rows">
+      <div class="s3-row">
+        <span class="s3-type">遗址考古</span>
+        <div class="s3-colors">
+          <div class="s3-col-dot" style="background:#A0522D;"></div>
+          <div class="s3-col-dot" style="background:#6B8E7A;"></div>
+          <div class="s3-col-dot" style="background:#8B7355;"></div>
+        </div>
+        <span class="s3-lang">土层纹理·考古断面<br>地层线条·出土器型</span>
+        <span class="s3-eg">秦始皇帝陵博物院<br>金沙遗址博物馆</span>
+      </div>
+      <div class="s3-row">
+        <span class="s3-type">宫廷历史</span>
+        <div class="s3-colors">
+          <div class="s3-col-dot" style="background:#C41E3A;"></div>
+          <div class="s3-col-dot" style="background:#B8860B;"></div>
+          <div class="s3-col-dot" style="background:#2C1810;"></div>
+        </div>
+        <span class="s3-lang">云纹·龙凤·回纹<br>铜质鎏金·宫廷礼仪</span>
+        <span class="s3-eg">故宫博物院<br>沈阳故宫博物院</span>
+      </div>
+      <div class="s3-row">
+        <span class="s3-type">自然科技</span>
+        <div class="s3-colors">
+          <div class="s3-col-dot" style="background:#3A7CA5;"></div>
+          <div class="s3-col-dot" style="background:#52B788;"></div>
+          <div class="s3-col-dot" style="background:#E8F4F8;"></div>
+        </div>
+        <span class="s3-lang">有机曲线·数据可视化<br>网格系统·生物形态</span>
+        <span class="s3-eg">中国科学技术馆<br>自然博物馆</span>
+      </div>
+      <div class="s3-row">
+        <span class="s3-type">艺术当代</span>
+        <div class="s3-colors">
+          <div class="s3-col-dot" style="background:#F5F5F5;border:1px solid #ddd;"></div>
+          <div class="s3-col-dot" style="background:#1A1A1A;"></div>
+          <div class="s3-col-dot" style="background:#E8441A;"></div>
+        </div>
+        <span class="s3-lang">极简几何·无衬线字体<br>大留白·高纯度点缀</span>
+        <span class="s3-eg">中国美术馆<br>苏州博物馆</span>
+      </div>
+      <div class="s3-row" style="border-bottom:none;">
+        <span class="s3-type" style="color:var(--terra);">陶瓷工艺</span>
+        <div class="s3-colors">
+          <div class="s3-col-dot" style="background:#C4612A;"></div>
+          <div class="s3-col-dot" style="background:#6B9E8E;"></div>
+          <div class="s3-col-dot" style="background:#B08A25;"></div>
+        </div>
+        <span class="s3-lang" style="color:var(--terra);">器型轮廓·纹样提取<br>窑变色彩·手工质感</span>
+        <span class="s3-eg" style="color:var(--terra);">景德镇陶瓷博物馆<br>▶ 你的陶瓷体验馆</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ SLIDE 5 · FUNCTIONS ═══════════════ -->
+<div class="slide" id="s4">
+<div class="s4-top">
+  <div class="s4-top-tag">Wayfinding · Functions</div>
+  <div class="s4-top-h">导视系统的<b>作用</b></div>
+</div>
+<div class="s4-funcs">
+  <div class="func-item">
+    <div class="func-num">01</div>
+    <svg class="func-icon" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="22" cy="22" r="18" stroke="#C4612A" stroke-width="1.5"/>
+      <line x1="22" y1="8" x2="22" y2="16" stroke="#C4612A" stroke-width="2"/>
+      <line x1="22" y1="28" x2="22" y2="36" stroke="#C4612A" stroke-width="2"/>
+      <line x1="8" y1="22" x2="16" y2="22" stroke="#C4612A" stroke-width="2"/>
+      <line x1="28" y1="22" x2="36" y2="22" stroke="#C4612A" stroke-width="2"/>
+      <circle cx="22" cy="22" r="4" fill="#C4612A"/>
+    </svg>
+    <div>
+      <div class="func-name">空间定向</div>
+      <div class="func-desc">帮助访客在陌生空间中快速建立方位感，明确"我在哪里、我要去哪里"，降低迷失感与焦虑。</div>
+    </div>
+  </div>
+  <div class="func-item">
+    <div class="func-num">02</div>
+    <svg class="func-icon" viewBox="0 0 44 44" fill="none">
+      <rect x="8" y="10" width="28" height="22" rx="2" stroke="#C4612A" stroke-width="1.5"/>
+      <line x1="14" y1="17" x2="30" y2="17" stroke="#C4612A" stroke-width="1.5"/>
+      <line x1="14" y1="22" x2="26" y2="22" stroke="#C4612A" stroke-width="1.5"/>
+      <line x1="14" y1="27" x2="22" y2="27" stroke="#C4612A" stroke-width="1.5"/>
+      <path d="M 20,32 L 22,38 L 24,32" fill="#C4612A" opacity=".5"/>
+    </svg>
+    <div>
+      <div class="func-name">信息传递</div>
+      <div class="func-desc">传达展览内容、开放时间、服务设施等实用信息，是文字说明与图形符号的综合信息界面。</div>
+    </div>
+  </div>
+  <div class="func-item">
+    <div class="func-num">03</div>
+    <svg class="func-icon" viewBox="0 0 44 44" fill="none">
+      <path d="M22 8 L36 36 L8 36 Z" stroke="#C4612A" stroke-width="1.5" fill="none"/>
+      <path d="M22 14 L31 32 L13 32 Z" fill="#C4612A" opacity=".15"/>
+      <circle cx="22" cy="20" r="3" fill="#C4612A"/>
+    </svg>
+    <div>
+      <div class="func-name">品牌塑造</div>
+      <div class="func-desc">导视系统是机构视觉形象的物理延伸，通过统一的色彩、字体、材质强化文化品牌认知。</div>
+    </div>
+  </div>
+  <div class="func-item">
+    <div class="func-num">04</div>
+    <svg class="func-icon" viewBox="0 0 44 44" fill="none">
+      <path d="M22 36 C22 36 8 26 8 18 C8 12.5 14.5 8 22 12 C29.5 8 36 12.5 36 18 C36 26 22 36 22 36Z" stroke="#C4612A" stroke-width="1.5" fill="none"/>
+      <circle cx="22" cy="19" r="4" fill="#C4612A" opacity=".4"/>
+    </svg>
+    <div>
+      <div class="func-name">情绪引导</div>
+      <div class="func-desc">通过色调、材质与空间节奏，在参观动线上营造期待、沉浸、惊喜等情绪序列，增强体验深度。</div>
+    </div>
+  </div>
+  <div class="func-item">
+    <div class="func-num">05</div>
+    <svg class="func-icon" viewBox="0 0 44 44" fill="none">
+      <rect x="10" y="10" width="24" height="28" rx="2" stroke="#C4612A" stroke-width="1.5"/>
+      <path d="M16 22 L20 26 L28 18" stroke="#C4612A" stroke-width="2" stroke-linecap="round"/>
+      <path d="M14 10 L14 6 L30 6 L30 10" stroke="#C4612A" stroke-width="1.5"/>
+    </svg>
+    <div>
+      <div class="func-name">安全疏导</div>
+      <div class="func-desc">规范标注安全出口、紧急集合点、消防设施，满足消防规范，确保紧急情况下人员安全疏散。</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ SLIDE 6 · CONSIDERATIONS ═══════════════ -->
+<div class="slide" id="s5">
+<div class="s5-layout">
+  <div class="s5-main">
+    <div class="s5-tag">Design Considerations</div>
+    <div class="s5-h">导视系统<b>注意事项</b></div>
+    <div class="s5-grid">
+      <div class="consider-item">
+        <div class="ci-num">01 ·</div>
+        <div class="ci-title">视觉层级与可读性</div>
+        <div class="ci-desc">主标题、副标题、说明文字需建立清晰的三级层级关系。中文最小正文不低于14px，关键信息应有足够对比度（WCAG AA标准≥4.5:1）。</div>
+      </div>
+      <div class="consider-item">
+        <div class="ci-num">02 ·</div>
+        <div class="ci-title">无障碍设计</div>
+        <div class="ci-desc">考虑色盲用户（避免纯红绿区分）、视障人士（盲文铭牌、触觉地图）、轮椅视角（标牌高度1.0–1.6m）。</div>
+      </div>
+      <div class="consider-item">
+        <div class="ci-num">03 ·</div>
+        <div class="ci-title">多语言与国际化</div>
+        <div class="ci-desc">面向国际访客需提供中英双语（或多语）。注意版面比例：英文通常比中文占空间更长，排版需预留弹性。</div>
+      </div>
+      <div class="consider-item">
+        <div class="ci-num">04 ·</div>
+        <div class="ci-title">材质与空间协调</div>
+        <div class="ci-desc">标识材质应与建筑材质对话（不冲突也不消失）。户外标识需防UV、防腐；室内可选择更精细的亚克力、铝板或木质材料。</div>
+      </div>
+      <div class="consider-item">
+        <div class="ci-num">05 ·</div>
+        <div class="ci-title">系统一致性</div>
+        <div class="ci-desc">同一机构内所有导视元素须遵循统一的设计规范手册（色值、字体、图标风格、尺寸比例），避免各楼层"各自为政"。</div>
+      </div>
+      <div class="consider-item">
+        <div class="ci-num">06 ·</div>
+        <div class="ci-title">更新与维护弹性</div>
+        <div class="ci-desc">展览内容定期更换，标识系统需支持局部更新（如可更换内芯的面板框架），避免每次更展都需全面重制。</div>
+      </div>
+    </div>
+  </div>
+  <div class="s5-aside">
+    <div class="s5-aside-q">好的导视，让访客<b>感觉不到</b>它的存在</div>
+    <div style="width:32px;height:1.5px;background:var(--terra);margin:24px 0;"></div>
+    <div class="s5-aside-list">
+      <div class="s5-check">
+        <div class="s5-check-dot"></div>
+        <span class="s5-check-text">不喧宾夺主，与展品相辅相成</span>
+      </div>
+      <div class="s5-check">
+        <div class="s5-check-dot"></div>
+        <span class="s5-check-text">第一次来的人能自然找到路</span>
+      </div>
+      <div class="s5-check">
+        <div class="s5-check-dot"></div>
+        <span class="s5-check-text">紧急情况下指引清晰无歧义</span>
+      </div>
+      <div class="s5-check">
+        <div class="s5-check-dot"></div>
+        <span class="s5-check-text">承载文化身份，值得被拍照分享</span>
+      </div>
+      <div class="s5-check">
+        <div class="s5-check-dot"></div>
+        <span class="s5-check-text">五年后仍与整体环境协调一致</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ SLIDE 7 · XI'AN SURVEY ═══════════════ -->
+<div class="slide" id="s6">
+<div class="s6-top">
+  <div>
+    <div style="font-size:10px;letter-spacing:4px;color:var(--terra);text-transform:uppercase;">Field Research · Xi'an</div>
+    <div class="s6-top-h">西安<b>实地考察</b></div>
+  </div>
+  <div class="s6-top-sub">6处文化机构 · 导视系统观察记录</div>
+</div>
+<div class="s6-venues">
+  <div class="venue-card">
+    <div class="vc-top"><div class="vc-num">01</div><div class="vc-color-dot" style="background:#B8860B;"></div></div>
+    <div>
+      <div class="vc-name">陕西历史博物馆</div>
+      <div class="vc-type">综合历史 · 唐风建筑</div>
+      <div class="vc-findings">
+        <div class="vc-finding">暖土黄色系+金属金，呼应唐代宫廷气韵</div>
+        <div class="vc-finding">楼层索引牌融入唐草纹装饰边框</div>
+        <div class="vc-finding">户外立式导览牌采用仿唐碑形制</div>
+        <div class="vc-finding">中英双语，但信息密度略高</div>
+      </div>
+    </div>
+    <div class="vc-tags"><span class="vc-tag">唐风纹样</span><span class="vc-tag">暖金色系</span><span class="vc-tag">铜质材料</span></div>
+  </div>
+  <div class="venue-card">
+    <div class="vc-top"><div class="vc-num">02</div><div class="vc-color-dot" style="background:#7B4F3A;"></div></div>
+    <div>
+      <div class="vc-name">秦始皇帝陵博物院</div>
+      <div class="vc-type">遗址考古 · 室外为主</div>
+      <div class="vc-findings">
+        <div class="vc-finding">赭石+铜绿色系，呼应兵马俑本体色调</div>
+        <div class="vc-finding">大尺寸图形标识适配户外宽阔空间</div>
+        <div class="vc-finding">动线引导牌以兵马俑剪影为图形元素</div>
+        <div class="vc-finding">多语种（中英日韩），国际游客比重高</div>
+      </div>
+    </div>
+    <div class="vc-tags"><span class="vc-tag">户外大尺度</span><span class="vc-tag">多语言</span><span class="vc-tag">图形化</span></div>
+  </div>
+  <div class="venue-card">
+    <div class="vc-top"><div class="vc-num">03</div><div class="vc-color-dot" style="background:#4A6741;"></div></div>
+    <div>
+      <div class="vc-name">西安博物院</div>
+      <div class="vc-type">城市历史 · 小雁塔景区</div>
+      <div class="vc-findings">
+        <div class="vc-finding">以小雁塔轮廓作为标识原型图形</div>
+        <div class="vc-finding">现代简约风，中性石灰色为主</div>
+        <div class="vc-finding">室内外导视系统风格统一度高</div>
+        <div class="vc-finding">景区+博物馆双重功能分区清晰</div>
+      </div>
+    </div>
+    <div class="vc-tags"><span class="vc-tag">建筑轮廓</span><span class="vc-tag">现代简约</span><span class="vc-tag">双功能区</span></div>
+  </div>
+  <div class="venue-card">
+    <div class="vc-top"><div class="vc-num">04</div><div class="vc-color-dot" style="background:#2C2C2C;"></div></div>
+    <div>
+      <div class="vc-name">碑林博物馆</div>
+      <div class="vc-type">书法碑刻 · 文字文化</div>
+      <div class="vc-findings">
+        <div class="vc-finding">以石刻拓印质感为背景纹理</div>
+        <div class="vc-finding">字体选用隶书与楷书，强调文字本身</div>
+        <div class="vc-finding">色调以墨黑+石灰为主，沉静典雅</div>
+        <div class="vc-finding">展品说明牌设计较为保守，可优化</div>
+      </div>
+    </div>
+    <div class="vc-tags"><span class="vc-tag">书法字体</span><span class="vc-tag">拓印质感</span><span class="vc-tag">墨色系</span></div>
+  </div>
+  <div class="venue-card">
+    <div class="vc-top"><div class="vc-num">05</div><div class="vc-color-dot" style="background:#2B6CB0;"></div></div>
+    <div>
+      <div class="vc-name">西安市图书馆</div>
+      <div class="vc-type">公共图书馆 · 功能导向</div>
+      <div class="vc-findings">
+        <div class="vc-finding">色彩编码系统：不同阅览区用色区分</div>
+        <div class="vc-finding">功能性优先，导视清晰直接</div>
+        <div class="vc-finding">无衬线字体，现代感强</div>
+        <div class="vc-finding">文化属性体现不足，风格较通用</div>
+      </div>
+    </div>
+    <div class="vc-tags"><span class="vc-tag">色彩分区</span><span class="vc-tag">功能导向</span><span class="vc-tag">现代系统</span></div>
+  </div>
+  <div class="venue-card">
+    <div class="vc-top"><div class="vc-num">06</div><div class="vc-color-dot" style="background:#C41E3A;"></div></div>
+    <div>
+      <div class="vc-name">西安非遗文化馆</div>
+      <div class="vc-type">非物质文化遗产展示</div>
+      <div class="vc-findings">
+        <div class="vc-finding">剪纸、皮影、年画等民俗纹样入标</div>
+        <div class="vc-finding">色彩饱和度高，节日感浓郁</div>
+        <div class="vc-finding">手工感字体配合民俗主题</div>
+        <div class="vc-finding">互动性导视（扫码查看制作视频）</div>
+      </div>
+    </div>
+    <div class="vc-tags"><span class="vc-tag">民俗纹样</span><span class="vc-tag">高饱和色</span><span class="vc-tag">互动导视</span></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ SLIDE 8 · CERAMIC INNOVATION ═══════════════ -->
+<div class="slide" id="s7">
+<div class="s7-layout">
+  <div class="s7-left">
+    <div>
+      <div class="s7-left-tag">Ceramic Museum · Innovation</div>
+      <div class="s7-left-h">陶瓷体验<br>博物馆<br><b>导视创新</b></div>
+    </div>
+    <div class="s7-vessel">
+      <svg viewBox="0 0 200 280" width="160" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Vessel body -->
+        <path d="M 72,248 C 48,220 38,185 42,152 C 44,133 52,116 58,106 C 64,96 64,85 58,78 C 52,71 51,63 56,58 C 61,53 72,50 84,50 C 96,50 107,53 112,58 C 117,63 116,71 110,78 C 104,85 104,96 110,106 C 116,116 124,133 126,152 C 130,185 120,220 96,248 C 90,258 84,264 84,264 C 84,264 78,258 72,248 Z"
+          fill="#C4612A" opacity=".2" stroke="#C4612A" stroke-width="1.5"/>
+        <!-- Decorative bands -->
+        <path d="M 46,170 Q 84,180 122,170" stroke="#C4612A" stroke-width="1.5" opacity=".5"/>
+        <path d="M 44,185 Q 84,196 124,185" stroke="#C4612A" stroke-width="1" opacity=".35"/>
+        <!-- Rim -->
+        <ellipse cx="84" cy="50" rx="30" ry="6" stroke="#C4612A" stroke-width="1.5" opacity=".6"/>
+        <!-- Base -->
+        <ellipse cx="84" cy="261" rx="22" ry="5" stroke="#C4612A" stroke-width="1.5" opacity=".5"/>
+        <!-- Crackle pattern on body -->
+        <path d="M 70,120 L 65,135 L 75,145 L 68,160" stroke="#B08A25" stroke-width=".8" opacity=".4"/>
+        <path d="M 95,130 L 100,148 L 92,158 L 98,172" stroke="#B08A25" stroke-width=".8" opacity=".4"/>
+        <!-- Pottery wheel rings annotation -->
+        <circle cx="84" cy="50" r="52" fill="none" stroke="rgba(196,97,42,.15)" stroke-width="1" stroke-dasharray="3,4"/>
+        <circle cx="84" cy="50" r="70" fill="none" stroke="rgba(196,97,42,.1)" stroke-width="1" stroke-dasharray="3,4"/>
+        <!-- Fingerprint hint -->
+        <path d="M 78,205 Q 84,210 90,205 Q 96,200 90,195 Q 84,190 78,195 Q 72,200 78,205" stroke="#6B9E8E" stroke-width="1" opacity=".5" fill="none"/>
+        <path d="M 76,208 Q 84,214 92,208" stroke="#6B9E8E" stroke-width="1" opacity=".4" fill="none"/>
+      </svg>
+    </div>
+    <div style="font-size:10px;color:rgba(255,255,255,.25);letter-spacing:2px;">SHAANXI · CERAMIC EXPERIENCE</div>
+  </div>
+  <div class="s7-right">
+    <div class="s7-right-tag">8 Innovation Directions</div>
+    <div class="innov-grid">
+      <div class="innov-item">
+        <svg class="ii-icon" viewBox="0 0 40 40" fill="none">
+          <path d="M8,32 C8,32 20,8 32,32" stroke="#C4612A" stroke-width="1.5" fill="none"/>
+          <path d="M12,26 Q20,18 28,26" stroke="#C4612A" stroke-width="1" fill="none" opacity=".5"/>
+          <circle cx="20" cy="28" r="3" fill="#C4612A" opacity=".4"/>
+        </svg>
+        <div class="ii-num">01 ·</div>
+        <div class="ii-title">纹样提取再设计</div>
+        <div class="ii-desc">从馆藏陶瓷纹样（彩陶鱼纹、唐三彩花卉、青花缠枝）中提取图形，重新设计为导视图标系统。</div>
+      </div>
+      <div class="innov-item">
+        <svg class="ii-icon" viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="20" r="14" stroke="#C4612A" stroke-width="1.5" opacity=".3"/>
+          <circle cx="20" cy="20" r="9" stroke="#C4612A" stroke-width="1.5" opacity=".5"/>
+          <circle cx="20" cy="20" r="4" stroke="#C4612A" stroke-width="1.5" opacity=".7"/>
+          <circle cx="20" cy="20" r="1.5" fill="#C4612A"/>
+          <line x1="20" y1="6" x2="20" y2="10" stroke="#C4612A" stroke-width="2"/>
+        </svg>
+        <div class="ii-num">02 ·</div>
+        <div class="ii-title">陶轮同心圆方向系统</div>
+        <div class="ii-desc">以陶轮旋转产生的同心圆为导视核心图形，通过圆弧方向与断点位置暗示路径，颇具东方美感。</div>
+      </div>
+      <div class="innov-item">
+        <svg class="ii-icon" viewBox="0 0 40 40" fill="none">
+          <rect x="6" y="8" width="28" height="24" rx="2" stroke="#C4612A" stroke-width="1.5" opacity=".4"/>
+          <path d="M6,14 Q12,10 18,14 Q24,18 30,14 Q34,12 34,14" stroke="#B08A25" stroke-width="1" fill="none"/>
+          <path d="M6,20 Q12,16 18,20 Q24,24 30,20 Q34,18 34,20" stroke="#6B9E8E" stroke-width="1" fill="none"/>
+          <path d="M6,26 Q12,22 18,26 Q24,30 30,26" stroke="#C4612A" stroke-width="1" fill="none" opacity=".5"/>
+        </svg>
+        <div class="ii-num">03 ·</div>
+        <div class="ii-title">窑变色彩分区编码</div>
+        <div class="ii-desc">将窑变釉色（天青、火红、铁锈棕、蜜黄）作为各功能区的专属色彩标识，自然渐变富有变化。</div>
+      </div>
+      <div class="innov-item">
+        <svg class="ii-icon" viewBox="0 0 40 40" fill="none">
+          <path d="M20,8 C16,8 12,12 12,18 C12,22 14,25 17,27 C18,28 18,30 18,32 L22,32 C22,30 22,28 23,27 C26,25 28,22 28,18 C28,12 24,8 20,8 Z" stroke="#C4612A" stroke-width="1.5" fill="none"/>
+          <ellipse cx="20" cy="32" rx="4" ry="1.5" stroke="#C4612A" stroke-width="1" opacity=".5"/>
+          <circle cx="20" cy="18" r="3" fill="#C4612A" opacity=".3"/>
+        </svg>
+        <div class="ii-num">04 ·</div>
+        <div class="ii-title">制作体验流程导视</div>
+        <div class="ii-desc">将取土→揉泥→拉坯→修坯→上釉→入窑→出窑的制作工序，设计为叙事性导视动线，串联体验区。</div>
+      </div>
+      <div class="innov-item">
+        <svg class="ii-icon" viewBox="0 0 40 40" fill="none">
+          <path d="M 18,32 C 14,28 11,22 12,17 C 13,13 15,11 17,11 C 18,11 18.5,11.5 18,13 C 17,16 18,20 20,22 C 22,20 23,16 22,13 C 21.5,11.5 22,11 23,11 C 25,11 27,13 28,17 C 29,22 26,28 22,32 C 21,33 20,34 20,34 C 20,34 19,33 18,32 Z" stroke="#6B9E8E" stroke-width="1.5" fill="none"/>
+          <path d="M 14,20 Q 20,25 26,20" stroke="#6B9E8E" stroke-width="1" opacity=".5" fill="none"/>
+        </svg>
+        <div class="ii-num">05 ·</div>
+        <div class="ii-title">手印 · 指纹标识系统</div>
+        <div class="ii-desc">以陶艺师手印为视觉原点，提炼指纹线条作为品牌图形语言，强调"手作温度"与人文关怀。</div>
+      </div>
+      <div class="innov-item">
+        <svg class="ii-icon" viewBox="0 0 40 40" fill="none">
+          <path d="M8,30 L8,12 L16,8 L24,12 L32,8 L32,30 L24,34 L16,30 Z" stroke="#C4612A" stroke-width="1.5" fill="none" opacity=".5"/>
+          <path d="M16,30 L16,12" stroke="#C4612A" stroke-width="1" opacity=".4"/>
+          <path d="M24,34 L24,12" stroke="#C4612A" stroke-width="1" opacity=".4"/>
+          <path d="M8,20 L32,20" stroke="#C4612A" stroke-width="1" opacity=".3"/>
+        </svg>
+        <div class="ii-num">06 ·</div>
+        <div class="ii-title">陶瓷断面美学</div>
+        <div class="ii-desc">将陶器断面的层次结构（胎土、化妆土、釉层）视觉化，形成独特的分层纹理图形，用于标牌背景。</div>
+      </div>
+      <div class="innov-item">
+        <svg class="ii-icon" viewBox="0 0 40 40" fill="none">
+          <path d="M10,28 L10,16 Q10,12 14,12 L26,12 Q30,12 30,16 L30,28 Q30,32 26,32 L14,32 Q10,32 10,28 Z" stroke="#B08A25" stroke-width="1.5" fill="none" opacity=".5"/>
+          <path d="M10,18 L30,18" stroke="#B08A25" stroke-width=".8" opacity=".4"/>
+          <path d="M10,24 L30,24" stroke="#B08A25" stroke-width=".8" opacity=".4"/>
+          <path d="M18,12 L18,32" stroke="#B08A25" stroke-width=".8" opacity=".4"/>
+          <path d="M24,12 L24,32" stroke="#B08A25" stroke-width=".8" opacity=".4"/>
+        </svg>
+        <div class="ii-num">07 ·</div>
+        <div class="ii-title">开片裂纹装饰语言</div>
+        <div class="ii-desc">哥窑开片（冰裂纹）是陶瓷美学的代表性缺陷美，将其提炼为导视底纹与边框装饰，独具辨识度。</div>
+      </div>
+      <div class="innov-item">
+        <svg class="ii-icon" viewBox="0 0 40 40" fill="none">
+          <rect x="10" y="8" width="20" height="26" rx="2" stroke="#6B9E8E" stroke-width="1.5" fill="none" opacity=".5"/>
+          <rect x="14" y="12" width="12" height="8" rx="1" fill="#6B9E8E" opacity=".15"/>
+          <line x1="14" y1="24" x2="26" y2="24" stroke="#6B9E8E" stroke-width="1"/>
+          <line x1="14" y1="27" x2="22" y2="27" stroke="#6B9E8E" stroke-width="1" opacity=".6"/>
+          <circle cx="28" cy="32" r="6" fill="#6B9E8E" opacity=".2" stroke="#6B9E8E" stroke-width="1"/>
+          <path d="M26,32 L28,34 L31,30" stroke="#6B9E8E" stroke-width="1.2"/>
+        </svg>
+        <div class="ii-num">08 ·</div>
+        <div class="ii-title">数字互动导视</div>
+        <div class="ii-desc">在实体标牌嵌入NFC或AR二维码，访客扫码可查看陶瓷制作视频、历史溯源、展品3D模型，虚实融合。</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+</div><!-- /stage -->
+
+<div class="nav-bar">
+  <button class="nav-btn" onclick="go(-1)">←</button>
+  <span class="snum" id="snum">01 · 08</span>
+  <button class="nav-btn" onclick="go(1)">→</button>
+</div>
+<div class="sdots" id="sdots"></div>
+
+<script>
+let cur = 0;
+const slides = document.querySelectorAll('.slide');
+const n = slides.length;
+
+function scale(){
+  const stage = document.getElementById('stage');
+  const sx = window.innerWidth / 1280;
+  const sy = (window.innerHeight - 52) / 720;
+  const s = Math.min(sx, sy);
+  const tx = (window.innerWidth - 1280*s)/2;
+  const ty = (window.innerHeight - 52 - 720*s)/2;
+  stage.style.transform = `translate(${tx}px,${ty}px) scale(${s})`;
+}
+window.addEventListener('resize', scale);
+scale();
+
+const dotsEl = document.getElementById('sdots');
+for(let i=0;i<n;i++){
+  const d = document.createElement('div');
+  d.className = 'sdot'+(i===0?' on':'');
+  d.onclick = ()=>go(i-cur);
+  dotsEl.appendChild(d);
+}
+
+function go(delta){
+  const allDots = document.querySelectorAll('.sdot');
+  slides[cur].classList.remove('active');
+  allDots[cur].classList.remove('on');
+  cur = (cur+delta+n)%n;
+  slides[cur].classList.add('active');
+  allDots[cur].classList.add('on');
+  document.getElementById('snum').textContent =
+    String(cur+1).padStart(2,'0')+' · '+String(n).padStart(2,'0');
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' ') go(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp') go(-1);
+});
+</script>
+</body>
+</html>
