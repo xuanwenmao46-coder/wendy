@@ -5,7 +5,9 @@ from pptx.enum.text import PP_ALIGN
 from pptx.util import Inches, Pt
 import pptx.oxml.ns as nsmap
 from lxml import etree
-import copy
+import copy, os
+
+IMGS = "/home/user/wendy/imgs"
 
 # ── colours ──────────────────────────────────────────────
 BG      = RGBColor(0xF7, 0xF4, 0xEF)
@@ -198,31 +200,40 @@ museums = [
      [RGBColor(0xC4,0x1E,0x3A),RGBColor(0xB8,0x86,0x0B),
       RGBColor(0x2C,0x18,0x10),RGBColor(0xF0,0xE6,0x8C)],
      "云纹卷草 · 宫廷红金",
-     "朱红、金色为主色系，融入卷云纹、回纹等传统纹样；\n字体选用宋体+隶书，铜质鎏金材质，彰显皇家礼制氛围。"),
+     "朱红、金色为主色系，融入卷云纹、回纹等传统纹样；\n字体选用宋体+隶书，铜质鎏金材质，彰显皇家礼制氛围。",
+     "gugong"),
     ("苏州博物馆", "Suzhou · I.M.Pei Design",
      [RGBColor(0x1A,0x1A,0x1A),RGBColor(0xFF,0xFF,0xFF),
       RGBColor(0x88,0x88,0x88),RGBColor(0xD4,0xC5,0xA9)],
      "几何抽象 · 黑白灰",
-     "贝聿铭设计语言延伸，菱形几何为核心图形；\n极简黑白色系呼应粉墙黛瓦，字体纤细，大量留白。"),
+     "贝聿铭设计语言延伸，菱形几何为核心图形；\n极简黑白色系呼应粉墙黛瓦，字体纤细，大量留白。",
+     "suzhou"),
     ("上海博物馆", "Shanghai · Bronze Culture",
      [RGBColor(0x5C,0x3D,0x2E),RGBColor(0x7B,0x9E,0x87),
       RGBColor(0xB0,0x8A,0x25),RGBColor(0xF5,0xF0,0xE8)],
      "青铜纹饰 · 棕金体系",
-     "以青铜器轮廓为视觉标识原型，提取饕餮纹、云雷纹再设计；\n铜绿色与暖棕色形成稳重历史感，兼顾现代简洁性。"),
+     "以青铜器轮廓为视觉标识原型，提取饕餮纹、云雷纹再设计；\n铜绿色与暖棕色形成稳重历史感，兼顾现代简洁性。",
+     "shanghai"),
     ("良渚博物院", "Hangzhou · Jade Culture",
      [RGBColor(0x5B,0x8A,0x7A),RGBColor(0x8F,0xAF,0x9F),
       RGBColor(0xC4,0xB8,0x9A),RGBColor(0xF8,0xF4,0xEE)],
      "玉琮形态 · 青绿玉色",
-     "从玉琮（方圆组合）提炼核心图形语言，象征天地融合；\n玉绿色系传递史前文明的神秘与沉静，字体轻盈现代。"),
+     "从玉琮（方圆组合）提炼核心图形语言，象征天地融合；\n玉绿色系传递史前文明的神秘与沉静，字体轻盈现代。",
+     "liangzhu"),
 ]
 
-card_h = Inches(1.55)
-for i, (name, loc, palette, tags, desc) in enumerate(museums):
-    y = Inches(0.18) + i * (card_h + Inches(0.1))
+card_h = Inches(1.62)
+for i, (name, loc, palette, tags, desc, img_key) in enumerate(museums):
+    y = Inches(0.18) + i * (card_h + Inches(0.06))
     # card bg
     box(s3, Inches(2.4), y, Inches(10.7), card_h, WHITE)
     # accent bar
     box(s3, Inches(2.4), y, Inches(0.08), card_h, palette[0])
+    # photo on right
+    img_path = f"{IMGS}/{img_key}.jpg"
+    if os.path.exists(img_path):
+        s3.shapes.add_picture(img_path, Inches(10.18), y+Inches(0.08),
+                              Inches(2.84), card_h-Inches(0.16))
     # name
     txt(s3, name, Inches(2.6), y+Inches(0.15), Inches(2),
         Inches(0.45), size=17, bold=True, color=DARK)
@@ -238,9 +249,9 @@ for i, (name, loc, palette, tags, desc) in enumerate(museums):
     # tags
     txt(s3, tags, Inches(4.8), y+Inches(0.15), Inches(2.5),
         Inches(0.35), size=10, color=TERRA)
-    # desc
-    txt(s3, desc, Inches(4.8), y+Inches(0.5), Inches(8.1),
-        Inches(0.85), size=10.5, color=GRAY)
+    # desc (narrowed to leave room for photo)
+    txt(s3, desc, Inches(4.8), y+Inches(0.5), Inches(5.2),
+        Inches(0.95), size=10.5, color=GRAY)
 
 # ══════════════════════════════════════════════════════════
 # SLIDE 4 · THEME CONNECTION
@@ -434,41 +445,41 @@ venues = [
      ["暖土黄+金属金，呼应唐代宫廷气韵",
       "楼层索引牌融入唐草纹装饰边框",
       "户外立式导览牌采用仿唐碑形制"],
-     ["唐风纹样","暖金色系","铜质材料"]),
+     ["唐风纹样","暖金色系","铜质材料"], "shaanxi"),
     ("02","秦始皇帝陵博物院","遗址考古 · 室外为主",
      RGBColor(0x7B,0x4F,0x3A),
      ["赭石+铜绿，呼应兵马俑本体色调",
       "大尺寸图形标识适配户外宽阔空间",
       "兵马俑剪影作为主要图形元素"],
-     ["户外大尺度","多语言","图形化"]),
+     ["户外大尺度","多语言","图形化"], "terracotta"),
     ("03","西安博物院","城市历史 · 小雁塔景区",
      RGBColor(0x4A,0x67,0x41),
      ["小雁塔轮廓作为标识原型图形",
       "现代简约风，中性石灰色为主",
       "室内外导视系统风格统一度高"],
-     ["建筑轮廓","现代简约","双功能区"]),
+     ["建筑轮廓","现代简约","双功能区"], "xian_bwy"),
     ("04","碑林博物馆","书法碑刻 · 文字文化",
      RGBColor(0x2C,0x2C,0x2C),
      ["以石刻拓印质感为背景纹理",
       "字体选用隶书与楷书",
       "墨黑+石灰色调，沉静典雅"],
-     ["书法字体","拓印质感","墨色系"]),
+     ["书法字体","拓印质感","墨色系"], "beilin"),
     ("05","西安市图书馆","公共图书馆 · 功能导向",
      RGBColor(0x2B,0x6C,0xB0),
      ["色彩编码系统：不同阅览区用色区分",
       "功能性优先，导视清晰直接",
       "文化属性体现不足，风格较通用"],
-     ["色彩分区","功能导向","现代系统"]),
+     ["色彩分区","功能导向","现代系统"], "library"),
     ("06","西安非遗文化馆","非物质文化遗产展示",
      RGBColor(0xC4,0x1E,0x3A),
      ["剪纸、皮影等民俗纹样入标",
       "色彩饱和度高，节日感浓郁",
       "互动导视（扫码查看制作视频）"],
-     ["民俗纹样","高饱和色","互动导视"]),
+     ["民俗纹样","高饱和色","互动导视"], "noncultural"),
 ]
 
 col_w2 = Inches(4.3)
-for i,(num,name,vtype,col,findings,tags) in enumerate(venues):
+for i,(num,name,vtype,col,findings,tags,img_key) in enumerate(venues):
     row = i // 3
     col_i = i % 3
     x = Inches(0.06) + col_i*(col_w2+Inches(0.1))
@@ -478,20 +489,26 @@ for i,(num,name,vtype,col,findings,tags) in enumerate(venues):
     card.fill.background()
     card.line.color.rgb = LGRAY
     card.line.width = Pt(0.8)
-    # number + color dot
-    txt(s7, num, x+Inches(0.2), y+Inches(0.15), Inches(0.6), Inches(0.5),
-        size=28, bold=True, color=LGRAY)
-    dot = s7.shapes.add_shape(9, x+col_w2-Inches(0.55), y+Inches(0.22),
-                               Inches(0.28), Inches(0.28))
+    # photo strip across top of card
+    img_path = f"{IMGS}/{img_key}.jpg"
+    if os.path.exists(img_path):
+        s7.shapes.add_picture(img_path, x+Inches(0.06), y+Inches(0.06),
+                              col_w2-Inches(0.12), Inches(1.0))
+    # number + color dot (overlaid on photo)
+    txt(s7, num, x+Inches(0.12), y+Inches(0.08), Inches(0.55), Inches(0.45),
+        size=22, bold=True, color=WHITE)
+    dot = s7.shapes.add_shape(9, x+col_w2-Inches(0.5), y+Inches(0.12),
+                               Inches(0.26), Inches(0.26))
     dot.fill.solid(); dot.fill.fore_color.rgb = col
     dot.line.fill.background()
-    txt(s7, name, x+Inches(0.2), y+Inches(0.68), col_w2-Inches(0.4),
-        Inches(0.45), size=17, bold=True, color=DARK)
-    txt(s7, vtype, x+Inches(0.2), y+Inches(1.1), col_w2-Inches(0.4),
-        Inches(0.3), size=9, color=GRAY)
+    # name & type below photo
+    txt(s7, name, x+Inches(0.18), y+Inches(1.1), col_w2-Inches(0.36),
+        Inches(0.42), size=15, bold=True, color=DARK)
+    txt(s7, vtype, x+Inches(0.18), y+Inches(1.5), col_w2-Inches(0.36),
+        Inches(0.25), size=8, color=GRAY)
     for j,f in enumerate(findings):
-        txt(s7, "— "+f, x+Inches(0.2), y+Inches(1.45)+j*Inches(0.37),
-            col_w2-Inches(0.4), Inches(0.33), size=10, color=GRAY)
+        txt(s7, "— "+f, x+Inches(0.18), y+Inches(1.78)+j*Inches(0.34),
+            col_w2-Inches(0.36), Inches(0.3), size=9.5, color=GRAY)
 
 # ══════════════════════════════════════════════════════════
 # SLIDE 8 · CERAMIC INNOVATION
