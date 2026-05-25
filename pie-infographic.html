@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pie Infographic</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:#2e2e2e;
+    display:flex; align-items:center; justify-content:center;
+    min-height:100vh;
+  }
+  svg { display:block; }
+  .pct-label {
+    font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-weight:300; font-size:42px;
+    text-anchor:middle; dominant-baseline:middle;
+    opacity:0; transition:opacity 0.2s;
+  }
+</style>
+</head>
+<body>
+<svg viewBox="0 0 800 720" width="800" height="720">
+  <path id="s0" fill="#ffffff"/>
+  <path id="s1" fill="#f5a623"/>
+  <path id="s2" fill="#ffc845"/>
+  <path id="s3" fill="#ffd97d"/>
+  <path id="s4" fill="#e8940a"/>
+  <text id="l0" class="pct-label" fill="#ffffff"></text>
+  <text id="l1" class="pct-label" fill="#f5a623"></text>
+  <text id="l2" class="pct-label" fill="#ffc845"></text>
+  <text id="l3" class="pct-label" fill="#ffd97d"></text>
+  <text id="l4" class="pct-label" fill="#e8940a"></text>
+</svg>
+<script>
+const cx = 400, cy = 360, r = 200;
+const segments = [
+  {pct: 20},
+  {pct: 25},
+  {pct: 35},
+  {pct: 15},
+  {pct: 5}
+];
+const paths  = segments.map((_,i) => document.getElementById('s'+i));
+const labels = segments.map((_,i) => document.getElementById('l'+i));
+
+function toRad(d) { return (d - 90) * Math.PI / 180; }
+
+function slicePath(startDeg, endDeg) {
+  const x1 = cx + r * Math.cos(toRad(startDeg));
+  const y1 = cy + r * Math.sin(toRad(startDeg));
+  const x2 = cx + r * Math.cos(toRad(endDeg));
+  const y2 = cy + r * Math.sin(toRad(endDeg));
+  const large = (endDeg - startDeg) > 180 ? 1 : 0;
+  return `M${cx},${cy} L${x1},${y1} A${r},${r},0,${large},1,${x2},${y2} Z`;
+}
+
+function easeInOut(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
+
+const DURATION = 1400;
+const startTime = performance.now();
+
+function animate(now) {
+  const t = easeInOut(Math.min((now - startTime) / DURATION, 1));
+  const totalDeg = 360 * t;
+  let cursor = 0;
+  segments.forEach((seg, i) => {
+    const segDeg = seg.pct / 100 * 360;
+    const drawn = Math.min(Math.max(totalDeg - cursor, 0), segDeg);
+    if (drawn > 0.1) {
+      paths[i].setAttribute('d', slicePath(cursor, cursor + drawn));
+      const prog = Math.min(drawn / segDeg, 1);
+      labels[i].textContent = Math.round(seg.pct * prog) + ' %';
+      labels[i].style.opacity = prog > 0.08 ? 1 : 0;
+      const mid = cursor + segDeg / 2;
+      labels[i].setAttribute('x', cx + 265 * Math.cos(toRad(mid)));
+      labels[i].setAttribute('y', cy + 265 * Math.sin(toRad(mid)) + 14);
+    }
+    cursor += segDeg;
+  });
+  if (t < 1) requestAnimationFrame(animate);
+}
+requestAnimationFrame(animate);
+</script>
+</body>
+</html>
