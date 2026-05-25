@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Line Infographic</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:#111;
+    display:flex; align-items:center; justify-content:center;
+    min-height:100vh;
+    font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+  }
+  .scene { width:960px; padding:40px 20px 50px; }
+
+  .header {
+    display:flex; align-items:baseline; gap:12px;
+    margin-bottom:8px; overflow:hidden;
+  }
+  .chart-title {
+    font-family:Georgia,'Times New Roman',serif;
+    font-style:italic; font-size:28px; font-weight:400;
+    color:#fff; white-space:nowrap;
+    opacity:0; animation:fadeIn 0.4s ease 0.6s forwards;
+  }
+  .title-rule {
+    flex:1; height:1px; background:rgba(255,255,255,0.4);
+    transform-origin:left; transform:scaleX(0);
+    animation:growRule 0.4s ease 0.7s forwards;
+  }
+  .chart-subtitle {
+    font-size:12px; letter-spacing:1.5px; text-transform:uppercase;
+    color:rgba(255,255,255,0.5); white-space:nowrap;
+    opacity:0; animation:fadeIn 0.3s ease 0.8s forwards;
+  }
+
+  .stats {
+    display:flex; justify-content:flex-start; gap:60px;
+    margin:20px 0 24px 60px;
+  }
+  .stat-item { display:flex; flex-direction:column; }
+  .stat-pct {
+    font-family:Georgia,'Times New Roman',serif;
+    font-style:italic; font-weight:700; font-size:52px;
+    color:#fff; line-height:1;
+    opacity:0; animation:fadeIn 0.4s ease 2.2s forwards;
+  }
+  .stat-pct.s2 { color:rgba(255,255,255,0.55); }
+  .stat-pct.s3 { color:rgba(255,255,255,0.3); }
+  .stat-label {
+    font-size:11px; letter-spacing:1.5px; text-transform:uppercase;
+    color:rgba(255,255,255,0.5); margin-top:4px;
+    opacity:0; animation:fadeIn 0.4s ease 2.3s forwards;
+  }
+
+  .chart-svg { display:block; }
+
+  .grid-line { opacity:0; animation:fadeIn 0.4s ease 0s forwards; }
+  .axis-line { opacity:0; animation:fadeIn 0.4s ease 0.3s forwards; }
+  .axis-label { opacity:0; animation:fadeIn 0.3s ease 0.5s forwards; }
+
+  .series-line {
+    fill:none;
+    stroke-dasharray: var(--len, 9999);
+    stroke-dashoffset: var(--len, 9999);
+    animation: drawLine 1.6s ease-in-out 0.8s forwards;
+  }
+  @keyframes drawLine { to { stroke-dashoffset: 0; } }
+
+  .dot { opacity:0; animation: popIn 0.2s ease forwards; }
+  @keyframes popIn { to { opacity:1; } }
+
+  @keyframes fadeIn { to { opacity:1; } }
+  @keyframes growRule { to { transform:scaleX(1); } }
+</style>
+</head>
+<body>
+<div class="scene">
+  <div class="header">
+    <div class="chart-title">Infographics classic</div>
+    <div class="title-rule"></div>
+    <div class="chart-subtitle">12x3 months</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-item">
+      <div class="stat-pct s1">35%</div>
+      <div class="stat-label">Balance A<br>Increase This Year</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-pct s2">22%</div>
+      <div class="stat-label">Balance B<br>Increase This Year</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-pct s3">18%</div>
+      <div class="stat-label">Balance C<br>Increase This Year</div>
+    </div>
+  </div>
+
+  <svg class="chart-svg" viewBox="0 0 960 380" width="960" height="380">
+    <!-- Grid lines at 0%, 25%, 50%, 75%, 100% -->
+    <!-- chartArea: x=60..900, y=10..330, h=320 -->
+    <line class="grid-line" x1="60" y1="10"  x2="900" y2="10"  stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="4 6"/>
+    <line class="grid-line" x1="60" y1="90"  x2="900" y2="90"  stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="4 6"/>
+    <line class="grid-line" x1="60" y1="170" x2="900" y2="170" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="4 6"/>
+    <line class="grid-line" x1="60" y1="250" x2="900" y2="250" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="4 6"/>
+    <line class="grid-line" x1="60" y1="330" x2="900" y2="330" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="4 6"/>
+
+    <!-- Y-axis labels -->
+    <text class="axis-label" x="52" y="14"  text-anchor="end" fill="rgba(255,255,255,0.5)" font-size="12">100%</text>
+    <text class="axis-label" x="52" y="94"  text-anchor="end" fill="rgba(255,255,255,0.5)" font-size="12">75%</text>
+    <text class="axis-label" x="52" y="174" text-anchor="end" fill="rgba(255,255,255,0.5)" font-size="12">50%</text>
+    <text class="axis-label" x="52" y="254" text-anchor="end" fill="rgba(255,255,255,0.5)" font-size="12">25%</text>
+    <text class="axis-label" x="52" y="334" text-anchor="end" fill="rgba(255,255,255,0.5)" font-size="12">0%</text>
+
+    <!-- X-axis labels (12 months, x=60..900, step=76.36) -->
+    <text class="axis-label" x="60"   y="358" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="12">Jan</text>
+    <text class="axis-label" x="136"  y="358" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="12">Feb</text>
+    <text class="axis-label" x="212"  y="358" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="12">Mar</text>
+    <text class="axis-label" x="288"  y="358" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="12">Apr</text>
+    <text class="axis-label" x="364"  y="358" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="12">May</text>
+    <text class="axis-label" x="440"  y="358" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="12">June</text>
+    <text class="axis-label" x="516"  y="358" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="12">July</text>
+    <text class="axis-label" x="592"  y="358" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="12">Aug</text>
+    <text class="axis-label" x="668"  y="358" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="12">Sept</text>
+    <text class="axis-label" x="744"  y="358" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="12">Oct</text>
+    <text class="axis-label" x="820"  y="358" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="12">Nov</text>
+    <text class="axis-label" x="900"  y="358" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="12">Dec</text>
+
+    <!--
+      Series data (normalized 0–100):
+      S1 (Balance A): 5,8,12,35,20,40,50,52,60,55,70,100
+      S2 (Balance B): 20,25,30,35,22,35,32,42,42,50,50,72
+      S3 (Balance C): 0,5,2,8,10,8,8,5,8,8,6,15
+      y = 330 - (v/100)*320
+    -->
+
+    <!-- Series 1 — white primary -->
+    <polyline id="s1" class="series-line"
+      stroke="#ffffff" stroke-width="2"
+      points="60,314 136,304 212,292 288,218 364,266 440,202 516,170 592,164 668,138 744,154 820,106 900,10"/>
+
+    <!-- Series 2 — mid gray -->
+    <polyline id="s2" class="series-line"
+      stroke="rgba(255,255,255,0.55)" stroke-width="1.5"
+      points="60,266 136,250 212,234 288,218 364,260 440,218 516,228 592,196 668,196 744,170 820,170 900,100"/>
+
+    <!-- Series 3 — dim gray -->
+    <polyline id="s3" class="series-line"
+      stroke="rgba(255,255,255,0.3)" stroke-width="1.5"
+      points="60,330 136,314 212,324 288,305 364,298 440,305 516,305 592,314 668,305 744,305 820,311 900,282"/>
+
+    <!-- Dots Series 1 -->
+    <circle class="dot" cx="60"  cy="314" r="5" fill="#fff" stroke="#111" stroke-width="1.5" style="animation-delay:0.80s"/>
+    <circle class="dot" cx="136" cy="304" r="5" fill="#fff" stroke="#111" stroke-width="1.5" style="animation-delay:0.93s"/>
+    <circle class="dot" cx="212" cy="292" r="5" fill="#fff" stroke="#111" stroke-width="1.5" style="animation-delay:1.07s"/>
+    <circle class="dot" cx="288" cy="218" r="5" fill="#fff" stroke="#111" stroke-width="1.5" style="animation-delay:1.21s"/>
+    <circle class="dot" cx="364" cy="266" r="5" fill="#fff" stroke="#111" stroke-width="1.5" style="animation-delay:1.35s"/>
+    <circle class="dot" cx="440" cy="202" r="5" fill="#fff" stroke="#111" stroke-width="1.5" style="animation-delay:1.48s"/>
+    <circle class="dot" cx="516" cy="170" r="5" fill="#fff" stroke="#111" stroke-width="1.5" style="animation-delay:1.62s"/>
+    <circle class="dot" cx="592" cy="164" r="5" fill="#fff" stroke="#111" stroke-width="1.5" style="animation-delay:1.75s"/>
+    <circle class="dot" cx="668" cy="138" r="5" fill="#fff" stroke="#111" stroke-width="1.5" style="animation-delay:1.89s"/>
+    <circle class="dot" cx="744" cy="154" r="5" fill="#fff" stroke="#111" stroke-width="1.5" style="animation-delay:2.03s"/>
+    <circle class="dot" cx="820" cy="106" r="5" fill="#fff" stroke="#111" stroke-width="1.5" style="animation-delay:2.16s"/>
+    <circle class="dot" cx="900" cy="10"  r="5" fill="#fff" stroke="#111" stroke-width="1.5" style="animation-delay:2.40s"/>
+
+    <!-- Dots Series 2 -->
+    <circle class="dot" cx="60"  cy="266" r="5" fill="rgba(255,255,255,0.55)" stroke="#111" stroke-width="1.5" style="animation-delay:0.80s"/>
+    <circle class="dot" cx="136" cy="250" r="5" fill="rgba(255,255,255,0.55)" stroke="#111" stroke-width="1.5" style="animation-delay:0.93s"/>
+    <circle class="dot" cx="212" cy="234" r="5" fill="rgba(255,255,255,0.55)" stroke="#111" stroke-width="1.5" style="animation-delay:1.07s"/>
+    <circle class="dot" cx="288" cy="218" r="5" fill="rgba(255,255,255,0.55)" stroke="#111" stroke-width="1.5" style="animation-delay:1.21s"/>
+    <circle class="dot" cx="364" cy="260" r="5" fill="rgba(255,255,255,0.55)" stroke="#111" stroke-width="1.5" style="animation-delay:1.35s"/>
+    <circle class="dot" cx="440" cy="218" r="5" fill="rgba(255,255,255,0.55)" stroke="#111" stroke-width="1.5" style="animation-delay:1.48s"/>
+    <circle class="dot" cx="516" cy="228" r="5" fill="rgba(255,255,255,0.55)" stroke="#111" stroke-width="1.5" style="animation-delay:1.62s"/>
+    <circle class="dot" cx="592" cy="196" r="5" fill="rgba(255,255,255,0.55)" stroke="#111" stroke-width="1.5" style="animation-delay:1.75s"/>
+    <circle class="dot" cx="668" cy="196" r="5" fill="rgba(255,255,255,0.55)" stroke="#111" stroke-width="1.5" style="animation-delay:1.89s"/>
+    <circle class="dot" cx="744" cy="170" r="5" fill="rgba(255,255,255,0.55)" stroke="#111" stroke-width="1.5" style="animation-delay:2.03s"/>
+    <circle class="dot" cx="820" cy="170" r="5" fill="rgba(255,255,255,0.55)" stroke="#111" stroke-width="1.5" style="animation-delay:2.16s"/>
+    <circle class="dot" cx="900" cy="100" r="5" fill="rgba(255,255,255,0.55)" stroke="#111" stroke-width="1.5" style="animation-delay:2.40s"/>
+
+    <!-- Dots Series 3 -->
+    <circle class="dot" cx="60"  cy="330" r="5" fill="rgba(255,255,255,0.3)" stroke="#111" stroke-width="1.5" style="animation-delay:0.80s"/>
+    <circle class="dot" cx="136" cy="314" r="5" fill="rgba(255,255,255,0.3)" stroke="#111" stroke-width="1.5" style="animation-delay:0.93s"/>
+    <circle class="dot" cx="212" cy="324" r="5" fill="rgba(255,255,255,0.3)" stroke="#111" stroke-width="1.5" style="animation-delay:1.07s"/>
+    <circle class="dot" cx="288" cy="305" r="5" fill="rgba(255,255,255,0.3)" stroke="#111" stroke-width="1.5" style="animation-delay:1.21s"/>
+    <circle class="dot" cx="364" cy="298" r="5" fill="rgba(255,255,255,0.3)" stroke="#111" stroke-width="1.5" style="animation-delay:1.35s"/>
+    <circle class="dot" cx="440" cy="305" r="5" fill="rgba(255,255,255,0.3)" stroke="#111" stroke-width="1.5" style="animation-delay:1.48s"/>
+    <circle class="dot" cx="516" cy="305" r="5" fill="rgba(255,255,255,0.3)" stroke="#111" stroke-width="1.5" style="animation-delay:1.62s"/>
+    <circle class="dot" cx="592" cy="314" r="5" fill="rgba(255,255,255,0.3)" stroke="#111" stroke-width="1.5" style="animation-delay:1.75s"/>
+    <circle class="dot" cx="668" cy="305" r="5" fill="rgba(255,255,255,0.3)" stroke="#111" stroke-width="1.5" style="animation-delay:1.89s"/>
+    <circle class="dot" cx="744" cy="305" r="5" fill="rgba(255,255,255,0.3)" stroke="#111" stroke-width="1.5" style="animation-delay:2.03s"/>
+    <circle class="dot" cx="820" cy="311" r="5" fill="rgba(255,255,255,0.3)" stroke="#111" stroke-width="1.5" style="animation-delay:2.16s"/>
+    <circle class="dot" cx="900" cy="282" r="5" fill="rgba(255,255,255,0.3)" stroke="#111" stroke-width="1.5" style="animation-delay:2.40s"/>
+  </svg>
+</div>
+<script>
+  document.querySelectorAll('.series-line').forEach(el => {
+    const len = el.getTotalLength ? el.getTotalLength() : 1200;
+    el.style.setProperty('--len', len);
+    el.style.strokeDasharray = len;
+    el.style.strokeDashoffset = len;
+  });
+</script>
+</body>
+</html>
