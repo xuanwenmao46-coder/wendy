@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bar Infographic</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #e8e8e8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  .scene {
+    width: 900px;
+    padding: 60px 40px 80px;
+  }
+
+  .title-block {
+    text-align: center;
+    margin-bottom: 48px;
+    position: relative;
+    height: 110px;
+  }
+
+  .subtitle {
+    font-size: 17px;
+    font-weight: 700;
+    color: #555;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    opacity: 0;
+    transform: translateY(6px);
+    animation: fadeUp 0.5s cubic-bezier(0.25,0.46,0.45,0.94) 1.0s forwards;
+  }
+
+  .title {
+    font-size: 74px;
+    font-weight: 200;
+    color: #444;
+    letter-spacing: -1px;
+    position: absolute;
+    width: 100%;
+    top: 24px;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeUp 0.6s cubic-bezier(0.25,0.46,0.45,0.94) 0.5s forwards;
+  }
+
+  .chart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 0;
+    height: 420px;
+  }
+
+  .bar-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    height: 100%;
+    position: relative;
+  }
+
+  .track {
+    width: 44px;
+    height: 100%;
+    background: #d0d0d0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .fill {
+    width: 100%;
+    background: #111;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 0;
+    transition: background 0.4s ease 2.0s;
+  }
+
+  .fill.done {
+    background: #3a3a3a;
+  }
+
+  .label {
+    margin-top: 10px;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #999;
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes growBar {
+    from { height: 0; }
+    to   { height: var(--target-h); }
+  }
+</style>
+</head>
+<body>
+<div class="scene">
+  <div class="title-block">
+    <div class="subtitle">Bar Charts</div>
+    <div class="title">Infographic</div>
+  </div>
+  <div class="chart">
+    <div class="bar-group">
+      <div class="track"><div class="fill" style="--target-h:22%;animation:growBar 1.8s cubic-bezier(0.25,0.46,0.45,0.94) 0.2s forwards;"></div></div>
+      <div class="label">Jan</div>
+    </div>
+    <div class="bar-group">
+      <div class="track"><div class="fill" style="--target-h:34%;animation:growBar 1.8s cubic-bezier(0.25,0.46,0.45,0.94) 0.2s forwards;"></div></div>
+      <div class="label">Feb</div>
+    </div>
+    <div class="bar-group">
+      <div class="track"><div class="fill" style="--target-h:48%;animation:growBar 1.8s cubic-bezier(0.25,0.46,0.45,0.94) 0.2s forwards;"></div></div>
+      <div class="label">Mar</div>
+    </div>
+    <div class="bar-group">
+      <div class="track"><div class="fill" style="--target-h:60%;animation:growBar 1.8s cubic-bezier(0.25,0.46,0.45,0.94) 0.2s forwards;"></div></div>
+      <div class="label">Apr</div>
+    </div>
+    <div class="bar-group">
+      <div class="track"><div class="fill" style="--target-h:70%;animation:growBar 1.8s cubic-bezier(0.25,0.46,0.45,0.94) 0.2s forwards;"></div></div>
+      <div class="label">May</div>
+    </div>
+    <div class="bar-group">
+      <div class="track"><div class="fill" style="--target-h:78%;animation:growBar 1.8s cubic-bezier(0.25,0.46,0.45,0.94) 0.2s forwards;"></div></div>
+      <div class="label">Jun</div>
+    </div>
+    <div class="bar-group">
+      <div class="track"><div class="fill" style="--target-h:84%;animation:growBar 1.8s cubic-bezier(0.25,0.46,0.45,0.94) 0.2s forwards;"></div></div>
+      <div class="label">Jul</div>
+    </div>
+    <div class="bar-group">
+      <div class="track"><div class="fill" style="--target-h:58%;animation:growBar 1.8s cubic-bezier(0.25,0.46,0.45,0.94) 0.2s forwards;"></div></div>
+      <div class="label">Aug</div>
+    </div>
+    <div class="bar-group">
+      <div class="track"><div class="fill" style="--target-h:47%;animation:growBar 1.8s cubic-bezier(0.25,0.46,0.45,0.94) 0.2s forwards;"></div></div>
+      <div class="label">Sep</div>
+    </div>
+    <div class="bar-group">
+      <div class="track"><div class="fill" style="--target-h:53%;animation:growBar 1.8s cubic-bezier(0.25,0.46,0.45,0.94) 0.2s forwards;"></div></div>
+      <div class="label">Oct</div>
+    </div>
+    <div class="bar-group">
+      <div class="track"><div class="fill" style="--target-h:31%;animation:growBar 1.8s cubic-bezier(0.25,0.46,0.45,0.94) 0.2s forwards;"></div></div>
+      <div class="label">Nov</div>
+    </div>
+    <div class="bar-group">
+      <div class="track"><div class="fill" style="--target-h:37%;animation:growBar 1.8s cubic-bezier(0.25,0.46,0.45,0.94) 0.2s forwards;"></div></div>
+      <div class="label">Dec</div>
+    </div>
+  </div>
+</div>
+<script>
+  document.querySelectorAll('.fill').forEach(el => {
+    el.addEventListener('animationend', () => el.classList.add('done'));
+  });
+</script>
+</body>
+</html>
