@@ -1,0 +1,831 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1920, height=1080" />
+  <script src="../node_modules/gsap/dist/gsap.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 1920px; height: 1080px;
+      overflow: hidden;
+      background: #000;
+      font-family: 'Courier New', 'Courier', monospace;
+    }
+
+    :root {
+      --c:  #00d4e0;
+      --cd: rgba(0,185,195,0.35);
+      --cb: #50eeee;
+      --bg: #04090a;
+      --pb: rgba(0,14,18,0.92);
+      --rv: #ff2200;
+      --gn: #00cc44;
+    }
+
+    #root { position: relative; width: 1920px; height: 1080px; background: #000; }
+
+    /* ── INTRO ─────────────────────────────────────────── */
+    #intro {
+      position: absolute; inset: 0; background: #000; z-index: 200;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #intro-text {
+      color: var(--c); font-size: 52px; font-weight: 900;
+      letter-spacing: 14px; text-transform: uppercase; opacity: 0;
+    }
+    #intro-sub {
+      position: absolute; top: calc(50% + 48px); left: 50%;
+      transform: translateX(-50%);
+      color: var(--cd); font-size: 14px; letter-spacing: 6px; opacity: 0;
+    }
+
+    /* ── MAIN HUD ────────────────────────────────────── */
+    #hud { position: absolute; inset: 0; opacity: 0; }
+
+    /* Outer frame */
+    #frame {
+      position: absolute;
+      top: 12px; left: 12px; right: 12px; bottom: 12px;
+      border: 1px solid var(--c);
+    }
+    .cbr {
+      position: absolute; width: 28px; height: 28px;
+    }
+    .cbr::before, .cbr::after { content: ''; position: absolute; background: var(--cb); }
+    .cbr.tl { top: -1px; left: -1px; }
+    .cbr.tl::before { top:0; left:0; width:28px; height:3px; }
+    .cbr.tl::after  { top:0; left:0; width:3px;  height:28px; }
+    .cbr.tr { top: -1px; right: -1px; }
+    .cbr.tr::before { top:0; right:0; width:28px; height:3px; }
+    .cbr.tr::after  { top:0; right:0; width:3px;  height:28px; }
+    .cbr.bl { bottom: -1px; left: -1px; }
+    .cbr.bl::before { bottom:0; left:0;  width:28px; height:3px; }
+    .cbr.bl::after  { bottom:0; left:0;  width:3px;  height:28px; }
+    .cbr.br { bottom: -1px; right: -1px; }
+    .cbr.br::before { bottom:0; right:0; width:28px; height:3px; }
+    .cbr.br::after  { bottom:0; right:0; width:3px;  height:28px; }
+
+    /* Top data bar */
+    #topbar {
+      position: absolute; top: 12px; left: 12px; right: 12px; height: 38px;
+      border-bottom: 1px solid var(--cd);
+      display: flex; align-items: center; justify-content: center; gap: 24px;
+      color: var(--c); font-size: 11px; letter-spacing: 3px;
+    }
+    #topbar span { opacity: 0.55; }
+    #topbar strong { opacity: 1; }
+    #topbar-code { font-size: 13px; letter-spacing: 4px; color: var(--cb); }
+
+    /* ── LEFT PANEL ──────────────────────────────────── */
+    #lp {
+      position: absolute; top: 50px; left: 12px; width: 278px; bottom: 12px;
+      border-right: 1px solid var(--cd);
+      padding: 10px 10px 10px 8px;
+    }
+    #lp-title  { color: #fff; font-size: 42px; font-weight: 900; letter-spacing: 1px; line-height: 1; }
+    #lp-sub    { color: var(--c); font-size: 13px; letter-spacing: 2px; margin-top: 2px; }
+    #lp-icons  { display: flex; align-items: center; gap: 5px; margin-top: 6px; color: var(--c); font-size: 11px; }
+    #lp-clock  { margin-left: auto; font-size: 10px; opacity: 0.7; }
+
+    /* Mini satellite box */
+    #minisatbox {
+      margin-top: 8px; border: 1px solid var(--c); background: var(--pb); padding: 6px;
+    }
+    .msb-hdr {
+      background: var(--c); color: #000; font-size: 9px; padding: 1px 4px;
+      font-weight: 900; letter-spacing: 2px; margin-bottom: 5px;
+    }
+    .msb-body { display: flex; align-items: center; gap: 8px; }
+    #mini-radar-wrap {
+      width: 52px; height: 52px; border: 1px solid var(--c); border-radius: 50%;
+      background: var(--pb); position: relative; flex-shrink: 0;
+    }
+    #mini-radar-line {
+      position: absolute; top: 50%; left: 50%;
+      width: 1px; height: 25px; background: var(--c);
+      transform-origin: top center; transform: translateX(-50%);
+    }
+    #mini-radar-dot {
+      position: absolute; top: 50%; left: 50%;
+      width: 7px; height: 7px; background: var(--c); border-radius: 50%;
+      transform: translate(-50%,-50%);
+    }
+    .msb-num   { font-size: 34px; font-weight: 900; color: var(--c); line-height: 1; }
+    .msb-label { font-size: 9px; color: var(--cd); }
+    .msb-icon  { font-size: 22px; margin-left: auto; opacity: 0.45; }
+    .msb-bars  { margin-top: 5px; }
+    .msb-bar   {
+      height: 5px; background: var(--cd); margin-bottom: 2px;
+      position: relative;
+    }
+    .msb-bar::before {
+      content: ''; position: absolute; top:0; left:0; height:100%;
+      background: var(--c);
+    }
+    .msb-bar.b70::before  { width: 70%; }
+    .msb-bar.b45::before  { width: 45%; }
+    .msb-bar.b85::before  { width: 85%; }
+
+    /* Status icons row */
+    .si-row { display: flex; gap: 5px; align-items: center; margin-top: 8px; }
+    .si {
+      width: 22px; height: 18px; border: 1px solid var(--cd);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; color: var(--cd);
+    }
+    .si.red  { border-color: #ff2200; color: #ff2200; }
+    .si.yel  { border-color: #ffcc00; color: #ffcc00; }
+    .si.act  { border-color: var(--c); color: var(--c); }
+    .si-sys  { margin-left: auto; font-size: 9px; color: var(--c); letter-spacing: 1px; }
+
+    /* Pixel icon */
+    #lp-icon {
+      display: grid; grid-template-columns: repeat(4,8px); grid-template-rows: repeat(4,8px);
+      gap: 1px; margin-top: 8px; float: left; margin-right: 8px;
+    }
+    .pi { background: transparent; }
+    .pi.on { background: var(--c); }
+    #lp-icon-label { color: var(--c); font-size: 19px; font-weight: 900; letter-spacing: 2px; line-height: 33px; }
+
+    /* Data grid */
+    .dg { margin-top: 8px; clear: both; }
+    .dg-row { display: flex; gap: 2px; margin-bottom: 2px; }
+    .dg-cell {
+      flex: 1; border: 1px solid var(--cd); padding: 3px 2px;
+      font-size: 8px; color: var(--c); text-align: center; letter-spacing: 1px;
+    }
+
+    /* ── CENTER SECTION ──────────────────────────────── */
+    #cs {
+      position: absolute; top: 50px; left: 302px; right: 290px; bottom: 12px;
+    }
+
+    /* Video panel */
+    #vp {
+      position: absolute; top: 62px; left: 0; right: 0; height: 345px;
+      border: 1px solid var(--c); overflow: hidden; background: #000;
+    }
+    .pcorner {
+      position: absolute; width: 22px; height: 22px; z-index: 10;
+    }
+    .pcorner.tl { top:-2px; left:-2px;   border-top:3px solid var(--cb); border-left:3px solid var(--cb); }
+    .pcorner.tr { top:-2px; right:-2px;  border-top:3px solid var(--cb); border-right:3px solid var(--cb); }
+    .pcorner.bl { bottom:-2px; left:-2px; border-bottom:3px solid var(--cb); border-left:3px solid var(--cb); }
+    .pcorner.br { bottom:-2px; right:-2px; border-bottom:3px solid var(--cb); border-right:3px solid var(--cb); }
+
+    /* Real footage video fill */
+    .panel-video {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; z-index: 1;
+    }
+
+    /* Scan line */
+    #scanline {
+      position: absolute; left: 0; right: 0; height: 3px; top: 0; z-index: 8; opacity: 0.55;
+      background: linear-gradient(90deg, transparent 0%, var(--cb) 40%, var(--cb) 60%, transparent 100%);
+    }
+
+    /* Video analysis label */
+    #va-label {
+      position: absolute; top: 8px; left: 10px; z-index: 9;
+      color: var(--c); font-size: 10px; letter-spacing: 3px; opacity: 0.8;
+    }
+
+    /* Detection boxes */
+    .dbox {
+      position: absolute; z-index: 9;
+      border: 1px solid transparent; opacity: 0;
+    }
+    .dbox::before {
+      content: attr(data-lbl);
+      position: absolute; top: -16px; left: 0;
+      font-size: 8px; color: var(--c); letter-spacing: 1px; white-space: nowrap;
+    }
+    .dc { position: absolute; width: 9px; height: 9px; }
+    .dc.tl { top:-1px; left:-1px;   border-top:2px solid var(--cb); border-left:2px solid var(--cb); }
+    .dc.tr { top:-1px; right:-1px;  border-top:2px solid var(--cb); border-right:2px solid var(--cb); }
+    .dc.bl { bottom:-1px; left:-1px; border-bottom:2px solid var(--cb); border-left:2px solid var(--cb); }
+    .dc.br { bottom:-1px; right:-1px; border-bottom:2px solid var(--cb); border-right:2px solid var(--cb); }
+
+    /* Video data line */
+    #vdl {
+      position: absolute; top: 412px; left: 0; right: 0;
+      display: flex; justify-content: center; gap: 16px;
+      color: var(--c); font-size: 9px; letter-spacing: 2px; opacity: 0.7;
+    }
+
+    /* Map panel */
+    #mp {
+      position: absolute; top: 432px; left: 0; right: 0; height: 238px;
+      border: 1px solid var(--c); overflow: hidden;
+    }
+
+    /* Red targeting crosshair on map */
+    #mapxhair {
+      position: absolute; left: calc(50% - 40px); top: calc(50% - 40px);
+      width: 80px; height: 80px; z-index: 5;
+    }
+
+    #mapdatabox {
+      position: absolute; top: 6px; right: 8px; z-index: 6;
+      color: rgba(0,200,200,0.65); font-size: 9px; text-align: right;
+      letter-spacing: 1px; line-height: 1.5;
+    }
+
+    /* Bottom progress */
+    #bpbar {
+      position: absolute; bottom: 8px; left: 30px; right: 30px; height: 6px;
+    }
+    #bptrack { position: absolute; inset: 0; background: var(--cd); }
+    #bpfill  { position: absolute; top:0; left:0; height:100%; width:0%; background: var(--cb); }
+    #bpdot   {
+      position: absolute; top:50%; width:12px; height:12px; border-radius:50%;
+      background: var(--cb); transform: translate(-50%,-50%); left:0%;
+    }
+
+    /* ── RIGHT PANEL ─────────────────────────────────── */
+    #rp {
+      position: absolute; top: 50px; right: 12px; width: 278px; bottom: 12px;
+      border-left: 1px solid var(--cd);
+      padding: 8px 8px 8px 10px;
+    }
+    #rp-hdr    { color: #fff; font-size: 34px; font-weight: 900; letter-spacing: 4px; text-align: right; }
+    #rp-sub    { color: var(--c); font-size: 11px; letter-spacing: 2px; text-align: right; margin-bottom: 6px; }
+
+    /* Gauge row */
+    .gr-row { display: flex; gap: 5px; justify-content: flex-end; margin: 5px 0; }
+    .gauge {
+      width: 42px; height: 42px; border: 1px solid var(--c); border-radius: 50%;
+      background: var(--pb); position: relative;
+    }
+    .gauge::before {
+      content: ''; position: absolute; inset: 5px;
+      border: 1px solid var(--cd); border-radius: 50%;
+    }
+    .gauge::after {
+      content: ''; position: absolute; top:50%; left:50%;
+      width: 5px; height: 5px; background: var(--c); border-radius: 50%;
+      transform: translate(-50%,-50%);
+    }
+    .g-needle {
+      position: absolute; top: 50%; left: 50%;
+      width: 1px; height: 13px; background: var(--c);
+      transform-origin: bottom center;
+    }
+
+    /* Right data grid */
+    .rdg { margin: 5px 0; }
+    .rdg-row { display: flex; gap: 2px; margin-bottom: 2px; justify-content: flex-end; }
+    .rdg-cell {
+      border: 1px solid var(--cd); padding: 2px 5px;
+      font-size: 8px; color: var(--c); text-align: center; letter-spacing: 1px;
+    }
+
+    /* Small world map display */
+    #rp-worldmap {
+      border: 1px solid var(--cd); height: 52px; margin: 4px 0;
+      background: var(--pb); overflow: hidden; position: relative;
+    }
+
+    /* XDL code */
+    #xdl-code {
+      color: var(--cb); font-size: 21px; font-weight: 900;
+      letter-spacing: 1px; text-align: right; margin: 6px 0 4px 0;
+      border-top: 1px solid var(--cd); padding-top: 5px;
+    }
+
+    /* Data bar rows */
+    .dbrow { margin: 4px 0; }
+    .dbrow-lbl { display: flex; justify-content: space-between; font-size: 9px; color: var(--cd); margin-bottom: 2px; }
+    .dbrow-track { height: 4px; background: var(--cd); }
+    .dbrow-fill  { height: 100%; background: var(--c); }
+
+    /* Right timer block */
+    #rtimer {
+      margin-top: 7px; border-top: 1px solid var(--cd); padding-top: 5px;
+    }
+    #rtimer-lbl  { font-size: 9px; color: var(--cd); letter-spacing: 1px; }
+    #rtimer-val  { font-size: 19px; color: var(--cb); letter-spacing: 2px; text-align: right; }
+    #rtimer-prog { height: 3px; background: var(--cd); margin-top: 3px; }
+    #rtimer-fill { height: 100%; background: var(--c); width: 0%; }
+
+    /* ── COMPASS ─────────────────────────────────────── */
+    #compass {
+      position: absolute; bottom: 10px; right: 8px;
+      width: 128px; height: 128px;
+    }
+    #c-outerring {
+      position: absolute; inset: 0;
+      border: 2px solid var(--gn); border-radius: 50%;
+    }
+    #c-innerface {
+      position: absolute; inset: 14px;
+      background: radial-gradient(circle, #001a08 0%, #001000 100%);
+      border-radius: 50%; border: 1px solid var(--gn);
+      overflow: hidden;
+    }
+    #c-needle {
+      position: absolute; top: 50%; left: 50%;
+      width: 2px; height: 46px;
+      background: linear-gradient(to bottom, #fff, rgba(255,255,255,0.15));
+      transform-origin: top center;
+      transform: translateX(-50%);
+    }
+    #c-dot {
+      position: absolute; top: 50%; left: 50%;
+      width: 11px; height: 11px; background: var(--gn);
+      border-radius: 50%; box-shadow: 0 0 8px var(--gn);
+      transform: translate(-50%,-50%); z-index: 2;
+    }
+    #c-arc {
+      position: absolute; inset: -12px;
+      border-radius: 50%;
+    }
+
+    /* ── BLINKING ─────────────────────────────────────── */
+    .blink-slow { animation: blk 1.4s step-end infinite; }
+    .blink-fast { animation: blk 0.7s step-end infinite; }
+    @keyframes blk {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0.15; }
+    }
+
+    /* HUD vignette tint over video panels */
+    .vignette {
+      position: absolute; inset: 0; z-index: 2; pointer-events: none;
+      background: radial-gradient(ellipse at center, transparent 55%, rgba(0,20,22,0.55) 100%);
+    }
+  </style>
+</head>
+<body>
+<div id="root" data-composition-id="hud-gprs-v2" data-width="1920" data-height="1080">
+
+  <!-- ── INTRO SCREEN ───────────────────────────────── -->
+  <div id="intro">
+    <div id="intro-text">HUD GPRS</div>
+    <div id="intro-sub">EARTH SURVEILLANCE / SYSTEM INITIALIZING...</div>
+  </div>
+
+  <!-- ── MAIN HUD ───────────────────────────────────── -->
+  <div id="hud">
+
+    <!-- Outer frame -->
+    <div id="frame">
+      <div class="cbr tl"></div><div class="cbr tr"></div>
+      <div class="cbr bl"></div><div class="cbr br"></div>
+    </div>
+
+    <!-- Top data bar -->
+    <div id="topbar">
+      <span>JKZ.4320 //</span>
+      <strong id="topbar-code">225 DEL</strong>
+      <span>────────────────</span>
+      <strong>SIGNAL: ACTIVE</strong>
+      <span>────────────────</span>
+      <strong>GPS LOCK: CONFIRMED</strong>
+      <span>────────────────</span>
+      <strong>SYS: ONLINE</strong>
+    </div>
+
+    <!-- ── LEFT PANEL ──────────────────────────────── -->
+    <div id="lp">
+      <div id="lp-title">UI-GPRS</div>
+      <div id="lp-sub">EARTH GPRS / 01256</div>
+      <div id="lp-icons">
+        <span>☁</span><span>☁</span><span>☀</span>
+        <span id="lp-clock">00:00:01 P60</span>
+      </div>
+
+      <!-- Mini satellite display -->
+      <div id="minisatbox">
+        <div class="msb-hdr">SATELLITE LINK</div>
+        <div class="msb-body">
+          <div id="mini-radar-wrap">
+            <div id="mini-radar-line"></div>
+            <div id="mini-radar-dot"></div>
+          </div>
+          <div>
+            <div class="msb-num" id="sig-num">79</div>
+            <div class="msb-label">SIGNAL STR</div>
+          </div>
+          <div class="msb-icon">📡</div>
+        </div>
+        <div class="msb-bars">
+          <div class="msb-bar b70"></div>
+          <div class="msb-bar b45"></div>
+          <div class="msb-bar b85"></div>
+        </div>
+      </div>
+
+      <!-- Status icons -->
+      <div class="si-row">
+        <div class="si red blink-fast">!</div>
+        <div class="si red">✕</div>
+        <div class="si yel blink-slow">▲</div>
+        <div class="si act">↑</div>
+        <div class="si-sys">SYS:OK</div>
+      </div>
+
+      <!-- Pixel icon + label -->
+      <div style="display:flex; align-items:center; gap:6px; margin-top:8px;">
+        <div id="lp-icon">
+          <div class="pi on"></div><div class="pi"></div><div class="pi"></div><div class="pi on"></div>
+          <div class="pi"></div><div class="pi on"></div><div class="pi on"></div><div class="pi"></div>
+          <div class="pi"></div><div class="pi on"></div><div class="pi on"></div><div class="pi"></div>
+          <div class="pi on"></div><div class="pi"></div><div class="pi"></div><div class="pi on"></div>
+        </div>
+        <div id="lp-icon-label">&amp; H</div>
+      </div>
+
+      <!-- Data grids -->
+      <div class="dg">
+        <div class="dg-row">
+          <div class="dg-cell">ZX1</div><div class="dg-cell">JX2</div><div class="dg-cell">TO8</div>
+          <div class="dg-cell">Iab</div><div class="dg-cell">VX1</div><div class="dg-cell">RC2</div>
+        </div>
+        <div class="dg-row">
+          <div class="dg-cell">ZX1</div><div class="dg-cell">JX2</div><div class="dg-cell">TO8</div>
+          <div class="dg-cell">LOC</div><div class="dg-cell">VX1</div><div class="dg-cell">RC2</div>
+        </div>
+        <div class="dg-row">
+          <div class="dg-cell">ZX1</div><div class="dg-cell">JX2</div><div class="dg-cell">TO8</div>
+          <div class="dg-cell">LOC</div><div class="dg-cell">VX1</div><div class="dg-cell">RC2</div>
+        </div>
+      </div>
+    </div>
+    <!-- END LEFT PANEL -->
+
+    <!-- ── CENTER SECTION ──────────────────────────── -->
+    <div id="cs">
+
+      <!-- Video panel — real person footage -->
+      <div id="vp">
+        <div class="pcorner tl"></div><div class="pcorner tr"></div>
+        <div class="pcorner bl"></div><div class="pcorner br"></div>
+
+        <!-- Real crowd footage -->
+        <video id="crowd-video" class="panel-video" src="../crowd_loop.mp4" muted playsinline data-start="0" data-duration="22"></video>
+
+        <!-- Vignette tint -->
+        <div class="vignette"></div>
+
+        <!-- Grid SVG overlay -->
+        <svg style="position:absolute;inset:0;z-index:3;pointer-events:none" width="100%" height="100%">
+          <defs>
+            <pattern id="vg" x="0" y="0" width="97" height="86" patternUnits="userSpaceOnUse">
+              <line x1="97" y1="0" x2="97" y2="86" stroke="rgba(0,180,180,0.13)" stroke-width="1"/>
+              <line x1="0"  y1="86" x2="97" y2="86" stroke="rgba(0,180,180,0.13)" stroke-width="1"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#vg)"/>
+          <!-- Crosshair marks at grid intersections -->
+          <g stroke="rgba(0,200,200,0.28)" stroke-width="1">
+            <line x1="91"  y1="80" x2="103" y2="80"/><line x1="97"  y1="74" x2="97"  y2="86"/>
+            <line x1="188" y1="80" x2="200" y2="80"/><line x1="194" y1="74" x2="194" y2="86"/>
+            <line x1="285" y1="80" x2="297" y2="80"/><line x1="291" y1="74" x2="291" y2="86"/>
+            <line x1="382" y1="80" x2="394" y2="80"/><line x1="388" y1="74" x2="388" y2="86"/>
+            <line x1="479" y1="80" x2="491" y2="80"/><line x1="485" y1="74" x2="485" y2="86"/>
+            <line x1="576" y1="80" x2="588" y2="80"/><line x1="582" y1="74" x2="582" y2="86"/>
+            <line x1="673" y1="80" x2="685" y2="80"/><line x1="679" y1="74" x2="679" y2="86"/>
+            <line x1="91"  y1="166" x2="103" y2="166"/><line x1="97"  y1="160" x2="97"  y2="172"/>
+            <line x1="188" y1="166" x2="200" y2="166"/><line x1="194" y1="160" x2="194" y2="172"/>
+            <line x1="285" y1="166" x2="297" y2="166"/><line x1="291" y1="160" x2="291" y2="172"/>
+            <line x1="382" y1="166" x2="394" y2="166"/><line x1="388" y1="160" x2="388" y2="172"/>
+            <line x1="479" y1="166" x2="491" y2="166"/><line x1="485" y1="160" x2="485" y2="172"/>
+            <line x1="576" y1="166" x2="588" y2="166"/><line x1="582" y1="160" x2="582" y2="172"/>
+            <line x1="673" y1="166" x2="685" y2="166"/><line x1="679" y1="160" x2="679" y2="172"/>
+            <line x1="91"  y1="252" x2="103" y2="252"/><line x1="97"  y1="246" x2="97"  y2="258"/>
+            <line x1="188" y1="252" x2="200" y2="252"/><line x1="194" y1="246" x2="194" y2="258"/>
+            <line x1="285" y1="252" x2="297" y2="252"/><line x1="291" y1="246" x2="291" y2="258"/>
+            <line x1="382" y1="252" x2="394" y2="252"/><line x1="388" y1="246" x2="388" y2="258"/>
+            <line x1="479" y1="252" x2="491" y2="252"/><line x1="485" y1="246" x2="485" y2="258"/>
+            <line x1="576" y1="252" x2="588" y2="252"/><line x1="582" y1="246" x2="582" y2="258"/>
+            <line x1="673" y1="252" x2="685" y2="252"/><line x1="679" y1="246" x2="679" y2="258"/>
+          </g>
+        </svg>
+
+        <!-- Detection bounding boxes (GSAP-animated opacity) -->
+        <div id="db1" class="dbox" data-lbl="TGT-001 [89%]"
+             style="left:355px;top:168px;width:68px;height:82px; border-color:var(--c)">
+          <div class="dc tl"></div><div class="dc tr"></div>
+          <div class="dc bl"></div><div class="dc br"></div>
+        </div>
+        <div id="db2" class="dbox" data-lbl="TGT-002 [76%]"
+             style="left:248px;top:172px;width:58px;height:70px; border-color:var(--c)">
+          <div class="dc tl"></div><div class="dc tr"></div>
+          <div class="dc bl"></div><div class="dc br"></div>
+        </div>
+        <div id="db3" class="dbox" data-lbl="TGT-003 [94%]"
+             style="left:550px;top:160px;width:64px;height:78px; border-color:var(--cb)">
+          <div class="dc tl"></div><div class="dc tr"></div>
+          <div class="dc bl"></div><div class="dc br"></div>
+        </div>
+
+        <!-- Scan line animated via GSAP -->
+        <div id="scanline"></div>
+
+        <!-- Analysis label -->
+        <div id="va-label" class="blink-slow">FACIAL RECOGNITION</div>
+      </div>
+      <!-- END VIDEO PANEL -->
+
+      <!-- Data line below video -->
+      <div id="vdl">
+        <span style="opacity:0.5">B 8 2 //</span>
+        <span>0007 • 2XC</span>
+        <span style="opacity:0.4">─────────</span>
+        <span>LAT:48.8566°N  LON:2.3522°E</span>
+        <span style="opacity:0.4">─────────</span>
+        <span>ALT: 85 M</span>
+      </div>
+
+      <!-- Map panel — satellite map footage -->
+      <div id="mp">
+        <div class="pcorner tl"></div><div class="pcorner tr"></div>
+        <div class="pcorner bl"></div><div class="pcorner br"></div>
+
+        <!-- Real satellite map footage -->
+        <video id="map-video" class="panel-video" src="../map_loop.mp4" muted playsinline data-start="0" data-duration="22"></video>
+
+        <!-- Map grid overlay -->
+        <svg style="position:absolute;inset:0;z-index:3;pointer-events:none" width="100%" height="100%">
+          <defs>
+            <pattern id="mg" x="0" y="0" width="62" height="62" patternUnits="userSpaceOnUse">
+              <rect width="62" height="62" fill="none" stroke="rgba(0,180,180,0.2)" stroke-width="0.5"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#mg)"/>
+          <g stroke="rgba(0,200,200,0.3)" stroke-width="0.8">
+            <line x1="125" y1="115" x2="131" y2="115"/><line x1="128" y1="112" x2="128" y2="118"/>
+            <line x1="249" y1="115" x2="255" y2="115"/><line x1="252" y1="112" x2="252" y2="118"/>
+            <line x1="373" y1="115" x2="379" y2="115"/><line x1="376" y1="112" x2="376" y2="118"/>
+            <line x1="497" y1="115" x2="503" y2="115"/><line x1="500" y1="112" x2="500" y2="118"/>
+            <line x1="621" y1="115" x2="627" y2="115"/><line x1="624" y1="112" x2="624" y2="118"/>
+            <line x1="125" y1="53"  x2="131" y2="53"/><line  x1="128" y1="50"  x2="128" y2="56"/>
+            <line x1="249" y1="53"  x2="255" y2="53"/><line  x1="252" y1="50"  x2="252" y2="56"/>
+            <line x1="125" y1="177" x2="131" y2="177"/><line x1="128" y1="174" x2="128" y2="180"/>
+            <line x1="497" y1="177" x2="503" y2="177"/><line x1="500" y1="174" x2="500" y2="180"/>
+          </g>
+        </svg>
+
+        <!-- Red targeting crosshair on map (GSAP moves it) -->
+        <div id="mapxhair">
+          <svg width="80" height="80" viewBox="-40 -40 80 80">
+            <g stroke="#ff2200" stroke-width="2" fill="none">
+              <line x1="-34" y1="-34" x2="-19" y2="-34"/>
+              <line x1="-34" y1="-34" x2="-34" y2="-19"/>
+              <line x1="34"  y1="-34" x2="19"  y2="-34"/>
+              <line x1="34"  y1="-34" x2="34"  y2="-19"/>
+              <line x1="-34" y1="34"  x2="-19" y2="34"/>
+              <line x1="-34" y1="34"  x2="-34" y2="19"/>
+              <line x1="34"  y1="34"  x2="19"  y2="34"/>
+              <line x1="34"  y1="34"  x2="34"  y2="19"/>
+            </g>
+            <g stroke="#ff2200" stroke-width="1.5">
+              <line x1="-28" y1="0" x2="-9"  y2="0"/>
+              <line x1="9"   y1="0" x2="28"  y2="0"/>
+              <line x1="0"   y1="-28" x2="0" y2="-9"/>
+              <line x1="0"   y1="9"   x2="0" y2="28"/>
+            </g>
+            <rect x="-8" y="-8" width="16" height="16" fill="none" stroke="#ff2200" stroke-width="1.5"/>
+            <circle cx="0" cy="0" r="2.5" fill="#ff2200"/>
+          </svg>
+        </div>
+
+        <div id="mapdatabox">
+          <div>GRID: 48.856°N</div>
+          <div>2.352°E</div>
+          <div>ZOOM: 1:2500</div>
+        </div>
+      </div>
+      <!-- END MAP PANEL -->
+
+      <!-- Bottom progress bar -->
+      <div id="bpbar">
+        <div id="bptrack"></div>
+        <div id="bpfill"></div>
+        <div id="bpdot"></div>
+      </div>
+
+    </div>
+    <!-- END CENTER SECTION -->
+
+    <!-- ── RIGHT PANEL ───────────────────────────────── -->
+    <div id="rp">
+      <div id="rp-hdr">-IH // HI-</div>
+      <div id="rp-sub">XX 1256 //CGSTW 012</div>
+
+      <!-- 4 gauges row -->
+      <div class="gr-row">
+        <div class="gauge"><div class="g-needle" id="gn1" style="transform:translateX(-50%) rotate(-40deg)"></div></div>
+        <div class="gauge"><div class="g-needle" id="gn2" style="transform:translateX(-50%) rotate(30deg)"></div></div>
+        <div class="gauge"><div class="g-needle" id="gn3" style="transform:translateX(-50%) rotate(-20deg)"></div></div>
+        <div class="gauge"><div class="g-needle" id="gn4" style="transform:translateX(-50%) rotate(60deg)"></div></div>
+      </div>
+
+      <!-- Right data grid -->
+      <div class="rdg">
+        <div class="rdg-row">
+          <div class="rdg-cell">ZX1</div><div class="rdg-cell">JX2</div>
+          <div class="rdg-cell">LAW</div><div class="rdg-cell">VX1</div><div class="rdg-cell">RC2</div>
+        </div>
+        <div class="rdg-row">
+          <div class="rdg-cell">ZX1</div><div class="rdg-cell">JX2</div>
+          <div class="rdg-cell">TO8</div><div class="rdg-cell">VX1</div><div class="rdg-cell">RC2</div>
+        </div>
+      </div>
+
+      <!-- Small world map -->
+      <div id="rp-worldmap">
+        <svg width="100%" height="100%" viewBox="0 0 258 52">
+          <rect width="258" height="52" fill="#020c0d"/>
+          <path d="M18,14 L42,9  L47,18 L38,29 L18,27 Z" fill="rgba(0,100,105,0.45)"/>
+          <path d="M53,11 L73,7  L83,17 L78,29 L58,27 L48,18 Z" fill="rgba(0,100,105,0.45)"/>
+          <path d="M88,19 L108,14 L118,24 L108,34 L88,29 Z" fill="rgba(0,100,105,0.45)"/>
+          <path d="M128,17 L153,11 L163,24 L153,37 L128,31 Z" fill="rgba(0,100,105,0.45)"/>
+          <path d="M168,19 L183,17 L186,27 L173,29 Z" fill="rgba(0,100,105,0.45)"/>
+          <path d="M193,21 L213,17 L218,29 L203,34 Z" fill="rgba(0,100,105,0.45)"/>
+          <circle cx="83" cy="21" r="3.5" fill="#00d4e0" opacity="0.85"/>
+          <circle cx="83" cy="21" r="7"   fill="none" stroke="#00d4e0" stroke-width="0.8" opacity="0.5"/>
+          <text x="4" y="48" font-size="7" fill="rgba(0,200,200,0.6)" font-family="'Courier New',monospace">XX0205_1.02 // GLOBAL TRACK ACTIVE</text>
+        </svg>
+      </div>
+
+      <!-- XDL identifier -->
+      <div id="xdl-code">XDL.XXJZ.C20203</div>
+
+      <!-- Data bar rows -->
+      <div class="dbrow">
+        <div class="dbrow-lbl"><span>SPEED</span><span id="dv-speed">72.3</span></div>
+        <div class="dbrow-track"><div class="dbrow-fill" id="df-speed" style="width:72%"></div></div>
+      </div>
+      <div class="dbrow">
+        <div class="dbrow-lbl"><span>LOCK</span><span id="dv-lock">91.7</span></div>
+        <div class="dbrow-track"><div class="dbrow-fill" id="df-lock" style="width:91%"></div></div>
+      </div>
+      <div class="dbrow">
+        <div class="dbrow-lbl"><span>SIGNAL</span><span>+++</span></div>
+        <div class="dbrow-track"><div class="dbrow-fill" id="df-sig" style="width:65%"></div></div>
+      </div>
+      <div class="dbrow">
+        <div class="dbrow-lbl"><span>PROC</span><span>84%</span></div>
+        <div class="dbrow-track"><div class="dbrow-fill" id="df-proc" style="width:84%"></div></div>
+      </div>
+
+      <!-- Right timer -->
+      <div id="rtimer">
+        <div id="rtimer-lbl">CALCULATING SPEED ON...</div>
+        <div id="rtimer-val">00:00:00.000</div>
+        <div id="rtimer-prog"><div id="rtimer-fill"></div></div>
+      </div>
+
+      <!-- Compass dial -->
+      <div id="compass">
+        <svg width="128" height="128" viewBox="0 0 128 128" style="position:absolute;top:0;left:0">
+          <g fill="none">
+            <circle cx="64" cy="64" r="61" stroke="#00cc44" stroke-width="1.5"/>
+            <circle cx="64" cy="64" r="50" stroke="#00cc44" stroke-width="0.5" stroke-dasharray="3 5"/>
+            <!-- Tick marks (36 ticks every 10°) -->
+            <g stroke="#00cc44">
+              <line x1="64" y1="3"  x2="64" y2="8"  stroke-width="1.5"/>
+              <line x1="75.6" y1="3.7" x2="74.1" y2="8.5" stroke-width="1"/>
+              <line x1="86.8" y1="6.6" x2="83.9" y2="11.1" stroke-width="1"/>
+              <line x1="97.1" y1="12.0" x2="92.4" y2="15.2" stroke-width="1.5"/>
+              <line x1="105.9" y1="19.8" x2="99.9" y2="21.8" stroke-width="1"/>
+              <line x1="113.0" y1="29.5" x2="105.9" y2="30.0" stroke-width="1"/>
+              <line x1="117.9" y1="40.6" x2="110.5" y2="39.6" stroke-width="1.5"/>
+              <line x1="120.2" y1="52.5" x2="112.8" y2="50.8" stroke-width="1"/>
+              <line x1="120.0" y1="64.0" x2="112.5" y2="64.0" stroke-width="1"/>
+              <line x1="125" y1="64" x2="120" y2="64" stroke-width="1.5"/>
+              <line x1="3"  y1="64" x2="8" y2="64" stroke-width="1.5"/>
+              <line x1="64" y1="125" x2="64" y2="120" stroke-width="1.5"/>
+            </g>
+            <!-- Active arc highlight -->
+            <path d="M64,3 A61,61 0 0,1 125,64" stroke="#00cc44" stroke-width="2.5"/>
+          </g>
+        </svg>
+        <div id="c-outerring"></div>
+        <div id="c-innerface">
+          <div id="c-needle"></div>
+          <div id="c-dot"></div>
+        </div>
+      </div>
+    </div>
+    <!-- END RIGHT PANEL -->
+
+  </div>
+  <!-- END MAIN HUD -->
+
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const TOTAL = 22;
+
+    /* ── INTRO ─────────────────────────────────────── */
+    tl.to('#intro-text', { opacity: 1, duration: 0.7 }, 0.4);
+    tl.to('#intro-sub',  { opacity: 1, duration: 0.5 }, 0.9);
+    tl.to('#intro-text', { opacity: 0, duration: 0.4 }, 1.7);
+    tl.to('#intro-sub',  { opacity: 0, duration: 0.4 }, 1.8);
+    tl.to('#intro',      { opacity: 0, duration: 0.5 }, 2.1);
+    tl.set('#intro', { visibility: 'hidden' }, 2.7);
+
+    /* ── HUD FADE IN ───────────────────────────────── */
+    tl.to('#hud', { opacity: 1, duration: 0.7 }, 2.1);
+
+    /* Frame draws in */
+    tl.from('#frame', { scaleX: 0, transformOrigin: 'left center', duration: 0.35 }, 2.3);
+    tl.from('#topbar', { opacity: 0, duration: 0.3 }, 2.55);
+
+    /* Left panel stagger */
+    tl.from('#lp-title',    { opacity: 0, x: -18, duration: 0.35 }, 2.8);
+    tl.from('#lp-sub',      { opacity: 0, duration: 0.3  }, 3.0);
+    tl.from('#lp-icons',    { opacity: 0, duration: 0.25 }, 3.1);
+    tl.from('#minisatbox',  { opacity: 0, y: 12, duration: 0.4 }, 3.2);
+    tl.from('.si-row',      { opacity: 0, duration: 0.3  }, 3.55);
+    tl.from('.dg',          { opacity: 0, y: 10, duration: 0.4 }, 3.65);
+
+    /* Right panel stagger */
+    tl.from('#rp-hdr',     { opacity: 0, x: 18,  duration: 0.35 }, 2.85);
+    tl.from('#rp-sub',     { opacity: 0, duration: 0.25 }, 3.05);
+    tl.from('.gr-row',     { opacity: 0, duration: 0.3  }, 3.2);
+    tl.from('.rdg',        { opacity: 0, duration: 0.3  }, 3.35);
+    tl.from('#rp-worldmap',{ opacity: 0, duration: 0.35 }, 3.5);
+    tl.from('#xdl-code',   { opacity: 0, duration: 0.3  }, 3.65);
+    tl.from('.dbrow',      { opacity: 0, stagger: 0.12, duration: 0.3 }, 3.8);
+    tl.from('#rtimer',     { opacity: 0, duration: 0.3  }, 4.35);
+
+    /* Center panels */
+    tl.from('#vp',   { opacity: 0, scaleY: 0, transformOrigin: 'top center', duration: 0.5 }, 4.5);
+    tl.from('#vdl',  { opacity: 0, duration: 0.3 }, 5.05);
+    tl.from('#mp',   { opacity: 0, scaleY: 0, transformOrigin: 'top center', duration: 0.5 }, 5.25);
+    tl.from('#bpbar',{ opacity: 0, duration: 0.3 }, 5.7);
+    tl.from('#compass', { opacity: 0, scale: 0, transformOrigin: 'center center', duration: 0.5 }, 5.0);
+
+    /* ── CONTINUOUS ANIMATIONS ── */
+
+    /* Compass needle – ~3 full rotations in 22s */
+    tl.to('#c-needle', { rotation: 1080, duration: 22, ease: 'none' }, 0);
+
+    /* Mini radar sweep – ~8 full rotations in 22s */
+    tl.to('#mini-radar-line', { rotation: 2880, duration: 22, ease: 'none' }, 0);
+
+    /* Gauge needles gentle oscillation */
+    tl.to('#gn1', { rotation: 20,  duration: 4, yoyo: true, repeat: 5, ease: 'power1.inOut' }, 0);
+    tl.to('#gn2', { rotation: -25, duration: 5, yoyo: true, repeat: 4, ease: 'power1.inOut' }, 1);
+    tl.to('#gn3', { rotation: 30,  duration: 3, yoyo: true, repeat: 7, ease: 'power1.inOut' }, 0.5);
+    tl.to('#gn4', { rotation: 10,  duration: 6, yoyo: true, repeat: 3, ease: 'power1.inOut' }, 2);
+
+    /* Scan line sweeps top → bottom, repeating */
+    const SCAN_DUR = 3.2;
+    const SCAN_START = 5.5;
+    for (var i = 0; i < 6; i++) {
+      tl.fromTo('#scanline',
+        { y: 0 },
+        { y: 345, duration: SCAN_DUR, ease: 'none' },
+        SCAN_START + i * SCAN_DUR
+      );
+    }
+
+    /* Detection boxes appear */
+    tl.to('#db1', { opacity: 1, duration: 0.35 }, 6.1);
+    tl.to('#db2', { opacity: 0.85, duration: 0.35 }, 6.5);
+    tl.to('#db3', { opacity: 1, duration: 0.35 }, 6.8);
+    /* Blink occasionally */
+    tl.to('#db1', { opacity: 0.15, duration: 0.12, yoyo: true, repeat: 1 }, 9.0);
+    tl.to('#db3', { opacity: 0.15, duration: 0.12, yoyo: true, repeat: 1 }, 12.5);
+    tl.to('#db2', { opacity: 0.15, duration: 0.12, yoyo: true, repeat: 1 }, 15.3);
+
+    /* Bottom progress */
+    tl.to('#bpfill', { width: '100%', duration: 15, ease: 'none' }, SCAN_START);
+    tl.to('#bpdot',  { left: '100%', duration: 15, ease: 'none' }, SCAN_START);
+    /* Right timer progress bar */
+    tl.to('#rtimer-fill', { width: '100%', duration: 15, ease: 'none' }, SCAN_START);
+
+    /* Map crosshair slow drift */
+    tl.to('#mapxhair', { x:  40, duration: 9,  ease: 'power1.inOut', yoyo: true, repeat: 2 }, SCAN_START);
+    tl.to('#mapxhair', { y: -20, duration: 7,  ease: 'power1.inOut', yoyo: true, repeat: 2 }, SCAN_START + 1);
+
+    /* Data bars subtle fluctuation */
+    tl.to('#df-speed', { width: '88%', duration: 3.5, ease: 'power1.inOut', yoyo: true, repeat: 2 }, SCAN_START);
+    tl.to('#df-lock',  { width: '97%', duration: 4.0, ease: 'power1.inOut', yoyo: true, repeat: 2 }, SCAN_START + 1);
+    tl.to('#df-sig',   { width: '82%', duration: 2.8, ease: 'power1.inOut', yoyo: true, repeat: 3 }, SCAN_START + 0.5);
+    tl.to('#df-proc',  { width: '91%', duration: 5.0, ease: 'power1.inOut', yoyo: true, repeat: 2 }, SCAN_START + 2);
+
+    /* Timer text update via onUpdate */
+    tl.eventCallback('onUpdate', function() {
+      var t = tl.time();
+      if (t < SCAN_START) return;
+      var elapsed = t - SCAN_START;
+      var mm = String(Math.floor(elapsed / 60)).padStart(2, '0');
+      var ss = String(Math.floor(elapsed % 60)).padStart(2, '0');
+      var ms = String(Math.floor((elapsed % 1) * 1000)).padStart(3, '0');
+      document.getElementById('rtimer-val').textContent = '00:' + mm + ':' + ss + '.' + ms;
+      document.getElementById('lp-clock').textContent = '00:' + mm + ':' + ss + ' P60';
+    });
+
+    window.__timelines = window.__timelines || {};
+    window.__timelines['hud-gprs-v2'] = tl;
+  </script>
+</div>
+</body>
+</html>
