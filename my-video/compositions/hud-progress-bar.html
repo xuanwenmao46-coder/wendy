@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="../node_modules/gsap/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: radial-gradient(ellipse 120% 100% at 50% 30%, #6e8fa8 0%, #3d5a70 40%, #1c2e3d 100%);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
+      .hud-text {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        font-weight: 300;
+        letter-spacing: 0.35em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="hud-progress-bar"
+      data-start="0"
+      data-duration="8"
+      data-width="1920"
+      data-height="1080"
+    >
+      <!-- ── SVG layer: all arc paths ── -->
+      <svg
+        style="position:absolute;inset:0;width:1920px;height:1080px;overflow:visible;"
+        viewBox="0 0 1920 1080"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <!--
+          Main arc geometry:
+            center (960, 620), r = 280
+            left  endpoint: (680, 620)
+            right endpoint: (1240, 620)
+            bottom of arc:  (960, 900)
+            half-circumference: π × 280 ≈ 879.65
+          SVG arc sweep=1 (clockwise) draws the BOTTOM semicircle → U-shape.
+          stroke-dashoffset 879.65→0 fills left-to-right through the bottom.
+        -->
+
+        <!-- Track: full semicircle, thin & semi-transparent -->
+        <path id="arc-track"
+          d="M 680,620 A 280,280 0 0 1 1240,620"
+          fill="none"
+          stroke="rgba(255,255,255,0.22)"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          style="opacity:0"/>
+
+        <!-- Progress: fills left→right as animation plays -->
+        <path id="arc-progress"
+          d="M 680,620 A 280,280 0 0 1 1240,620"
+          fill="none"
+          stroke="white"
+          stroke-width="4.5"
+          stroke-linecap="round"
+          stroke-dasharray="879.65"
+          stroke-dashoffset="879.65"
+          style="opacity:0"/>
+
+        <!--
+          Corner arcs (outro) — r = 80, half-circ ≈ 251.33
+          Each is a U-shaped arc (sweep=1, clockwise bottom semicircle).
+          Shown fully filled (dashoffset=0) to represent "completed" state.
+        -->
+
+        <!-- Top-left  center (170, 110) -->
+        <path id="arc-tl-track" d="M 90,110 A 80,80 0 0 1 250,110"
+          fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.5" stroke-linecap="round" style="opacity:0"/>
+        <path id="arc-tl-fill"  d="M 90,110 A 80,80 0 0 1 250,110"
+          fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2.5" stroke-linecap="round"
+          stroke-dasharray="251.33" stroke-dashoffset="0" style="opacity:0"/>
+
+        <!-- Top-right  center (1750, 110) -->
+        <path id="arc-tr-track" d="M 1670,110 A 80,80 0 0 1 1830,110"
+          fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.5" stroke-linecap="round" style="opacity:0"/>
+        <path id="arc-tr-fill"  d="M 1670,110 A 80,80 0 0 1 1830,110"
+          fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2.5" stroke-linecap="round"
+          stroke-dasharray="251.33" stroke-dashoffset="0" style="opacity:0"/>
+
+        <!-- Bottom-left  center (170, 960) -->
+        <path id="arc-bl-track" d="M 90,960 A 80,80 0 0 1 250,960"
+          fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.5" stroke-linecap="round" style="opacity:0"/>
+        <path id="arc-bl-fill"  d="M 90,960 A 80,80 0 0 1 250,960"
+          fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2.5" stroke-linecap="round"
+          stroke-dasharray="251.33" stroke-dashoffset="0" style="opacity:0"/>
+
+        <!-- Bottom-right  center (1750, 960) -->
+        <path id="arc-br-track" d="M 1670,960 A 80,80 0 0 1 1830,960"
+          fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.5" stroke-linecap="round" style="opacity:0"/>
+        <path id="arc-br-fill"  d="M 1670,960 A 80,80 0 0 1 1830,960"
+          fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2.5" stroke-linecap="round"
+          stroke-dasharray="251.33" stroke-dashoffset="0" style="opacity:0"/>
+
+        <!-- Corner labels (first letter of PROFIT / SCORE) -->
+        <text id="lbl-p1" x="170"  y="88"  text-anchor="middle" fill="white" style="opacity:0"
+          font-family="'Helvetica Neue',Helvetica,Arial,sans-serif" font-size="18" font-weight="300" letter-spacing="4">P</text>
+        <text id="lbl-p2" x="1750" y="88"  text-anchor="middle" fill="white" style="opacity:0"
+          font-family="'Helvetica Neue',Helvetica,Arial,sans-serif" font-size="18" font-weight="300" letter-spacing="4">P</text>
+        <text id="lbl-s1" x="170"  y="938" text-anchor="middle" fill="white" style="opacity:0"
+          font-family="'Helvetica Neue',Helvetica,Arial,sans-serif" font-size="18" font-weight="300" letter-spacing="4">S</text>
+        <text id="lbl-s2" x="1750" y="938" text-anchor="middle" fill="white" style="opacity:0"
+          font-family="'Helvetica Neue',Helvetica,Arial,sans-serif" font-size="18" font-weight="300" letter-spacing="4">S</text>
+      </svg>
+
+      <!-- "LORE" label — sits above arc endpoints (arc endpoints at y=620) -->
+      <div id="label-lore" class="clip hud-text"
+        style="top:228px; font-size:26px; opacity:0;"
+        data-start="0" data-duration="8" data-track-index="1">
+        LORE
+      </div>
+
+      <!-- Percentage counter — inside top of the U (between LORE and arc endpoints) -->
+      <div id="pct-display" class="clip"
+        style="position:absolute; top:390px; left:50%; transform:translateX(-50%);
+               text-align:center; color:white;
+               font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+               font-weight:200; white-space:nowrap; opacity:0;"
+        data-start="0" data-duration="8" data-track-index="2">
+        <span id="pct-num" style="font-size:144px; line-height:1; letter-spacing:-4px;">0</span><span
+          style="font-size:68px; vertical-align:top; padding-top:18px; display:inline-block;">%</span>
+      </div>
+
+      <!-- "PROFIT" label — just above/at arc endpoint level (y≈620) -->
+      <div id="label-profit" class="clip hud-text"
+        style="top:574px; font-size:22px; opacity:0;"
+        data-start="0" data-duration="8" data-track-index="3">
+        PROFIT
+      </div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // ── INTRO (0 – 1.2s): reveal main HUD ──────────────────────────────
+
+      tl.fromTo("#arc-track",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.9, ease: "power2.out" },
+        0.1
+      );
+      tl.fromTo("#label-lore",
+        { opacity: 0, y: -14 },
+        { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" },
+        0.2
+      );
+      tl.fromTo("#pct-display",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.6, ease: "power2.out" },
+        0.45
+      );
+      tl.fromTo("#label-profit",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.6, ease: "power2.out" },
+        0.55
+      );
+      // Arc progress fades in just before fill animation starts
+      tl.fromTo("#arc-progress",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.35, ease: "none" },
+        0.9
+      );
+
+      // ── MAIN (1.2 – 6.5s): arc fill + percentage counter ───────────────
+
+      // Arc stroke-dashoffset: 879.65 → 0  (empty → full, left to right)
+      tl.fromTo("#arc-progress",
+        { strokeDashoffset: 879.65 },
+        { strokeDashoffset: 0, duration: 5.3, ease: "power1.inOut" },
+        1.2
+      );
+
+      // Counter: 0 → 100 %
+      const proxy = { pct: 0 };
+      tl.fromTo(proxy,
+        { pct: 0 },
+        {
+          pct: 100,
+          duration: 5.3,
+          ease: "power1.inOut",
+          onUpdate() {
+            const el = document.getElementById("pct-num");
+            if (el) el.textContent = Math.round(proxy.pct);
+          }
+        },
+        1.2
+      );
+
+      // ── OUTRO (6.5 – 8s): split to 4 corners ───────────────────────────
+
+      // Fade out main elements
+      tl.to(
+        "#arc-track, #arc-progress, #label-lore, #pct-display, #label-profit",
+        { opacity: 0, duration: 0.55, ease: "power2.in" },
+        6.5
+      );
+
+      // Stagger in corner arcs + labels
+      const corners = [
+        "#arc-tl-track", "#arc-tl-fill", "#lbl-p1",
+        "#arc-tr-track", "#arc-tr-fill", "#lbl-p2",
+        "#arc-bl-track", "#arc-bl-fill", "#lbl-s1",
+        "#arc-br-track", "#arc-br-fill", "#lbl-s2"
+      ];
+      tl.fromTo(corners,
+        { opacity: 0 },
+        { opacity: 0.78, duration: 0.35, ease: "power2.out", stagger: 0.05 },
+        6.75
+      );
+
+      // Fade corners out before end
+      tl.to(corners,
+        { opacity: 0, duration: 0.5, ease: "power2.in" },
+        7.4
+      );
+
+      window.__timelines["hud-progress-bar"] = tl;
+    </script>
+  </body>
+</html>
