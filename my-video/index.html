@@ -6,276 +6,133 @@
     <script src="./node_modules/gsap/dist/gsap.min.js"></script>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
-
       html, body {
         width: 1920px;
         height: 1080px;
         overflow: hidden;
-        background: #0a0e1a;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", sans-serif;
+        background: #292b3d;
       }
 
-      /* ── Background ── */
-      .bg {
+      .cards-wrap {
         position: absolute;
-        inset: 0;
-        background: radial-gradient(ellipse 120% 80% at 50% -10%, #0d1f3c 0%, #0a0e1a 60%);
-      }
-      .grid-lines {
-        position: absolute;
-        inset: 0;
-        background-image:
-          linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-        background-size: 120px 120px;
-        opacity: 0;
-      }
-      .glow-left {
-        position: absolute;
-        width: 600px; height: 600px;
-        background: radial-gradient(circle, rgba(56,189,248,0.12) 0%, transparent 70%);
-        top: 50%; left: 5%;
-        transform: translateY(-50%);
-        opacity: 0;
-      }
-      .glow-right {
-        position: absolute;
-        width: 500px; height: 500px;
-        background: radial-gradient(circle, rgba(168,85,247,0.10) 0%, transparent 70%);
-        bottom: 5%; right: 8%;
-        opacity: 0;
-      }
-
-      /* ── Chart Wrapper ── */
-      .chart-wrapper {
-        position: absolute;
-        top: 50%; left: 50%;
-        transform: translate(-50%, -50%);
-        width: 1680px;
-        opacity: 0;
-      }
-
-      /* ── Title Area ── */
-      .chart-header {
-        margin-bottom: 54px;
+        left: 140px;
+        top: 120px;
+        width: 1640px;
         display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-      }
-      .chart-title {
-        font-size: 58px;
-        font-weight: 700;
-        color: #f0f6ff;
-        letter-spacing: -1.5px;
-        line-height: 1.1;
-        opacity: 0;
-        transform: translateY(24px);
-      }
-      .chart-subtitle {
-        font-size: 26px;
-        color: #64748b;
-        letter-spacing: 0.5px;
-        margin-top: 10px;
-        opacity: 0;
-      }
-      .chart-year {
-        font-size: 100px;
-        font-weight: 800;
-        color: rgba(255,255,255,0.05);
-        letter-spacing: -4px;
-        line-height: 1;
-        position: absolute;
-        right: 0; top: -20px;
+        flex-direction: column;
+        gap: 32px;
         opacity: 0;
       }
 
-      /* ── Bar Chart ── */
-      .bar-chart {
-        position: relative;
-        width: 100%;
-      }
-
-      .bar-row {
-        display: flex;
-        align-items: center;
-        margin-bottom: 22px;
-        height: 72px;
-        opacity: 0;
-      }
-
-      .bar-label {
-        width: 200px;
-        font-size: 26px;
-        font-weight: 600;
-        color: #cbd5e1;
-        text-align: right;
-        padding-right: 24px;
-        flex-shrink: 0;
-        white-space: nowrap;
-      }
-
-      .bar-track {
-        flex: 1;
-        height: 52px;
-        background: rgba(255,255,255,0.04);
-        border-radius: 8px;
-        position: relative;
+      .card {
+        background: #111116;
+        border-radius: 22px;
         overflow: hidden;
       }
 
-      .bar-fill {
-        height: 100%;
-        border-radius: 8px;
-        width: 0%;
+      /* ── Portfolio Balance card ── */
+      .pf-card {
+        display: flex;
+        align-items: stretch;
+        height: 224px;
+        padding: 38px 52px;
+      }
+
+      .pf-left {
+        flex-shrink: 0;
+        width: 340px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .pf-amount {
+        font-size: 86px;
+        font-weight: 700;
+        color: #ffffff;
+        letter-spacing: -3px;
+        line-height: 1;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      .pf-label {
+        font-size: 19px;
+        color: #585a70;
+        margin-top: 14px;
+        font-weight: 400;
+      }
+
+      .pf-right {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding-top: 2px;
+      }
+
+      .pf-chart-svg {
+        flex: 1;
+        width: 100%;
+        overflow: visible;
+      }
+
+      .pf-x-axis {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 1px;
+        margin-top: 8px;
+      }
+
+      .pf-x-axis span {
+        font-size: 19px;
+        color: #44465a;
+        font-weight: 400;
+      }
+
+      /* ── Views on YouTube card ── */
+      .views-card {
+        height: 224px;
+        padding: 36px 52px;
         position: relative;
         display: flex;
         align-items: center;
-        justify-content: flex-end;
-        overflow: visible;
-      }
-      .bar-fill::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(90deg, transparent 40%, rgba(255,255,255,0.12) 100%);
-        border-radius: 8px;
-      }
-
-      .bar-value {
-        position: absolute;
-        right: -80px;
-        font-size: 28px;
-        font-weight: 700;
-        color: #f0f6ff;
-        white-space: nowrap;
-        opacity: 0;
-      }
-
-      /* Bar colors */
-      .bar-1 .bar-fill { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
-      .bar-2 .bar-fill { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
-      .bar-3 .bar-fill { background: linear-gradient(90deg, #06b6d4, #22d3ee); }
-      .bar-4 .bar-fill { background: linear-gradient(90deg, #10b981, #34d399); }
-      .bar-5 .bar-fill { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
-      .bar-6 .bar-fill { background: linear-gradient(90deg, #ef4444, #f87171); }
-
-      /* Glow dots on bar end */
-      .bar-dot {
-        position: absolute;
-        right: -6px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 14px; height: 14px;
-        border-radius: 50%;
-        filter: blur(3px);
-        opacity: 0;
-      }
-      .bar-1 .bar-dot { background: #60a5fa; }
-      .bar-2 .bar-dot { background: #a78bfa; }
-      .bar-3 .bar-dot { background: #22d3ee; }
-      .bar-4 .bar-dot { background: #34d399; }
-      .bar-5 .bar-dot { background: #fbbf24; }
-      .bar-6 .bar-dot { background: #f87171; }
-
-      /* ── Axis / grid ── */
-      .axis-line {
-        position: absolute;
-        left: 200px;
-        right: 0;
-        bottom: -24px;
-        height: 1px;
-        background: rgba(255,255,255,0.08);
-        opacity: 0;
-        transform-origin: left center;
-        transform: scaleX(0);
-      }
-
-      /* ── Counters / Stats ── */
-      .stats-row {
-        display: flex;
-        gap: 80px;
-        margin-top: 60px;
         justify-content: center;
         opacity: 0;
+        transform: translateY(62px);
       }
-      .stat-item {
-        text-align: center;
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      .stat-number {
-        font-size: 52px;
-        font-weight: 800;
-        letter-spacing: -2px;
+
+      .views-arrow {
+        position: absolute;
+        top: 36px;
+        left: 52px;
+        font-size: 30px;
+        color: #ffffff;
         line-height: 1;
-      }
-      .stat-label {
-        font-size: 20px;
-        color: #94a3b8;
-        margin-top: 8px;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-      }
-      .stat-1 .stat-number { color: #60a5fa; }
-      .stat-2 .stat-number { color: #a78bfa; }
-      .stat-3 .stat-number { color: #34d399; }
-
-      /* ── Category Tag ── */
-      .category-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        padding: 8px 20px;
-        background: rgba(56,189,248,0.1);
-        border: 1px solid rgba(56,189,248,0.25);
-        border-radius: 30px;
-        font-size: 20px;
-        font-weight: 600;
-        color: #38bdf8;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        margin-bottom: 18px;
-        opacity: 0;
-      }
-      .category-dot {
-        width: 8px; height: 8px;
-        border-radius: 50%;
-        background: #38bdf8;
+        font-weight: 300;
       }
 
-      /* ── Pulse ring on top bar ── */
-      .pulse-ring {
+      .views-label {
         position: absolute;
-        right: -2px; top: 50%;
-        transform: translateY(-50%);
-        width: 18px; height: 18px;
-        border-radius: 50%;
-        border: 2px solid #60a5fa;
-        opacity: 0;
+        bottom: 36px;
+        left: 52px;
+        font-size: 18px;
+        color: #8082a0;
+        font-weight: 400;
       }
 
-      /* ── Footer ── */
-      .chart-footer {
+      .views-period {
         position: absolute;
-        bottom: 48px;
-        left: 120px;
-        right: 120px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        opacity: 0;
+        bottom: 36px;
+        right: 52px;
+        font-size: 18px;
+        color: #585a70;
       }
-      .footer-source {
-        font-size: 20px;
-        color: #334155;
-        letter-spacing: 1px;
-      }
-      .footer-brand {
-        font-size: 22px;
-        font-weight: 700;
-        color: #1e3a5f;
-        letter-spacing: 3px;
-        text-transform: uppercase;
+
+      /* Canvas slot counter — self-clips, no DOM overflow */
+      #slotCanvas {
+        display: block;
+        width: 1536px;
+        height: 148px;
       }
     </style>
   </head>
@@ -284,208 +141,165 @@
       id="root"
       data-composition-id="main"
       data-start="0"
-      data-duration="10"
+      data-duration="8"
       data-width="1920"
       data-height="1080"
     >
-      <div class="bg"></div>
-      <div class="grid-lines" id="gridLines"></div>
-      <div class="glow-left" id="glowLeft"></div>
-      <div class="glow-right" id="glowRight"></div>
+      <div class="cards-wrap" id="cardsWrap">
 
-      <!-- Main chart block -->
-      <div class="chart-wrapper" id="chartWrapper">
-
-        <div class="chart-header">
-          <div>
-            <div class="category-tag" id="catTag">
-              <span class="category-dot"></span>
-              Global Rankings 2025
-            </div>
-            <div class="chart-title" id="chartTitle">
-              AI Model Performance<br>Benchmark
-            </div>
-            <div class="chart-subtitle" id="chartSubtitle">Score comparison across leading AI models · 2025</div>
+        <!-- Portfolio Balance card -->
+        <div class="card pf-card">
+          <div class="pf-left">
+            <div class="pf-amount" id="pfAmount">$2,933</div>
+            <div class="pf-label">Portfolio Balance</div>
           </div>
-          <div class="chart-year" id="chartYear">2025</div>
-        </div>
-
-        <!-- Bar chart rows -->
-        <div class="bar-chart" id="barChart">
-          <div class="axis-line" id="axisLine"></div>
-
-          <div class="bar-row bar-1" id="row1">
-            <div class="bar-label">Claude 3.7</div>
-            <div class="bar-track">
-              <div class="bar-fill" id="fill1">
-                <div class="bar-dot" id="dot1"></div>
-                <div class="pulse-ring" id="pulse1"></div>
-              </div>
+          <div class="pf-right">
+            <svg class="pf-chart-svg" viewBox="0 0 1160 108"
+                 preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%"   stop-color="#4ade80" stop-opacity="0.16"/>
+                  <stop offset="100%" stop-color="#4ade80" stop-opacity="0.00"/>
+                </linearGradient>
+              </defs>
+              <path d="M 0,72 C 22,76 46,88 72,86 C 96,84 115,80 138,70
+                       C 158,60 172,96 194,94 C 214,92 235,60 258,52
+                       C 278,46 298,62 320,72 C 340,82 358,68 378,48
+                       C 398,30 418,36 440,54 C 460,70 474,62 492,52
+                       C 510,42 526,44 550,58 C 572,70 585,74 606,68
+                       C 626,62 640,52 662,48 C 682,44 698,36 722,44
+                       C 744,52 756,58 778,48 C 798,40 812,32 834,30
+                       C 856,28 868,36 890,42 C 912,48 928,40 950,34
+                       C 970,28 986,20 1010,18 C 1042,15 1075,11 1160,8
+                       L 1160,108 L 0,108 Z"
+                fill="url(#areaGrad)"/>
+              <path d="M 0,72 C 22,76 46,88 72,86 C 96,84 115,80 138,70
+                       C 158,60 172,96 194,94 C 214,92 235,60 258,52
+                       C 278,46 298,62 320,72 C 340,82 358,68 378,48
+                       C 398,30 418,36 440,54 C 460,70 474,62 492,52
+                       C 510,42 526,44 550,58 C 572,70 585,74 606,68
+                       C 626,62 640,52 662,48 C 682,44 698,36 722,44
+                       C 744,52 756,58 778,48 C 798,40 812,32 834,30
+                       C 856,28 868,36 890,42 C 912,48 928,40 950,34
+                       C 970,28 986,20 1010,18 C 1042,15 1075,11 1160,8"
+                fill="none" stroke="#4ade80" stroke-width="3"
+                stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="pf-x-axis">
+              <span>Mo</span><span>Tu</span><span>We</span>
+              <span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
             </div>
-            <div class="bar-value" id="val1">96.4</div>
-          </div>
-
-          <div class="bar-row bar-2" id="row2">
-            <div class="bar-label">GPT-4o</div>
-            <div class="bar-track">
-              <div class="bar-fill" id="fill2">
-                <div class="bar-dot" id="dot2"></div>
-              </div>
-            </div>
-            <div class="bar-value" id="val2">91.8</div>
-          </div>
-
-          <div class="bar-row bar-3" id="row3">
-            <div class="bar-label">Gemini 2.0</div>
-            <div class="bar-track">
-              <div class="bar-fill" id="fill3">
-                <div class="bar-dot" id="dot3"></div>
-              </div>
-            </div>
-            <div class="bar-value" id="val3">89.3</div>
-          </div>
-
-          <div class="bar-row bar-4" id="row4">
-            <div class="bar-label">Llama 3.3</div>
-            <div class="bar-track">
-              <div class="bar-fill" id="fill4">
-                <div class="bar-dot" id="dot4"></div>
-              </div>
-            </div>
-            <div class="bar-value" id="val4">84.7</div>
-          </div>
-
-          <div class="bar-row bar-5" id="row5">
-            <div class="bar-label">Mistral L</div>
-            <div class="bar-track">
-              <div class="bar-fill" id="fill5">
-                <div class="bar-dot" id="dot5"></div>
-              </div>
-            </div>
-            <div class="bar-value" id="val5">79.2</div>
-          </div>
-
-          <div class="bar-row bar-6" id="row6">
-            <div class="bar-label">DeepSeek V3</div>
-            <div class="bar-track">
-              <div class="bar-fill" id="fill6">
-                <div class="bar-dot" id="dot6"></div>
-              </div>
-            </div>
-            <div class="bar-value" id="val6">87.1</div>
           </div>
         </div>
 
-        <!-- Stats row -->
-        <div class="stats-row" id="statsRow">
-          <div class="stat-item stat-1" id="stat1">
-            <div class="stat-number" id="statNum1">0</div>
-            <div class="stat-label">Models Tested</div>
-          </div>
-          <div class="stat-item stat-2" id="stat2">
-            <div class="stat-number" id="statNum2">0</div>
-            <div class="stat-label">Benchmarks</div>
-          </div>
-          <div class="stat-item stat-3" id="stat3">
-            <div class="stat-number" id="statNum3">0%</div>
-            <div class="stat-label">Avg Accuracy</div>
-          </div>
+        <!-- YouTube Views card -->
+        <div class="card views-card" id="viewsCard">
+          <div class="views-arrow">&#x2191;</div>
+          <canvas id="slotCanvas" width="1536" height="148"></canvas>
+          <div class="views-label">Views on Youtube</div>
+          <div class="views-period">For 2024/2025</div>
         </div>
-      </div>
 
-      <!-- Footer -->
-      <div class="chart-footer clip" id="footer" data-start="1" data-duration="9" data-track-index="2">
-        <div class="footer-source">Source: MMLU / HumanEval / MATH Benchmark 2025</div>
-        <div class="footer-brand">AI Benchmark Report</div>
       </div>
     </div>
 
     <script>
       window.__timelines = window.__timelines || {};
-      const tl = gsap.timeline({ paused: true });
 
-      // ── 0.0s  Background fades in ──
-      tl.to("#gridLines",  { opacity: 1, duration: 1.2, ease: "power1.out" }, 0);
-      tl.to("#glowLeft",   { opacity: 1, duration: 1.5 }, 0);
-      tl.to("#glowRight",  { opacity: 1, duration: 1.5 }, 0.3);
-
-      // ── 0.3s  Wrapper fades ──
-      tl.to("#chartWrapper", { opacity: 1, duration: 0.5 }, 0.3);
-
-      // ── 0.4s  Category tag ──
-      tl.to("#catTag", { opacity: 1, duration: 0.5, ease: "power2.out" }, 0.4);
-
-      // ── 0.7s  Title & subtitle ──
-      tl.to("#chartTitle",    { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.7);
-      tl.to("#chartSubtitle", { opacity: 1, duration: 0.6 }, 1.0);
-      tl.to("#chartYear",     { opacity: 1, duration: 1.0 }, 0.8);
-
-      // ── 1.2s  Axis line draws in ──
-      tl.to("#axisLine", { opacity: 1, scaleX: 1, duration: 0.6, ease: "power2.inOut" }, 1.2);
-
-      // ── 1.5s  Bars stagger in (rows appear, then fills grow) ──
-      const rows = ["#row1","#row2","#row3","#row4","#row5","#row6"];
-      const fills = ["#fill1","#fill2","#fill3","#fill4","#fill5","#fill6"];
-      const dots  = ["#dot1","#dot2","#dot3","#dot4","#dot5","#dot6"];
-      const vals  = ["#val1","#val2","#val3","#val4","#val5","#val6"];
-      // percentages relative to max (96.4)
-      const pcts  = [100, 95.2, 92.6, 87.9, 82.2, 90.4];
-      const STAGGER = 0.18;
-
-      rows.forEach((r, i) => {
-        const t = 1.5 + i * STAGGER;
-        tl.to(r, { opacity: 1, duration: 0.4, ease: "power2.out" }, t);
-        tl.to(fills[i], { width: pcts[i] + "%", duration: 1.1, ease: "power3.out" }, t + 0.1);
-        tl.to(dots[i],  { opacity: 1, duration: 0.3 }, t + 1.0);
-        tl.to(vals[i],  { opacity: 1, duration: 0.4, ease: "power2.out" }, t + 0.9);
-      });
-
-      // ── 3.8s  Pulse ring on top bar ──
-      tl.to("#pulse1", {
-        opacity: 0.8, scale: 2.5, duration: 0.6,
-        repeat: 3, yoyo: true, ease: "sine.inOut"
-      }, 3.8);
-
-      // ── 5.0s  Stats count-up ──
-      tl.to("#statsRow", { opacity: 1, duration: 0.4 }, 5.0);
-
-      function countUp(el, end, suffix, dur, startT) {
-        const obj = { val: 0 };
-        tl.to(obj, {
-          val: end, duration: dur, ease: "power2.out",
-          onUpdate: () => {
-            el.textContent = Math.round(obj.val) + suffix;
-          }
-        }, startT);
+      /* ── Helpers ── */
+      function fmtDollar(n) {
+        return '$' + Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      }
+      function fmtCounter(n) {
+        var s = Math.max(0, Math.round(n)).toString().padStart(9, '0');
+        return s.slice(0, 3) + ',' + s.slice(3, 6) + ',' + s.slice(6, 9);
       }
 
-      tl.to("#stat1", { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.4)" }, 5.1);
-      tl.to("#stat2", { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.4)" }, 5.35);
-      tl.to("#stat3", { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.4)" }, 5.6);
+      /* ── Canvas slot machine ── */
+      var TARGET  = 750000000;
+      var STEPS   = 80;
+      var stepSz  = TARGET / STEPS;
+      var ROW_H   = 148;
+      var canvas  = document.getElementById('slotCanvas');
+      var ctx     = canvas.getContext('2d');
+      var CW      = 1536;
+      var CH      = ROW_H;
 
-      countUp(document.getElementById("statNum1"), 6,  "",  1.2, 5.2);
-      countUp(document.getElementById("statNum2"), 24, "",  1.2, 5.45);
-      countUp(document.getElementById("statNum3"), 88, "%", 1.2, 5.7);
+      function drawSlot(rawVal, progress) {
+        ctx.clearRect(0, 0, CW, CH);
 
-      // ── 7.0s  Second data wave — bars morph to new values ──
-      const pcts2 = [96, 88, 94, 91, 79, 85];
-      fills.forEach((f, i) => {
-        tl.to(f, { width: pcts2[i] + "%", duration: 0.9, ease: "power2.inOut" }, 7.0 + i * 0.06);
-      });
+        var v          = Math.max(0, Math.min(TARGET, rawVal));
+        var stepF      = v / stepSz;
+        var stepIdx    = Math.floor(stepF);
+        var subFrac    = stepF - stepIdx;
+        var speed      = Math.pow(Math.max(0, 1 - progress), 0.6);
 
-      // Highlight row3 (Gemini rises) by subtle glow
-      tl.to("#row3", { filter: "brightness(1.4)", duration: 0.4 }, 7.2);
-      tl.to("#row3", { filter: "brightness(1.0)", duration: 0.5 }, 8.0);
+        var currVal = Math.round(Math.min(TARGET, stepIdx * stepSz));
+        var nextVal = Math.round(Math.min(TARGET, (stepIdx + 1) * stepSz));
 
-      // ── 8.5s  Gentle fade out ──
-      tl.to("#chartWrapper", { opacity: 0, y: -16, duration: 0.9, ease: "power2.in" }, 9.1);
-      tl.to("#gridLines",    { opacity: 0, duration: 0.7 }, 9.2);
+        /* current row scrolls up; next row enters from below */
+        var currY = CH / 2 - subFrac * ROW_H * speed;
+        var nextY = CH / 2 + ROW_H   - subFrac * ROW_H * speed;
 
-      // Footer fade
-      tl.to("#footer", { opacity: 1, duration: 0.8 }, 1.8);
-      tl.to("#footer", { opacity: 0, duration: 0.6 }, 9.3);
+        ctx.font         = 'bold 112px system-ui, -apple-system, sans-serif';
+        ctx.textAlign    = 'center';
+        ctx.textBaseline = 'middle';
 
-      window.__timelines["main"] = tl;
+        /* next row (fades in as sub-step progresses) */
+        if (speed > 0.02 && subFrac > 0) {
+          ctx.globalAlpha = subFrac * speed;
+          ctx.fillStyle   = '#4ade80';
+          ctx.fillText(fmtCounter(nextVal), CW / 2, nextY);
+        }
+
+        /* current row */
+        ctx.globalAlpha = 1;
+        ctx.fillStyle   = '#4ade80';
+        ctx.fillText(fmtCounter(currVal), CW / 2, currY);
+      }
+
+      /* initial frame: "000,000,000" */
+      drawSlot(0, 0);
+
+      /* ── Portfolio counter ── */
+      var pfObj = { val: 2933 };
+      var pfEl  = document.getElementById('pfAmount');
+
+      /* ── GSAP Timeline ── */
+      var tl = gsap.timeline({ paused: true });
+
+      /* 0.0s — cards fade in */
+      tl.to('#cardsWrap', { opacity: 1, duration: 0.45, ease: 'power2.out' }, 0);
+
+      /* 0.0–2.5s — portfolio count-up */
+      tl.to(pfObj, {
+        val: 7980,
+        duration: 2.5,
+        ease: 'power2.out',
+        onUpdate: function () { pfEl.textContent = fmtDollar(pfObj.val); }
+      }, 0);
+
+      /* 1.2s — views card slides up */
+      tl.to('#viewsCard', {
+        opacity: 1, y: 0,
+        duration: 0.5, ease: 'power2.out'
+      }, 1.2);
+
+      /* 1.8–4.6s — slot machine count-up */
+      var cntObj = { val: 0 };
+      tl.to(cntObj, {
+        val: TARGET,
+        duration: 2.8,
+        ease: 'power2.out',
+        onUpdate: function () {
+          drawSlot(cntObj.val, cntObj.val / TARGET);
+        },
+        onComplete: function () {
+          drawSlot(TARGET, 1);
+        }
+      }, 1.8);
+
+      window.__timelines['main'] = tl;
     </script>
   </body>
 </html>
