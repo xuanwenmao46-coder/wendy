@@ -72,49 +72,6 @@
           stroke-dashoffset="879.65"
           style="opacity:0"/>
 
-        <!--
-          Corner arcs (outro) — r = 80, half-circ ≈ 251.33
-          Each is a U-shaped arc (sweep=1, clockwise bottom semicircle).
-          Shown fully filled (dashoffset=0) to represent "completed" state.
-        -->
-
-        <!-- Top-left  center (170, 110) -->
-        <path id="arc-tl-track" d="M 90,110 A 80,80 0 0 1 250,110"
-          fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.5" stroke-linecap="round" style="opacity:0"/>
-        <path id="arc-tl-fill"  d="M 90,110 A 80,80 0 0 1 250,110"
-          fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2.5" stroke-linecap="round"
-          stroke-dasharray="251.33" stroke-dashoffset="0" style="opacity:0"/>
-
-        <!-- Top-right  center (1750, 110) -->
-        <path id="arc-tr-track" d="M 1670,110 A 80,80 0 0 1 1830,110"
-          fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.5" stroke-linecap="round" style="opacity:0"/>
-        <path id="arc-tr-fill"  d="M 1670,110 A 80,80 0 0 1 1830,110"
-          fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2.5" stroke-linecap="round"
-          stroke-dasharray="251.33" stroke-dashoffset="0" style="opacity:0"/>
-
-        <!-- Bottom-left  center (170, 960) -->
-        <path id="arc-bl-track" d="M 90,960 A 80,80 0 0 1 250,960"
-          fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.5" stroke-linecap="round" style="opacity:0"/>
-        <path id="arc-bl-fill"  d="M 90,960 A 80,80 0 0 1 250,960"
-          fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2.5" stroke-linecap="round"
-          stroke-dasharray="251.33" stroke-dashoffset="0" style="opacity:0"/>
-
-        <!-- Bottom-right  center (1750, 960) -->
-        <path id="arc-br-track" d="M 1670,960 A 80,80 0 0 1 1830,960"
-          fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.5" stroke-linecap="round" style="opacity:0"/>
-        <path id="arc-br-fill"  d="M 1670,960 A 80,80 0 0 1 1830,960"
-          fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2.5" stroke-linecap="round"
-          stroke-dasharray="251.33" stroke-dashoffset="0" style="opacity:0"/>
-
-        <!-- Corner labels (first letter of PROFIT / SCORE) -->
-        <text id="lbl-p1" x="170"  y="88"  text-anchor="middle" fill="white" style="opacity:0"
-          font-family="'Helvetica Neue',Helvetica,Arial,sans-serif" font-size="18" font-weight="300" letter-spacing="4">P</text>
-        <text id="lbl-p2" x="1750" y="88"  text-anchor="middle" fill="white" style="opacity:0"
-          font-family="'Helvetica Neue',Helvetica,Arial,sans-serif" font-size="18" font-weight="300" letter-spacing="4">P</text>
-        <text id="lbl-s1" x="170"  y="938" text-anchor="middle" fill="white" style="opacity:0"
-          font-family="'Helvetica Neue',Helvetica,Arial,sans-serif" font-size="18" font-weight="300" letter-spacing="4">S</text>
-        <text id="lbl-s2" x="1750" y="938" text-anchor="middle" fill="white" style="opacity:0"
-          font-family="'Helvetica Neue',Helvetica,Arial,sans-serif" font-size="18" font-weight="300" letter-spacing="4">S</text>
       </svg>
 
       <!-- "LORE" label — sits above arc endpoints (arc endpoints at y=620) -->
@@ -201,32 +158,12 @@
         1.2
       );
 
-      // ── OUTRO (6.5 – 8s): split to 4 corners ───────────────────────────
+      // ── OUTRO (6.5 – 8s): fade out ─────────────────────────────────────
 
-      // Fade out main elements
       tl.to(
         "#arc-track, #arc-progress, #label-lore, #pct-display, #label-profit",
-        { opacity: 0, duration: 0.55, ease: "power2.in" },
+        { opacity: 0, duration: 1.2, ease: "power2.in" },
         6.5
-      );
-
-      // Stagger in corner arcs + labels
-      const corners = [
-        "#arc-tl-track", "#arc-tl-fill", "#lbl-p1",
-        "#arc-tr-track", "#arc-tr-fill", "#lbl-p2",
-        "#arc-bl-track", "#arc-bl-fill", "#lbl-s1",
-        "#arc-br-track", "#arc-br-fill", "#lbl-s2"
-      ];
-      tl.fromTo(corners,
-        { opacity: 0 },
-        { opacity: 0.78, duration: 0.35, ease: "power2.out", stagger: 0.05 },
-        6.75
-      );
-
-      // Fade corners out before end
-      tl.to(corners,
-        { opacity: 0, duration: 0.5, ease: "power2.in" },
-        7.4
       );
 
       window.__timelines["hud-progress-bar"] = tl;
