@@ -10,6 +10,30 @@
     display:flex; align-items:center; justify-content:center;
     min-height:100vh;
   }
+
+  /* ── Intro / Outro overlay ── */
+  #overlay {
+    position:fixed; inset:0; background:#2e2e2e;
+    pointer-events:none; z-index:999;
+    animation:overlayAnim 6s linear forwards;
+  }
+  @keyframes overlayAnim {
+    0%     { opacity:1; }
+    8.33%  { opacity:0; }
+    75%    { opacity:0; }
+    91.67% { opacity:1; }
+    100%   { opacity:1; }
+  }
+
+  /* ── Content outro ── */
+  .scene-content {
+    transform-origin:center center;
+    animation:contentOut 0.5s ease 4.5s both;
+  }
+  @keyframes contentOut {
+    to { opacity:0; transform:scale(0.96); }
+  }
+
   svg { display:block; }
   .pct-label {
     font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
@@ -20,18 +44,21 @@
 </style>
 </head>
 <body>
-<svg viewBox="0 0 800 720" width="800" height="720">
-  <path id="s0" fill="#ffffff"/>
-  <path id="s1" fill="#f5a623"/>
-  <path id="s2" fill="#ffc845"/>
-  <path id="s3" fill="#ffd97d"/>
-  <path id="s4" fill="#e8940a"/>
-  <text id="l0" class="pct-label" fill="#ffffff"></text>
-  <text id="l1" class="pct-label" fill="#f5a623"></text>
-  <text id="l2" class="pct-label" fill="#ffc845"></text>
-  <text id="l3" class="pct-label" fill="#ffd97d"></text>
-  <text id="l4" class="pct-label" fill="#e8940a"></text>
-</svg>
+<div id="overlay"></div>
+<div class="scene-content">
+  <svg viewBox="0 0 800 720" width="800" height="720">
+    <path id="s0" fill="#ffffff"/>
+    <path id="s1" fill="#f5a623"/>
+    <path id="s2" fill="#ffc845"/>
+    <path id="s3" fill="#ffd97d"/>
+    <path id="s4" fill="#e8940a"/>
+    <text id="l0" class="pct-label" fill="#ffffff"></text>
+    <text id="l1" class="pct-label" fill="#f5a623"></text>
+    <text id="l2" class="pct-label" fill="#ffc845"></text>
+    <text id="l3" class="pct-label" fill="#ffd97d"></text>
+    <text id="l4" class="pct-label" fill="#e8940a"></text>
+  </svg>
+</div>
 <script>
 const cx = 400, cy = 360, r = 200;
 const segments = [
@@ -57,10 +84,11 @@ function slicePath(startDeg, endDeg) {
 
 function easeInOut(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
 
-const DURATION = 1400;
-const startTime = performance.now();
+const DURATION = 1600;
+let startTime = null;
 
 function animate(now) {
+  if (!startTime) startTime = now;
   const t = easeInOut(Math.min((now - startTime) / DURATION, 1));
   const totalDeg = 360 * t;
   let cursor = 0;
@@ -80,7 +108,9 @@ function animate(now) {
   });
   if (t < 1) requestAnimationFrame(animate);
 }
-requestAnimationFrame(animate);
+
+// Delay pie start by 500ms to allow intro overlay to clear
+setTimeout(() => requestAnimationFrame(animate), 500);
 </script>
 </body>
 </html>
