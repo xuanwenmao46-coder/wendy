@@ -3,136 +3,99 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1920, height=1080" />
+    <style>
+      @font-face {
+        font-family: 'Barlow Condensed';
+        font-style: normal;
+        font-weight: 900;
+        src: url('./assets/fonts/barlow-condensed-900.ttf') format('truetype');
+      }
+      @font-face {
+        font-family: 'Barlow Condensed';
+        font-style: italic;
+        font-weight: 900;
+        src: url('./assets/fonts/barlow-condensed-900-italic.ttf') format('truetype');
+      }
+    </style>
     <script src="./node_modules/gsap/dist/gsap.min.js"></script>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
+
       html, body {
         width: 1920px;
         height: 1080px;
         overflow: hidden;
-        background: #292b3d;
+        background: #000;
       }
 
-      .cards-wrap {
+      /* ── Cream scene ── */
+      #bgCream {
         position: absolute;
-        left: 140px;
-        top: 120px;
-        width: 1640px;
-        display: flex;
-        flex-direction: column;
-        gap: 32px;
+        inset: 0;
+        background: #e7e2da;
         opacity: 0;
       }
 
-      .card {
-        background: #111116;
-        border-radius: 22px;
-        overflow: hidden;
+      /* ── Word stack ── */
+      .word-block {
+        position: absolute;
+        left: 115px;
+        top: 138px;
       }
 
-      /* ── Portfolio Balance card ── */
-      .pf-card {
-        display: flex;
-        align-items: stretch;
-        height: 224px;
-        padding: 38px 52px;
+      .word {
+        display: block;
+        font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+        font-weight: 900;
+        font-size: 192px;
+        line-height: 0.955;
+        letter-spacing: -2px;
+        color: #231f20;
+        opacity: 0;
+        will-change: transform, opacity, filter;
       }
 
-      .pf-left {
-        flex-shrink: 0;
-        width: 340px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+      .word-italic { font-style: italic; }
+
+      /* ── Coral scene ── */
+      #bgCoral {
+        position: absolute;
+        inset: 0;
+        background: #d4706b;
+        transform: scaleY(0);
+        transform-origin: 50% 50%;
+        will-change: transform;
       }
 
-      .pf-amount {
-        font-size: 86px;
-        font-weight: 700;
-        color: #ffffff;
-        letter-spacing: -3px;
-        line-height: 1;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      }
-
-      .pf-label {
-        font-size: 19px;
-        color: #585a70;
-        margin-top: 14px;
-        font-weight: 400;
-      }
-
-      .pf-right {
-        flex: 1;
+      /* ── Coral words ── */
+      .coral-block {
+        position: absolute;
+        inset: 0;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
-        padding-top: 2px;
-      }
-
-      .pf-chart-svg {
-        flex: 1;
-        width: 100%;
-        overflow: visible;
-      }
-
-      .pf-x-axis {
-        display: flex;
-        justify-content: space-between;
-        padding: 0 1px;
-        margin-top: 8px;
-      }
-
-      .pf-x-axis span {
-        font-size: 19px;
-        color: #44465a;
-        font-weight: 400;
-      }
-
-      /* ── Views on YouTube card ── */
-      .views-card {
-        height: 224px;
-        padding: 36px 52px;
-        position: relative;
-        display: flex;
         align-items: center;
         justify-content: center;
-        opacity: 0;
-        transform: translateY(62px);
+        line-height: 0.92;
       }
 
-      .views-arrow {
-        position: absolute;
-        top: 36px;
-        left: 52px;
-        font-size: 30px;
-        color: #ffffff;
-        line-height: 1;
-        font-weight: 300;
-      }
-
-      .views-label {
-        position: absolute;
-        bottom: 36px;
-        left: 52px;
-        font-size: 18px;
-        color: #8082a0;
-        font-weight: 400;
-      }
-
-      .views-period {
-        position: absolute;
-        bottom: 36px;
-        right: 52px;
-        font-size: 18px;
-        color: #585a70;
-      }
-
-      /* Canvas slot counter — self-clips, no DOM overflow */
-      #slotCanvas {
+      .coral-word {
         display: block;
-        width: 1536px;
-        height: 148px;
+        font-family: 'Barlow Condensed', 'Arial Black', sans-serif;
+        font-weight: 900;
+        font-size: 258px;
+        color: #f0ece5;
+        letter-spacing: -1px;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+
+      /* ── Outro fade overlay ── */
+      #fadeOut {
+        position: absolute;
+        inset: 0;
+        background: #000;
+        opacity: 0;
+        pointer-events: none;
       }
     </style>
   </head>
@@ -141,163 +104,137 @@
       id="root"
       data-composition-id="main"
       data-start="0"
-      data-duration="8"
+      data-duration="9"
       data-width="1920"
       data-height="1080"
     >
-      <div class="cards-wrap" id="cardsWrap">
+      <!-- ── Background cream ── -->
+      <div id="bgCream"></div>
 
-        <!-- Portfolio Balance card -->
-        <div class="card pf-card">
-          <div class="pf-left">
-            <div class="pf-amount" id="pfAmount">$2,933</div>
-            <div class="pf-label">Portfolio Balance</div>
-          </div>
-          <div class="pf-right">
-            <svg class="pf-chart-svg" viewBox="0 0 1160 108"
-                 preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%"   stop-color="#4ade80" stop-opacity="0.16"/>
-                  <stop offset="100%" stop-color="#4ade80" stop-opacity="0.00"/>
-                </linearGradient>
-              </defs>
-              <path d="M 0,72 C 22,76 46,88 72,86 C 96,84 115,80 138,70
-                       C 158,60 172,96 194,94 C 214,92 235,60 258,52
-                       C 278,46 298,62 320,72 C 340,82 358,68 378,48
-                       C 398,30 418,36 440,54 C 460,70 474,62 492,52
-                       C 510,42 526,44 550,58 C 572,70 585,74 606,68
-                       C 626,62 640,52 662,48 C 682,44 698,36 722,44
-                       C 744,52 756,58 778,48 C 798,40 812,32 834,30
-                       C 856,28 868,36 890,42 C 912,48 928,40 950,34
-                       C 970,28 986,20 1010,18 C 1042,15 1075,11 1160,8
-                       L 1160,108 L 0,108 Z"
-                fill="url(#areaGrad)"/>
-              <path d="M 0,72 C 22,76 46,88 72,86 C 96,84 115,80 138,70
-                       C 158,60 172,96 194,94 C 214,92 235,60 258,52
-                       C 278,46 298,62 320,72 C 340,82 358,68 378,48
-                       C 398,30 418,36 440,54 C 460,70 474,62 492,52
-                       C 510,42 526,44 550,58 C 572,70 585,74 606,68
-                       C 626,62 640,52 662,48 C 682,44 698,36 722,44
-                       C 744,52 756,58 778,48 C 798,40 812,32 834,30
-                       C 856,28 868,36 890,42 C 912,48 928,40 950,34
-                       C 970,28 986,20 1010,18 C 1042,15 1075,11 1160,8"
-                fill="none" stroke="#4ade80" stroke-width="3"
-                stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <div class="pf-x-axis">
-              <span>Mo</span><span>Tu</span><span>We</span>
-              <span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- YouTube Views card -->
-        <div class="card views-card" id="viewsCard">
-          <div class="views-arrow">&#x2191;</div>
-          <canvas id="slotCanvas" width="1536" height="148"></canvas>
-          <div class="views-label">Views on Youtube</div>
-          <div class="views-period">For 2024/2025</div>
-        </div>
-
+      <!-- ── Scene 1: word stack ── -->
+      <div class="word-block" data-layout-allow-overflow="true">
+        <span class="word"             id="w1" data-layout-allow-overflow="true">KINETIC</span>
+        <span class="word"             id="w2" data-layout-allow-overflow="true">TYPOGRAPHY</span>
+        <span class="word word-italic" id="w3" data-layout-allow-overflow="true">PROMO</span>
+        <span class="word"             id="w4" data-layout-allow-overflow="true">SLIDESHOW</span>
       </div>
+
+      <!-- ── Coral wipe bg ── -->
+      <div id="bgCoral"></div>
+
+      <!-- ── Scene 2: coral words ── -->
+      <div class="coral-block" data-layout-allow-overflow="true">
+        <span class="coral-word" id="cw1" data-layout-allow-overflow="true">UNIVERSAL</span>
+        <span class="coral-word" id="cw2" data-layout-allow-overflow="true">EXPRSSIONS</span>
+      </div>
+
+      <!-- ── End fade ── -->
+      <div id="fadeOut"></div>
     </div>
 
     <script>
       window.__timelines = window.__timelines || {};
-
-      /* ── Helpers ── */
-      function fmtDollar(n) {
-        return '$' + Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-      }
-      function fmtCounter(n) {
-        var s = Math.max(0, Math.round(n)).toString().padStart(9, '0');
-        return s.slice(0, 3) + ',' + s.slice(3, 6) + ',' + s.slice(6, 9);
-      }
-
-      /* ── Canvas slot machine ── */
-      var TARGET  = 750000000;
-      var STEPS   = 80;
-      var stepSz  = TARGET / STEPS;
-      var ROW_H   = 148;
-      var canvas  = document.getElementById('slotCanvas');
-      var ctx     = canvas.getContext('2d');
-      var CW      = 1536;
-      var CH      = ROW_H;
-
-      function drawSlot(rawVal, progress) {
-        ctx.clearRect(0, 0, CW, CH);
-
-        var v          = Math.max(0, Math.min(TARGET, rawVal));
-        var stepF      = v / stepSz;
-        var stepIdx    = Math.floor(stepF);
-        var subFrac    = stepF - stepIdx;
-        var speed      = Math.pow(Math.max(0, 1 - progress), 0.6);
-
-        var currVal = Math.round(Math.min(TARGET, stepIdx * stepSz));
-        var nextVal = Math.round(Math.min(TARGET, (stepIdx + 1) * stepSz));
-
-        /* current row scrolls up; next row enters from below */
-        var currY = CH / 2 - subFrac * ROW_H * speed;
-        var nextY = CH / 2 + ROW_H   - subFrac * ROW_H * speed;
-
-        ctx.font         = 'bold 112px system-ui, -apple-system, sans-serif';
-        ctx.textAlign    = 'center';
-        ctx.textBaseline = 'middle';
-
-        /* next row (fades in as sub-step progresses) */
-        if (speed > 0.02 && subFrac > 0) {
-          ctx.globalAlpha = subFrac * speed;
-          ctx.fillStyle   = '#4ade80';
-          ctx.fillText(fmtCounter(nextVal), CW / 2, nextY);
-        }
-
-        /* current row */
-        ctx.globalAlpha = 1;
-        ctx.fillStyle   = '#4ade80';
-        ctx.fillText(fmtCounter(currVal), CW / 2, currY);
-      }
-
-      /* initial frame: "000,000,000" */
-      drawSlot(0, 0);
-
-      /* ── Portfolio counter ── */
-      var pfObj = { val: 2933 };
-      var pfEl  = document.getElementById('pfAmount');
-
-      /* ── GSAP Timeline ── */
       var tl = gsap.timeline({ paused: true });
 
-      /* 0.0s — cards fade in */
-      tl.to('#cardsWrap', { opacity: 1, duration: 0.45, ease: 'power2.out' }, 0);
+      /* ════════════════════════════════════════
+         PHASE 0 — Fade in (0 → 0.4s)
+      ════════════════════════════════════════ */
+      tl.to('#bgCream', { opacity: 1, duration: 0.4, ease: 'power2.out' }, 0);
 
-      /* 0.0–2.5s — portfolio count-up */
-      tl.to(pfObj, {
-        val: 7980,
-        duration: 2.5,
-        ease: 'power2.out',
-        onUpdate: function () { pfEl.textContent = fmtDollar(pfObj.val); }
-      }, 0);
+      /* ════════════════════════════════════════
+         PHASE 1 — Words enter from bottom (0.3 → 2.3s)
+         Each word slides up from y+260 with power3.out
+      ════════════════════════════════════════ */
+      var entries = [
+        { id: '#w1', t: 0.30 },
+        { id: '#w2', t: 0.72 },
+        { id: '#w3', t: 1.10 },
+        { id: '#w4', t: 1.50 }
+      ];
 
-      /* 1.2s — views card slides up */
-      tl.to('#viewsCard', {
-        opacity: 1, y: 0,
-        duration: 0.5, ease: 'power2.out'
-      }, 1.2);
+      entries.forEach(function (e) {
+        tl.fromTo(e.id,
+          { opacity: 0, y: 270 },
+          { opacity: 1, y: 0, duration: 0.46, ease: 'power3.out' },
+          e.t
+        );
+      });
 
-      /* 1.8–4.6s — slot machine count-up */
-      var cntObj = { val: 0 };
-      tl.to(cntObj, {
-        val: TARGET,
-        duration: 2.8,
-        ease: 'power2.out',
-        onUpdate: function () {
-          drawSlot(cntObj.val, cntObj.val / TARGET);
-        },
-        onComplete: function () {
-          drawSlot(TARGET, 1);
-        }
-      }, 1.8);
+      /* ════════════════════════════════════════
+         PHASE 2 — Hold (implicit 2.3 → 2.8s)
+      ════════════════════════════════════════ */
+
+      /* ════════════════════════════════════════
+         PHASE 3 — Scatter + letter zoom (2.8 → 3.55s)
+         Words fly in 4 directions while scaling up.
+         PROMO scales to 14× so its M letter fills the frame.
+      ════════════════════════════════════════ */
+      var ST = 2.82;
+
+      /* KINETIC → top-right */
+      tl.to('#w1', {
+        x: 820, y: -560, scale: 6,
+        opacity: 0, filter: 'blur(5px)',
+        duration: 0.58, ease: 'power3.in'
+      }, ST);
+
+      /* TYPOGRAPHY → hard left */
+      tl.to('#w2', {
+        x: -1350, y: 60, scale: 4.5,
+        opacity: 0, filter: 'blur(10px)',
+        duration: 0.60, ease: 'power3.in'
+      }, ST + 0.04);
+
+      /* PROMO → scale up massively, shift left so M fills screen center */
+      tl.to('#w3', {
+        x: -480, y: 160, scale: 14,
+        opacity: 1, filter: 'blur(0px)',
+        duration: 0.55, ease: 'power2.in'
+      }, ST + 0.02);
+      /* then fade quickly before wipe */
+      tl.to('#w3', { opacity: 0, duration: 0.18, ease: 'power1.in', overwrite: true }, ST + 0.57);
+
+      /* SLIDESHOW → left + up */
+      tl.to('#w4', {
+        x: -720, y: -350, scale: 5,
+        opacity: 0, filter: 'blur(8px)',
+        duration: 0.58, ease: 'power3.in'
+      }, ST + 0.06);
+
+      /* ════════════════════════════════════════
+         PHASE 4 — Coral horizontal wipe (3.5 → 4.0s)
+         scaleY from 0 → 1 (expand from vertical center)
+      ════════════════════════════════════════ */
+      tl.to('#bgCoral', {
+        scaleY: 1, duration: 0.48, ease: 'power2.inOut'
+      }, 3.50);
+
+      /* Cream bg dims behind the wipe */
+      tl.to('#bgCream', { opacity: 0, duration: 0.25 }, 3.72);
+
+      /* ════════════════════════════════════════
+         PHASE 5 — Coral words slide in (4.1 → 5.2s)
+         UNIVERSAL from right, EXPRSSIONS from left
+      ════════════════════════════════════════ */
+      tl.fromTo('#cw1',
+        { opacity: 0, x: 380 },
+        { opacity: 1, x: 0, duration: 0.52, ease: 'power3.out' },
+        4.12
+      );
+      tl.fromTo('#cw2',
+        { opacity: 0, x: -380 },
+        { opacity: 1, x: 0, duration: 0.52, ease: 'power3.out' },
+        4.55
+      );
+
+      /* ════════════════════════════════════════
+         PHASE 6 — Hold (5.2 → 8.2s)
+      ════════════════════════════════════════ */
+
+      /* ════════════════════════════════════════
+         PHASE 7 — Fade to black (8.2 → 9.0s)
+      ════════════════════════════════════════ */
+      tl.to('#fadeOut', { opacity: 1, duration: 0.7, ease: 'power2.in' }, 8.2);
 
       window.__timelines['main'] = tl;
     </script>
