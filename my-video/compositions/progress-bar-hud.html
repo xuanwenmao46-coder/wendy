@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=1920, height=1080"/>
+  <script src="../node_modules/gsap/dist/gsap.min.js"></script>
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html,body{width:1920px;height:1080px;overflow:hidden;background:#f0ebe3;
+      font-family:Inter,Arial,sans-serif;}
+    #root{position:relative;width:1920px;height:1080px;background:#f0ebe3;overflow:hidden;}
+
+    /* ── TITLE ── */
+    #hud-title{
+      position:absolute;left:0;right:0;top:108px;
+      text-align:center;
+    }
+    #hud-title h1{
+      font-size:74px;font-weight:800;color:#252525;
+      letter-spacing:-1.5px;line-height:1;
+    }
+    #hud-title h1 .light{color:#8e8e8e;font-weight:700;}
+
+    /* ── LAYOUT ── */
+    #cards{
+      position:absolute;left:300px;top:224px;width:1320px;
+    }
+    .row{display:flex;align-items:center;margin-bottom:14px;}
+    .num{
+      width:62px;height:62px;border-radius:50%;
+      border:2px solid #cac5bc;background:#f0ebe3;
+      display:flex;align-items:center;justify-content:center;
+      font-size:26px;font-weight:700;color:#252525;
+      flex-shrink:0;margin-right:22px;
+    }
+    .card{
+      flex:1;background:#fff;border-radius:14px;
+      padding:20px 30px;
+      box-shadow:0 2px 12px rgba(0,0,0,0.06),0 0 0 1px rgba(0,0,0,0.04);
+    }
+
+    /* ── CARD 1: multi-step ── */
+    .c1-labels{display:flex;justify-content:space-between;margin-bottom:9px;}
+    .c1-lbl{font-size:17px;color:#b0aba2;text-align:center;flex:1;}
+    .c1-lbl.on{color:#252525;}
+    .c1-wrap{position:relative;height:20px;}
+    .c1-track{
+      position:absolute;top:50%;left:0;right:0;
+      height:7px;margin-top:-3.5px;
+      background:#e2ddd6;border-radius:4px;
+    }
+    .c1-fill{
+      position:absolute;top:50%;left:0;
+      height:7px;margin-top:-3.5px;
+      background:#2a2a2a;border-radius:4px;
+      width:0;
+    }
+    .c1-dot{
+      position:absolute;top:50%;transform:translateY(-50%);
+      width:11px;height:11px;border-radius:50%;
+      background:#e2ddd6;margin-left:-5.5px;z-index:2;
+    }
+    .c1-dot.filled{background:#2a2a2a;}
+    .c1-dot.active{
+      width:14px;height:14px;margin-left:-7px;
+      background:#fff;border:2.5px solid #2a2a2a;
+    }
+
+    /* ── CARD 2: tooltip progress ── */
+    .c2-lbl{font-size:18px;color:#b0aba2;margin-bottom:18px;}
+    .prog-track{
+      position:relative;
+      height:12px;background:#e2ddd6;border-radius:6px;
+      overflow:visible;
+    }
+    .prog-fill{
+      position:absolute;left:0;top:0;bottom:0;
+      background:#2a2a2a;border-radius:6px;
+      width:0;
+    }
+    .c2-tip{
+      position:absolute;top:-42px;
+      background:#2a2a2a;color:#fff;
+      font-size:15px;font-weight:700;
+      padding:5px 11px;border-radius:7px;
+      transform:translateX(-50%);
+      opacity:0;white-space:nowrap;
+    }
+    .c2-tip::after{
+      content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
+      border:6px solid transparent;border-top-color:#2a2a2a;
+    }
+
+    /* ── CARD 3: text label + bar ── */
+    .c3-header{
+      display:flex;justify-content:space-between;align-items:baseline;
+      margin-bottom:12px;
+    }
+    .c3-lbl{font-size:18px;color:#b0aba2;}
+    .c3-pct{font-size:18px;color:#252525;font-weight:600;}
+
+    /* ── CARD 4: step circles ── */
+    .c4-wrap{position:relative;padding-top:4px;}
+    .c4-line{
+      position:absolute;
+      top:33px;left:30px;right:30px;
+      height:3px;background:#e2ddd6;border-radius:2px;
+    }
+    .c4-line-fill{
+      position:absolute;top:0;left:0;height:100%;
+      background:#2a2a2a;border-radius:2px;
+      width:0;
+    }
+    .c4-steps{display:flex;justify-content:space-between;}
+    .c4-step{display:flex;flex-direction:column;align-items:center;gap:8px;}
+    .c4-circle{
+      width:58px;height:58px;border-radius:50%;
+      border:2.5px solid #d0cbc3;background:#fff;
+      display:flex;align-items:center;justify-content:center;
+      flex-shrink:0;
+    }
+    .c4-circle.done{background:#2a2a2a;border-color:#2a2a2a;}
+    .c4-circle.active{border-color:#2a2a2a;}
+    .c4-circle.active::after{
+      content:'';display:block;
+      width:18px;height:18px;border-radius:50%;background:#2a2a2a;
+    }
+    .c4-check{display:none;}
+    .c4-circle.done .c4-check{display:block;}
+    .c4-name{font-size:15px;color:#b0aba2;white-space:nowrap;}
+    .c4-name.on{color:#252525;}
+
+    /* ── CARD 5: timer bar ── */
+    .c5-header{
+      display:flex;justify-content:space-between;align-items:baseline;
+      margin-bottom:12px;
+    }
+    .c5-lbl{font-size:18px;color:#b0aba2;}
+    .c5-pct{font-size:18px;color:#252525;font-weight:600;}
+    .c5-timer{
+      display:flex;align-items:center;gap:8px;
+      margin-top:12px;font-size:16px;color:#b0aba2;
+    }
+  </style>
+</head>
+<body>
+<div id="root" data-composition-id="progress-bar-hud" data-width="1920" data-height="1080">
+
+  <!-- TITLE -->
+  <div id="hud-title">
+    <h1>Types Of <span class="light">Progress Bar</span></h1>
+  </div>
+
+  <!-- CARDS -->
+  <div id="cards">
+
+    <!-- 1: Multi-step checkout -->
+    <div class="row" id="row1">
+      <div class="num">1</div>
+      <div class="card">
+        <div class="c1-labels">
+          <div class="c1-lbl on">Checkout</div>
+          <div class="c1-lbl on">Shipping</div>
+          <div class="c1-lbl">Payment</div>
+          <div class="c1-lbl">Confirm</div>
+        </div>
+        <div class="c1-wrap">
+          <div class="c1-track"></div>
+          <div class="c1-fill" id="c1fill"></div>
+          <div class="c1-dot filled" style="left:0%"></div>
+          <div class="c1-dot active" style="left:33.33%"></div>
+          <div class="c1-dot" style="left:66.67%"></div>
+          <div class="c1-dot" style="left:100%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2: Progress with tooltip -->
+    <div class="row" id="row2">
+      <div class="num">2</div>
+      <div class="card">
+        <div class="c2-lbl">Your Progress...</div>
+        <div style="position:relative;">
+          <div class="prog-track" style="overflow:visible;">
+            <div class="prog-fill" id="c2fill"></div>
+            <div class="c2-tip" id="c2tip" style="left:50%;">50%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3: Text + percentage + bar -->
+    <div class="row" id="row3">
+      <div class="num">3</div>
+      <div class="card">
+        <div class="c3-header">
+          <div class="c3-lbl">Your Progress...</div>
+          <div class="c3-pct" id="c3pct">0%</div>
+        </div>
+        <div class="prog-track">
+          <div class="prog-fill" id="c3fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4: Step circles -->
+    <div class="row" id="row4">
+      <div class="num">4</div>
+      <div class="card">
+        <div class="c4-wrap">
+          <div class="c4-line">
+            <div class="c4-line-fill" id="c4fill"></div>
+          </div>
+          <div class="c4-steps">
+            <div class="c4-step">
+              <div class="c4-circle done" id="c4c1">
+                <svg class="c4-check" width="22" height="22" viewBox="0 0 22 22" fill="none">
+                  <path d="M4.5 11.5l4.5 4.5 9-9" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="c4-name on">Customer</div>
+            </div>
+            <div class="c4-step">
+              <div class="c4-circle done" id="c4c2">
+                <svg class="c4-check" width="22" height="22" viewBox="0 0 22 22" fill="none">
+                  <path d="M4.5 11.5l4.5 4.5 9-9" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="c4-name on">Shipping</div>
+            </div>
+            <div class="c4-step">
+              <div class="c4-circle active" id="c4c3"></div>
+              <div class="c4-name on">Payment</div>
+            </div>
+            <div class="c4-step">
+              <div class="c4-circle" id="c4c4"></div>
+              <div class="c4-name">Confirm</div>
+            </div>
+            <div class="c4-step">
+              <div class="c4-circle" id="c4c5"></div>
+              <div class="c4-name">Success</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5: Timer progress bar -->
+    <div class="row" id="row5">
+      <div class="num">5</div>
+      <div class="card">
+        <div class="c5-header">
+          <div class="c5-lbl">Updating...</div>
+          <div class="c5-pct" id="c5pct">0%</div>
+        </div>
+        <div class="prog-track">
+          <div class="prog-fill" id="c5fill"></div>
+        </div>
+        <div class="c5-timer">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <circle cx="9" cy="9" r="7.5" stroke="#b0aba2" stroke-width="1.5"/>
+            <path d="M9 5.5V9l2.5 1.5" stroke="#b0aba2" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span id="c5timer">60 sec left</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /cards -->
+
+  <script>
+    const tl = gsap.timeline({ paused: true });
+
+    /* ── INTRO ── */
+    tl.from('#hud-title', { y: -48, opacity: 0, duration: 0.65, ease: 'power2.out' }, 0);
+    tl.from(['#row1','#row2','#row3','#row4','#row5'], {
+      y: 32, opacity: 0, duration: 0.5, ease: 'power2.out', stagger: 0.1
+    }, 0.3);
+
+    /* ── CARD 1: multi-step fill to Shipping ── */
+    tl.to('#c1fill', { width: '37%', duration: 0.8, ease: 'power2.out' }, 1.1);
+
+    /* ── CARD 2: fill to 50%, tooltip fades in ── */
+    tl.to('#c2fill', { width: '50%', duration: 0.9, ease: 'power2.out' }, 1.25);
+    tl.to('#c2tip',  { opacity: 1, duration: 0.28, ease: 'power2.out' }, 1.8);
+
+    /* ── CARD 3: fill to 50%, count pct ── */
+    tl.to('#c3fill', { width: '50%', duration: 0.9, ease: 'power2.out' }, 1.4);
+    tl.to({ n: 0 }, {
+      n: 50, duration: 0.9, ease: 'power2.out',
+      onUpdate: function() {
+        document.getElementById('c3pct').textContent = Math.round(this.targets()[0].n) + '%';
+      }
+    }, 1.4);
+
+    /* ── CARD 4: line fill to Payment (50%) ── */
+    tl.to('#c4fill', { width: '50%', duration: 1.0, ease: 'power2.out' }, 1.5);
+
+    /* ── CARD 5: fill to 50%, count pct, count timer ── */
+    tl.to('#c5fill', { width: '50%', duration: 1.0, ease: 'power2.out' }, 1.6);
+    tl.to({ n: 0 }, {
+      n: 50, duration: 1.0, ease: 'power2.out',
+      onUpdate: function() {
+        document.getElementById('c5pct').textContent = Math.round(this.targets()[0].n) + '%';
+      }
+    }, 1.6);
+    tl.to({ n: 60 }, {
+      n: 30, duration: 1.0, ease: 'power2.out',
+      onUpdate: function() {
+        document.getElementById('c5timer').textContent = Math.round(this.targets()[0].n) + ' sec left';
+      }
+    }, 1.6);
+
+    /* ── HOLD 3–7 s ── */
+
+    /* ── OUTRO ── */
+    tl.to(['#row5','#row4','#row3','#row2','#row1'], {
+      y: -28, opacity: 0, duration: 0.35, ease: 'power2.in', stagger: 0.07
+    }, 7.2);
+    tl.to('#hud-title', { y: -30, opacity: 0, duration: 0.38, ease: 'power2.in' }, 7.55);
+
+    window.__timelines = window.__timelines || {};
+    window.__timelines['progress-bar-hud'] = tl;
+  </script>
+</div>
+</body>
+</html>
