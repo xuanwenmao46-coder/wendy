@@ -1,0 +1,781 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1920, height=1080" />
+  <script src="../node_modules/gsap/dist/gsap.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 1920px; height: 1080px; overflow: hidden; background: #000; font-family: 'Courier New', monospace; }
+    :root {
+      --c:  #00d4e0;
+      --cd: rgba(0,180,190,0.38);
+      --cb: #50f0f0;
+      --pb: rgba(0,12,16,0.95);
+      --rv: #ff2200;
+      --gn: #00cc44;
+    }
+    #root { position: relative; width: 1920px; height: 1080px; background: #000; }
+
+    /* INTRO */
+    #intro {
+      position: absolute; inset: 0; background: #000; z-index: 200;
+      display: flex; align-items: center; justify-content: center; flex-direction: column;
+    }
+    #intro-text { color: var(--c); font-size: 52px; font-weight: 900; letter-spacing: 14px; opacity: 0; }
+    #intro-sub  { color: rgba(0,185,195,0.4); font-size: 14px; letter-spacing: 6px; opacity: 0; margin-top: 10px; }
+
+    /* HUD */
+    #hud { position: absolute; inset: 0; opacity: 0; }
+
+    /* Outer frame */
+    #frame { position: absolute; top: 12px; left: 12px; right: 12px; bottom: 12px; border: 1px solid var(--c); }
+    .cbr { position: absolute; width: 30px; height: 30px; }
+    .cbr::before, .cbr::after { content: ''; position: absolute; background: var(--cb); }
+    .cbr.tl { top:-1px; left:-1px; } .cbr.tl::before { top:0;left:0;width:30px;height:3px; } .cbr.tl::after { top:0;left:0;width:3px;height:30px; }
+    .cbr.tr { top:-1px; right:-1px; } .cbr.tr::before { top:0;right:0;width:30px;height:3px; } .cbr.tr::after { top:0;right:0;width:3px;height:30px; }
+    .cbr.bl { bottom:-1px; left:-1px; } .cbr.bl::before { bottom:0;left:0;width:30px;height:3px; } .cbr.bl::after { bottom:0;left:0;width:3px;height:30px; }
+    .cbr.br { bottom:-1px; right:-1px; } .cbr.br::before { bottom:0;right:0;width:30px;height:3px; } .cbr.br::after { bottom:0;right:0;width:3px;height:30px; }
+
+    /* Top bar */
+    #topbar {
+      position: absolute; top: 12px; left: 12px; right: 12px; height: 38px;
+      border-bottom: 1px solid var(--cd);
+      display: flex; align-items: center; justify-content: center; gap: 18px;
+      color: var(--c); font-size: 11px; letter-spacing: 3px;
+    }
+    #topbar-code { font-size: 13px; letter-spacing: 5px; color: var(--cb); }
+
+    /* ── LEFT PANEL ── */
+    #lp {
+      position: absolute; top: 50px; left: 12px; width: 428px; bottom: 12px;
+      border-right: 1px solid var(--cd); padding: 10px 14px 10px 10px;
+    }
+    #lp-title { color: #fff; font-size: 82px; font-weight: 900; letter-spacing: 0; line-height: 0.9; }
+    #lp-sub   { color: var(--c); font-size: 17px; letter-spacing: 2px; margin-top: 6px; }
+    #lp-icons { display: flex; align-items: center; gap: 10px; margin-top: 10px; color: var(--c); font-size: 18px; }
+    #lp-clock { margin-left: auto; font-size: 11px; color: var(--c); letter-spacing: 1px; }
+
+    /* Satellite box */
+    #satbox { margin-top: 12px; border: 1px solid var(--c); background: var(--pb); }
+    #satbox-hdr {
+      background: var(--c); color: #000; font-size: 10px; font-weight: 900;
+      letter-spacing: 3px; padding: 3px 8px; display: flex; justify-content: space-between;
+    }
+    #satbox-body { display: flex; align-items: flex-start; padding: 8px; gap: 8px; }
+    #sat-radar-wrap {
+      width: 56px; height: 56px; border: 1px solid var(--c); border-radius: 50%;
+      background: var(--pb); position: relative; flex-shrink: 0;
+    }
+    #sat-radar-line {
+      position: absolute; top: 50%; left: 50%; width: 1px; height: 27px;
+      background: var(--c); transform-origin: top center; transform: translateX(-50%);
+    }
+    #sat-radar-dot {
+      position: absolute; top: 50%; left: 50%; width: 7px; height: 7px;
+      background: var(--c); border-radius: 50%; transform: translate(-50%,-50%);
+    }
+    #sat-num { font-size: 54px; font-weight: 900; color: var(--c); line-height: 1; margin-top: 2px; }
+    #satbox-rows { padding: 0 8px 6px; border-top: 1px solid var(--cd); }
+    .sat-row {
+      display: flex; align-items: center; gap: 6px; padding: 3px 0;
+      border-bottom: 1px solid rgba(0,150,160,0.12);
+    }
+    .sat-row-lbl { min-width: 82px; color: var(--c); font-size: 8px; letter-spacing: 1px; }
+    .sat-row-bar { flex: 1; height: 3px; background: rgba(0,150,160,0.3); position: relative; }
+    .sat-row-bar::before { content:''; position:absolute; top:0;left:0;height:100%;background:var(--c); }
+    .sat-row-bar.w65::before { width:65%; } .sat-row-bar.w82::before { width:82%; } .sat-row-bar.w48::before { width:48%; }
+    .sat-row-val { min-width: 28px; text-align: right; font-size: 8px; color: var(--c); }
+
+    /* Mini rows */
+    #lp-minirows { margin-top: 8px; }
+    .minirow {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 8px; color: var(--cd); padding: 2px 0;
+      border-bottom: 1px solid rgba(0,150,160,0.1);
+    }
+    .minirow .mk { color: var(--c); }
+
+    /* Status icons */
+    .si-row { display: flex; gap: 8px; align-items: center; margin-top: 12px; }
+    .si {
+      width: 28px; height: 22px; border: 1px solid var(--cd);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; color: var(--cd); font-weight: 900;
+    }
+    .si.red { border-color:#ff2200; color:#ff2200; }
+    .si.yel { border-color:#ffaa00; color:#ffaa00; }
+    .si.fil { background:rgba(0,200,200,0.2); border-color:var(--c); color:var(--c); }
+
+    /* Crosshair + minibox */
+    #lp-pixel-area { display: flex; align-items: center; gap: 14px; margin-top: 12px; }
+    #lp-crosshair {
+      display: grid; grid-template-columns: repeat(6,8px); grid-template-rows: repeat(6,8px); gap: 1px;
+    }
+    .px { background: transparent; } .px.on { background: var(--c); }
+    #lp-minibox { width: 38px; height: 38px; border: 2px solid var(--c); background: rgba(0,200,200,0.12); }
+    #lp-node { font-size: 10px; color: var(--c); letter-spacing: 1px; opacity: 0.7; line-height: 1.4; }
+
+    /* Data grids */
+    #lp-grids { margin-top: 14px; }
+    .dg { margin-bottom: 6px; }
+    .dg-hdr { font-size: 8px; color: var(--cd); letter-spacing: 2px; margin-bottom: 2px; }
+    .dg-row { display: flex; gap: 2px; }
+    .dg-cell {
+      flex: 1; border: 1px solid var(--cd); padding: 4px 2px;
+      font-size: 9px; color: var(--c); text-align: center; letter-spacing: 1px;
+    }
+    .dg-cell small { display: block; font-size: 6px; color: var(--cd); margin-top: 1px; }
+
+    /* ── CENTER SECTION ── */
+    #cs { position: absolute; top: 50px; left: 440px; right: 440px; bottom: 12px; }
+
+    /* Crowd panel */
+    #vp {
+      position: absolute; top: 65px; left: 0; right: 0; height: 408px;
+      border: 1px solid var(--c); overflow: hidden; background: #000;
+    }
+    .pcorner { position: absolute; width: 24px; height: 24px; z-index: 10; }
+    .pcorner.tl { top:-2px;left:-2px; border-top:3px solid var(--cb); border-left:3px solid var(--cb); }
+    .pcorner.tr { top:-2px;right:-2px; border-top:3px solid var(--cb); border-right:3px solid var(--cb); }
+    .pcorner.bl { bottom:-2px;left:-2px; border-bottom:3px solid var(--cb); border-left:3px solid var(--cb); }
+    .pcorner.br { bottom:-2px;right:-2px; border-bottom:3px solid var(--cb); border-right:3px solid var(--cb); }
+    .panel-video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:1; }
+    .vignette {
+      position:absolute; inset:0; z-index:2; pointer-events:none;
+      background:radial-gradient(ellipse at center,transparent 55%,rgba(0,20,22,0.5) 100%);
+    }
+    #scanline {
+      position:absolute; left:0; right:0; height:3px; top:0; z-index:8; opacity:0.6;
+      background:linear-gradient(90deg,transparent 0%,var(--cb) 40%,var(--cb) 60%,transparent 100%);
+    }
+    #va-label { position:absolute; top:8px; left:10px; z-index:9; color:var(--c); font-size:10px; letter-spacing:3px; opacity:0.85; }
+    .dbox { position:absolute; z-index:9; border:1px solid transparent; opacity:0; }
+    .dbox::before { content:attr(data-lbl); position:absolute; top:-16px; left:0; font-size:8px; color:var(--c); letter-spacing:1px; white-space:nowrap; }
+    .dc { position:absolute; width:9px; height:9px; }
+    .dc.tl { top:-1px;left:-1px; border-top:2px solid var(--cb); border-left:2px solid var(--cb); }
+    .dc.tr { top:-1px;right:-1px; border-top:2px solid var(--cb); border-right:2px solid var(--cb); }
+    .dc.bl { bottom:-1px;left:-1px; border-bottom:2px solid var(--cb); border-left:2px solid var(--cb); }
+    .dc.br { bottom:-1px;right:-1px; border-bottom:2px solid var(--cb); border-right:2px solid var(--cb); }
+
+    /* Separator */
+    #sep {
+      position: absolute; top: 473px; left: 0; right: 0; height: 122px;
+      display: flex; align-items: center; justify-content: center; position: absolute;
+    }
+    #sep-bar { display:flex; align-items:center; gap:10px; color:var(--c); font-size:11px; letter-spacing:4px; }
+    .sep-brk { color:var(--c); font-size:20px; opacity:0.55; }
+    .sep-ct { position:absolute; width:22px; height:22px; }
+    .sep-ct.tl { top:0;left:0; border-top:2px solid var(--c); border-left:2px solid var(--c); }
+    .sep-ct.tr { top:0;right:0; border-top:2px solid var(--c); border-right:2px solid var(--c); }
+    .sep-ct.bl { bottom:0;left:0; border-bottom:2px solid var(--c); border-left:2px solid var(--c); }
+    .sep-ct.br { bottom:0;right:0; border-bottom:2px solid var(--c); border-right:2px solid var(--c); }
+
+    /* Map panel */
+    #mp {
+      position: absolute; top: 595px; left: 0; right: 0; height: 217px;
+      border: 1px solid var(--c); overflow: hidden; background: #000;
+    }
+    #mapxhair { position:absolute; left:calc(50% - 40px); top:calc(50% - 40px); width:80px; height:80px; z-index:5; }
+    #mapdatabox { position:absolute; top:6px; right:8px; z-index:6; color:rgba(0,200,200,0.65); font-size:9px; text-align:right; letter-spacing:1px; line-height:1.5; }
+
+    /* Progress bar */
+    #bpbar { position:absolute; bottom:22px; left:40px; right:40px; height:6px; }
+    #bptrack { position:absolute; inset:0; background:var(--cd); }
+    #bpfill  { position:absolute; top:0;left:0;height:100%;width:0%;background:var(--cb); }
+    #bpdot   { position:absolute; top:50%; width:14px; height:14px; border-radius:50%; background:var(--cb); box-shadow:0 0 6px var(--cb); transform:translate(-50%,-50%); left:0%; }
+
+    /* ── RIGHT PANEL ── */
+    #rp {
+      position: absolute; top: 50px; right: 12px; width: 428px; bottom: 12px;
+      border-left: 1px solid var(--cd); padding: 10px 10px 10px 14px;
+    }
+    #rp-hdr { color:#fff; font-size:62px; font-weight:900; letter-spacing:3px; text-align:right; line-height:0.95; }
+    #rp-sub { color:var(--c); font-size:14px; letter-spacing:2px; text-align:right; margin-top:4px; margin-bottom:8px; }
+
+    /* Gauges */
+    .gr-row { display:flex; gap:4px; justify-content:flex-end; margin:4px 0; }
+    .gauge {
+      width:50px; height:50px; border:1px solid var(--c); border-radius:50%;
+      background:var(--pb); position:relative; flex-shrink:0;
+    }
+    .gauge::before { content:''; position:absolute; inset:6px; border:1px solid var(--cd); border-radius:50%; }
+    .gauge::after  { content:''; position:absolute; top:50%;left:50%; width:5px;height:5px; background:var(--c); border-radius:50%; transform:translate(-50%,-50%); }
+    .g-needle { position:absolute; top:50%;left:50%; width:1px;height:14px; background:var(--c); transform-origin:bottom center; }
+    .g-lbl { position:absolute; bottom:2px;left:0;right:0; font-size:6px;color:var(--cd);text-align:center; }
+
+    /* Right data grid */
+    .rdg { margin:6px 0; }
+    .rdg-row { display:flex; gap:2px; margin-bottom:2px; justify-content:flex-end; }
+    .rdg-cell { border:1px solid var(--cd); padding:3px 4px; font-size:9px; color:var(--c); text-align:center; letter-spacing:1px; }
+    .rdg-cell small { display:block; font-size:6px; color:var(--cd); }
+
+    /* Combined info box */
+    #rp-infobox { border:1px solid var(--cd); margin:4px 0; display:flex; height:90px; }
+    #rp-ib-left { flex:1; padding:6px 8px; border-right:1px solid var(--cd); }
+    #rp-ib-code { font-size:14px; color:var(--cb); font-weight:900; letter-spacing:1px; }
+    #rp-ib-sub  { font-size:8px; color:var(--cd); margin-top:2px; }
+    #rp-ib-bars { margin-top:6px; }
+    .ib-bar { height:3px; background:var(--cd); margin-bottom:3px; }
+    .ib-bar::before { content:''; display:block; height:100%; background:var(--c); }
+    .ib-bar.w58::before { width:58%; } .ib-bar.w79::before { width:79%; } .ib-bar.w42::before { width:42%; }
+    #rp-ib-right { width:130px; position:relative; overflow:hidden; }
+    #rp-on { position:absolute; top:4px;right:5px; font-size:8px; color:var(--c); letter-spacing:1px; }
+
+    /* XDL code */
+    #xdl-code { color:var(--cb); font-size:26px; font-weight:900; letter-spacing:1px; text-align:right; margin:6px 0 4px; border-top:1px solid var(--cd); padding-top:6px; }
+
+    /* Data bars box */
+    #rp-databox { border:1px solid var(--cd); padding:6px 8px; margin:4px 0; }
+    .dbrow { margin-bottom:5px; }
+    .dbrow-lbl { display:flex; justify-content:space-between; font-size:9px; color:var(--cd); margin-bottom:2px; }
+    .dbrow-track { height:4px; background:var(--cd); }
+    .dbrow-fill  { height:100%; background:var(--c); }
+
+    /* Timer */
+    #rtimer { margin-top:6px; border-top:1px solid var(--cd); padding-top:6px; }
+    #rtimer-lbl { font-size:8px; color:var(--cd); letter-spacing:1px; }
+    #rtimer-val { font-size:22px; color:var(--cb); letter-spacing:2px; text-align:right; }
+
+    /* Compass */
+    #compass { position:absolute; bottom:8px; right:8px; width:220px; height:220px; }
+    #c-face {
+      position:absolute; inset:34px; border-radius:50%; overflow:hidden;
+      background:radial-gradient(circle,#001a08 0%,#000900 100%); border:1px solid var(--gn);
+    }
+    #c-needle {
+      position:absolute; top:50%; left:50%; width:2px; height:42px;
+      background:linear-gradient(to bottom,#fff,rgba(255,255,255,0.1));
+      transform-origin:top center; transform:translateX(-50%);
+    }
+    #c-dot {
+      position:absolute; top:50%; left:50%; width:12px; height:12px;
+      background:var(--gn); border-radius:50%; box-shadow:0 0 10px var(--gn);
+      transform:translate(-50%,-50%); z-index:2;
+    }
+
+    /* Blink */
+    .blink-slow { animation:blk 1.4s step-end infinite; }
+    .blink-fast { animation:blk 0.7s step-end infinite; }
+    @keyframes blk { 0%,100%{opacity:1;} 50%{opacity:0.15;} }
+  </style>
+</head>
+<body>
+<div id="root" data-composition-id="hud-gprs-v3" data-width="1920" data-height="1080">
+
+  <!-- INTRO -->
+  <div id="intro">
+    <div id="intro-text">HUD GPRS</div>
+    <div id="intro-sub">EARTH SURVEILLANCE / SYSTEM INITIALIZING...</div>
+  </div>
+
+  <!-- HUD -->
+  <div id="hud">
+
+    <!-- Outer frame + corner brackets -->
+    <div id="frame">
+      <div class="cbr tl"></div><div class="cbr tr"></div>
+      <div class="cbr bl"></div><div class="cbr br"></div>
+    </div>
+
+    <!-- Top data bar -->
+    <div id="topbar">
+      <span style="opacity:0.45">JKZ.4320 //</span>
+      <strong id="topbar-code">JX2-4560//ZE35</strong>
+      <span style="opacity:0.35">──────────</span>
+      <strong>SIGNAL: ACTIVE</strong>
+      <span style="opacity:0.35">──────────</span>
+      <strong>GPS LOCK: CONFIRMED</strong>
+      <span style="opacity:0.35">──────────</span>
+      <strong>SYS: ONLINE</strong>
+    </div>
+
+    <!-- ── LEFT PANEL ── -->
+    <div id="lp">
+      <div id="lp-title">UI-GPRS</div>
+      <div id="lp-sub">EARTH GPRS / 01256</div>
+      <div id="lp-icons">
+        <span>☁</span><span>☁</span><span>☀</span>
+        <span id="lp-clock">00:00:03 P60</span>
+      </div>
+
+      <!-- Satellite link box -->
+      <div id="satbox">
+        <div id="satbox-hdr">
+          <span>SATELLITE LINK</span>
+          <span style="font-size:8px;font-weight:400">■</span>
+        </div>
+        <div id="satbox-body">
+          <div style="flex-shrink:0">
+            <div id="sat-radar-wrap">
+              <div id="sat-radar-line"></div>
+              <div id="sat-radar-dot"></div>
+            </div>
+            <div id="sat-num" class="blink-slow">83</div>
+          </div>
+          <!-- Satellite dish SVG -->
+          <svg width="0" height="0" style="flex:1;min-width:0" viewBox="0 0 200 130"
+               width="200" height="130">
+            <ellipse cx="100" cy="78" rx="62" ry="34" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.5"/>
+            <ellipse cx="100" cy="78" rx="50" ry="27" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.3)" stroke-width="0.8"/>
+            <line x1="100" y1="44" x2="100" y2="112" stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
+            <line x1="38"  y1="78" x2="162" y2="78"  stroke="rgba(255,255,255,0.2)" stroke-width="0.8"/>
+            <line x1="100" y1="78" x2="130" y2="46" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/>
+            <circle cx="130" cy="46" r="4.5" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="1.5"/>
+            <circle cx="130" cy="46" r="2"   fill="rgba(0,212,224,0.9)"/>
+            <line x1="100" y1="112" x2="100" y2="126" stroke="rgba(255,255,255,0.55)" stroke-width="2"/>
+            <line x1="82"  y1="126" x2="118" y2="126" stroke="rgba(255,255,255,0.55)" stroke-width="2"/>
+            <path d="M138,34 A22,22 0 0,1 138,58" fill="none" stroke="rgba(0,212,224,0.5)" stroke-width="1.2" stroke-dasharray="3 3"/>
+            <path d="M145,26 A32,32 0 0,1 145,66" fill="none" stroke="rgba(0,212,224,0.3)" stroke-width="1"   stroke-dasharray="2 4"/>
+          </svg>
+        </div>
+        <div id="satbox-rows">
+          <div class="sat-row">
+            <span class="sat-row-lbl">UPLINK FREQ</span>
+            <div class="sat-row-bar w65"></div>
+            <span class="sat-row-val">14.5</span>
+          </div>
+          <div class="sat-row">
+            <span class="sat-row-lbl">SIG STRENGTH</span>
+            <div class="sat-row-bar w82"></div>
+            <span class="sat-row-val">82%</span>
+          </div>
+          <div class="sat-row">
+            <span class="sat-row-lbl">DATA RATE</span>
+            <div class="sat-row-bar w48"></div>
+            <span class="sat-row-val">48M</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mini data rows -->
+      <div id="lp-minirows">
+        <div class="minirow"><span class="mk">LINK-A</span> ACTIVE <span class="mk">●</span></div>
+        <div class="minirow"><span class="mk">PROC</span> RUNNING <span class="mk">▶</span></div>
+        <div class="minirow"><span class="mk">LOCK</span> GPS+GLN <span class="mk">✓</span></div>
+      </div>
+
+      <!-- Status icons -->
+      <div class="si-row">
+        <div class="si red blink-fast">!</div>
+        <div class="si red">✕</div>
+        <div class="si yel blink-slow">▲</div>
+        <div class="si fil">●</div>
+      </div>
+
+      <!-- Crosshair pixel icon + mini box -->
+      <div id="lp-pixel-area">
+        <div id="lp-crosshair">
+          <div class="px"></div><div class="px"></div><div class="px on"></div><div class="px on"></div><div class="px"></div><div class="px"></div>
+          <div class="px"></div><div class="px"></div><div class="px on"></div><div class="px on"></div><div class="px"></div><div class="px"></div>
+          <div class="px on"></div><div class="px on"></div><div class="px on"></div><div class="px on"></div><div class="px on"></div><div class="px on"></div>
+          <div class="px on"></div><div class="px on"></div><div class="px on"></div><div class="px on"></div><div class="px on"></div><div class="px on"></div>
+          <div class="px"></div><div class="px"></div><div class="px on"></div><div class="px on"></div><div class="px"></div><div class="px"></div>
+          <div class="px"></div><div class="px"></div><div class="px on"></div><div class="px on"></div><div class="px"></div><div class="px"></div>
+        </div>
+        <div id="lp-minibox"></div>
+        <div id="lp-node">NODE<br>XM-3</div>
+      </div>
+
+      <!-- 3 data grid rows -->
+      <div id="lp-grids">
+        <div class="dg">
+          <div class="dg-hdr">ROW 01 001.1</div>
+          <div class="dg-row">
+            <div class="dg-cell">ZX1<small>a01</small></div><div class="dg-cell">JX2<small>b12</small></div>
+            <div class="dg-cell">TO2<small>c03</small></div><div class="dg-cell">LdE<small>d44</small></div>
+            <div class="dg-cell">VX1<small>e05</small></div><div class="dg-cell">HG8<small>f06</small></div>
+          </div>
+        </div>
+        <div class="dg">
+          <div class="dg-hdr">ROW 02 001.2</div>
+          <div class="dg-row">
+            <div class="dg-cell">ZX1<small>a01</small></div><div class="dg-cell">JX2<small>b12</small></div>
+            <div class="dg-cell">TO3<small>c03</small></div><div class="dg-cell">LOC<small>d44</small></div>
+            <div class="dg-cell">VX1<small>e05</small></div><div class="dg-cell">RG2<small>f06</small></div>
+          </div>
+        </div>
+        <div class="dg">
+          <div class="dg-hdr">ROW 03 001.3</div>
+          <div class="dg-row">
+            <div class="dg-cell">ZX1<small>a01</small></div><div class="dg-cell">JX2<small>b12</small></div>
+            <div class="dg-cell">TO3<small>c03</small></div><div class="dg-cell">LOC<small>d44</small></div>
+            <div class="dg-cell">VX1<small>e05</small></div><div class="dg-cell">RG2<small>f06</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END LEFT PANEL -->
+
+    <!-- ── CENTER SECTION ── -->
+    <div id="cs">
+
+      <!-- Crowd video panel -->
+      <div id="vp">
+        <div class="pcorner tl"></div><div class="pcorner tr"></div>
+        <div class="pcorner bl"></div><div class="pcorner br"></div>
+        <video id="crowd-video" class="panel-video" src="../crowd_v3_loop.mp4"
+               muted playsinline data-start="0" data-duration="22"></video>
+        <div class="vignette"></div>
+        <!-- Grid overlay -->
+        <svg style="position:absolute;inset:0;z-index:3;pointer-events:none" width="100%" height="100%">
+          <defs>
+            <pattern id="vg" x="0" y="0" width="100" height="80" patternUnits="userSpaceOnUse">
+              <line x1="100" y1="0" x2="100" y2="80" stroke="rgba(0,180,180,0.11)" stroke-width="0.8"/>
+              <line x1="0" y1="80" x2="100" y2="80" stroke="rgba(0,180,180,0.11)" stroke-width="0.8"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#vg)"/>
+          <g stroke="rgba(0,210,210,0.28)" stroke-width="0.8">
+            <line x1="94" y1="74" x2="106" y2="74"/><line x1="100" y1="68" x2="100" y2="80"/>
+            <line x1="194" y1="74" x2="206" y2="74"/><line x1="200" y1="68" x2="200" y2="80"/>
+            <line x1="294" y1="74" x2="306" y2="74"/><line x1="300" y1="68" x2="300" y2="80"/>
+            <line x1="394" y1="74" x2="406" y2="74"/><line x1="400" y1="68" x2="400" y2="80"/>
+            <line x1="494" y1="74" x2="506" y2="74"/><line x1="500" y1="68" x2="500" y2="80"/>
+            <line x1="594" y1="74" x2="606" y2="74"/><line x1="600" y1="68" x2="600" y2="80"/>
+            <line x1="694" y1="74" x2="706" y2="74"/><line x1="700" y1="68" x2="700" y2="80"/>
+            <line x1="94" y1="154" x2="106" y2="154"/><line x1="100" y1="148" x2="100" y2="160"/>
+            <line x1="294" y1="154" x2="306" y2="154"/><line x1="300" y1="148" x2="300" y2="160"/>
+            <line x1="494" y1="154" x2="506" y2="154"/><line x1="500" y1="148" x2="500" y2="160"/>
+            <line x1="694" y1="154" x2="706" y2="154"/><line x1="700" y1="148" x2="700" y2="160"/>
+            <line x1="194" y1="234" x2="206" y2="234"/><line x1="200" y1="228" x2="200" y2="240"/>
+            <line x1="394" y1="234" x2="406" y2="234"/><line x1="400" y1="228" x2="400" y2="240"/>
+            <line x1="594" y1="234" x2="606" y2="234"/><line x1="600" y1="228" x2="600" y2="240"/>
+            <line x1="194" y1="314" x2="206" y2="314"/><line x1="200" y1="308" x2="200" y2="320"/>
+            <line x1="494" y1="314" x2="506" y2="314"/><line x1="500" y1="308" x2="500" y2="320"/>
+          </g>
+        </svg>
+        <!-- Detection boxes -->
+        <div id="db1" class="dbox" data-lbl="TGT-001 [89%]"
+             style="left:350px;top:185px;width:72px;height:92px;border-color:var(--c)">
+          <div class="dc tl"></div><div class="dc tr"></div><div class="dc bl"></div><div class="dc br"></div>
+        </div>
+        <div id="db2" class="dbox" data-lbl="TGT-002 [76%]"
+             style="left:238px;top:195px;width:62px;height:78px;border-color:var(--c)">
+          <div class="dc tl"></div><div class="dc tr"></div><div class="dc bl"></div><div class="dc br"></div>
+        </div>
+        <div id="db3" class="dbox" data-lbl="TGT-003 [94%]"
+             style="left:558px;top:175px;width:66px;height:82px;border-color:var(--cb)">
+          <div class="dc tl"></div><div class="dc tr"></div><div class="dc bl"></div><div class="dc br"></div>
+        </div>
+        <div id="scanline"></div>
+        <div id="va-label" class="blink-slow">FACIAL RECOGNITION</div>
+      </div>
+
+      <!-- Separator -->
+      <div id="sep" style="position:absolute;top:473px;left:0;right:0;height:122px;display:flex;align-items:center;justify-content:center;">
+        <div class="sep-ct tl"></div><div class="sep-ct tr"></div>
+        <div class="sep-ct bl"></div><div class="sep-ct br"></div>
+        <div id="sep-bar">
+          <span class="sep-brk">⟨</span>
+          <span style="opacity:0.5">B 8 2 //</span>
+          <span>NNNN+EYC</span>
+          <span style="opacity:0.35">─────</span>
+          <span>LAT:48.8566°N</span>
+          <span style="opacity:0.35">─────</span>
+          <span class="sep-brk">⟩</span>
+        </div>
+      </div>
+
+      <!-- Map panel -->
+      <div id="mp">
+        <div class="pcorner tl"></div><div class="pcorner tr"></div>
+        <div class="pcorner bl"></div><div class="pcorner br"></div>
+        <video id="map-video" class="panel-video" src="../map_v3_loop.mp4"
+               muted playsinline data-start="0" data-duration="22"></video>
+        <!-- Map grid -->
+        <svg style="position:absolute;inset:0;z-index:3;pointer-events:none" width="100%" height="100%">
+          <defs>
+            <pattern id="mg" x="0" y="0" width="65" height="55" patternUnits="userSpaceOnUse">
+              <rect width="65" height="55" fill="none" stroke="rgba(0,180,180,0.17)" stroke-width="0.5"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#mg)"/>
+          <g stroke="rgba(0,210,210,0.3)" stroke-width="0.8">
+            <line x1="129" y1="107" x2="135" y2="107"/><line x1="132" y1="104" x2="132" y2="110"/>
+            <line x1="259" y1="107" x2="265" y2="107"/><line x1="262" y1="104" x2="262" y2="110"/>
+            <line x1="389" y1="107" x2="395" y2="107"/><line x1="392" y1="104" x2="392" y2="110"/>
+            <line x1="519" y1="107" x2="525" y2="107"/><line x1="522" y1="104" x2="522" y2="110"/>
+            <line x1="649" y1="107" x2="655" y2="107"/><line x1="652" y1="104" x2="652" y2="110"/>
+            <line x1="129" y1="54"  x2="135" y2="54"/><line x1="132" y1="51"  x2="132" y2="57"/>
+            <line x1="389" y1="54"  x2="395" y2="54"/><line x1="392" y1="51"  x2="392" y2="57"/>
+            <line x1="259" y1="162" x2="265" y2="162"/><line x1="262" y1="159" x2="262" y2="165"/>
+            <line x1="519" y1="162" x2="525" y2="162"/><line x1="522" y1="159" x2="522" y2="165"/>
+          </g>
+        </svg>
+        <!-- Red targeting crosshair -->
+        <div id="mapxhair">
+          <svg width="80" height="80" viewBox="-40 -40 80 80">
+            <g stroke="#ff2200" stroke-width="2" fill="none">
+              <line x1="-34" y1="-34" x2="-19" y2="-34"/><line x1="-34" y1="-34" x2="-34" y2="-19"/>
+              <line x1="34"  y1="-34" x2="19"  y2="-34"/><line x1="34"  y1="-34" x2="34"  y2="-19"/>
+              <line x1="-34" y1="34"  x2="-19" y2="34"/><line x1="-34" y1="34"  x2="-34" y2="19"/>
+              <line x1="34"  y1="34"  x2="19"  y2="34"/><line x1="34"  y1="34"  x2="34"  y2="19"/>
+            </g>
+            <g stroke="#ff2200" stroke-width="1.5">
+              <line x1="-28" y1="0" x2="-9" y2="0"/><line x1="9" y1="0" x2="28" y2="0"/>
+              <line x1="0" y1="-28" x2="0" y2="-9"/><line x1="0" y1="9"  x2="0" y2="28"/>
+            </g>
+            <rect x="-8" y="-8" width="16" height="16" fill="none" stroke="#ff2200" stroke-width="1.5"/>
+            <circle cx="0" cy="0" r="2.5" fill="#ff2200"/>
+          </svg>
+        </div>
+        <div id="mapdatabox">
+          <div>GRID: 48.856°N</div>
+          <div>2.352°E</div>
+          <div>ZOOM: 1:2500</div>
+        </div>
+      </div>
+
+      <!-- Bottom progress bar -->
+      <div id="bpbar">
+        <div id="bptrack"></div>
+        <div id="bpfill"></div>
+        <div id="bpdot"></div>
+      </div>
+    </div>
+    <!-- END CENTER -->
+
+    <!-- ── RIGHT PANEL ── -->
+    <div id="rp">
+      <div id="rp-hdr">-IH // HI-</div>
+      <div id="rp-sub">XX 1256 //CGSTW 012</div>
+
+      <!-- Row 1: 5 gauges -->
+      <div class="gr-row">
+        <div class="gauge"><div class="g-needle" id="gn1" style="transform:translateX(-50%) rotate(-40deg)"></div><div class="g-lbl">JX2</div></div>
+        <div class="gauge"><div class="g-needle" id="gn2" style="transform:translateX(-50%) rotate(30deg)"></div><div class="g-lbl">XR4</div></div>
+        <div class="gauge"><div class="g-needle" id="gn3" style="transform:translateX(-50%) rotate(-20deg)"></div><div class="g-lbl">AX0</div></div>
+        <div class="gauge"><div class="g-needle" id="gn4" style="transform:translateX(-50%) rotate(50deg)"></div><div class="g-lbl">TX1</div></div>
+        <div class="gauge"><div class="g-needle" id="gn5" style="transform:translateX(-50%) rotate(-10deg)"></div><div class="g-lbl">AX1</div></div>
+      </div>
+      <!-- Row 2: 5 gauges -->
+      <div class="gr-row">
+        <div class="gauge"><div class="g-needle" id="gn6"  style="transform:translateX(-50%) rotate(20deg)"></div><div class="g-lbl">RX2</div></div>
+        <div class="gauge"><div class="g-needle" id="gn7"  style="transform:translateX(-50%) rotate(-35deg)"></div><div class="g-lbl">XZ3</div></div>
+        <div class="gauge"><div class="g-needle" id="gn8"  style="transform:translateX(-50%) rotate(45deg)"></div><div class="g-lbl">BX4</div></div>
+        <div class="gauge"><div class="g-needle" id="gn9"  style="transform:translateX(-50%) rotate(-55deg)"></div><div class="g-lbl">CX5</div></div>
+        <div class="gauge"><div class="g-needle" id="gn10" style="transform:translateX(-50%) rotate(15deg)"></div><div class="g-lbl">DX6</div></div>
+      </div>
+
+      <!-- Data grid -->
+      <div class="rdg">
+        <div class="rdg-row">
+          <div class="rdg-cell">ZX1<small>a01</small></div>
+          <div class="rdg-cell">JX2<small>b02</small></div>
+          <div class="rdg-cell">TO8<small>c03</small></div>
+          <div class="rdg-cell">LAW<small>d04</small></div>
+          <div class="rdg-cell">VX1<small>e05</small></div>
+          <div class="rdg-cell">RC2<small>f06</small></div>
+        </div>
+      </div>
+
+      <!-- Combined info box -->
+      <div id="rp-infobox">
+        <div id="rp-ib-left">
+          <div id="rp-ib-code">XX63152 1.172</div>
+          <div id="rp-ib-sub">GLOBAL TRACK / LOCK</div>
+          <div id="rp-ib-bars">
+            <div class="ib-bar w58"></div>
+            <div class="ib-bar w79"></div>
+            <div class="ib-bar w42"></div>
+          </div>
+        </div>
+        <div id="rp-ib-right">
+          <svg width="130" height="90" viewBox="0 0 130 90">
+            <rect width="130" height="90" fill="#020c0d"/>
+            <path d="M8,18 L26,13 L30,23 L22,32 L8,30Z"   fill="rgba(0,100,105,0.4)"/>
+            <path d="M33,12 L50,8  L56,19 L50,28 L33,24 L26,16Z" fill="rgba(0,100,105,0.4)"/>
+            <path d="M60,20 L76,15 L82,24 L76,33 L60,28Z" fill="rgba(0,100,105,0.4)"/>
+            <path d="M87,16 L106,11 L112,22 L106,31 L87,26Z" fill="rgba(0,100,105,0.4)"/>
+            <path d="M114,20 L124,18 L126,27 L116,28Z"    fill="rgba(0,100,105,0.4)"/>
+            <circle cx="50" cy="20" r="3"   fill="#00d4e0" opacity="0.85"/>
+            <circle cx="50" cy="20" r="6.5" fill="none" stroke="#00d4e0" stroke-width="0.7" opacity="0.4"/>
+            <text x="4" y="84" font-size="6" fill="rgba(0,200,200,0.5)" font-family="'Courier New',monospace">TRACK ACTIVE</text>
+          </svg>
+          <div id="rp-on">ON</div>
+        </div>
+      </div>
+
+      <!-- XDL identifier -->
+      <div id="xdl-code">XDL.XXJZ.C20203</div>
+
+      <!-- Data bars box -->
+      <div id="rp-databox">
+        <div class="dbrow">
+          <div class="dbrow-lbl"><span>SPEED</span><span id="dv-speed">72.3</span></div>
+          <div class="dbrow-track"><div class="dbrow-fill" id="df-speed" style="width:72%"></div></div>
+        </div>
+        <div class="dbrow">
+          <div class="dbrow-lbl"><span>LOCK</span><span id="dv-lock">91.7</span></div>
+          <div class="dbrow-track"><div class="dbrow-fill" id="df-lock" style="width:91%"></div></div>
+        </div>
+        <div class="dbrow">
+          <div class="dbrow-lbl"><span>SIGNAL</span><span>+++</span></div>
+          <div class="dbrow-track"><div class="dbrow-fill" id="df-sig" style="width:65%"></div></div>
+        </div>
+      </div>
+
+      <!-- Timer -->
+      <div id="rtimer">
+        <div id="rtimer-lbl">CALCULATING SPEED ON...</div>
+        <div id="rtimer-val">00:00:00.000</div>
+      </div>
+
+      <!-- Compass dial -->
+      <div id="compass">
+        <svg width="220" height="220" viewBox="0 0 220 220" style="position:absolute;top:0;left:0">
+          <circle cx="110" cy="110" r="107" fill="none" stroke="#00cc44" stroke-width="1.5"/>
+          <circle cx="110" cy="110" r="98"  fill="none" stroke="#00cc44" stroke-width="0.5" stroke-dasharray="2 4"/>
+          <circle cx="110" cy="110" r="88"  fill="none" stroke="rgba(0,160,50,0.35)" stroke-width="0.5"/>
+          <g stroke="#00cc44">
+            <line x1="110" y1="3"   x2="110" y2="15"  stroke-width="2.5"/>
+            <line x1="217" y1="110" x2="205" y2="110" stroke-width="2.5"/>
+            <line x1="110" y1="217" x2="110" y2="205" stroke-width="2.5"/>
+            <line x1="3"   y1="110" x2="15"  y2="110" stroke-width="2.5"/>
+            <line x1="129.1" y1="4.3"  x2="127.2" y2="15.1" stroke-width="1"/>
+            <line x1="147.2" y1="9.7"  x2="143.7" y2="20.2" stroke-width="1"/>
+            <line x1="163.4" y1="18.3" x2="158.3" y2="27.9" stroke-width="1.5"/>
+            <line x1="177.0" y1="30.0" x2="170.5" y2="38.6" stroke-width="1"/>
+            <line x1="187.9" y1="44.0" x2="180.3" y2="51.0" stroke-width="1"/>
+            <line x1="195.5" y1="59.6" x2="186.8" y2="65.4" stroke-width="1.5"/>
+            <line x1="200.2" y1="76.3" x2="190.9" y2="80.4" stroke-width="1"/>
+            <line x1="202.0" y1="93.7" x2="192.5" y2="95.9" stroke-width="1"/>
+            <line x1="90.9"  y1="4.3"  x2="92.8"  y2="15.1" stroke-width="1"/>
+            <line x1="72.8"  y1="9.7"  x2="76.3"  y2="20.2" stroke-width="1"/>
+            <line x1="56.6"  y1="18.3" x2="61.7"  y2="27.9" stroke-width="1.5"/>
+            <line x1="43.0"  y1="30.0" x2="49.5"  y2="38.6" stroke-width="1"/>
+            <line x1="32.1"  y1="44.0" x2="39.7"  y2="51.0" stroke-width="1"/>
+            <line x1="24.5"  y1="59.6" x2="33.2"  y2="65.4" stroke-width="1.5"/>
+            <line x1="19.8"  y1="76.3" x2="29.1"  y2="80.4" stroke-width="1"/>
+            <line x1="18.0"  y1="93.7" x2="27.5"  y2="95.9" stroke-width="1"/>
+            <line x1="110" y1="217" x2="129.1" y2="215.7" stroke-width="1"/>
+            <line x1="110" y1="217" x2="90.9"  y2="215.7" stroke-width="1"/>
+          </g>
+          <text x="105" y="26"  font-size="11" fill="#00cc44" font-family="'Courier New'" font-weight="bold">N</text>
+          <text x="196" y="114" font-size="11" fill="#00cc44" font-family="'Courier New'" font-weight="bold">E</text>
+          <text x="103" y="204" font-size="11" fill="#00cc44" font-family="'Courier New'" font-weight="bold">S</text>
+          <text x="7"   y="114" font-size="11" fill="#00cc44" font-family="'Courier New'" font-weight="bold">W</text>
+          <path d="M110,3 A107,107 0 0,1 217,110" stroke="#00cc44" stroke-width="3" fill="none"/>
+          <circle cx="110" cy="32"  r="1.5" fill="#00cc44" opacity="0.55"/>
+          <circle cx="144" cy="40"  r="1.5" fill="#00cc44" opacity="0.55"/>
+          <circle cx="172" cy="60"  r="1.5" fill="#00cc44" opacity="0.55"/>
+          <circle cx="188" cy="88"  r="1.5" fill="#00cc44" opacity="0.55"/>
+          <circle cx="190" cy="132" r="1.5" fill="#00cc44" opacity="0.3"/>
+        </svg>
+        <div id="c-face">
+          <div id="c-needle"></div>
+          <div id="c-dot"></div>
+        </div>
+      </div>
+    </div>
+    <!-- END RIGHT PANEL -->
+
+  </div>
+
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const SCAN_START = 5.5;
+
+    /* INTRO */
+    tl.to('#intro-text', { opacity:1, duration:0.7 }, 0.4);
+    tl.to('#intro-sub',  { opacity:1, duration:0.5 }, 0.9);
+    tl.to('#intro-text', { opacity:0, duration:0.4 }, 1.7);
+    tl.to('#intro-sub',  { opacity:0, duration:0.4 }, 1.8);
+    tl.to('#intro',      { opacity:0, duration:0.5 }, 2.1);
+    tl.set('#intro', { visibility:'hidden' }, 2.7);
+
+    /* HUD in */
+    tl.to('#hud', { opacity:1, duration:0.7 }, 2.1);
+    tl.from('#frame',  { scaleX:0, transformOrigin:'left center', duration:0.35 }, 2.3);
+    tl.from('#topbar', { opacity:0, duration:0.3 }, 2.55);
+
+    /* Left panel stagger */
+    tl.from('#lp-title',      { opacity:0, x:-18, duration:0.35 }, 2.8);
+    tl.from('#lp-sub',        { opacity:0, duration:0.3  }, 3.0);
+    tl.from('#lp-icons',      { opacity:0, duration:0.25 }, 3.1);
+    tl.from('#satbox',        { opacity:0, y:12,  duration:0.4  }, 3.2);
+    tl.from('#lp-minirows',   { opacity:0, duration:0.3  }, 3.55);
+    tl.from('.si-row',        { opacity:0, duration:0.3  }, 3.65);
+    tl.from('#lp-pixel-area', { opacity:0, duration:0.3  }, 3.75);
+    tl.from('#lp-grids',      { opacity:0, y:10,  duration:0.4  }, 3.85);
+
+    /* Right panel stagger */
+    tl.from('#rp-hdr',     { opacity:0, x:18,  duration:0.35 }, 2.85);
+    tl.from('#rp-sub',     { opacity:0, duration:0.25 }, 3.05);
+    tl.from('.gr-row',     { opacity:0, stagger:0.12, duration:0.3 }, 3.2);
+    tl.from('.rdg',        { opacity:0, duration:0.3  }, 3.5);
+    tl.from('#rp-infobox', { opacity:0, duration:0.35 }, 3.65);
+    tl.from('#xdl-code',   { opacity:0, duration:0.3  }, 3.8);
+    tl.from('#rp-databox', { opacity:0, duration:0.3  }, 3.95);
+    tl.from('#rtimer',     { opacity:0, duration:0.3  }, 4.3);
+
+    /* Center */
+    tl.from('#vp',     { opacity:0, scaleY:0, transformOrigin:'top center', duration:0.5 }, 4.5);
+    tl.from('#sep',    { opacity:0, duration:0.3 }, 5.05);
+    tl.from('#mp',     { opacity:0, scaleY:0, transformOrigin:'top center', duration:0.5 }, 5.2);
+    tl.from('#bpbar',  { opacity:0, duration:0.3 }, 5.65);
+    tl.from('#compass',{ opacity:0, scale:0, transformOrigin:'center center', duration:0.5 }, 5.0);
+
+    /* Compass needle */
+    tl.to('#c-needle', { rotation:1080, duration:22, ease:'none' }, 0);
+
+    /* Radar sweep */
+    tl.to('#sat-radar-line', { rotation:2880, duration:22, ease:'none' }, 0);
+
+    /* Gauge oscillations */
+    tl.to('#gn1',  { rotation:20,  duration:4, yoyo:true, repeat:5, ease:'power1.inOut' }, 0);
+    tl.to('#gn2',  { rotation:-25, duration:5, yoyo:true, repeat:4, ease:'power1.inOut' }, 1);
+    tl.to('#gn3',  { rotation:30,  duration:3, yoyo:true, repeat:7, ease:'power1.inOut' }, 0.5);
+    tl.to('#gn4',  { rotation:10,  duration:6, yoyo:true, repeat:3, ease:'power1.inOut' }, 2);
+    tl.to('#gn5',  { rotation:-20, duration:4, yoyo:true, repeat:5, ease:'power1.inOut' }, 0.8);
+    tl.to('#gn6',  { rotation:35,  duration:5, yoyo:true, repeat:4, ease:'power1.inOut' }, 1.5);
+    tl.to('#gn7',  { rotation:-15, duration:3, yoyo:true, repeat:7, ease:'power1.inOut' }, 0.3);
+    tl.to('#gn8',  { rotation:25,  duration:4, yoyo:true, repeat:5, ease:'power1.inOut' }, 2.2);
+    tl.to('#gn9',  { rotation:40,  duration:6, yoyo:true, repeat:3, ease:'power1.inOut' }, 0.7);
+    tl.to('#gn10', { rotation:-30, duration:3, yoyo:true, repeat:7, ease:'power1.inOut' }, 1.2);
+
+    /* Scan line */
+    for (var i = 0; i < 7; i++) {
+      tl.fromTo('#scanline', { y:0 }, { y:408, duration:3.0, ease:'none' }, SCAN_START + i * 3.0);
+    }
+
+    /* Detection boxes */
+    tl.to('#db1', { opacity:1,    duration:0.35 }, 6.1);
+    tl.to('#db2', { opacity:0.85, duration:0.35 }, 6.5);
+    tl.to('#db3', { opacity:1,    duration:0.35 }, 6.8);
+    tl.to('#db1', { opacity:0.15, duration:0.12, yoyo:true, repeat:1 }, 9.0);
+    tl.to('#db3', { opacity:0.15, duration:0.12, yoyo:true, repeat:1 }, 12.5);
+    tl.to('#db2', { opacity:0.15, duration:0.12, yoyo:true, repeat:1 }, 15.3);
+
+    /* Progress bar */
+    tl.to('#bpfill', { width:'100%', duration:15, ease:'none' }, SCAN_START);
+    tl.to('#bpdot',  { left:'100%', duration:15, ease:'none' }, SCAN_START);
+
+    /* Map crosshair drift */
+    tl.to('#mapxhair', { x:40,  duration:9, ease:'power1.inOut', yoyo:true, repeat:2 }, SCAN_START);
+    tl.to('#mapxhair', { y:-20, duration:7, ease:'power1.inOut', yoyo:true, repeat:2 }, SCAN_START + 1);
+
+    /* Data bars */
+    tl.to('#df-speed', { width:'88%', duration:3.5, ease:'power1.inOut', yoyo:true, repeat:2 }, SCAN_START);
+    tl.to('#df-lock',  { width:'97%', duration:4.0, ease:'power1.inOut', yoyo:true, repeat:2 }, SCAN_START + 1);
+    tl.to('#df-sig',   { width:'82%', duration:2.8, ease:'power1.inOut', yoyo:true, repeat:3 }, SCAN_START + 0.5);
+
+    /* Timer via onUpdate */
+    tl.eventCallback('onUpdate', function() {
+      var t = tl.time();
+      if (t < SCAN_START) return;
+      var e = t - SCAN_START;
+      var mm = String(Math.floor(e / 60)).padStart(2,'0');
+      var ss = String(Math.floor(e % 60)).padStart(2,'0');
+      var ms = String(Math.floor((e % 1) * 1000)).padStart(3,'0');
+      document.getElementById('rtimer-val').textContent = '00:' + mm + ':' + ss + '.' + ms;
+      document.getElementById('lp-clock').textContent   = '00:' + mm + ':' + ss + ' P60';
+    });
+
+    window.__timelines = window.__timelines || {};
+    window.__timelines['hud-gprs-v3'] = tl;
+  </script>
+</div>
+</body>
+</html>
