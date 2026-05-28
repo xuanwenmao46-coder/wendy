@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>AI 视频工具 · 宣传片</title>
+<style>
+@font-face {
+  font-family: 'Noto Sans SC';
+  src: url('assets/fonts/NotoSansSC-Light.ttf') format('truetype');
+  font-weight: 300; font-display: block;
+}
+@font-face {
+  font-family: 'Noto Sans SC';
+  src: url('assets/fonts/NotoSansSC-Regular.ttf') format('truetype');
+  font-weight: 400; font-display: block;
+}
+@font-face {
+  font-family: 'Noto Sans SC';
+  src: url('assets/fonts/NotoSansSC-Bold.ttf') format('truetype');
+  font-weight: 700; font-display: block;
+}
+@font-face {
+  font-family: 'Noto Sans SC';
+  src: url('assets/fonts/NotoSansSC-Black.ttf') format('truetype');
+  font-weight: 900; font-display: block;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('assets/fonts/JetBrainsMono-Regular.ttf') format('truetype');
+  font-weight: 400; font-display: block;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('assets/fonts/JetBrainsMono-Bold.ttf') format('truetype');
+  font-weight: 700; font-display: block;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg:        #0F0F0E;
+  --fg:        #EDEBE6;
+  --fg-dim:    #6A6762;
+  --fg-muted:  #2E2C2A;
+  --accent:    #A78BFA;
+  --accent-bg: rgba(167,139,250,0.10);
+  --surface:   #191816;
+  --surface2:  #211F1D;
+  --border:    #262320;
+  --positive:  #4ADE80;
+  --sans:      'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --mono:      'JetBrains Mono', 'Menlo', monospace;
+}
+
+html, body {
+  width: 1280px; height: 720px;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+#canvas {
+  width: 1280px; height: 720px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── BACKGROUND ───────────────────────────────── */
+.bg-dots {
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, #2A2825 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.5;
+}
+.bg-glow {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 55% 55% at 50% 50%,
+    rgba(167,139,250,0.05) 0%, transparent 65%);
+}
+
+/* ── SHARED SECTION BASE ─────────────────────── */
+.section {
+  position: absolute; inset: 0;
+  display: flex; align-items: center;
+  padding: 0 96px;
+  visibility: hidden;
+  opacity: 0;
+}
+
+/* ── PILL / LABEL ────────────────────────────── */
+.pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 6px 16px;
+  font-family: var(--mono);
+  font-size: 12px; color: var(--fg-dim);
+  letter-spacing: 0.08em; text-transform: uppercase;
+  margin-bottom: 36px;
+}
+.pill-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+/* ══════════════════════════════════════════════
+   PART 1 — PAIN POINT
+══════════════════════════════════════════════ */
+#s1 { flex-direction: column; align-items: flex-start; justify-content: center; }
+
+.pain-h1 {
+  font-family: var(--sans);
+  font-size: 104px; font-weight: 900;
+  letter-spacing: -0.03em; line-height: 1;
+  color: var(--fg);
+}
+.pain-h2 {
+  font-family: var(--sans);
+  font-size: 104px; font-weight: 900;
+  letter-spacing: -0.03em; line-height: 1;
+  color: var(--fg-dim);
+  margin-top: 6px;
+}
+
+.scatter-row {
+  display: flex; align-items: center; gap: 0;
+  margin-top: 40px; overflow: hidden;
+}
+.scatter-chip {
+  font-family: var(--mono); font-size: 13px;
+  color: var(--fg-dim);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 6px 14px;
+  margin-right: 8px;
+  white-space: nowrap;
+  opacity: 0;
+}
+.scatter-div {
+  font-family: var(--mono); font-size: 13px;
+  color: var(--fg-muted);
+  margin-right: 8px;
+}
+
+.bar-wrap {
+  width: 500px; height: 3px;
+  background: var(--surface2);
+  border-radius: 99px;
+  margin-top: 32px; overflow: hidden;
+}
+.bar-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--fg-dim), transparent);
+  border-radius: 99px;
+}
+
+/* ══════════════════════════════════════════════
+   PART 2 — ENGINE
+══════════════════════════════════════════════ */
+#s2 { flex-direction: column; align-items: flex-start; justify-content: center; }
+
+.engine-card {
+  width: 620px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.engine-titlebar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+}
+.win-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); }
+.win-label {
+  font-family: var(--mono); font-size: 11px;
+  color: var(--fg-dim); margin-left: 8px;
+  letter-spacing: 0.06em;
+}
+.engine-body { padding: 24px 24px 20px; }
+.engine-prompt-row {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 8px;
+}
+.engine-caret {
+  font-family: var(--mono); font-size: 16px;
+  color: var(--accent); flex-shrink: 0;
+}
+.engine-input {
+  font-family: var(--sans); font-size: 26px; font-weight: 400;
+  color: var(--fg); letter-spacing: -0.01em;
+}
+.engine-cursor {
+  display: inline-block;
+  width: 2px; height: 26px;
+  background: var(--accent);
+  vertical-align: text-bottom;
+  margin-left: 2px;
+}
+.engine-status {
+  font-family: var(--mono); font-size: 12px;
+  color: var(--positive);
+  padding: 10px 0 4px;
+  opacity: 0;
+}
+
+.engine-headline {
+  font-family: var(--sans);
+  font-size: 62px; font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+  margin-top: 44px;
+  line-height: 1.1;
+}
+
+/* ══════════════════════════════════════════════
+   PART 3 — PROCESSING
+══════════════════════════════════════════════ */
+#s3 { flex-direction: column; align-items: flex-start; justify-content: center; }
+
+.task-label {
+  font-family: var(--mono); font-size: 12px;
+  color: var(--fg-dim);
+  letter-spacing: 0.10em; text-transform: uppercase;
+  margin-bottom: 44px;
+}
+
+.task-list { width: 1000px; display: flex; flex-direction: column; gap: 24px; }
+
+.task-row {
+  display: flex; align-items: center;
+  gap: 20px;
+  opacity: 0; transform: translateX(-16px);
+}
+.task-icon {
+  width: 28px; height: 28px; flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; transition: background 0.2s, border-color 0.2s;
+}
+.task-icon.active  { border-color: var(--accent); background: var(--accent-bg); }
+.task-icon.done    { border-color: var(--positive); background: rgba(74,222,128,0.10); color: var(--positive); font-size: 15px; }
+
+.task-name {
+  font-family: var(--sans); font-size: 30px; font-weight: 400;
+  color: var(--fg); flex: 1;
+}
+.task-badge {
+  font-family: var(--mono); font-size: 12px;
+  color: var(--fg-dim);
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 4px; padding: 4px 12px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.task-badge.done { color: var(--positive); border-color: rgba(74,222,128,0.3); }
+
+/* ══════════════════════════════════════════════
+   PART 4 — WORKFLOW
+══════════════════════════════════════════════ */
+#s4 { flex-direction: column; align-items: flex-start; justify-content: center; }
+
+.wf-headline {
+  font-family: var(--sans);
+  font-size: 60px; font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+  line-height: 1.15;
+  margin-bottom: 52px;
+}
+
+/* Timeline */
+.tl-outer {
+  width: 1088px; position: relative;
+  display: flex; align-items: center;
+}
+.tl-track {
+  position: absolute;
+  left: 0; top: calc(50% + 8px);
+  width: 100%; height: 1px;
+  background: var(--border);
+}
+.tl-track-fill {
+  position: absolute; left: 0; top: 0;
+  height: 1px; width: 0%;
+  background: var(--accent);
+  transition: none;
+}
+.tl-nodes {
+  position: relative; z-index: 2;
+  width: 100%;
+  display: flex; justify-content: space-between;
+  align-items: flex-start;
+  padding-top: 0;
+}
+.tl-node-wrap {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 16px; opacity: 0;
+}
+.tl-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 22px;
+  text-align: center;
+  min-width: 140px;
+}
+.tl-block.accent-block {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+.tl-block-name {
+  font-family: var(--sans); font-size: 20px; font-weight: 700;
+  color: var(--fg);
+}
+.tl-block.accent-block .tl-block-name { color: var(--accent); }
+.tl-block-sub {
+  font-family: var(--mono); font-size: 11px;
+  color: var(--fg-dim); margin-top: 4px;
+  letter-spacing: 0.04em;
+}
+.tl-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 1px solid var(--accent);
+  background: var(--bg);
+}
+.tl-dot.lit { background: var(--accent); }
+
+.wf-meta {
+  font-family: var(--mono); font-size: 13px;
+  color: var(--fg-dim);
+  margin-top: 28px; letter-spacing: 0.06em;
+  opacity: 0;
+}
+
+/* ══════════════════════════════════════════════
+   PART 5 — CTA
+══════════════════════════════════════════════ */
+#s5 { flex-direction: column; align-items: flex-start; justify-content: center; }
+
+.cta-line1 {
+  font-family: var(--sans);
+  font-size: 48px; font-weight: 300;
+  color: var(--fg-dim);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.cta-line2 {
+  font-family: var(--sans);
+  font-size: 80px; font-weight: 900;
+  letter-spacing: -0.03em; line-height: 1.1;
+  color: var(--fg);
+  margin-top: 8px;
+}
+.cta-you { color: var(--accent); }
+
+.cta-btn {
+  display: inline-flex; align-items: center; gap: 14px;
+  background: var(--accent);
+  color: #0A090A;
+  font-family: var(--sans); font-size: 20px; font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 18px 40px;
+  border-radius: 8px;
+  margin-top: 56px;
+  opacity: 0;
+}
+.cta-arrow { font-size: 18px; }
+
+/* ── TIMESTAMP ──────────────────────────────── */
+.ts {
+  position: absolute; bottom: 24px; right: 96px;
+  font-family: var(--mono); font-size: 11px;
+  color: var(--fg-muted);
+}
+</style>
+</head>
+<body>
+<div id="canvas">
+  <div class="bg-dots"></div>
+  <div class="bg-glow"></div>
+
+  <!-- ──────────────── PART 1 ──────────────── -->
+  <div class="section" id="s1">
+    <div>
+      <div class="pill"><span class="pill-dot"></span>PROBLEM</div>
+      <div class="pain-h1" id="p1a">想法很多，</div>
+      <div class="pain-h2" id="p1b">成片总卡住。</div>
+      <div class="bar-wrap"><div class="bar-fill" id="bar"></div></div>
+      <div class="scatter-row" id="chips">
+        <span class="scatter-chip">脚本</span>
+        <span class="scatter-div">/</span>
+        <span class="scatter-chip">画面</span>
+        <span class="scatter-div">/</span>
+        <span class="scatter-chip">节奏</span>
+        <span class="scatter-div">/</span>
+        <span class="scatter-chip">动效</span>
+        <span class="scatter-div">&nbsp;—&nbsp;被拆成一堆零散任务。</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────── PART 2 ──────────────── -->
+  <div class="section" id="s2">
+    <div>
+      <div class="pill"><span class="pill-dot"></span>TRIGGER</div>
+      <div class="engine-card" id="ecard">
+        <div class="engine-titlebar">
+          <div class="win-dot"></div>
+          <div class="win-dot"></div>
+          <div class="win-dot"></div>
+          <span class="win-label">创作引擎 · STUDIO</span>
+        </div>
+        <div class="engine-body">
+          <div class="engine-prompt-row">
+            <span class="engine-caret">›</span>
+            <span class="engine-input" id="etext"></span><span class="engine-cursor" id="ecursor"></span>
+          </div>
+          <div class="engine-status" id="estatus">● 创作引擎已启动 &nbsp;—&nbsp; 正在生成...</div>
+        </div>
+      </div>
+      <div class="engine-headline" id="ehl">输入主题，<br>创作引擎启动。</div>
+    </div>
+  </div>
+
+  <!-- ──────────────── PART 3 ──────────────── -->
+  <div class="section" id="s3">
+    <div style="width:100%">
+      <div class="pill"><span class="pill-dot"></span>PROCESSING</div>
+      <div class="task-list">
+        <div class="task-row" id="t1">
+          <div class="task-icon" id="ic1"></div>
+          <div class="task-name">把主题拆成 30 秒叙事结构</div>
+          <div class="task-badge" id="b1">运行中…</div>
+        </div>
+        <div class="task-row" id="t2">
+          <div class="task-icon" id="ic2"></div>
+          <div class="task-name">生成镜头 · 标题 · 画面节奏</div>
+          <div class="task-badge" id="b2">等待</div>
+        </div>
+        <div class="task-row" id="t3">
+          <div class="task-icon" id="ic3"></div>
+          <div class="task-name">自动组织成可渲染时间线</div>
+          <div class="task-badge" id="b3">等待</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──────────────── PART 4 ──────────────── -->
+  <div class="section" id="s4">
+    <div style="width:100%">
+      <div class="pill"><span class="pill-dot"></span>WORKFLOW</div>
+      <div class="wf-headline" id="wfh">脚本、画面、动效，<br>连续编排。</div>
+      <div class="tl-outer">
+        <div class="tl-track"><div class="tl-track-fill" id="tlf"></div></div>
+        <div class="tl-nodes">
+          <div class="tl-node-wrap" id="tn1">
+            <div class="tl-block"><div class="tl-block-name">脚本</div><div class="tl-block-sub">SCRIPT · 0–8s</div></div>
+            <div class="tl-dot lit"></div>
+          </div>
+          <div class="tl-node-wrap" id="tn2">
+            <div class="tl-block"><div class="tl-block-name">画面</div><div class="tl-block-sub">VISUAL · 8–20s</div></div>
+            <div class="tl-dot lit"></div>
+          </div>
+          <div class="tl-node-wrap" id="tn3">
+            <div class="tl-block"><div class="tl-block-name">动效</div><div class="tl-block-sub">MOTION · 20–28s</div></div>
+            <div class="tl-dot lit"></div>
+          </div>
+          <div class="tl-node-wrap" id="tn4">
+            <div class="tl-block accent-block"><div class="tl-block-name">输出</div><div class="tl-block-sub">RENDER · 28–30s</div></div>
+            <div class="tl-dot lit"></div>
+          </div>
+        </div>
+      </div>
+      <div class="wf-meta" id="wfm">自动组织 &nbsp;·&nbsp; 随时预览 &nbsp;·&nbsp; 一键渲染</div>
+    </div>
+  </div>
+
+  <!-- ──────────────── PART 5 ──────────────── -->
+  <div class="section" id="s5">
+    <div>
+      <div class="cta-line1" id="cl1">把复杂交给系统，</div>
+      <div class="cta-line2" id="cl2">把表达，留给<span class="cta-you">你</span>。</div>
+      <div class="cta-btn" id="cbtn">开始创作 <span class="cta-arrow">→</span></div>
+    </div>
+  </div>
+
+  <div class="ts" id="ts">00:00</div>
+</div>
+
+<script src="assets/gsap.min.js"></script>
+<script>
+// ─── helpers ───────────────────────────────────────────────────
+function show(id)  { gsap.set('#'+id, { visibility:'visible' }); }
+function hide(id)  { gsap.set('#'+id, { visibility:'hidden', opacity:1 }); }
+
+function typeText(elId, text, msPerChar, cb) {
+  const el = document.getElementById(elId);
+  el.textContent = '';
+  let i = 0;
+  const iv = setInterval(() => {
+    el.textContent += text[i++];
+    if (i >= text.length) { clearInterval(iv); if (cb) cb(); }
+  }, msPerChar);
+}
+
+function markTask(icId, badgeId, done) {
+  const ic = document.getElementById(icId);
+  const b  = document.getElementById(badgeId);
+  if (done) {
+    ic.classList.remove('active'); ic.classList.add('done');
+    ic.textContent = '✓';
+    b.classList.add('done');
+    b.textContent  = '完成';
+  } else {
+    ic.classList.add('active');
+    b.textContent = '运行中…';
+  }
+}
+
+function resetTasks() {
+  ['ic1','ic2','ic3'].forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('active','done');
+    el.textContent = '';
+  });
+  const badges = {b1:'运行中…', b2:'等待', b3:'等待'};
+  Object.entries(badges).forEach(([id,txt]) => {
+    const el = document.getElementById(id);
+    el.textContent = txt;
+    el.classList.remove('done');
+  });
+  gsap.set(['#t1','#t2','#t3'], { opacity:0, x:-16 });
+}
+
+function resetTimeline() {
+  gsap.set('#tlf', { width:'0%' });
+  gsap.set(['#tn1','#tn2','#tn3','#tn4'], { opacity:0 });
+}
+
+// ─── master timeline ───────────────────────────────────────────
+window.T = gsap.timeline({ repeat:-1, repeatDelay:1.2, defaults:{ ease:'power3.out' } });
+
+/* ══ PART 1 (0–6s) ════════════════════════════════════════════ */
+T.call(() => show('s1'))
+ .to('#s1', { opacity:1, duration:0.01, ease:'none' })
+
+ .from('#p1a', { y:36, opacity:0, duration:0.4, ease:'power4.out' })
+ .from('#p1b', { y:36, opacity:0, duration:0.4, ease:'power4.out' }, '+=0.08')
+
+ .to('#bar',  { width:'63%', duration:1.1, ease:'power2.out' }, '+=0.15')
+ .to('#bar',  { width:'65%', duration:0.9, ease:'none' })
+
+ .to('.scatter-chip', { opacity:1, stagger:0.08, duration:0.25 }, '-=0.6')
+
+ .to({}, { duration:1.5 })
+
+ .to('#s1', { opacity:0, duration:0.3, ease:'power2.in' })
+ .call(() => { hide('s1'); gsap.set('#bar', { width:'0%' }); gsap.set('.scatter-chip', { opacity:0 }); })
+
+/* ══ PART 2 (6–10.5s) ═════════════════════════════════════════ */
+ .call(() => show('s2'))
+ .to('#s2', { opacity:1, duration:0.01, ease:'none' })
+
+ .from('#ecard', { y:28, opacity:0, duration:0.4, ease:'power3.out' })
+ .call(() => typeText('etext', '产品宣传片 · 30秒', 62))
+ .to({}, { duration:1.4 })
+
+ .to('#ecursor', { opacity:0, duration:0.08 })
+ .to('#estatus', { opacity:1, duration:0.3 })
+
+ .from('#ehl', { y:22, opacity:0, duration:0.42, ease:'power4.out' }, '+=0.15')
+ .to({}, { duration:1.0 })
+
+ .to('#s2', { opacity:0, duration:0.3, ease:'power2.in' })
+ .call(() => {
+   hide('s2');
+   document.getElementById('etext').textContent = '';
+   gsap.set('#ecursor', { opacity:1 });
+   gsap.set('#estatus', { opacity:0 });
+ })
+
+/* ══ PART 3 (10.5–18s) ════════════════════════════════════════ */
+ .call(() => show('s3'))
+ .to('#s3', { opacity:1, duration:0.01, ease:'none' })
+
+ .to('#t1', { opacity:1, x:0, duration:0.32 })
+ .call(() => markTask('ic1','b1', false))
+ .to({}, { duration:0.65 })
+ .call(() => markTask('ic1','b1', true))
+
+ .to('#t2', { opacity:1, x:0, duration:0.28 }, '+=0.12')
+ .call(() => markTask('ic2','b2', false))
+ .to({}, { duration:0.70 })
+ .call(() => markTask('ic2','b2', true))
+
+ .to('#t3', { opacity:1, x:0, duration:0.28 }, '+=0.12')
+ .call(() => markTask('ic3','b3', false))
+ .to({}, { duration:0.75 })
+ .call(() => markTask('ic3','b3', true))
+
+ .to({}, { duration:0.9 })
+
+ .to('#s3', { opacity:0, duration:0.3, ease:'power2.in' })
+ .call(() => { hide('s3'); resetTasks(); })
+
+/* ══ PART 4 (18–24.5s) ════════════════════════════════════════ */
+ .call(() => show('s4'))
+ .to('#s4', { opacity:1, duration:0.01, ease:'none' })
+
+ .from('#wfh', { y:22, opacity:0, duration:0.42, ease:'power4.out' })
+
+ .to('#tn1', { opacity:1, duration:0.22 }, '+=0.18')
+ .to('#tlf', { width:'33%', duration:0.38, ease:'power2.out' })
+ .to('#tn2', { opacity:1, duration:0.22 })
+ .to('#tlf', { width:'66%', duration:0.38, ease:'power2.out' })
+ .to('#tn3', { opacity:1, duration:0.22 })
+ .to('#tlf', { width:'100%', duration:0.38, ease:'power2.out' })
+ .to('#tn4', { opacity:1, duration:0.32 })
+
+ .to('#wfm', { opacity:1, y:0, duration:0.35 }, '+=0.20')
+ .to({}, { duration:1.2 })
+
+ .to('#s4', { opacity:0, duration:0.3, ease:'power2.in' })
+ .call(() => { hide('s4'); resetTimeline(); gsap.set('#wfm', { opacity:0 }); })
+
+/* ══ PART 5 (24.5–30s) ════════════════════════════════════════ */
+ .call(() => show('s5'))
+ .to('#s5', { opacity:1, duration:0.01, ease:'none' })
+
+ .from('#cl1', { y:24, opacity:0, duration:0.4, ease:'power4.out' })
+ .from('#cl2', { y:24, opacity:0, duration:0.45, ease:'power4.out' }, '+=0.10')
+ .to('#cbtn',  { opacity:1, duration:0.38 }, '+=0.35')
+ .to({}, { duration:2.2 })
+
+ .to('#s5', { opacity:0, duration:0.45, ease:'power2.in' })
+ .call(() => hide('s5'))
+
+// ─── timestamp (driven by rAF, shows real wall-clock elapsed) ──
+let t0 = null;
+(function tick(ts) {
+  if (!t0) t0 = ts;
+  const s = Math.floor((ts - t0) / 1000);
+  document.getElementById('ts').textContent =
+    `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+  requestAnimationFrame(tick);
+})(performance.now());
+
+// signal ready for puppeteer
+window.__READY = true;
+</script>
+</body>
+</html>
