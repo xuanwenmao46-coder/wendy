@@ -287,3 +287,4 @@ Before implementation, write:
 - For quality scoring, read [QUALITY-BAR.md](QUALITY-BAR.md).
 - For RAG metadata, read [RAG-METADATA.md](RAG-METADATA.md).
 - **For anchoring the visual aesthetic to a named design school before style decisions, use `aesthetic-layout-direction`.**
+- **For optical tracking correction, CJK character compensation, mixed-script lines, and animation stability — run `typography-optics` after `typography-selection`. It converts font choices into correctly-spaced CSS tokens and flags unsafe animation patterns before render.**

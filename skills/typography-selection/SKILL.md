@@ -146,3 +146,4 @@ Before implementation, write:
 - For render embedding, read [FONT-EMBEDDING.md](FONT-EMBEDDING.md).
 - For audit criteria, read [TYPE-AUDIT.md](TYPE-AUDIT.md).
 - **For school-based typography anchoring (Aesop editorial serif, Linear humanist sans, Bloomberg mono authority, etc.), use `aesthetic-layout-direction` first.**
+- **For optical tracking correction, CJK compensation, and motion stability — run `typography-optics` after this skill produces the brief. typography-selection chooses fonts; typography-optics makes them optically correct.**
