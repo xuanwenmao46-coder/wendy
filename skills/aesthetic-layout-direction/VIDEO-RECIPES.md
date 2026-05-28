@@ -27,6 +27,14 @@ Typography (video roles):
   weight contrast: 400 vs 600 (no 900 — weight restraint IS the recipe)
   forbidden: Poppins, Raleway, Roboto; anything with default web-safe feel
 
+  optical corrections (typography-optics):
+    display: Inter Tight 600, 64px → tracking -0.02em (Table 2: 56–72px 600w)
+    support: Inter 400, 28px → tracking 0.00em (Table 2: 20–28px 400w)
+    data: Geist Mono → tracking 0em strictly; tabular-nums enforced
+    CJK display (if Chinese): 64px 700w → -0.02em (-0.03em with video modifier)
+    mixed CJK+Latin line: Latin font-size ×1.09 OR Latin weight drop to 400 when CJK is 600
+    uppercase chip labels: +0.08em (e.g. "RENDER · 28–30s")
+
 Frame Composition:
   hero: type block anchored left at 8% inset, vertical center ±15%; 55% of frame width maximum
   secondary: product UI panel right-half, clipped at right edge; frame-within-frame treatment
@@ -38,6 +46,7 @@ Motion Posture:
   hold: 1.8s minimum on any readable claim; do not rush the still frame
   transition: scene change via 240ms opacity cross-dissolve — no wipes, no slides
   forbidden motion: bounce, spring physics, elastic ease, scaling above 1.05×
+  motion safety: CJK display at 64px max Y 36px at 0.38s (within safe zone); Latin 600w at 64px max Y 50px at 0.38s; minimum clean hold 1.8s per claim; no text element may animate with linear ease
   GSAP ease: "power3.out" for layout moves; "none" for instant state flips on UI panels
 
 Sonic Character:
@@ -73,6 +82,15 @@ Typography (video roles):
   weight contrast: 400 italic (display) vs 400 roman (support) — contrast through posture, not weight
   forbidden: any bold (> 500 weight), Inter, any sans at display size, any font with "geometric" personality
 
+  optical corrections (typography-optics):
+    display: GT Sectra italic 400, 72px → tracking +0.01em (intentional open; Aesop signature overrides optical table default)
+    support: Söhne 400, 22px → tracking 0.00em
+    small-caps labels: Söhne 400, 11px → tracking +0.12em
+    CJK display (if Chinese): 72px 400w → -0.01em (CJK requires optical correction even when Latin opens; never open-track CJK)
+    mixed-script: avoid mixing CJK+Latin in this school; if unavoidable, Latin as small-caps label only
+    line-height display: 1.20 (single line), 1.25 (two lines)
+    line-height body: 1.55
+
 Frame Composition:
   hero: product object occupies 35–45% of frame, anchored left or right with generous margin on the other side
   secondary: a single sage prop (linen fold, dried sprig) placed in the opposing quadrant; never centered
@@ -84,6 +102,7 @@ Motion Posture:
   hold: 3.0s minimum; Aesop is never in a hurry
   transition: cross-dissolve only, 600ms; or a slow vertical curtain at 900ms linear
   forbidden motion: slide, scale, bounce, rotation, any y-axis translate > 8px
+  motion safety: opacity-only strictly; no translate on CJK text; Latin product text max opacity transition only at 600–900ms; minimum hold 3.0s; freeze-frame test required at 1.5s into hold
   GSAP ease: "sine.inOut" for ambient; "none" (opacity only) for entrances
 
 Sonic Character:
@@ -120,6 +139,14 @@ Typography (video roles):
   weight contrast: 400 vs 900 — the gap should feel violent
   forbidden: multiple type families, any rounded grotesque, Futura, Circular, any "friendly" sans
 
+  optical corrections (typography-optics):
+    display: Helvetica Now Display / Druk Wide Heavy 900, 120–160px → tracking -0.03em to -0.05em (Table 2: 96px+ 900w)
+    support: same family 400, 20px → tracking 0.00em
+    data: tabular figures from display family → tracking 0em; tabular-nums enforced; right-aligned
+    CJK display (if Chinese): 120px 700w+ → -0.04em (-0.05em with video modifier); never allow positive tracking
+    uppercase or all-caps display: tracking -0.03em (optical tightening overrides typographic open-tracking instinct at this scale)
+    line-height display: 0.92–0.96 (intentional collision; the letterpress grid absorbs it)
+
 Frame Composition:
   hero: single word or short phrase at 120–160px, allowed to bleed past left or right frame edge
   secondary: one flat color block (accent or bg) occupies 30–50% of frame; text lays over it
@@ -131,6 +158,7 @@ Motion Posture:
   hold: 2.0s minimum; the typographic poster needs time to be read and felt
   transition: hard cut or 120ms flash-to-white; never a smooth dissolve
   forbidden motion: rotation, scale, bounce, any y-translate; type is always horizontal
+  motion safety: x-axis slide only; CJK text at 120px+ max X travel 80px at 0.42s; Latin 900w at 120px+ max X travel 120px at 0.42s; hold minimum 2.0s; no text element may animate on y-axis under any circumstance
   GSAP ease: "power4.out" for headline slam; "steps(1)" for flash cuts between scenes
 
 Sonic Character:
@@ -167,6 +195,14 @@ Typography (video roles):
   weight contrast: 400 (display) vs 400 italic (annotation) — this recipe never goes above 500
   forbidden: monospace fonts, bold above 500, legend boxes, any chart border or frame
 
+  optical corrections (typography-optics):
+    display: ET Book / Equity 400, 48px → tracking -0.01em (Table 2: 40–56px 400w; paper-set serif reads slightly tight on screen)
+    support: ET Book italic 400, 20px → tracking 0.00em
+    data labels: humanist sans (Söhne) 400, 14px → tracking +0.02em (small-size legibility boost at this scale)
+    CJK annotation (if Chinese): 20px 400w → -0.01em; never mix CJK with ET Book at display size
+    axis labels: tracking 0.00em; tabular-nums enforced; never letter-space data figures
+    line-height annotations: 1.60 (to separate marginalia from chart area visually)
+
 Frame Composition:
   hero: the data visualization occupies 65–75% of frame; everything else supports it
   secondary: annotation callouts float in right margin at 8% inset; 3–4 maximum
@@ -178,6 +214,7 @@ Motion Posture:
   hold: 2.5s on any completed chart; annotations enter after chart is fully drawn, staggered 200ms apart
   transition: wipe left-to-right, 600ms — like turning a page in a book; no flash, no dissolve
   forbidden motion: chart bars that pop or bounce, numbers that count up dramatically, any motion for drama
+  motion safety: line draw at strictly linear ease — no acceleration; annotations max Y 12px at 0.4s power2.out; CJK annotation text no translate at all (opacity-only); hold 2.5s on completed chart; no element may use ease-in-out
   GSAP ease: "none" (linear) for line draw; "power2.out" for annotation slides; never "elastic" or "back"
 
 Sonic Character:
@@ -215,6 +252,14 @@ Typography (video roles):
   weight contrast: 400 throughout — emphasis through color (amber) not weight
   forbidden: any proportional sans or serif, rounded fonts, anything > 400 weight, anything > 24px
 
+  optical corrections (typography-optics):
+    display: IBM Plex Mono 400, 24px → tracking 0em strictly; tabular-nums enforced; monospace optical neutrality
+    support: IBM Plex Mono 400, 16px → tracking 0em; right-aligned columns require tabular-nums always
+    data: IBM Plex Mono 400, 13px → tracking 0em; no adjustment at this size — mono grid must hold
+    CJK labels (if Chinese): avoid; if unavoidable at 16px → tracking -0.01em; never mix CJK at 24px display
+    amber accent text: tracking 0em — do not open-track the primary metric; weight emphasis is via color only
+    column alignment: all numeric columns right-aligned; all label columns left-aligned; no exceptions
+
 Frame Composition:
   hero: the data pane — 4–6 visible panels divided by 1px hairline borders; no hero "object"
   secondary: amber-labeled primary metric in the top-left panel; all other panels are support
@@ -226,6 +271,7 @@ Motion Posture:
   hold: data panels stay visible and "live"; counter values update with 80ms flash on changed digits
   transition: instant cut between scenes — no easing, no dissolve; terminals do not animate scene changes
   forbidden motion: eased transitions, any scale, any rotation, opacity fades > 80ms, anything decorative
+  motion safety: all panel changes steps(1) only — no interpolation between states; digit flash strictly 80ms; CJK text if present must be static (no flash, no update animation); hold means data is live but text does not move; no element may use any easing curve
   GSAP ease: "steps(1)" for all state changes; "none" for ticker scroll (uniform CSS linear animation)
 
 Sonic Character:
@@ -262,6 +308,15 @@ Typography (video roles):
   weight contrast: none — this recipe is all weight 400; variation through size (48px vs 18px) only
   forbidden: any bold, any weight above 500, any warm-toned serif, any decorative font
 
+  optical corrections (typography-optics):
+    display: Söhne / Inter Tight 400, 48px → tracking -0.01em (Table 2: 40–56px 400w; restraint extends to optical tightening)
+    support: same family 400, 18px → tracking +0.02em (section labels need slight open for legibility at 18px)
+    section label format: Söhne 400, 18px, +0.02em — "01 — Cotton" pattern; the em dash is structural
+    CJK display (if Chinese): 48px 400w → -0.01em; section label CJK at 18px → 0.00em (no open-tracking CJK)
+    mixed-script: if CJK product name at display, Latin label below in support style only; never same line
+    line-height display: 1.50 (weight 400 at 48px benefits from generous leading to amplify the negative space)
+    line-height support: 1.65
+
 Frame Composition:
   hero: a single product object, photographed or rendered, 25–35% of frame — small by design
   secondary: a plain one-line label in support style, placed below or beside at comfortable distance
@@ -273,6 +328,7 @@ Motion Posture:
   hold: 4.0s minimum; Ma requires duration; the viewer must sit with the emptiness
   transition: 700ms cross-dissolve; between clips there is a brief (400ms) hold of pure #F4F2EC bg
   forbidden motion: slide, scale, rotation, any y-translate whatsoever; motion here is only light change
+  motion safety: opacity-only at 900ms — no position delta under any circumstance; CJK text and Latin text treated identically (both opacity-only); minimum hold 4.0s; the 400ms pure-bg hold between clips is mandatory, not optional
   GSAP ease: "sine.inOut" opacity only; position should not change at all during the clip
 
 Sonic Character:
@@ -309,6 +365,15 @@ Typography (video roles):
   weight contrast: 400 (#86868B) vs 600 (#1D1D1F) — contrast through weight AND color simultaneously
   forbidden: Inter (at default weight), Helvetica (too generic), any warm serif, any geometric sans
 
+  optical corrections (typography-optics):
+    display: SF Pro Display 600, 72px → tracking -0.02em (Table 2: 56–72px 600w)
+    support: SF Pro Text 400, 24px → tracking 0.00em (Table 2: 20–28px 400w)
+    data: SF Pro Display 600, 80px → tracking -0.02em (Table 2: 72–96px 600w; hero numerals tighten like display)
+    CJK display (if Chinese): 72px 600w → -0.02em (-0.03em with video modifier)
+    mixed CJK+Latin: Latin font-size ×1.09 OR Latin weight drop to 400 when CJK is 600
+    uppercase eyebrow labels: tracking +0.08em (e.g. "IPHONE 16 PRO")
+    line-height display: 1.08 (as specified; do not loosen — the tight lh is structural)
+
 Frame Composition:
   hero: product object centered, 40–50% of frame height; the stage belongs to the product
   secondary: headline above product (top 25% of frame) or below (bottom 25%); never overlapping product
@@ -320,6 +385,7 @@ Motion Posture:
   hold: 2.5s minimum; the product deserves contemplation
   transition: 350ms cross-dissolve between scenes; Ken Burns slow zoom (0.98→1.03 over 8s) on hero image
   forbidden motion: bounce, spring, rotation, any motion that draws attention away from the product
+  motion safety: product scale entrance 0.92→1.00 max delta 8%; CJK display at 72px no position translate — opacity only; Latin 600w at 72px max Y 40px at 0.55s expo.out; minimum hold 2.5s; Ken Burns zoom delta ≤ 5% over 8s — imperceptible on any single frame
   GSAP ease: "expo.out" (cubic-bezier(0.16,1,0.3,1)) for all entrances; "sine.inOut" for Ken Burns
 
 Sonic Character:
@@ -356,6 +422,14 @@ Typography (video roles):
   weight contrast: the contrast is kinetic — watch the weight change, not a static heavy/light pairing
   forbidden: any static font use at fixed weight, serif fonts, body copy paragraphs, monospace
 
+  optical corrections (typography-optics):
+    display: variable weight 200→800, final 64px → tracking -0.02em at resolved state (Table 2: 56–72px; apply at final weight, not during morph)
+    support: same family 300, 20px → tracking 0.00em
+    weight-morph phase: tracking interpolates from 0.00em (at 200w) to -0.02em (at 800w) — do not snap tracking
+    CJK display (if Chinese): 64px final → -0.02em (-0.03em with video modifier); tracking change also interpolates during weight morph
+    mono equivalent: none — this recipe has no data role; if added, tracking 0em and tabular-nums
+    line-height display: 1.10 (tight; the kinetic nature of the font substitutes for generous leading)
+
 Frame Composition:
   hero: the generative field (particle system / mesh) occupies the full frame; type resolves from it
   secondary: a one-phrase label (5 words max) resolves at frame center from the particle system
@@ -367,6 +441,7 @@ Motion Posture:
   hold: 1.5s on the resolved phrase; field continues slow drift during hold (do not freeze it)
   transition: the field state transforms — hue shift or density change — over 800ms; no cut, no dissolve
   forbidden motion: slide, hard cut, static holds, any motion that reads as "presentation template"
+  motion safety: per-character resolve stagger max 80ms between characters (total 1200ms over ≤15 chars); CJK characters if present resolve as single unit (no per-stroke stagger); Latin 800w at 64px max positional scatter radius 40px before resolve; hold 1.5s minimum — field drift during hold must be ≤ 4px/s apparent velocity; no text element may use linear ease
   GSAP ease: "expo.out" (cubic-bezier(0.83,0,0.17,1)) for character resolve; "sine.inOut" for field drift
 
 Sonic Character:
@@ -403,6 +478,14 @@ Typography (video roles):
   weight contrast: 400 italic (7px optical size serif) vs 900 grotesque (200px) — maximum possible gap
   forbidden: tasteful design choices, rounded corners on type, Inter, any font below weight 700 at display
 
+  optical corrections (typography-optics):
+    display: Druk Wide Heavy / Founders Grotesk 900, 160–200px → tracking -0.04em to -0.05em (Table 2: 96px+ 900w; violence requires optical tightening or gaps read as broken)
+    support: Plantin / Mercury 400 italic, 14px → tracking 0.00em (caption size; no adjustment needed)
+    data: display family 900, 90px → tracking -0.03em (Table 2: 72–96px 900w)
+    CJK display (if Chinese): 160px 900w → -0.05em (-0.06em with video modifier; extreme size demands extreme tightening)
+    all-caps display: tracking -0.04em minimum (optical gap at 160–200px all-caps is magnified; tighten aggressively)
+    accent-color data word: same tracking as display; do not open-track for color differentiation
+
 Frame Composition:
   hero: type at 160–200px, clipped by frame edges intentionally — letters bleed off left, right, or top
   secondary: a flat accent color block (50–60% of frame) behind the type; no gradient, no texture
@@ -414,6 +497,7 @@ Motion Posture:
   hold: 1.5s — the poster must be read but also felt as an assault
   transition: hard cut only — black flash (2 frames, 66ms) between scenes; no dissolve
   forbidden motion: easing that softens the impact, fade-in, any entrance slower than 200ms
+  motion safety: slam travel distance x:-200px in 200ms — do not reduce travel to soften; CJK text if present must slam as Latin does (no opacity-only substitution in this recipe); 66ms black flash between scenes is mandatory (2 frames at 30fps); hold 1.5s; no text element may use any ease except power4.out or steps(1)
   GSAP ease: "power4.out" for slams; "steps(1)" for flash cuts; never "sine", never "back"
 
 Sonic Character:
@@ -450,6 +534,15 @@ Typography (video roles):
   weight contrast: 400 vs 700 — enough gap to create hierarchy but not intimidation
   forbidden: Inter at 400 (too cold), any weight above 800, any serif, any monospace
 
+  optical corrections (typography-optics):
+    display: Söhne / Helvetica Now Display 700, 72px → tracking -0.02em (Table 2: 56–72px 600–700w)
+    support: same family 400, 24px → tracking 0.00em (Table 2: 20–28px 400w)
+    data: same family 700, 48px → tracking -0.01em (Table 2: 40–56px 700w; friendly weight still tightens)
+    CJK display (if Chinese): 72px 700w → -0.02em (-0.03em with video modifier)
+    mixed CJK+Latin: Latin font-size ×1.09 OR Latin weight drop to 400 when CJK is 700; warmth is preserved
+    line-height display: 1.10 (friendly but not cramped; back.out bounce needs lh room)
+    line-height support: 1.50
+
 Frame Composition:
   hero: Freddie-style illustration element (character, line-drawn prop) in 40% of frame, tilted ±5°
   secondary: headline text block in opposing quadrant; never both centered; always asymmetric
@@ -461,6 +554,7 @@ Motion Posture:
   hold: 2.0s — the character should feel like it's there, present, looking at you
   transition: a friendly wipe (yellow flood fill left-to-right, 300ms) then reveal next scene
   forbidden motion: serious/stiff easing, sharp cuts, anything that removes the playfulness
+  motion safety: illustration bounce y:-20px scale 0.9→1.0 — overshoot from back.out(1.4) must not exceed scale 1.04 at peak; CJK text if present uses power2.out only (no back.out on CJK — overshoot illegible); text elements max Y travel 12px at 500ms power2.out; hold 2.0s; yellow wipe must complete in 300ms with no easing
   GSAP ease: "back.out(1.4)" for illustration entrances; "power2.out" for text; "none" for yellow wipe
 
 Sonic Character:
@@ -497,6 +591,16 @@ Typography (video roles):
   weight contrast: 400 italic display vs 400 roman support — differentiation through posture, not weight
   forbidden: sans at display size, any bold above 500, pure white ground, cold-cast neutrals
 
+  optical corrections (typography-optics):
+    display: GT Sectra Display / Domaine Display 400 italic, 80px → tracking -0.01em (Table 2: 72–96px 400w italic; slight tightening, never open; editorial warmth comes from the italic not from tracking)
+    support: Source Serif 400, 22px → tracking 0.00em
+    pull-quote oversized: display font 400 italic, 40px → tracking 0.00em (Table 2: 40–56px 400w; no correction needed at this size)
+    data label: Söhne 400, 16px → tracking 0.00em
+    CJK display (if Chinese): 80px 400w → -0.01em (-0.02em with video modifier); italic posture inapplicable to CJK — use upright weight 400 with tracking correction only
+    mixed-script: if CJK title on book cover, Latin support label below in Source Serif roman only
+    line-height display: 1.20 (italic at 80px; generous but not loose)
+    line-height support: 1.65 (as specified)
+
 Frame Composition:
   hero: the physical book object (cover photograph or render), occupying 40% of frame — the object is precious
   secondary: a pull-quote in oversized italic serif (display font, 40px), hung at left margin
@@ -508,6 +612,7 @@ Motion Posture:
   hold: 3.0s minimum; the book cover deserves study; the viewer should read the title in the hold
   transition: 1200ms cross-dissolve — slow like turning a page; Ken Burns on cover photography at 0.98→1.02
   forbidden motion: fast cuts, scale snaps, bounce, anything that makes the book feel cheap
+  motion safety: book rotation 0→4°→0° max delta 4° — do not increase for drama; opacity entrance 800ms minimum; CJK text on book cover no rotation animate (opacity-only if CJK title present); Ken Burns zoom delta ≤ 4% over duration — imperceptible per-frame; hold 3.0s minimum; 1200ms dissolve is a hard floor
   GSAP ease: "sine.inOut" for rotation; "expo.out" for initial opacity; "sine.inOut" for Ken Burns
 
 Sonic Character:
@@ -544,6 +649,15 @@ Typography (video roles):
   weight contrast: 400 (#888888) vs 500–600 (#EDEDED) — contrast through weight AND luminosity
   forbidden: warm-toned fonts, serif of any kind, purple→pink gradient on text (the AI cliché)
 
+  optical corrections (typography-optics):
+    display: Geist Sans 500 / Inter Tight 600, 68px → tracking -0.02em (Table 2: 56–72px 500–600w)
+    support: Geist Sans 400, 24px → tracking 0.00em (Table 2: 20–28px 400w)
+    data: Geist Mono 400, 20px → tracking 0em strictly; tabular-nums enforced; monospace optical neutrality
+    CJK display (if Chinese): 68px 600w → -0.02em (-0.03em with video modifier)
+    mixed CJK+Latin: Latin font-size ×1.09 OR Latin weight drop to 400 when CJK is 600
+    terminal/code text: Geist Mono tracking 0em always; do not adjust for line length
+    line-height display: 1.12 (precision; looser than Bloomberg Terminal but tighter than humanist recipes)
+
 Frame Composition:
   hero: the gradient mesh occupies full frame in the first beat, then collapses to 30% as hero
   secondary: a terminal-style readout or product UI screenshot enters right half, 45% of frame
@@ -556,6 +670,7 @@ Motion Posture:
   transition: 300ms opacity cross-fade on text; mesh continues uninterrupted through transitions
   forbidden motion: mesh that stops entirely, bright gradient animations, anything that draws from the
     purple-pink-blue AI cliché gradient; the mesh must be cool and restrained
+  motion safety: text entrance max Y 20px at 380ms power3.out; CJK display at 68px max Y 30px at 0.38s; mesh drift velocity ≤ 0.5px/frame (8px over 20s loop) — imperceptible on any single frame; hold means text is static while mesh drifts; 300ms cross-fade on text is a hard ceiling; no text element may animate with linear ease
   GSAP ease: "sine.inOut" for mesh drift; "power3.out" (cubic-bezier(0.16,1,0.3,1)) for text entrances
 
 Sonic Character:

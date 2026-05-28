@@ -62,6 +62,15 @@ Layout in video differs from web layout in three ways:
 - `[3.00s+]` — hold; annotation or secondary datum fades in (300ms `sine.inOut`)
 - `[Exit]` — hard cut or typographic wipe
 
+### Motion safety
+- Headline `y: +20px, 350ms power3.out`: safe for all Latin weights and CJK 400–700 at 72–140px (velocity 57px/s — well within CJK 700w limit of 133px/s)
+- Vertical mask reveal: clip-path animation, zero motion blur — safe at any size
+- Data count-up / metric hit: numeric `textContent` or `innerHTML` change, no translate — safe
+- Annotation fade `300ms sine.inOut`: opacity-only exit, always safe
+- **Clean hold minimum**: title 1.5s; data section 1.0s per metric; no element mid-fade at frame boundary
+- **CJK tracking**: display headline 72–140px 700–900w → `letter-spacing: −0.03em`; add video modifier `−0.01em` for animated clips → final `−0.04em`; uppercase metadata 12–18px → `+0.10em`
+- **Unsafe for this school**: do not add horizontal X-translate to headline entry; left-slide is too fast if distance > 40px at 350ms
+
 ### 9:16 adaptation
 - Stack pattern: headline (top 40%), data panel (middle 35%), metadata strip (bottom 25%)
 - Headline scales to 80–100px; data panel becomes card-width (full bleed with 48px padding)
@@ -103,6 +112,15 @@ Centered text, rounded card grid, product hero image, diagonal composition, grad
 - `[3.00s+]` — hold; optional slow ambient drift (scale 1.0 → 1.01 over 6s `sine.inOut`)
 - `[Exit]` — opacity fade (600ms)
 
+### Motion safety
+- Product scale `1.04 → 1.00, 900ms sine.inOut`: delta 4%, 6.6px/s at 100px object → imperceptible motion blur; safe
+- Title mask reveal `700ms sine.inOut`: clip-path, zero motion blur — always safe
+- Subclaim fade `500ms power2.inOut`: opacity-only; safe
+- Ambient drift `scale 1.0 → 1.01, 6s sine.inOut`: 1% delta over 6s — below any perceptible threshold; safe
+- **Clean hold minimum**: 3.0s+; this school's long quiet holds are the safety feature — do not shorten below 2.0s
+- **CJK tracking**: editorial serif or grotesque 88–110px 300–400w → `letter-spacing: −0.01em`; never tight-track this school; add video modifier `−0.01em` → final `−0.02em`; maintain generous open feel
+- **Unsafe for this school**: do not add stagger burst, word-by-word fly-in, or any translate > 24px — violates the slow, unhurried motion posture
+
 ### 9:16 adaptation
 - Hero object expands to 70% of frame height (portrait-centered)
 - Title moves to top (above hero) or overlays bottom third with backing plate
@@ -143,6 +161,14 @@ Feature card row, data panel, HUD overlay on product, centered title under produ
 - `[3.00s]` — crescendo: multiple elements choreographed to beat
 - `[4.00s]` — final lockup: one frame that summarizes (1.0–1.5s hold)
 - `[Exit]` — designed transition (morph, wipe, or blackout)
+
+### Motion safety
+- **Legibility window**: every motion sequence must produce a clean hold ≥ 0.5s where text is fully opaque and untranslated — this is the "focal moment" rule; enforce with GSAP `to({}, {duration: 0.5})` after every resolve
+- **Type travel velocity**: words or characters traveling across frame must resolve within Latin/CJK velocity limits; for X-translate entries at display size (64px+), max 80px at 0.3s for Latin 900w, 30px at 0.3s for CJK 900w; long cross-frame paths must take ≥ 0.8s
+- **Variable font morph** (weight 100→900): no translate during morph — weight change alone is safe; do not combine translate + weight-morph in the same tween
+- **CJK scatter/resolve**: if CJK characters scatter individually, treat each as CJK 900w object — max scatter offset 24px per character; character grouping to resolve as a unit is always safer than per-character scatter
+- **CJK tracking on resolved state**: resolved phrase 64px variable font → `letter-spacing: −0.02em`; video modifier `−0.01em` → final `−0.03em`
+- **Camera push/pull**: scale transforms on the root canvas affect all text; if camera-push is simulated with `scale(1.0 → 1.05)` on a wrapper, text must be in a separate unscaled container
 
 ### 9:16 adaptation
 - Motion paths redesign for vertical: left/right travel → up/down travel
@@ -194,6 +220,15 @@ Static card, text entering from bottom and staying, product image with annotated
 - `[3.00s]` — smash cut to next state OR text swaps in place (instant)
 - `[Exit]` — blackout or cut; never a fade
 
+### Motion safety
+- `steps(1)` snap: zero motion duration = zero motion blur; always safe regardless of type size
+- Color accent `power4.in, 80ms`: background element, no text on it during motion — safe
+- Long hold 2.0s: the brutal stillness IS the motion strategy; do not truncate
+- **CJK tracking**: display 200–300px 900w → `letter-spacing: −0.05em`; add video modifier `−0.01em` → final `−0.06em`; density at this scale is intentional mass, do not open-track
+- **CJK at bleed scale**: never use translate-entrance for CJK text at 200px+ — snap in with `steps(1)` only; motion blur on dense strokes at that velocity is catastrophic
+- **Smash cut (instant frame swap)**: safe; the hard cut IS the animation; never replace with a fade unless switching to a different school entirely
+- **Unsafe for this school**: `back.out`, `elastic`, `bounce`, any rotation, any opacity fade on the headline — all violate the raw zero-affect aesthetic AND create artifacts at 200px stroke densities
+
 ### 9:16 adaptation
 - Scale type to fill portrait frame — bleed on all sides in portrait feels even more aggressive
 - Color slap adapts: becomes a horizontal band instead of vertical
@@ -231,6 +266,15 @@ Rounded corner card, soft shadow, product hero image, feature list, warm backgro
 - `[2.00s+]` — optional hand-drawn mark or texture appears softly
 - `[3.00s+]` — gentle ambient motion: illustration breathes (scale 1.0 → 1.01 over 5s)
 - `[Exit]` — soft dissolve (500ms)
+
+### Motion safety
+- Illustration fade `800ms sine.inOut`: opacity-only; safe at any illustration size
+- Scale drift `1.0 → 1.01, 5s sine.inOut`: 1% delta over 5s; perceptually invisible motion blur — safe
+- Headline mask `600ms power2.inOut`: clip reveal; zero motion blur — safe
+- Subclaim and texture fades: opacity-only; safe
+- **Clean hold minimum**: 3.0s; organic warmth requires time to breathe — never shorten below 2.5s
+- **CJK tracking**: warm editorial serif 88–100px 400–700w → `letter-spacing: 0.00em` (generous, matching school's open posture); `line-height: 1.45–1.60`; never tight-track in this school
+- **Unsafe for this school**: kinetic type burst, word-by-word fly-in, `power4.out` impact entrances, any stagger delay < 100ms — these break the warmth and introduce motion artifacts that clash with soft material
 
 ### 9:16 adaptation
 - Hero illustration fills portrait top 55%; title occupies bottom 40%
@@ -273,6 +317,16 @@ Cold gray background, data chart hero, centered symmetrical layout, HUD, feature
 - `[1.50s–4s]` — product behavior loop continues as anchor; claim holds
 - `[4.00s]` — product state reaches completion (render progress hits 100%, final state)
 - `[Exit]` — hard cut or precise mask (200ms)
+
+### Motion safety
+- UI frame appearance `100ms fade`: UI chrome is a background element, fast fade is safe
+- Claim entrance `250ms power3.out`: Latin 56–72px 400–700w at 250ms — safe; CJK equivalent at 56–72px needs ≥ 300ms to avoid blur
+- Product behavior loop: UI state changes are DOM/CSS changes with no text translate — safe
+- Hard cut / mask exit `200ms`: safe
+- **Clean hold minimum**: 1.5s for feature claim; UI behavior loop counts as the anchor, not as hold time for the text
+- **CJK tracking**: humanist sans 56–72px 400–700w → `letter-spacing: −0.02em`; add video modifier `−0.01em` → final `−0.03em`; keyboard chip labels 11–14px uppercase → `+0.06em`; mono data `letter-spacing: 0` always
+- **Mixed CJK+Latin on claim line**: Latin receives `+10%` font-size boost or drops one weight step; do not let CJK dominate the claim without a size strategy
+- **Unsafe for this school**: rotation on UI panels, `bounce`/`elastic` on any UI element, `linear` ease on claim text — linear ease creates visible blur throughout the tween duration
 
 ### 9:16 adaptation
 - UI panel stacks above claim text in portrait

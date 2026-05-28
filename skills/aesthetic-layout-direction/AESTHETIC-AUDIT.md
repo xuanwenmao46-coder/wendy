@@ -93,11 +93,20 @@ is where good design intent becomes (or fails to become) good design execution.
    - Hero image: sharp at 1280×720 render size; no JPEG artifact visible on bg or hero
    - Text legibility during motion: the text must be readable while animating — test by pausing 1–3 frames before the landing position
    - No text/background near-match: a 3:1 contrast ratio minimum at all animated positions, not just the final hold
+6. **Optical typography checks** — run `typography-optics` and verify:
+   - Display text tracking matches the optical table value for the assigned size and weight. A 96px 900-weight headline with `letter-spacing: 0` is incorrect — it should be −0.03em to −0.05em. `letter-spacing: 0` at display size is always a red flag.
+   - CJK text at 80px+ has tracking ≤ −0.02em. CJK 900 weight at 100px should be −0.04em minimum.
+   - No uppercase label is missing its open tracking (+0.06em to +0.12em). Uppercase labels without open tracking look like a web default.
+   - Mono/data columns have `font-variant-numeric: tabular-nums` and `letter-spacing: 0`. Any tracking on tabular columns breaks number alignment.
+   - Mixed CJK+Latin lines have received mixed-line compensation (Latin +8–12% size or −1 weight step). A line where Chinese characters and Latin letters sit at identical visual weight has not been corrected.
 
 **School-specific craft notes**:
 - **bloomberg-terminal**: craft score cannot exceed 7 if any font is not monospaced, any border is > 1px, or any corner has radius > 2px. These are not polish items — they are recipe requirements.
 - **muji-kenya-hara**: craft score requires font weight ≤ 400 (no 500, no 600). A single bold element drops the score by 2 points. Weight restraint is the craft discipline.
 - **field-io**: craft is evaluated on the generative system's quality — does the particle/mesh system behave consistently? Does the type resolve cleanly from the field, or does it feel disconnected?
+- **CJK-containing clips (any school)**: craft score cannot exceed 7 if any CJK display text (64px+) uses `letter-spacing: 0`. The density of Chinese glyphs requires optical correction at display size. Score 8+ requires confirmed tracking correction and video modifier applied.
+- **Mixed-script clips**: craft score cannot exceed 7 if a single line contains both CJK and Latin characters at the same `font-size` and `font-weight` without compensation. The optical discrepancy between scripts is visible and systematic.
+- **All schools**: `bounce` and `elastic` GSAP eases on text are automatic −3 points on Motion Coherence AND −1 point on Craft Quality. They signal template behavior, not design intent.
 
 ---
 

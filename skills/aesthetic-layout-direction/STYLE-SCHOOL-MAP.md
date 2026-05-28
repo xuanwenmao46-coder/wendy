@@ -61,7 +61,9 @@ This document maps all 6 design schools to video-native tokens. Values are speci
 | Support (Pentagram) | same grotesque as display | 400 | 26–34px | 76–96px |
 
 - **Weight contrast:** Pentagram: 400 (support) vs 900 (display) — maximum. Terminal: mono 400 throughout — no weight contrast.
-- **Letter-spacing:** Display grotesque: -0.02em. Monospace: 0 (tabular natural). Uppercase metadata: +0.10em.
+- **Letter-spacing (Latin):** Display grotesque 96px+ 900w: −0.04em. Display grotesque 72–96px 700w: −0.02em. Monospace: 0 (tabular natural). Uppercase metadata 12–18px: +0.10em.
+- **Letter-spacing (CJK):** Display 96px+ 900w: −0.04em (−0.05em with video modifier). Display 72–96px 700w: −0.03em. Support labels: 0.00em. Uppercase CJK metadata: +0.06em.
+- **Mixed-script lines:** Latin receives −1 weight step when adjacent to CJK 900w, or Latin font-size +10%.
 - **Tabular numerals:** Always `font-variant-numeric: tabular-nums` on every data value without exception.
 - **Forbidden:** Inter at default weight, Roboto, rounded grotesques, italic on numbers, decorative serifs, Georgia.
 
@@ -79,6 +81,7 @@ This document maps all 6 design schools to video-native tokens. Values are speci
 - **Transition:** Hard cut between Pentagram poster frames. Lower-third snap (0.3s, `steps(4)`) for data swaps. Ticker: uniform `linear`, no easing.
 - **Energy level:** 4/10 — authoritative, not aggressive. Motion serves legibility.
 - **GSAP eases:** `power3.out` for baseline slides. `power4.out` for data hit counts. `linear` for ticker scroll. `steps(4)` for data flips. Never `back.out`, `elastic`, `bounce`.
+- **Motion safety limits:** CJK display text (72px+): max translate Y 40px at 0.3s; max translate X 24px at 0.3s. Latin display 900w: max Y 50px at 0.3s. Below these limits, stroke density creates unreadable motion blur. Minimum clean hold: 2.0s on data panels, 1.5s on Pentagram type displays.
 - **Key forbidden motion:** Particle systems, camera push-in, morphing type, bouncy spring, scale reveals on data panels, any effect that reads as "fancy."
 
 ### Sonic Character
@@ -145,7 +148,9 @@ Data story clips, financial brand films, quarterly results presentations, B2B Sa
 | Label / small-caps | Söhne / Helvetica Now | 400, small-caps | 18–20px | 52–60px |
 
 - **Weight contrast:** Minimal. Use 400 throughout. Never bolder than 500 (MUJI rule). Use size contrast instead of weight contrast.
-- **Letter-spacing:** Display: 0.00–0.02em (open, never tight). Small-caps labels: +0.10–0.14em. Body: 0.
+- **Letter-spacing (Latin):** Display serif 72–100px 400w: 0.00 to +0.02em — intentionally open; this is a school signature, not an optical error. Small-caps labels 18–20px: +0.10–0.14em. Body 32–38px: 0.00em.
+- **Letter-spacing (CJK):** If CJK appears in this school (rare), display 72–100px 400w: −0.01em (CJK density requires tightening even when the Latin version is open). Support: 0.00em. Never open-track CJK display in this school.
+- **Mixed-script lines:** Avoid where possible in Editorial/Minimalist — the visual density contrast is too high. If unavoidable, set CJK at display scale and Latin as a small-caps label in a separate line.
 - **Italic:** Available for serif display — a key signature move. Never italic on labels.
 - **Forbidden:** Bold weights 600+, condensed grotesques, gradient text, Inter at default weight, any sans at display scale without editorial intent, Poppins, system sans.
 
@@ -163,6 +168,7 @@ Data story clips, financial brand films, quarterly results presentations, B2B Sa
 - **Transition:** Crossfade 800ms `sine.inOut`. No wipes, no slices, no cuts.
 - **Energy level:** 2/10 — the motion should feel like the product breathing, not announcing itself.
 - **GSAP eases:** `sine.inOut` throughout. `power1.out` for product scale micro-reveal. Never `power4`, `expo`, `back`, `elastic`.
+- **Motion safety limits:** Opacity-only preferred (0px translation). If translation used: max Y 12px — the school's constraint makes any larger offset read as wrong. CJK in this school: opacity-only strictly. Minimum clean hold: 3.0s (Aesop/MUJI), 2.5s (Apple HIG).
 - **Key forbidden motion:** Kinetic type, particle systems, mask slices, camera zoom, stagger-burst entries, spring physics. The frame must feel like it is inhaling, not launching.
 
 ### Sonic Character
@@ -224,6 +230,9 @@ Luxury product launches, high-consideration B2C (cosmetics, skincare, furniture,
 
 - **Variable axes:** Use GSAP to animate `wght`, `wdth`, or `opsz` axes. The type morphing is the motion — not a decoration on top of it.
 - **Weight arc:** 300 at particle/dissolve state → 900 at resolve/lockup. The resolve is the visual payoff.
+- **Letter-spacing (Latin):** Condensed/variable at 96px+ 900w: −0.05 to −0.08em (extreme compression is the school voice). Variable font: tracking controlled by `font-variation-settings`. Standard display: −0.03 to −0.05em.
+- **Letter-spacing (CJK):** −0.04em at display size (match Latin compression energy). Video modifier −0.01em always applied. CJK must look as compressed as Latin in this school — never open-track.
+- **Mixed-script lines:** Full compression on both scripts. Latin and CJK should appear equally dense. Latin +5% size for optical equalization.
 - **Forbidden:** Static serif type. Bold-only grotesque without variable axis. Inter at default weight. Long body text passages.
 
 ### Composition
@@ -239,6 +248,7 @@ Luxury product launches, high-consideration B2C (cosmetics, skincare, furniture,
 - **Transition:** Full-state transform — the entire canvas state changes at once. No wipes or fades between generative phases.
 - **Energy level:** 9/10 — the highest-energy school. Motion is never decorative; it is the primary content.
 - **GSAP eases:** `cubic-bezier(0.83, 0, 0.17, 1)` for long-tail generative curves. `expo.out` for type resolve. `power4.inOut` for full-state transforms. `elastic.out(1, 0.3)` for physics-driven entries.
+- **Motion safety limits:** This school intentionally pushes boundaries but text must resolve. CJK 900w display: max Y 30px at 0.3s (dense strokes + fast motion = blur at any larger offset). Latin 900w condensed: max Y 50px at 0.3s. Variable font axis animation: ensure text is fully legible at every intermediate state — test freeze-frames during morphing. Minimum legible hold: 1.5s even in fast-paced Experimental clips.
 - **Key forbidden motion:** PPT-style individual element fade-ins with stagger. Static feature cards appearing one at a time. Anything that looks like a SaaS demo. The system must feel alive at all times.
 
 ### Sonic Character
@@ -300,6 +310,9 @@ Brand films and launch moments for creative studios or agencies, entertainment p
 
 - **Scale rule:** Headlines set so large they bleed past the safe area by 10–20%. Letters touching the frame edge. This is the signature move.
 - **Weight contrast:** Maximum in Businessweek (900 display vs 400 body). None in Balenciaga (one weight only). Are.na uses no weight contrast at all.
+- **Letter-spacing (Latin):** Display 130px+ 900w: −0.03 to −0.05em. Never open-track in Brutalist — tightness amplifies the aggressive mass. Body (if present, system font): 0.00em.
+- **Letter-spacing (CJK):** Display 130px+ 900w: −0.04em (−0.05em with video modifier). The brutalist mass is achieved through scale, not open spacing. CJK density at this weight + size IS the brutalist material.
+- **Mixed-script lines:** Use scale contrast as the mixer — massive CJK at 160px, Latin at 24px system font. Never mix scripts at the same visual weight in Brutalist.
 - **Forbidden:** Multiple type families. Custom display fonts in Balenciaga mode (Helvetica/Arial only). Gradient text. Elegant serifs.
 
 ### Composition
@@ -315,6 +328,7 @@ Brand films and launch moments for creative studios or agencies, entertainment p
 - **Transition:** Hard cut. No fades, no wipes, no transitions. The cut is the motion.
 - **Energy level:** 7/10 — high energy through aggression and uncomfortable silence, not through speed.
 - **GSAP eases:** `power4.in` for type drops. `steps(1)` for instant state flips. `linear` for any ticker-style movement. Never `sine`, `back`, `elastic`.
+- **Motion safety limits:** Hard cuts have zero motion blur issue. For the rare slides: CJK 900w at 160px — max X translate 0 (slam cuts only); Y translate acceptable at 60px only if duration is 0.1s or less (snap, not slide). Latin 900w: max Y 60px at 0.1s snap. The motion should feel violent, not sweeping. Minimum hold after slam: 1.5s confrontational hold — the viewer must feel uncomfortable, not confused.
 - **Key forbidden motion:** Any smooth ease that softens the impact. Particle systems. Gradient transitions between states. Any motion describable as "elegant" or "refined."
 
 ### Sonic Character
@@ -381,6 +395,9 @@ Fashion brand drop videos, editorial title sequences, counter-culture product la
 
 - **Weight contrast:** Mailchimp: 400 (body) vs 800 (hero). Stripe Press: 400 only — size contrast only. Headspace: 400 vs 600.
 - **Italic:** Wide-set italic used for Stripe Press emphasis — a key signature move of that sub-register.
+- **Letter-spacing (Latin):** Display editorial serif 72–96px 400–700w: 0.00 to +0.01em — gentle and open. Humanist sans support 26–36px 400w: 0.00em. Labels 16–20px: +0.04 to +0.06em. Never tight-track in this school.
+- **Letter-spacing (CJK):** Display 72–96px 400–700w: −0.01em (CJK minimum correction; resist going tighter — warmth requires some air). Support: 0.00em. Labels: +0.03em.
+- **Mixed-script lines:** Latin font-size +10% for equalization. Keep both scripts at warm, uncompressed weight. Never drop CJK below 400w in Warm Humanist — weight is warmth.
 - **Forbidden:** Cold sans-serif in any role for Headspace/Mailchimp. Geometric grotesque that reads as SaaS. Monospace. Condensed type.
 
 ### Composition
@@ -396,6 +413,7 @@ Fashion brand drop videos, editorial title sequences, counter-culture product la
 - **Transition:** Crossfade 500ms or soft upward drift (4–8px translate Y) during dissolve. Never hard cut.
 - **Energy level:** 4/10 for Stripe Press/Headspace. 6/10 for Mailchimp joyful moments.
 - **GSAP eases:** `sine.inOut` for body motion. `back.out(1.6)` for joyful Mailchimp bounces. `power1.out` for Stripe Press book reveals. Never `power4`, `expo`, or hard spring physics.
+- **Motion safety limits:** Bouncy motion (`back.out(1.2)`) is allowed for illustration elements only, not text. Text animations: max Y 36px at 0.4s `power2.out`. CJK display 72–96px: max Y 36px at 0.4s. Minimum clean hold: 2.0s on inspirational claims, 1.5s on supporting statements. Do not rush emotional content.
 - **Key forbidden motion:** Hard cuts. Slam-cuts. High-energy kinetic type. Particle systems. Anything urgent, aggressive, or cold.
 
 ### Sonic Character
@@ -464,7 +482,9 @@ Educational explainer videos, community brand films, creator tool launches, well
 | Label | Inter | 400 | 18–20px | 52–58px |
 
 - **Weight contrast:** 400 (body) vs 600 (display). Never heavier than 700. Confidence through precision, not through weight.
-- **Letter-spacing:** Display: -0.02em. Body: 0. Mono: 0 (natural tabular). Keyboard chips: +0.04em.
+- **Letter-spacing (Latin):** Display humanist sans 80–110px 700w: −0.02 to −0.03em. Support 26–36px 400w: 0.00em. Mono data labels 20–26px: 0.00em (tabular, no exception). Uppercase UI chips 11–13px: +0.08em.
+- **Letter-spacing (CJK):** Display 80–110px 700–900w: −0.03em (−0.04em with video modifier). Support 26–36px 400w: 0.00em. Mixed Chinese+Mono label rows: CJK at 0.00em, Mono at 0.00em — let character contrast do the visual work.
+- **Mixed-script lines:** This school most commonly mixes CJK + Latin + Mono in the same line. Apply: Latin font-size +9%, Mono at same size as Latin, CJK as base. Example: `创作引擎 · STUDIO` → CJK 28px, Latin 30.5px (+9%), Mono 28px.
 - **Keyboard chips:** Mono font, `rgba(255,255,255,0.06)` dim background, 1px hairline border `rgba(255,255,255,0.10)`, 18–22px at 720p.
 - **Forbidden:** Arial, Roboto, Open Sans. Serif in any role. Gradient text. Condensed grotesque.
 
@@ -483,6 +503,7 @@ Educational explainer videos, community brand films, creator tool launches, well
 - **Transition:** Product behavior loop as transition. Or precise mask 200ms. No crossfades except Notion mode.
 - **Energy level:** 6/10 — confident and precise, not aggressive, not slow.
 - **GSAP eases:** `cubic-bezier(0.22, 1, 0.36, 1)` (the Linear ease) for layout moves. `power2.out` for micro-feedback. `back.out(1.6)` only for Raycast glass palette appearing (spring is Raycast's brand). `steps(1)` for instant UI state changes. Never `sine.inOut` (too slow), never `elastic` (too bouncy).
+- **Motion safety limits:** `power3.out` entrance Y 24–36px at 0.3–0.4s — within safe zone for all text sizes used. Mono/data snap entrances: max Y 16px at 0.2s `power4.out`. CJK display 80–110px: max Y 36px at 0.35s — exactly at safe boundary; do not exceed. UI panel assembly X movements: max X 24px at 0.25s. Minimum clean hold: 1.8s on feature claims, 0.8s on each task list item reveal.
 - **Key forbidden motion:** Particle systems. Generative effects. Long slow fades. Gradient transitions. Camera zoom applied to the text container. Anything making the UI unreadable during the reveal.
 
 ### Sonic Character

@@ -16,6 +16,7 @@ Use this skill before writing animation code. The job is to design the static fr
 4. Write or update `DESIGN.md` before building HyperFrames HTML.
 5. If the clip uses product images or downloaded assets, apply `image-art-direction` before accepting the asset as hero.
 6. Apply `typography-selection` before choosing final fonts or rendering.
+6.5. Run `typography-optics` immediately after `typography-selection` to apply optical tracking corrections. For every text role, output the corrected CSS `letter-spacing` token using the size×weight tables. If the script contains Chinese (CJK), apply CJK density compensation and the −0.01em video modifier. Flag any animated text element that exceeds the motion velocity limits before coding begins.
 7. Design the hero frame as a poster: one clear focal point, one secondary focal point, strong negative space, visible structure.
 8. Only after the static frame works, define motion: entrance order, holds, transitions, ambient movement.
 9. Run an anti-slop audit before implementation.
@@ -252,3 +253,4 @@ Then create or update `DESIGN.md` using `DESIGN-TEMPLATE.md`.
 - For image quality and treatment, use the `image-art-direction` skill.
 - For font choice and embedding, use the `typography-selection` skill.
 - **For anchoring the visual design to a named school (Aesop, Linear, Pentagram, Field.io, etc.) before style decisions, use `aesthetic-layout-direction`.**
+- **For optical tracking correction tables, CJK compensation, and animation safety limits — run `typography-optics` after `typography-selection` has produced the font brief.**

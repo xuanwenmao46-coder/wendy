@@ -76,14 +76,16 @@ Avoid:
 
 When `aesthetic-layout-direction` has selected a design school, use the school's typography anchor as the **primary guide** — it overrides generic topic-based suggestions below:
 
-| Design School | Display voice | Support voice | Data voice | Weight contrast | Characteristic |
-|---|---|---|---|---|---|
-| Information Architecture | Bold condensed sans or confident serif | Compact neutral sans | Mono, tabular mandatory | 700 vs 900 | Grid-rigorous, no decorative letterforms |
-| Editorial / Minimalist | Refined editorial serif or precise grotesque | Very quiet humanist sans | Mono or tabular serif | 300 vs 800 | Generous tracking on display; generous line-height |
-| Motion / Experimental | Variable font or extreme condensed; type transforms on beat | Near-invisible or absent | Optional mono | Extreme (100 vs 900) | Typography IS motion; static type is not acceptable |
-| Brutalist / Raw | One extreme-weight typeface at absurd scale | System font or near-invisible | System mono | 900 only | Deliberate crudeness; no "designed" refinement |
-| Warm Humanist | Warm editorial serif with personality | Friendly humanist sans | Avoid cold mono; use tabular humanist sans | 400 vs 700 | Generous line-height; no tight tracking |
-| Modern Tool / Builder SaaS | Humanist sans or condensed grotesk | Mono or semi-mono; keyboard chip aesthetic | Mono, strict tabular | 400 vs 700 | Labels feel like UI metadata, not decoration |
+| Design School | Display voice | Support voice | Data voice | Weight contrast | Display tracking (Latin) | CJK correction |
+|---|---|---|---|---|---|---|
+| Information Architecture | Bold condensed sans or confident serif | Compact neutral sans | Mono, tabular mandatory | 700 vs 900 | −0.03 to −0.05em at 96px+ | −0.03em display; +0.10em uppercase labels |
+| Editorial / Minimalist | Refined editorial serif or precise grotesque | Very quiet humanist sans | Mono or tabular serif | 300 vs 800 | 0.00 to +0.02em (open — signature of this school) | −0.01em display; never tight-track CJK here |
+| Motion / Experimental | Variable font or extreme condensed; type transforms on beat | Near-invisible or absent | Optional mono | Extreme (100 vs 900) | −0.04 to −0.08em condensed; variable by axis | −0.04em display; match Latin tightness |
+| Brutalist / Raw | One extreme-weight typeface at absurd scale | System font or near-invisible | System mono | 900 only | −0.03 to −0.05em at 130px+; never open | −0.04em display; accept density as brutalist mass |
+| Warm Humanist | Warm editorial serif with personality | Friendly humanist sans | Avoid cold mono; use tabular humanist sans | 400 vs 700 | 0.00 to +0.01em; generous — never tight | 0.00em display; generous line-height 1.45+ |
+| Modern Tool / Builder SaaS | Humanist sans or condensed grotesk | Mono or semi-mono; keyboard chip aesthetic | Mono, strict tabular | 400 vs 700 | −0.02 to −0.03em at 80px+; −0.01em at 60px | −0.03em display; −0.04em with video modifier |
+
+**For precise tracking values at every size/weight combination**, consult `typography-optics/OPTICAL-TABLES.md`. The values in this table are school-level guidance. The optics tables provide size-exact corrections. CJK tracking always requires the additional −0.01em video modifier on top of the CJK table values — see `typography-optics/CJK-RULES.md`.
 
 If no school was selected, use topic-based choices:
 
