@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>AI 视频工具 宣传片</title>
+<style>
+/* ─── Typography Optics Tokens ───────────────────────────────────
+   Applied from typography-optics/OPTICAL-TABLES.md
+   School: Modern Tool / Builder SaaS  (Linear/Vercel anchor)
+   ─────────────────────────────────────────────────────────────── */
+:root {
+  /* CJK 100–130px 900w → Table4: -0.04em + video_mod -0.01em = -0.05em */
+  --t-cjk-display:   -0.05em;
+  /* CJK 80–100px 700w → Table4: -0.02em + video_mod -0.01em = -0.03em */
+  --t-cjk-headline:  -0.03em;
+  /* CJK 28–40px 400w → Table5: 0em (below 64px, no video modifier) */
+  --t-cjk-support:    0em;
+  /* Latin uppercase 11–13px 400w → Table3: +0.08em */
+  --t-label:         +0.08em;
+  /* Mono: always 0, tabular-nums */
+  --t-mono:           0em;
+
+  /* Palette — Linear-anchored dark-ground */
+  --bg:          #0B0D11;
+  --surface:     #141720;
+  --surface2:    #1C2132;
+  --line:        rgba(255,255,255,0.07);
+  --fg:          #E8E6E0;
+  --fg2:         rgba(232,230,224,0.50);
+  --accent:      #5B6AEB;
+  --green:       #3DDC84;
+  --green-dim:   rgba(61,220,132,0.18);
+
+  /* Layout */
+  --pad: 96px;
+  --W:   1280px;
+  --H:   720px;
+}
+
+@font-face {
+  font-family: "CJK";
+  src: url("assets/fonts/NotoSansSC-Black.ttf") format("truetype");
+  font-weight: 900;
+}
+@font-face {
+  font-family: "CJK";
+  src: url("assets/fonts/NotoSansSC-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+@font-face {
+  font-family: "CJK";
+  src: url("assets/fonts/NotoSansSC-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "CJK";
+  src: url("assets/fonts/NotoSansSC-Light.ttf") format("truetype");
+  font-weight: 300;
+}
+@font-face {
+  font-family: "Mono";
+  src: url("assets/fonts/JetBrainsMono-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Mono";
+  src: url("assets/fonts/JetBrainsMono-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+#canvas {
+  width: var(--W);
+  height: var(--H);
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* Subtle noise overlay — reduces video banding */
+#canvas::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.5;
+}
+
+/* Top accent separator (Linear-style) */
+#canvas::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent) 30%, var(--accent) 70%, transparent);
+  opacity: 0;
+  z-index: 90;
+}
+
+.section {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════
+   S1 — 想法很多，成片总卡住。
+   ═══════════════════════════════════════════ */
+#s1 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 var(--pad);
+}
+#s1-rule {
+  position: absolute;
+  left: calc(var(--pad) - 24px);
+  top: 50%;
+  width: 3px;
+  height: 0;
+  background: var(--accent);
+  transform: translateY(-50%);
+}
+#s1-label {
+  font: 400 11px/1 "Mono";
+  letter-spacing: var(--t-label);
+  text-transform: uppercase;
+  color: var(--fg2);
+  margin-bottom: 28px;
+  opacity: 0;
+}
+#s1-main {
+  /* CJK 104px 900w → -0.05em */
+  font: 900 104px/1.05 "CJK";
+  letter-spacing: var(--t-cjk-display);
+  color: var(--fg);
+  opacity: 0;
+}
+#s1-sub {
+  font: 300 26px/1.50 "CJK";
+  letter-spacing: var(--t-cjk-support);
+  color: var(--fg2);
+  margin-top: 24px;
+  opacity: 0;
+}
+
+/* ═══════════════════════════════════════════
+   S2 — 脚本、画面、节奏，被拆成一堆零散任务。
+   ═══════════════════════════════════════════ */
+#s2 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 var(--pad);
+}
+.chip-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+.chip {
+  font: 400 12px/1 "Mono";
+  letter-spacing: var(--t-label);
+  text-transform: uppercase;
+  color: var(--fg2);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  padding: 9px 18px;
+  border-radius: 3px;
+  opacity: 0;
+}
+#s2-main {
+  /* CJK 82px 900w → -0.03em (80-100px 900w: -0.03em + vid -0.01em)*/
+  font: 900 82px/1.10 "CJK";
+  letter-spacing: var(--t-cjk-headline);
+  color: var(--fg);
+  opacity: 0;
+}
+#s2-sub {
+  font: 300 24px/1.50 "CJK";
+  letter-spacing: var(--t-cjk-support);
+  color: var(--fg2);
+  margin-top: 20px;
+  opacity: 0;
+}
+
+/* ═══════════════════════════════════════════
+   S3 — 输入主题，创作引擎启动。
+   ═══════════════════════════════════════════ */
+#s3 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 var(--pad);
+}
+#s3-inputbox {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px 22px;
+  width: 540px;
+  margin-bottom: 44px;
+  opacity: 0;
+}
+#s3-input-tag {
+  font: 400 10px/1 "Mono";
+  letter-spacing: var(--t-label);
+  text-transform: uppercase;
+  color: var(--fg2);
+  flex-shrink: 0;
+}
+#s3-input-sep {
+  width: 1px;
+  height: 18px;
+  background: var(--line);
+  flex-shrink: 0;
+}
+#s3-typed {
+  font: 400 16px/1 "CJK";
+  letter-spacing: var(--t-cjk-support);
+  color: var(--fg);
+  flex: 1;
+}
+#s3-cursor {
+  width: 1.5px;
+  height: 18px;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+#s3-badge {
+  position: absolute;
+  top: 44px; right: var(--pad);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+}
+#s3-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+}
+#s3-badge-text {
+  font: 400 10px/1 "Mono";
+  letter-spacing: var(--t-label);
+  text-transform: uppercase;
+  color: var(--green);
+}
+#s3-headline {
+  /* CJK 96px 900w → -0.04em + -0.01em = -0.05em */
+  font: 900 96px/1.05 "CJK";
+  letter-spacing: var(--t-cjk-display);
+  color: var(--fg);
+  opacity: 0;
+}
+#s3-sub {
+  font: 300 26px/1.50 "CJK";
+  letter-spacing: var(--t-cjk-support);
+  color: var(--fg2);
+  margin-top: 16px;
+  opacity: 0;
+}
+
+/* ═══════════════════════════════════════════
+   S4 — Task Automation (3 tasks)
+   ═══════════════════════════════════════════ */
+#s4 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 var(--pad);
+  gap: 0;
+}
+#s4-label {
+  font: 400 10px/1 "Mono";
+  letter-spacing: var(--t-label);
+  text-transform: uppercase;
+  color: var(--fg2);
+  margin-bottom: 36px;
+  opacity: 0;
+}
+.task {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 20px 0;
+  border-top: 1px solid var(--line);
+  opacity: 0;
+}
+.task:last-child { border-bottom: 1px solid var(--line); }
+.task-n {
+  font: 700 10px/1 "Mono";
+  letter-spacing: var(--t-label);
+  text-transform: uppercase;
+  color: var(--fg2);
+  padding-top: 8px;
+  min-width: 48px;
+}
+.task-body { flex: 1; }
+.task-t {
+  /* CJK 32px 700w → Table5: -0.01em (below 64px, no video mod) */
+  font: 700 32px/1.15 "CJK";
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+.task-d {
+  font: 300 16px/1.50 "CJK";
+  letter-spacing: var(--t-cjk-support);
+  color: var(--fg2);
+  margin-top: 4px;
+}
+.task-bar {
+  height: 1px;
+  background: var(--line);
+  margin-top: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.task-bar-fill {
+  position: absolute;
+  left: 0; top: 0;
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+}
+.task-check-wrap {
+  display: flex;
+  align-items: center;
+  padding-top: 6px;
+}
+.task-ring {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--line);
+  display: flex; align-items: center; justify-content: center;
+}
+.task-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  opacity: 0;
+  transform: scale(0);
+}
+
+/* ═══════════════════════════════════════════
+   S5 — 脚本、画面、动效，连续编排。
+   ═══════════════════════════════════════════ */
+#s5 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 var(--pad);
+}
+#s5-label {
+  font: 400 10px/1 "Mono";
+  letter-spacing: var(--t-label);
+  text-transform: uppercase;
+  color: var(--fg2);
+  margin-bottom: 28px;
+  opacity: 0;
+}
+#s5-headline {
+  /* CJK 78px 900w → -0.03em */
+  font: 900 78px/1.10 "CJK";
+  letter-spacing: var(--t-cjk-headline);
+  color: var(--fg);
+  margin-bottom: 44px;
+  opacity: 0;
+}
+#s5-tracks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  opacity: 0;
+}
+.tl-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.tl-lbl {
+  font: 400 10px/1 "Mono";
+  letter-spacing: var(--t-label);
+  text-transform: uppercase;
+  color: var(--fg2);
+  min-width: 44px;
+}
+.tl-rail {
+  flex: 1;
+  height: 28px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+.tl-fill {
+  position: absolute;
+  left: 0; top: 0;
+  height: 100%;
+  width: 0%;
+  border-radius: 2px;
+}
+.tl-fill.a { background: linear-gradient(90deg, #5B6AEB 0%, #7B8AFF 100%); }
+.tl-fill.b { background: linear-gradient(90deg, #3DDC84 0%, #5DEEAA 100%); }
+.tl-fill.c { background: linear-gradient(90deg, #F7A03A 0%, #FFB85C 100%); }
+
+/* ═══════════════════════════════════════════
+   S6 — 把复杂交给系统，把表达，留给你。
+   ═══════════════════════════════════════════ */
+#s6 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 var(--pad);
+}
+#s6-l1 {
+  font: 900 76px/1.10 "CJK";
+  letter-spacing: var(--t-cjk-headline);
+  color: var(--fg);
+  opacity: 0;
+}
+#s6-l2 {
+  font: 300 76px/1.10 "CJK";
+  letter-spacing: var(--t-cjk-headline);
+  color: var(--fg2);
+  opacity: 0;
+}
+#s6-l2 em {
+  font-style: normal;
+  font-weight: 900;
+  color: var(--fg);
+  letter-spacing: var(--t-cjk-headline);
+}
+
+/* ═══════════════════════════════════════════
+   S7 — 开始创作  (Final lockup)
+   ═══════════════════════════════════════════ */
+#s7 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 var(--pad);
+}
+#s7-eyebrow {
+  font: 400 10px/1 "Mono";
+  letter-spacing: var(--t-label);
+  text-transform: uppercase;
+  color: var(--fg2);
+  margin-bottom: 28px;
+  opacity: 0;
+}
+#s7-headline {
+  /* CJK 116px 900w → -0.04em + video -0.01em = -0.05em */
+  font: 900 116px/1.0 "CJK";
+  letter-spacing: var(--t-cjk-display);
+  color: var(--fg);
+  margin-bottom: 40px;
+  opacity: 0;
+}
+#s7-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--accent);
+  font: 700 19px/1 "CJK";
+  letter-spacing: -0.01em;
+  color: #fff;
+  padding: 16px 36px;
+  border-radius: 6px;
+  width: fit-content;
+  opacity: 0;
+}
+#s7-note {
+  font: 300 20px/1.50 "CJK";
+  letter-spacing: var(--t-cjk-support);
+  color: var(--fg2);
+  margin-top: 28px;
+  opacity: 0;
+}
+#s7-mark {
+  position: absolute;
+  bottom: 44px; right: var(--pad);
+  font: 400 9px/1 "Mono";
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(232,230,224,0.18);
+  opacity: 0;
+}
+</style>
+</head>
+<body>
+<div id="canvas">
+
+  <!-- S1: 想法很多，成片总卡住。 -->
+  <section id="s1" class="section">
+    <div id="s1-rule"></div>
+    <div id="s1-label">PROBLEM</div>
+    <div id="s1-main">想法很多，<br>成片总卡住。</div>
+    <div id="s1-sub">每个创作者都遇到过的困境</div>
+  </section>
+
+  <!-- S2: 脚本、画面、节奏，被拆成一堆零散任务。 -->
+  <section id="s2" class="section">
+    <div class="chip-row">
+      <div class="chip" id="c1">脚本</div>
+      <div class="chip" id="c2">画面</div>
+      <div class="chip" id="c3">节奏</div>
+    </div>
+    <div id="s2-main">被拆成一堆零散任务。</div>
+    <div id="s2-sub">每一环节都需要单独处理，创作流程断成碎片</div>
+  </section>
+
+  <!-- S3: 输入主题，创作引擎启动。 -->
+  <section id="s3" class="section">
+    <div id="s3-inputbox">
+      <div id="s3-input-tag">主题</div>
+      <div id="s3-input-sep"></div>
+      <div id="s3-typed"></div>
+      <div id="s3-cursor"></div>
+    </div>
+    <div id="s3-headline">创作引擎，<br>启动。</div>
+    <div id="s3-sub">输入主题，系统接管其余</div>
+    <div id="s3-badge">
+      <div id="s3-dot"></div>
+      <div id="s3-badge-text">ENGINE ACTIVE</div>
+    </div>
+  </section>
+
+  <!-- S4: 三个任务自动化 -->
+  <section id="s4" class="section">
+    <div id="s4-label">AUTOMATION · 3 TASKS</div>
+
+    <div class="task" id="t1">
+      <div class="task-n">01</div>
+      <div class="task-body">
+        <div class="task-t">把主题拆成 30 秒叙事结构</div>
+        <div class="task-d">完整叙事脉络自动生成</div>
+        <div class="task-bar"><div class="task-bar-fill" id="p1"></div></div>
+      </div>
+      <div class="task-check-wrap">
+        <div class="task-ring" id="r1"><div class="task-dot" id="d1"></div></div>
+      </div>
+    </div>
+
+    <div class="task" id="t2">
+      <div class="task-n">02</div>
+      <div class="task-body">
+        <div class="task-t">生成镜头、标题、画面节奏</div>
+        <div class="task-d">完整视觉节奏方案</div>
+        <div class="task-bar"><div class="task-bar-fill" id="p2"></div></div>
+      </div>
+      <div class="task-check-wrap">
+        <div class="task-ring" id="r2"><div class="task-dot" id="d2"></div></div>
+      </div>
+    </div>
+
+    <div class="task" id="t3">
+      <div class="task-n">03</div>
+      <div class="task-body">
+        <div class="task-t">自动组织成可渲染时间线</div>
+        <div class="task-d">一键输出完整制作时间线</div>
+        <div class="task-bar"><div class="task-bar-fill" id="p3"></div></div>
+      </div>
+      <div class="task-check-wrap">
+        <div class="task-ring" id="r3"><div class="task-dot" id="d3"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S5: 脚本、画面、动效，连续编排。 -->
+  <section id="s5" class="section">
+    <div id="s5-label">CONTINUOUS EDITING</div>
+    <div id="s5-headline">脚本、画面、动效，<br>连续编排。</div>
+    <div id="s5-tracks">
+      <div class="tl-row">
+        <div class="tl-lbl">脚本</div>
+        <div class="tl-rail"><div class="tl-fill a" id="tl1"></div></div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-lbl">画面</div>
+        <div class="tl-rail"><div class="tl-fill b" id="tl2"></div></div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-lbl">动效</div>
+        <div class="tl-rail"><div class="tl-fill c" id="tl3"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- S6: 把复杂交给系统，把表达，留给你。 -->
+  <section id="s6" class="section">
+    <div id="s6-l1">把复杂交给系统，</div>
+    <div id="s6-l2">把表达，留给<em>你</em>。</div>
+  </section>
+
+  <!-- S7: 开始创作 (Final lockup) -->
+  <section id="s7" class="section">
+    <div id="s7-eyebrow">AI VIDEO STUDIO</div>
+    <div id="s7-headline">开始创作</div>
+    <div id="s7-btn">开始创作 →</div>
+    <div id="s7-note">输入主题，完成其余。</div>
+    <div id="s7-mark">WENDY · AI VIDEO STUDIO · 2025</div>
+  </section>
+
+</div><!-- /#canvas -->
+
+<script src="assets/gsap.min.js"></script>
+<script>
+(function () {
+  /* ─ helpers ─ */
+  function show(id) {
+    const el = document.getElementById(id);
+    el.style.opacity    = '1';
+    el.style.visibility = 'visible';
+  }
+  function hide(id) {
+    const el = document.getElementById(id);
+    el.style.opacity    = '0';
+    el.style.visibility = 'hidden';
+  }
+
+  /* ─ initial Y offsets (motion safety rules from typography-optics)
+       CJK 100px+ 900w: max safe Y = 30px/0.3s  → use 16px
+       CJK 80px   900w: max safe Y = 40px/0.3s  → use 20px
+       CJK 32px   700w: safe at 40px             → use 20px
+       Latin / small support: use 16px
+     ─ */
+  gsap.set('#s1-main',            { y: 16 });   // 104px 900w CJK
+  gsap.set('#s1-sub',             { y: 16 });
+  gsap.set('#s2-main',            { y: 20 });   // 82px 900w CJK
+  gsap.set('#s2-sub',             { y: 16 });
+  gsap.set('#s3-inputbox',        { y: 16 });
+  gsap.set('#s3-headline',        { y: 16 });   // 96px 900w CJK
+  gsap.set('#s3-sub',             { y: 16 });
+  gsap.set(['#t1','#t2','#t3'],   { y: 16 });
+  gsap.set('#s5-headline',        { y: 20 });   // 78px 900w CJK
+  gsap.set('#s6-l1',              { y: 20 });   // 76px 900w CJK
+  gsap.set('#s6-l2',              { y: 20 });
+  gsap.set('#s7-headline',        { y: 16 });   // 116px 900w CJK
+  gsap.set('#s7-btn',             { y: 16 });
+  gsap.set('#s7-note',            { y: 12 });
+
+  /* ─ typing helper: pre-build spans ─ */
+  (function buildTypingSpans() {
+    const txt = 'AI 视频营销片';
+    const el  = document.getElementById('s3-typed');
+    txt.split('').forEach(ch => {
+      const sp = document.createElement('span');
+      sp.textContent = ch;
+      sp.style.opacity = '0';
+      el.appendChild(sp);
+    });
+  })();
+
+  /* ─ GSAP master timeline ─ */
+  const T = gsap.timeline({ paused: false });
+  window.__timelines = { root: T };
+
+  /* ══════════════════════════════════════════
+     S1  [0 – 3.4s]  想法很多，成片总卡住。
+     ══════════════════════════════════════════ */
+  T.addLabel('s1')
+   .call(() => show('s1'))
+   .to('#s1-rule',  { height: 112, duration: 0.4, ease: 'power3.out' })
+   .to('#s1-label', { opacity: 1, duration: 0.3, ease: 'power2.out' }, '-=0.2')
+   .to('#s1-main',  { opacity: 1, y: 0, duration: 0.45, ease: 'power4.out' }, '-=0.1')
+   .to('#s1-sub',   { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }, '-=0.1')
+   .to({}, { duration: 1.8 })   /* clean hold ≥1.5s ✓ */
+   .to('#s1',       { opacity: 0, duration: 0.3, ease: 'power2.in' })
+   .call(() => hide('s1'));
+
+  /* ══════════════════════════════════════════
+     S2  [3.4 – 7.0s]  被拆成一堆零散任务。
+     ══════════════════════════════════════════ */
+  T.addLabel('s2')
+   .call(() => show('s2'))
+   .to('#c1', { opacity: 1, duration: 0.22, ease: 'power3.out' })
+   .to('#c2', { opacity: 1, duration: 0.22, ease: 'power3.out' }, '-=0.10')
+   .to('#c3', { opacity: 1, duration: 0.22, ease: 'power3.out' }, '-=0.10')
+   .to('#s2-main', { opacity: 1, y: 0, duration: 0.45, ease: 'power4.out' }, '-=0.05')
+   .to('#s2-sub',  { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }, '-=0.1')
+   .to({}, { duration: 1.9 })   /* clean hold ✓ */
+   .to('#s2', { opacity: 0, duration: 0.3, ease: 'power2.in' })
+   .call(() => hide('s2'));
+
+  /* ══════════════════════════════════════════
+     S3  [7.0 – 11.4s]  创作引擎，启动。
+     ══════════════════════════════════════════ */
+  T.addLabel('s3')
+   .call(() => show('s3'))
+   .to('#s3-inputbox', { opacity: 1, y: 0, duration: 0.35, ease: 'power3.out' })
+   /* typing: stagger spans 0→1 */
+   .to('#s3-typed span', { opacity: 1, stagger: 0.08, duration: 0.01, ease: 'none' }, '+=0.2')
+   /* cursor blink: 3 blinks */
+   .to('#s3-cursor', { opacity: 0, repeat: 3, yoyo: true, duration: 0.18, ease: 'none' }, '+=0.2')
+   .to('#s3-badge',    { opacity: 1, duration: 0.3, ease: 'power2.out' })
+   .to('#s3-headline', { opacity: 1, y: 0, duration: 0.45, ease: 'power4.out' }, '-=0.1')
+   .to('#s3-sub',      { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }, '-=0.1')
+   .to({}, { duration: 1.3 })   /* clean hold ✓ */
+   .to('#s3', { opacity: 0, duration: 0.3, ease: 'power2.in' })
+   .call(() => hide('s3'));
+
+  /* ══════════════════════════════════════════
+     S4  [11.4 – 21.1s]  3 Tasks
+     ══════════════════════════════════════════ */
+  T.addLabel('s4')
+   .call(() => show('s4'))
+   .to('#s4-label', { opacity: 1, duration: 0.3, ease: 'power2.out' })
+
+   /* Task 1 */
+   .to('#t1', { opacity: 1, y: 0, duration: 0.35, ease: 'power3.out' }, '+=0.1')
+   .to('#p1', { width: '100%', duration: 1.3, ease: 'power2.inOut' })
+   .to('#r1', { borderColor: 'var(--green)', duration: 0.2 })
+   .to('#d1', { opacity: 1, scale: 1, duration: 0.2, ease: 'power4.out' })
+   .to({}, { duration: 0.25 })
+
+   /* Task 2 */
+   .to('#t2', { opacity: 1, y: 0, duration: 0.35, ease: 'power3.out' })
+   .to('#p2', { width: '100%', duration: 1.3, ease: 'power2.inOut' })
+   .to('#r2', { borderColor: 'var(--green)', duration: 0.2 })
+   .to('#d2', { opacity: 1, scale: 1, duration: 0.2, ease: 'power4.out' })
+   .to({}, { duration: 0.25 })
+
+   /* Task 3 */
+   .to('#t3', { opacity: 1, y: 0, duration: 0.35, ease: 'power3.out' })
+   .to('#p3', { width: '100%', duration: 1.3, ease: 'power2.inOut' })
+   .to('#r3', { borderColor: 'var(--green)', duration: 0.2 })
+   .to('#d3', { opacity: 1, scale: 1, duration: 0.2, ease: 'power4.out' })
+
+   .to({}, { duration: 1.1 })   /* all-done clean hold ✓ */
+   .to('#s4', { opacity: 0, duration: 0.3, ease: 'power2.in' })
+   .call(() => hide('s4'));
+
+  /* ══════════════════════════════════════════
+     S5  [21.1 – 25.2s]  连续编排。
+     ══════════════════════════════════════════ */
+  T.addLabel('s5')
+   .call(() => show('s5'))
+   .to('#s5-label',    { opacity: 1, duration: 0.3, ease: 'power2.out' })
+   .to('#s5-headline', { opacity: 1, y: 0, duration: 0.45, ease: 'power4.out' }, '-=0.1')
+   .to('#s5-tracks',   { opacity: 1, duration: 0.3, ease: 'power2.out' }, '-=0.1')
+   .to('#tl1', { width: '88%', duration: 0.85, ease: 'power3.inOut' })
+   .to('#tl2', { width: '93%', duration: 0.85, ease: 'power3.inOut' }, '-=0.55')
+   .to('#tl3', { width: '78%', duration: 0.85, ease: 'power3.inOut' }, '-=0.55')
+   .to({}, { duration: 1.3 })   /* clean hold ✓ */
+   .to('#s5', { opacity: 0, duration: 0.3, ease: 'power2.in' })
+   .call(() => hide('s5'));
+
+  /* ══════════════════════════════════════════
+     S6  [25.2 – 28.7s]  价值主张
+     ══════════════════════════════════════════ */
+  T.addLabel('s6')
+   .call(() => show('s6'))
+   .to('#s6-l1', { opacity: 1, y: 0, duration: 0.45, ease: 'power4.out' })
+   .to('#s6-l2', { opacity: 1, y: 0, duration: 0.45, ease: 'power4.out' }, '-=0.2')
+   .to({}, { duration: 2.2 })   /* value prop: long hold ≥2.0s ✓ */
+   .to('#s6', { opacity: 0, duration: 0.3, ease: 'power2.in' })
+   .call(() => hide('s6'));
+
+  /* ══════════════════════════════════════════
+     S7  [28.7 – 30.5s]  开始创作 (Final lockup)
+     ══════════════════════════════════════════ */
+  T.addLabel('lockup')
+   .call(() => show('s7'))
+   .to('#s7-eyebrow',  { opacity: 1, duration: 0.25, ease: 'power2.out' })
+   .to('#s7-headline', { opacity: 1, y: 0, duration: 0.45, ease: 'power4.out' }, '-=0.1')
+   .to('#s7-btn',      { opacity: 1, y: 0, duration: 0.35, ease: 'power3.out' }, '-=0.15')
+   .to('#s7-note',     { opacity: 1, y: 0, duration: 0.3,  ease: 'power2.out' }, '-=0.1')
+   .to('#s7-mark',     { opacity: 1, duration: 0.3, ease: 'power2.out' }, '-=0.1')
+   .to({}, { duration: 2.0 })   /* CTA: ≥2.0s clean hold ✓ */
+   .addLabel('end');
+
+  window.__READY = true;
+})();
+</script>
+</body>
+</html>
