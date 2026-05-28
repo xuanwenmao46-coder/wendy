@@ -203,3 +203,4 @@ If any of these fields are vague, return to step 4 and reload the web recipe.
 - For GSAP choreography and beat maps: `motion-graphic-design/SKILL.md`
 - For SFX and audio mixing: `sound-design-for-motion/SKILL.md`
 - For font selection and embedding: `typography-selection/SKILL.md`
+- **For optical tracking corrections, CJK density compensation, and motion velocity limits — after `typography-selection` produces the font brief, run `typography-optics` to convert school-level tracking guidance into precise CSS `letter-spacing` tokens. STYLE-SCHOOL-MAP.md tracking values are school-level ranges; OPTICAL-TABLES.md provides size-exact corrections.**

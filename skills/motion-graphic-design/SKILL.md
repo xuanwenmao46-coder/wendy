@@ -187,3 +187,4 @@ Before implementation, produce:
 - For reusable motion modules, read [MOTION-PATTERNS.md](MOTION-PATTERNS.md).
 - For audit criteria, read [MOTION-AUDIT.md](MOTION-AUDIT.md).
 - For slide/information structure, combine with `presentation-video-design`.
+- **For text motion velocity limits, CJK blur safety, minimum hold durations, and GSAP ease legibility guide — run `typography-optics/MOTION-STABILITY.md` before finalizing any tween that moves text. Stroke-dense scripts (CJK 900w) require stricter velocity budgets than Latin. Never `linear` on text; never `bounce`/`elastic` at any size.**
