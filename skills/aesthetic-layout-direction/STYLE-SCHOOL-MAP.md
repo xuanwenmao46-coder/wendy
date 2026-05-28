@@ -191,212 +191,385 @@ Luxury product launches, high-consideration B2C (cosmetics, skincare, furniture,
 ---
 
 ## School 3 — Motion / Experimental
+**Video register: Kinetic Brand / Generative**
 
-**Named anchors**: Field.io, Active Theory, Resn.
-**Web recipes**: `field-io`, `active-theory`, `resn-storytelling`
+### Named Anchors
+- **Field.io** — generative type sequences, particle systems, design as motion system
+- **Active Theory** — cinematic WebGL, camera moves through 3D space, single maximum impact moment
+- **Resn** — narrative-driven interaction, scroll-as-camera, story as visual event
 
-### Palette (video-native, 1280×720)
-- **Background**: `#080808` (near-black) or deep saturated dark (`#0D0A1A`)
-- **Foreground**: `#F0EDE8` (warm off-white) or reactive procedural color
-- **Accent**: one electric hue — `#00EFCE` (electric mint), `#FF3D00` (signal red), `#C8FF00` (acid yellow); cycling through hue space is permitted if choreographed
-- **Material**: generative, no fixed material — elements feel like data objects, not physical materials
-- **Forbidden palette**: muted warm neutrals, paper, linen, corporate blue, gradient gradient (only structured hue cycling allowed)
+### Web Recipes to Reference
+- `field-io.md` — generative hue cycles, long-tail eases, full-state transforms, variable font axes
+- `active-theory.md` — full-screen hero scene, physics-driven particles, single dramatic payoff
+- `resn-storytelling.md` — narrative arc, single payoff frame, sound integrated from scene start
+
+### Palette (video-optimized, 1280×720)
+| Role | Hex | Note |
+|---|---|---|
+| Background | `#08080C` | Near-black with subtle blue cast; not pure black |
+| Generative primary | `#0CE0E5` | Deep cyan — one of the two generative anchor hues |
+| Generative secondary | `#5B2EFF` | Electric violet — the other anchor hue |
+| Type on dark | `#FFFFFF` | High-contrast white; type must survive any generative background |
+| Secondary type | `#A0A4B0` | Cool gray for secondary labels |
+| Particle trace | procedural | Hue-rotated from the two generative anchors; not a fixed hex |
+
+- **Note:** The palette is a starting state. The generative system cycles hue, value, and saturation through the motion sequence. The hex values above are the anchors the cycle begins from, not a fixed frame palette.
 
 ### Typography (1280×720 px)
-- **Display**: variable font preferred (e.g., Fraunces, Recursive) or extreme condensed (Compakt, Barlow Condensed 100–900) — 96–200px; transforms on beat
-- **Support**: mono or near-invisible; text serves motion, not the other way around
-- **Data**: mono; displayed only when the data IS the visual event
-- **Weight contrast**: variable axis (wght: 100 to 900 animated) or extreme static contrast
-- **Forbidden**: static body text blocks; centered unmoving type; default-weight unmodified sans
+| Role | Family | Weight / Axes | Size at 720p | Size at 4K |
+|---|---|---|---|---|
+| Display (variable) | Söhne Variable / Editorial New Variable / Recursive | morph wght 300→900 during sequence | 80–140px | 220–400px |
+| Body | single neutral grotesque | 400 | 28–34px | 80–96px |
+| Label | same as body | 400 | 18–22px | 52–64px |
+
+- **Variable axes:** Use GSAP to animate `wght`, `wdth`, or `opsz` axes. The type morphing is the motion — not a decoration on top of it.
+- **Weight arc:** 300 at particle/dissolve state → 900 at resolve/lockup. The resolve is the visual payoff.
+- **Forbidden:** Static serif type. Bold-only grotesque without variable axis. Inter at default weight. Long body text passages.
 
 ### Composition
-- **Grid**: non-standard — deliberate off-grid, rotated, or generative positioning
-- **Hero element**: the motion event is the hero — no single static object; multiple elements in choreography
-- **Focal points**: fluid — the eye is guided by motion path, not fixed composition
-- **Negative space**: dynamic — negative space appears and disappears as part of the motion
-- **Edge anchoring**: elements cross edges; bleed is intentional; frame crop is a design decision
+- **Grid:** Irregular and intentional. Content lands in unexpected positions. The grid appears and disappears as part of the motion system.
+- **Hero element:** The entire frame is the hero during the generative phase. The final resolve frame centers type or product for the lockup.
+- **Focal points:** Shifts during the sequence — 0 fixed focal points in the generative phase (distributed attention), 1 strong focal point at the lockup.
+- **Negative space:** Variable — generative phase may fill the frame; lockup returns to strong negative space.
+- **Edge anchoring:** Particles and type may bleed past safe area during the generative phase. The lockup must respect safe areas.
 
 ### Motion Posture
-- **Entrance**: physics — `expo.out`, spring physics, quintic, or custom cubic; fast (100–300ms) with anticipation
-- **Hold**: brief or none — the design lives in transition, not in stasis
-- **Transition**: match cut, object morph, camera tunnel, or wipe that IS the design
-- **GSAP eases**: custom cubic-bezier, `elastic.out(1, 0.3)`, `expo.out`; never `linear` for hero motion
-- **Energy level**: 8–10 / 10 — continuous; any hold longer than 1.5s needs strong visual justification
-- **Forbidden motion**: static entrance + hold + exit pattern; slide transition; card grid animation; anything "presentation-like"
+- **Entrance:** Particle field resolves into type — letters coalesce from distributed points over 1.5–2.5s. Or: full-canvas color/light state changes over 0.8–1.2s.
+- **Hold:** Generative phase: no hold — continuous transformation. Lockup: 2.0–3.0s strong hold.
+- **Transition:** Full-state transform — the entire canvas state changes at once. No wipes or fades between generative phases.
+- **Energy level:** 9/10 — the highest-energy school. Motion is never decorative; it is the primary content.
+- **GSAP eases:** `cubic-bezier(0.83, 0, 0.17, 1)` for long-tail generative curves. `expo.out` for type resolve. `power4.inOut` for full-state transforms. `elastic.out(1, 0.3)` for physics-driven entries.
+- **Key forbidden motion:** PPT-style individual element fade-ins with stagger. Static feature cards appearing one at a time. Anything that looks like a SaaS demo. The system must feel alive at all times.
 
 ### Sonic Character
-- **Material metaphor**: electronic synthesis — the sound is designed, not recorded
-- **Transient shape**: custom-designed; may be a swell that morphs into a hit; electronic texture
-- **Density**: continuous or dense — music and SFX are integrated, not separate
-- **Bed**: electronic ambient texture — this school permits and often requires a music bed
-- **Accent hit**: choreographed to motion beat; the hit IS the visual event
-- **Final lock**: orchestrated — silence, or a sustained frequency that holds with the final frame
-- **Forbidden sounds**: generic SFX pack whoosh, random impact, SaaS UI click
+- **Material metaphor:** Electric field and synthesized air. The sound of energy becoming form.
+- **Transient shape:** Synthetic transient with a processed tail — attack 10–30ms, tail 300–800ms processed through reverb or granular. Not organic, not mechanical.
+- **Density:** Dense during the generative phase — continuous low texture bed with punctuation events. Sparse at the lockup — one strong resolve hit, then silence.
+- **Bed:** Low granular or spectral texture bed throughout the generative phase, 6–10dB below the peak transients. This school requires a music or texture bed; silence in the generative phase feels broken.
+- **Forbidden sounds:** Acoustic instruments in the generative phase. Warm organic sounds. Paper, cloth, wood. Hard dry hits with no tail. SaaS UI clicks.
 
-### Best for
-Brand films, agency showreels, launch moments for entertainment products, experimental title sequences, festival IDs, anything where the medium itself is the message.
+### Best For
+Brand films and launch moments for creative studios or agencies, entertainment product trailers, AR/VR product launches, festival title sequences, anything where the visual experience of watching the clip is itself the product being sold.
 
-### Forbidden elements
-Static card, centered layout, text-explains-visual pattern, gentle fade, any element that could exist in a PowerPoint.
+### Forbidden Elements
+- Static layouts that reveal sequentially
+- Any scene that could be paused and mistaken for a slide deck
+- Warm or organic color palette (chamois, amber, paper) anywhere
+- Serif body type
+- Long text passages that require reading — this school is for witnessing, not reading
+
+### Anti-Slop Check
+- **Generic AI output would:** Add a particle system as a background effect behind text cards, apply a glowing cyan aura to the product name, use a slow parallax scroll, call it "cinematic."
+- **This school does instead:** The particles *are* the type — letters literally coalesce from a distributed generative field over 2 seconds, the variable font morphs from weight 300 to 900 as it resolves, color cycles from electric violet to deep cyan through the sequence, and the lockup is a held silence with a single processed synthetic hit at full resolve.
 
 ---
 
 ## School 4 — Brutalist / Raw
+**Video register: Brand Drop / Poster Motion**
 
-**Named anchors**: Are.na / Honest Web, Bloomberg Businessweek (Turley era), Balenciaga post-2017.
-**Web recipes**: `are-na`, `bloomberg-businessweek-turley`, `balenciaga-post-2017`
+### Named Anchors
+- **Bloomberg Businessweek (Turley/Ma era)** — typographic violence, magazine grid abused, copy-as-image
+- **Are.na (Honest Web)** — system fonts weaponized, content over chrome, honest web in poster form
+- **Balenciaga post-2017** — default browser styling as luxury signal, Helvetica at absurd scale
 
-### Palette (video-native, 1280×720)
-- **Background**: `#FFFFFF` (pure white — on purpose) or `#000000` (pure black — on purpose)
-- **Foreground**: `#000000` on white, or `#FFFFFF` on black — maximum contrast, no warmth
-- **Accent**: single high-voltage color — `#FF4500` (signal orange), `#FFEC00` (emergency yellow), `#0055FF` (blueprint blue) — used as a single color slap, not as decoration
-- **Material**: flat, none — no glass, no grain, no shadow; the typography IS the material
-- **Forbidden palette**: warm neutrals, off-white, cream, muted tones, gradients, multi-color palettes
+### Web Recipes to Reference
+- `bloomberg-businessweek-turley.md` — aggressive palette, oversized grotesque at bleed scale, grid-breaking
+- `are-na.md` — system typography, flat white ground, zero decoration, content-dense
+- `balenciaga-post-2017.md` — Helvetica only, all-caps, zero motion, anti-luxury luxury
+
+### Palette (video-optimized, 1280×720)
+| Role | Hex | Note |
+|---|---|---|
+| Ground | `#FFFFFF` | Pure white — the most honest background in this school |
+| Ground (dark) | `#000000` | Pure black — maximum contrast, equal honesty |
+| Ink | `#000000` | Dead black; no warm or cool cast |
+| Signal orange | `#FF3D00` | Businessweek high-alert; hero color block under type |
+| Signal yellow | `#FFE800` | Businessweek signal; color block or type overlay |
+| Blueprint blue | `#001AFF` | Businessweek alert blue |
+| Off-white surface | `#F5F4F0` | Balenciaga mode — dead-toned aesthetic |
+| Rule: | — | Never more than 3 colors per frame. One color block + black + white. The block is the whole concept. |
 
 ### Typography (1280×720 px)
-- **Display**: one extreme-weight typeface at absurd scale — Helvetica Neue Black 200–300px; Druk Wide Bold; ABC Monument Grotesk Black — bleeds past frame edge deliberately
-- **Support**: same typeface at 400 weight, or system font (Arial) intentionally
-- **Data**: mono, or absent — this school treats data as confrontational, not explanatory
-- **Weight contrast**: 900 only — or 400 vs 900; no middle weights except for emphasis reversal
-- **Letter-spacing**: -0.04em on display (tightly kerned for mass); 0 on support
-- **Forbidden**: elegant serif, rounded sans, any font with personality (personality is weakness in this school)
+| Role | Family | Weight | Size at 720p | Size at 4K |
+|---|---|---|---|---|
+| Display (Businessweek) | Founders Grotesk / Druk / ABC Whyte / Druk Wide | 800–900 | 120–200px (bleed past frame) | 340–560px |
+| Display (Balenciaga) | Helvetica Now / Arial | 400–700, all-caps | 100–160px | 280–450px |
+| Display (Are.na) | system serif (Georgia / Times) | 400 | 64–88px | 180–240px |
+| Body | small serif contrast | 400 | 20–26px | 56–72px |
+| Caption | same as body, italic | 400 italic | 16–20px | 46–56px |
+
+- **Scale rule:** Headlines set so large they bleed past the safe area by 10–20%. Letters touching the frame edge. This is the signature move.
+- **Weight contrast:** Maximum in Businessweek (900 display vs 400 body). None in Balenciaga (one weight only). Are.na uses no weight contrast at all.
+- **Forbidden:** Multiple type families. Custom display fonts in Balenciaga mode (Helvetica/Arial only). Gradient text. Elegant serifs.
 
 ### Composition
-- **Grid**: deliberately broken or hyper-rigid — no "designed" middle ground
-- **Hero element**: the word IS the hero; type fills 70–100% of frame, cropped
-- **Focal points**: 1 — the type mass or the color event; nothing competes
-- **Negative space**: zero (everything filled) OR extreme (95% empty, one word); no comfortable middle
-- **Edge anchoring**: type bleeds all four edges, or sits at exact center at enormous scale — no "nice" placement
-- **Text safe areas**: ignored intentionally — the discomfort IS the design
+- **Grid:** Deliberately broken. Content pushed off-grid, sometimes touching or overflowing edges.
+- **Hero element:** The headline is the hero. No product photography competing with type. Photography, if present, is a silhouetted cutout on a color field, awkwardly cropped on purpose.
+- **Focal points:** 1 — the oversized type or the color block. Everything else recedes.
+- **Negative space:** Near zero in Businessweek (type fills the frame). Extreme in Balenciaga (vast empty white around one centered word). Never a comfortable middle.
+- **Edge anchoring:** Left-aligned hard against the frame edge. No centering except Balenciaga dead-center lockup.
 
 ### Motion Posture
-- **Entrance**: instant cut or hard snap with no easing — `steps(1)` or `power4.in` into immediate stop
-- **Hold**: uncomfortably long (2–4s) or uncomfortably short (0.1–0.3s flash)
-- **Transition**: smash cut; frame flicker; inverted flash — never smooth
-- **GSAP eases**: `steps(1)` for snaps; `power4.in` for aggressive arrives; `linear` for holds; NO `back.out`, `elastic`, `bounce`
-- **Energy level**: 7–9 / 10 for aggressive; 1 / 10 for dead-pan long holds — no middle
-- **Forbidden motion**: smooth ease-out, gentle fade, parallax, any motion that tries to be beautiful
+- **Entrance:** Slam-cut to position — type appears in 0–1 frames with no ease. Or: type drops from above in 0.15s, `power4.in` — fast in, instant stop, no bounce.
+- **Hold:** Uncomfortably long — 2.5–5.0s on single frames. The discomfort is the design.
+- **Transition:** Hard cut. No fades, no wipes, no transitions. The cut is the motion.
+- **Energy level:** 7/10 — high energy through aggression and uncomfortable silence, not through speed.
+- **GSAP eases:** `power4.in` for type drops. `steps(1)` for instant state flips. `linear` for any ticker-style movement. Never `sine`, `back`, `elastic`.
+- **Key forbidden motion:** Any smooth ease that softens the impact. Particle systems. Gradient transitions between states. Any motion describable as "elegant" or "refined."
 
 ### Sonic Character
-- **Material metaphor**: dry paper tear, stamp, vinyl crackle, newsprint — physical, cheap, lo-fi
-- **Transient shape**: hard stamp or dry crackle — no reverb, mono, close-mic
-- **Density**: sparse but confrontational — 2–4 SFX; each one lands with force
-- **Bed**: silence or barely-audible static — never music bed unless it is also harsh
-- **Accent hit**: sharp stamp for text arrival; vinyl click for cut
-- **Final lock**: silence or a brief noise burst — never a sustained resonant note
-- **Forbidden sounds**: any "premium" audio — cinematic swell, soft whoosh, warm riser, UI click
+- **Material metaphor:** Print and paper — the sound of offset printing, vinyl, and physical media.
+- **Transient shape:** Dry thud and print stamp. Hard attack, minimal sustain, instant decay. Like a rubber stamp landing on paper.
+- **Density:** Sparse but hard — one strong impact per cut, silence in the holds.
+- **Bed:** Vinyl noise or low print-room ambience at -24dBFS. Silence is equally valid.
+- **Forbidden sounds:** Cinematic swells, airy whooshes, SaaS UI sounds, organic warmth, anything that would suit School 2 or School 5.
 
-### Best for
-Fashion brand drops, editorial music video title sequences, counter-culture product launches, art/culture brands, anything that positions itself against "nice design."
+### Best For
+Fashion brand drop videos, editorial title sequences, counter-culture product launches, campaign films for brands that want to feel like they do not care whether you like them, poster-style typographic announcements.
 
-### Forbidden elements
-Rounded corners, soft shadow, gradient background, warm palette, elegant font, any motion that tries to smooth the experience, any element that could be mistaken for "polished."
+### Forbidden Elements
+- Smooth motion of any kind
+- More than 3 colors per frame
+- Rounded corners or soft UI affordances
+- Warm or organic color palette
+- Photography as atmosphere or background texture
+- Any design element describable as "refined," "tasteful," or "polished"
+
+### Anti-Slop Check
+- **Generic AI output would:** Use a dark background with glowing white type, add a slow reveal animation, apply a subtle gradient, call it "editorial bold."
+- **This school does instead:** Sets a single word in Druk 900 at 180px, pure black on flat signal orange `#FF3D00`, bleeds the text past the top and bottom of the frame, cuts to a white frame in 0 frames, holds for 4 seconds. No glow. No reveal. No gradient. The violence of the cut is the motion design.
 
 ---
 
 ## School 5 — Warm Humanist
+**Video register: Inspirational / Lifestyle / Educational**
 
-**Named anchors**: Mailchimp Freddie era, Stripe Press, Headspace / Calm.
-**Web recipes**: `mailchimp-freddie`, `stripe-press`, `headspace-meditation`
+### Named Anchors
+- **Mailchimp (Freddie era, c.2018–2022)** — hand-drawn illustration, warm yellow, personality in microcopy
+- **Stripe Press** — books as objects, cream and ink, warm editorial photography, foil-stamp accent
+- **Headspace / Calm** — soft pastels, breathing animation, rounded everything, gentle guidance
 
-### Palette (video-native, 1280×720)
-- **Background**: `#FFF8EE` (warm cream) or `#F5EDD6` (paper tan) — Mailchimp yellow (`#FFE01B`) as full background for joyful moment only
-- **Foreground**: `#1A1410` (warm near-black) or `#2D2420` (chocolate)
-- **Accent**: `#E8721A` (terracotta) or `#4A7A5C` (sage green) or `#4A6FA5` (soft blue) — used warmly, at 10–20% of frame
-- **Material**: paper texture (Stripe Press), slight warm grain, cloth-like softness — never glass or metal
-- **Forbidden palette**: cold gray, pure white, cyan, purple, neon, dark ground backgrounds (unless it's a night scene in a story)
+### Web Recipes to Reference
+- `mailchimp-freddie.md` — yellow brand, hand-drawn illustration, pill buttons with black outline, warm microcopy
+- `stripe-press.md` — bone ground, wide-set serif italic, book-object photography, foil-stamp accent color
+- `headspace-meditation.md` — warm peach ground, rounded forms, breathing animation, muted rotating accents
+
+### Palette (video-optimized, 1280×720)
+| Role | Hex | Note |
+|---|---|---|
+| Background (Mailchimp hero) | `#FFE01B` | Mailchimp yellow — full frame hero moment only |
+| Background (Stripe Press) | `#F1ECDE` | Warm bone — paper of a well-made book |
+| Background (Headspace) | `#FFE2C5` | Warm peach — morning light |
+| Body surface | `#FFFFFF` | Clean white for content sections away from the hero |
+| Ink (Mailchimp) | `#241C15` | Warmer than standard black |
+| Ink (Stripe Press) | `#1A1A18` | Very warm near-black for editorial serif body |
+| Dark teal (Headspace) | `#1B3A47` | Calming authority color |
+| Secondary | `#88837C` | Warm gray for captions and metadata |
+| Coral accent | `#FF4D74` | Mailchimp pop — very sparingly, one use per scene max |
+| Foil teal (Stripe Press) | `#1B4B5A` | Book-specific; never as fill |
+| Foil sienna (Stripe Press) | `#A04A2A` | Book-specific; never as fill |
+| Lavender (Headspace) | `#B0A5D1` | Muted rotating accent — one per scene |
 
 ### Typography (1280×720 px)
-- **Display**: warm editorial serif (e.g., Freight Display, Canela Text, or Bookerly) — 72–110px; generous line-height; not tight-tracked
-- **Support**: friendly humanist sans (e.g., Nunito 400, Aktiv Grotesk 300, or DM Sans 400) — 28–36px; extra line-height (1.6)
-- **Data**: humanist sans with `font-variant-numeric: tabular-nums` — avoid cold mono for emotional content
-- **Weight contrast**: 400 vs 700 — visible but not harsh; this school never uses 900
-- **Letter-spacing**: 0 to +0.02em on display (open, not tight); +0.06em on metadata
-- **Forbidden**: condensed typeface, mono for body, bold display that feels aggressive, Inter at tight tracking
+| Role | Family | Weight | Size at 720p | Size at 4K |
+|---|---|---|---|---|
+| Display (Mailchimp) | Helvetica Now Display / Söhne / Inter Tight | 700–800 | 72–100px | 200–280px |
+| Display (Stripe Press) | GT Sectra / Domaine Display | 400–500, wide italic | 72–96px | 200–270px |
+| Display (Headspace) | Apercu / GT America Rounded | 600 | 64–88px | 180–240px |
+| Body | same family as display | 400 | 32–38px | 88–108px |
+| Script accent (Mailchimp) | Caveat / a single handwritten face | 400 | 36–44px sparingly | 100–120px |
+
+- **Weight contrast:** Mailchimp: 400 (body) vs 800 (hero). Stripe Press: 400 only — size contrast only. Headspace: 400 vs 600.
+- **Italic:** Wide-set italic used for Stripe Press emphasis — a key signature move of that sub-register.
+- **Forbidden:** Cold sans-serif in any role for Headspace/Mailchimp. Geometric grotesque that reads as SaaS. Monospace. Condensed type.
 
 ### Composition
-- **Grid**: organic — illustration or photography anchors the frame; text plays a supporting role
-- **Hero element**: illustration/photography/person owns 50–60% of frame; warm and human
-- **Focal points**: 2–3 — subject + title + supporting warmth element (texture, hand-drawn mark)
-- **Negative space**: 35–45%; feels like breathing room, not designed emptiness
-- **Edge anchoring**: loose — elements placed warmly, not rigidly; slight imperfection is acceptable
-- **Text safe areas**: 48px from edges; keep caption below hero, not overlapping
+- **Grid:** Generous. Mailchimp allows asymmetric illustration placement — tilted, unexpected. Stripe Press is strictly left-aligned editorial. Headspace centers the mascot with generous surrounding space.
+- **Hero element:** Mailchimp: hand-drawn illustration 35–50% of frame. Stripe Press: book photography 55–65% of frame. Headspace: mascot or breathing circle centered.
+- **Focal points:** 2 — illustration/photo + title. Or 1 — centered character with title below.
+- **Negative space:** 30–45% in Mailchimp mode, 40–55% in Stripe Press, 45–60% in Headspace. Feels like breathing room, not designed emptiness.
+- **Texture:** Subtle paper grain or cloth texture at 4–8% opacity over the background is School 5's material system.
 
 ### Motion Posture
-- **Entrance**: gentle fade or soft mask reveal (500–800ms); `sine.inOut` or `power2.out`
-- **Hold**: 1.5–2.5s; pace feels conversational, like a friend explaining
-- **Transition**: dissolve or soft wipe; never hard cut unless for emotional emphasis
-- **GSAP eases**: `sine.inOut` throughout; occasional `back.out(1.3)` for bouncy joyful moments (Mailchimp register only)
-- **Energy level**: 4 / 10 for Stripe Press/Headspace; 6 / 10 for Mailchimp joyful moments
-- **Forbidden motion**: kinetic type burst, sharp stinger, slam cut, bounce-heavy spring (except Mailchimp), speed smear
+- **Entrance:** Soft opacity fade 400–600ms `sine.inOut`. Illustration may scale 0.95 → 1.0. Bouncy lift (1.04 scale with `back.out(1.6)`) on CTA or joyful Mailchimp moments only.
+- **Hold:** 1.5–2.5s — warm but not uncomfortably long. The clip should feel like breathing.
+- **Transition:** Crossfade 500ms or soft upward drift (4–8px translate Y) during dissolve. Never hard cut.
+- **Energy level:** 4/10 for Stripe Press/Headspace. 6/10 for Mailchimp joyful moments.
+- **GSAP eases:** `sine.inOut` for body motion. `back.out(1.6)` for joyful Mailchimp bounces. `power1.out` for Stripe Press book reveals. Never `power4`, `expo`, or hard spring physics.
+- **Key forbidden motion:** Hard cuts. Slam-cuts. High-energy kinetic type. Particle systems. Anything urgent, aggressive, or cold.
 
 ### Sonic Character
-- **Material metaphor**: warm paper, wood, cloth — tactile and human
-- **Transient shape**: soft swell, gentle click, page rustle — attack is soft, tail is warm
-- **Density**: sparse to medium — 3–6 SFX with plenty of breathing room
-- **Bed**: soft acoustic texture (light piano, gentle strings, or warm ambience) — this school permits and often benefits from a music bed
-- **Micro-feedback**: paper rustle, soft air, gentle chime — small and warm
-- **Accent hit**: warm low note or soft marimba hit for reveals — never sharp
-- **Final lock**: warm sustained chord or gentle piano note — something that feels like resolution
-- **Forbidden sounds**: UI click, digital stinger, hard mechanical impact, neon buzz, cold electronic texture
+- **Material metaphor:** Soft organic — paper pages, warm room air, a human voice in a quiet space.
+- **Transient shape:** Soft swell — attack 80–120ms, warm tail 400–800ms. Rounded, never sharp.
+- **Density:** Sparse to medium — 2–4 cues per 10 seconds. Space between cues should feel like a held breath.
+- **Bed:** Warm low string pad or soft piano at -20dBFS. Or airy room tone. Always quiet under narration.
+- **Forbidden sounds:** Hard impacts, digital whooshes, broadcast snaps, cold synthetic textures, SaaS UI clicks, mechanical locks.
 
-### Best for
-Educational explainers, community product launches, creator tool demos, wellness / health brand films, personal brand / founder story, children's product, anything where trust and warmth are the primary brand values.
+### Best For
+Educational explainer videos, community brand films, creator tool launches, wellness product onboarding, nonprofit campaigns, founder story films, anything where the viewer needs to feel the brand is on their side rather than selling at them.
 
-### Forbidden elements
-Cold gray, neon, HUD elements, feature bullet lists, hard cuts, mechanical motion, any element that reads as "corporate" or "technical."
+### Forbidden Elements
+- Cold palette (blues, cyans, purples unless Headspace warm dark teal)
+- Aggressive or hard motion
+- Monospaced or condensed type
+- Dense data or feature card grids
+- Any motion describable as "hard," "precise," or "technical"
+
+### Anti-Slop Check
+- **Generic AI output would:** Use a white background, add a soft motivational whoosh, set the headline in Poppins 700, add a slow left-to-right wipe, paste a stock illustration from a library.
+- **This school does instead:** Floods the hero frame with Mailchimp yellow `#FFE01B`, places a hand-drawn illustration tilted 6° off-axis at 45% frame width, sets the headline in Inter Tight 800 with a 3px black outline on the pill CTA, uses a single warm organic soft-swell on the hero reveal, and holds for 2 seconds before the next beat — confident enough to be still.
 
 ---
 
 ## School 6 — Modern Tool / Builder SaaS
+**Video register: Product Demo / Technical**
 
-**Named anchors**: Linear, Vercel, Raycast, Notion pre-AI.
-**Web recipes**: `linear`, `vercel-mesh`, `raycast`, `notion-pre-ai`
+### Named Anchors
+- **Linear** — warm dark, hairline detail, restraint as confidence, developer-tool premium
+- **Vercel** — pure black canvas, product as hero, deployment as dramatic event
+- **Raycast** — glassy command-palette aesthetic, per-extension color, keyboard-first culture
+- **Notion (pre-AI era)** — structured block hierarchy, editorial breathing room, product as workspace
 
-### Palette (video-native, 1280×720)
-- **Background**: `#111110` (warm dark — not pure black; Linear's warm 1px-border world) or `#0A0A0A` for Vercel precision
-- **Foreground**: `#EDEBE6` (warm near-white — not pure white)
-- **Accent**: `#6366F1` (Linear violet) or `#E8FF47` (Raycast highlight) or `#FFFFFF` (pure white for Vercel contrast) — < 5% of pixel area; never used as a background
-- **Border**: `#2A2925` hairline at 1px (Linear) or `rgba(255,255,255,0.10)` (Vercel glass)
-- **Material**: UI glass or flat warm dark — no paper, no organic texture, no film grain
-- **Forbidden palette**: purple-pink-blue gradient as background, cyan glow, neon orb, warm cream background (belongs to School 5)
+### Web Recipes to Reference
+- `linear.md` — warm near-black ground, hairline borders `rgba(255,255,255,0.06)`, purple accent <5%, snappy ease
+- `raycast.md` — glass palette floating card, shortcut chips, extension color dots, spring on hero
+- `notion-pre-ai.md` — block structure, neutral ground, product behavior as the visual event
+- `vercel-mesh.md` — pure black, white type, deployment as the dramatic narrative
+
+### Palette (video-optimized, 1280×720)
+| Role | Hex | Note |
+|---|---|---|
+| Background (Linear) | `#08090A` | Near-black with warm undertone — not pure black |
+| Background (Raycast) | `#0F0F11` | Charcoal with hint of blue |
+| Background (Vercel) | `#000000` | Pure black — the one case where pure black is correct |
+| Background (Notion) | `#F7F6F3` | Slightly warm white |
+| Surface 1 | `#16171C` | First raised surface — panel backgrounds |
+| Surface 2 | `#1E1F25` | Second raised surface — card backgrounds |
+| Surface raised | `#26272E` | Highest surface — modal or active state |
+| Hairline border | `rgba(255,255,255,0.06)` | The Linear signature — faint, precise, everywhere |
+| Primary text | `#F7F8F8` | Near-white |
+| Secondary text | `#9CA3AF` | Cool gray |
+| Muted text / chips | `#6B7280` | Keyboard shortcut chips, metadata |
+| Accent (Linear) | `#5E6AD2` | Linear purple — <5% of frame pixels; never as background |
+| Accent (Raycast) | `#FF6363` | Raycast red — on icons and key CTAs only |
+| Extension colors | per-tile | Lime `#84CC16`, coral `#FB923C`, lavender `#A78BFA`, cyan `#22D3EE` — small dots only |
+| Forbidden | — | Purple-pink-blue gradient as background, cyan glow as atmosphere, warm cream (School 5's territory) |
 
 ### Typography (1280×720 px)
-- **Display**: humanist sans or condensed grotesk — Inter Display 600, Geist 700, or Söhne Halbfett 500 — 72–110px; controlled
-- **Support**: same family at 400 weight — 26–32px
-- **Data/labels**: mono with strict tabular (`font-variant-numeric: tabular-nums`) — IBM Plex Mono, JetBrains Mono — 18–24px; keyboard chip aesthetic (rounded rect container, 1px border)
-- **Weight contrast**: 400 vs 700; never 300 (too romantic for this school)
-- **Letter-spacing**: -0.02em on display; +0.04em on mono label chips
-- **Forbidden**: Inter at default weight (0.0em tracking looks lazy for this school), geometric rounded sans like Nunito, decorative serif
+| Role | Family | Weight | Size at 720p | Size at 4K |
+|---|---|---|---|---|
+| Display | Inter Tight / Söhne / Geist Sans | 600 | 72–100px | 200–280px |
+| Body | Inter / Geist Sans | 400–500 | 28–32px | 80–88px |
+| Mono (code, shortcuts) | GeistMono / JetBrains Mono / Berkeley Mono | 400–500 | 22–26px | 64–72px |
+| Label | Inter | 400 | 18–20px | 52–58px |
+
+- **Weight contrast:** 400 (body) vs 600 (display). Never heavier than 700. Confidence through precision, not through weight.
+- **Letter-spacing:** Display: -0.02em. Body: 0. Mono: 0 (natural tabular). Keyboard chips: +0.04em.
+- **Keyboard chips:** Mono font, `rgba(255,255,255,0.06)` dim background, 1px hairline border `rgba(255,255,255,0.10)`, 18–22px at 720p.
+- **Forbidden:** Arial, Roboto, Open Sans. Serif in any role. Gradient text. Condensed grotesque.
 
 ### Composition
-- **Grid**: structured — 12-column, 16px gutters at 720p; elements respect column edges
-- **Hero element**: the UI or product interface IS the hero — visible, functional, large (55–65% of frame)
-- **Focal points**: 2 — product UI/behavior + claim text; metadata and labels as supporting
-- **Negative space**: 25–35%; purposeful but not luxurious — this school is information-dense by nature
-- **Edge anchoring**: title anchors top or bottom; product UI centered or right-anchored; labels inline
-- **Text safe areas**: 48px from edges; subtitles below UI; captions top-right for metadata
+- **Grid:** 12-column, 24–32px gutters. Precise — the grid is visible through the panel structure.
+- **Hero element:** The actual product UI is the hero — a floating command palette (Raycast), a deployment log (Vercel), an issue board (Linear). UI occupies 55–70% of frame and is large enough to read at video resolution.
+- **Focal points:** 2 — product UI + headline or product UI + metric.
+- **Negative space:** 20–35%. Less than other schools — the product needs to be visible and legible.
+- **Edge anchoring:** Product UI centered or right-anchored. Headline top-left or bottom-left. Keyboard shortcuts visible inside the product UI frame.
+- **Panel depth:** Use the surface layer system (Background → Surface 1 → Surface 2 → Surface raised) to create apparent depth without shadows or glows.
 
 ### Motion Posture
-- **Entrance**: fast micro-entrance (150–250ms `power3.out`) for UI elements; main reveal at 350–500ms
-- **Product behavior loop**: UI state changes (generating, selecting, rendering, exporting) run continuously as the anchor — this is the hero motion
-- **Transition**: hard cut between scenes or precise mask (200ms); no cross-fade unless intentional
-- **GSAP eases**: `power3.out` for entrances; `power4.out` for snap reveals; `steps(1)` for instant state changes
-- **Energy level**: 5–6 / 10 — precise and active, but never frenetic
-- **Forbidden motion**: slow fade, organic parallax, bounce spring physics, particle burst, generative motion
+- **Entrance:** Snappy `cubic-bezier(0.22, 1, 0.36, 1)` at 350–450ms for layout reveals. 150ms `power2.out` for micro-feedback on UI elements. The product UI should perform a visible action every beat.
+- **Product behavior loop:** UI state changes are the hero motion — a new issue appears, a deployment completes, a command executes. The transition is the product working.
+- **Hold:** 1.0–2.0s per beat. Shorter than other schools — product demo clips are information-dense.
+- **Transition:** Product behavior loop as transition. Or precise mask 200ms. No crossfades except Notion mode.
+- **Energy level:** 6/10 — confident and precise, not aggressive, not slow.
+- **GSAP eases:** `cubic-bezier(0.22, 1, 0.36, 1)` (the Linear ease) for layout moves. `power2.out` for micro-feedback. `back.out(1.6)` only for Raycast glass palette appearing (spring is Raycast's brand). `steps(1)` for instant UI state changes. Never `sine.inOut` (too slow), never `elastic` (too bouncy).
+- **Key forbidden motion:** Particle systems. Generative effects. Long slow fades. Gradient transitions. Camera zoom applied to the text container. Anything making the UI unreadable during the reveal.
 
 ### Sonic Character
-- **Material metaphor**: glass and precision plastic — like a high-end mechanical keyboard
-- **Transient shape**: clean dry click, precise whoosh (tight, short, no reverb), mechanical lock
-- **Density**: medium — 5–8 SFX; one per major UI state change; micro-feedback for repeated small actions
-- **Bed**: none or very low digital ambience
-- **Micro-feedback**: UI click / keyboard tick for repeated small interactions
-- **Accent hit**: clean precise impact for primary reveal or metric drop
-- **Final lock**: a single mechanical lock or brief digital confirmation — resolved, not dramatic
-- **Forbidden sounds**: warm organic whoosh, cinematic swell, paper sound, vinyl crackle, any "premium soft" audio
+- **Material metaphor:** Precision digital — the sound of a well-engineered machine.
+- **Transient shape:** Clean digital click with a short controlled tail. Attack <10ms, tail 40–80ms. Precise, not harsh.
+- **Density:** Medium — one UI click per significant product action, one precise whoosh per layout transition, one impact per major reveal. No more than 1 cue per 0.8s of active motion.
+- **Bed:** Very low digital texture at -28dBFS or none. Product sounds lead.
+- **Forbidden sounds:** Organic textures (paper, cloth, breath). Cinematic swells. Hard poster stamp impacts. Warm risers. Any sound that would suit School 2 or School 5.
 
-### Best for
-AI/SaaS product launches, feature demo clips, developer tool identity videos, startup pitch clips, dashboard data storytelling, technical explainers.
+### Best For
+Product demo clips, onboarding films, feature launch videos, changelog animations, developer tool brand films, B2B SaaS ads where showing the product working is more convincing than characterizing the brand.
 
-### Forbidden elements
-Purple-pink gradient background, floating neon orbs, heavy HUD decoration, warm paper texture, slow organic fade, soft inspirational music bed, any element that reads as "lifestyle" rather than "tool."
+### Forbidden Elements
+- Organic or warm visual textures (chamois, paper grain, cloth)
+- Serif type in any role
+- Bold weights above 700
+- Gradient fills on background or type
+- Photography of people as hero elements (Linear rule)
+- Long meditative holds (>2.5s) without product activity
+- Any decoration removable without changing information density
+
+### Anti-Slop Check
+- **Generic AI output would:** Use a dark background with glowing cyan accent, set the product screenshot at 40% opacity as an atmosphere layer, add a slow pan across the UI, apply gradient text to the product name.
+- **This school does instead:** Grounds the frame on `#08090A` warm near-black, places the actual product UI at 65% of frame width in a sharp Surface 1 panel (`#16171C`) with 1px hairline borders (`rgba(255,255,255,0.06)`), snaps the UI state from empty to populated in 350ms with `cubic-bezier(0.22, 1, 0.36, 1)`, plays a clean UI click at -16dBFS on each item's appearance, and holds the populated state for 1.5s before the next beat. The product is the visual. The motion is the product working.
+
+---
+
+## School Selection Decision Tree
+
+```
+Is there a named anchor (designer/studio/brand) in the brief?
+  YES → Map directly to school. Load that recipe file.
+  NO ↓
+
+Does the clip carry 5+ data points, charts, or metrics?
+  YES → School 1 (Information Architecture)
+  NO ↓
+
+Is the product a developer tool, command palette, or B2B SaaS?
+  YES → School 6 (Modern Tool / Builder SaaS)
+  NO ↓
+
+Is the clip for a creative studio, agency, or brand launch moment?
+  YES → School 3 (Motion / Experimental)
+  NO ↓
+
+Is the brand in fashion, counter-culture, or anti-luxury luxury?
+  YES → School 4 (Brutalist / Raw)
+  NO ↓
+
+Is the primary register warm, human, educational, or lifestyle?
+  YES → School 5 (Warm Humanist)
+  NO ↓
+
+Is the product high-consideration, premium, or requires restraint?
+  YES → School 2 (Editorial / Minimalist)
+  NO → Return to director and ask for named anchor or more context.
+```
+
+---
+
+## Cross-Reference: Web Recipe → School → Video Register
+
+| Web recipe file | School | Video register |
+|---|---|---|
+| `pentagram.md` | 1 — Information Architecture | Data Authority / Broadcast |
+| `tufte-dataink.md` | 1 — Information Architecture | Data Authority / Broadcast |
+| `bloomberg-terminal.md` | 1 — Information Architecture | Data Authority / Broadcast |
+| `vignelli-swiss-helvetica.md` | 1 — Information Architecture | Data Authority / Broadcast |
+| `nyt-the-daily.md` | 1 — Information Architecture | Data Authority / Broadcast |
+| `muji-kenya-hara.md` | 2 — Editorial / Minimalist | Premium Launch / Quiet Luxury |
+| `apple-hig.md` | 2 — Editorial / Minimalist | Premium Launch / Quiet Luxury |
+| `aesop.md` | 2 — Editorial / Minimalist | Premium Launch / Quiet Luxury |
+| `dieter-rams-braun.md` | 2 — Editorial / Minimalist | Premium Launch / Quiet Luxury |
+| `monocle-magazine.md` | 2 — Editorial / Minimalist | Premium Launch / Quiet Luxury |
+| `field-io.md` | 3 — Motion / Experimental | Kinetic Brand / Generative |
+| `active-theory.md` | 3 — Motion / Experimental | Kinetic Brand / Generative |
+| `resn-storytelling.md` | 3 — Motion / Experimental | Kinetic Brand / Generative |
+| `are-na.md` | 4 — Brutalist / Raw | Brand Drop / Poster Motion |
+| `bloomberg-businessweek-turley.md` | 4 — Brutalist / Raw | Brand Drop / Poster Motion |
+| `balenciaga-post-2017.md` | 4 — Brutalist / Raw | Brand Drop / Poster Motion |
+| `mailchimp-freddie.md` | 5 — Warm Humanist | Inspirational / Lifestyle / Educational |
+| `stripe-press.md` | 5 — Warm Humanist | Inspirational / Lifestyle / Educational |
+| `headspace-meditation.md` | 5 — Warm Humanist | Inspirational / Lifestyle / Educational |
+| `linear.md` | 6 — Modern Tool / Builder SaaS | Product Demo / Technical |
+| `vercel-mesh.md` | 6 — Modern Tool / Builder SaaS | Product Demo / Technical |
+| `raycast.md` | 6 — Modern Tool / Builder SaaS | Product Demo / Technical |
+| `notion-pre-ai.md` | 6 — Modern Tool / Builder SaaS | Product Demo / Technical |
+| `mid-century-modern.md` | 2 or 5 — depends on warmth | Premium Launch or Lifestyle |
+| `y2k-retrofuturism.md` | 3 or 4 — depends on aggression | Kinetic Brand or Brand Drop |
