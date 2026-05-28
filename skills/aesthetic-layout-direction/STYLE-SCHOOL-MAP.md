@@ -107,58 +107,86 @@ Data story clips, financial brand films, quarterly results presentations, B2B Sa
 ---
 
 ## School 2 — Editorial / Minimalist
+**Video register: Premium Launch / Quiet Luxury**
 
-**Named anchors**: Kenya Hara / MUJI, Apple HIG, Aesop, Dieter Rams / Braun, Monocle magazine.
-**Web recipes**: `muji-kenya-hara`, `apple-hig`, `aesop`, `dieter-rams-braun`, `monocle-magazine`
+### Named Anchors
+- **Kenya Hara / MUJI** — emptiness as fullness, off-white as value, near-silence
+- **Apple HIG** — clarity, deference, depth through restraint
+- **Aesop** — apothecary refinement, serif-body as conversation, amber rule accent
+- **Dieter Rams / Braun** — less but better, function as the only ornament
+- **Monocle magazine** — editorial confidence, photography as evidence, serif body
 
-### Palette (video-native, 1280×720)
-- **Background**: `#F2EDE6` (warm chamois/paper) or `#FAFAF8` (near-white with warmth)
-- **Foreground**: `#1C1814` (warm near-black — not pure `#000000`)
-- **Accent**: `#8B6914` (amber/gold rule) or `#5C6B4C` (sage) — single rule line or seal mark only; < 3% of frame
-- **Material**: matte surface, slight paper texture if used; no glass, no sheen, no grain unless photographic
-- **Forbidden palette**: cyan, purple, neon, saturated colors, cool grays, pure white, gradient of any kind
+### Web Recipes to Reference
+- `muji-kenya-hara.md` — off-white ground, 60–80% empty space, tiny small-caps labels, hairline rules
+- `aesop.md` — chamois palette, transitional serif, amber accent used once, asymmetric layout
+- `apple-hig.md` — clarity through space, deference to content, material depth without decoration
+- `dieter-rams-braun.md` — grid discipline, no ornament, function as beauty
+- `monocle-magazine.md` — editorial serif, rule lines, photography as evidence
+
+### Palette (video-optimized, 1280×720)
+| Role | Hex | Note |
+|---|---|---|
+| Background | `#F2EFE8` | Warm paper off-white — never pure `#FFFFFF`; video gamma slightly warmer |
+| Background (dark mode) | `#1A1814` | Warm near-black for dark premium mode; not pure black |
+| Surface | `#EAE6DC` | Slightly darker warm cream for panels or product plinth |
+| Primary text | `#2A2A28` | Warm ink — never `#000000` |
+| Secondary text | `#7C7B76` | Muted warm gray for labels and metadata |
+| Hairline | `#D0CCC2` | Rule lines — the only ornament; 1px at 720p |
+| Accent (Aesop amber) | `#7A4623` | Use at most once per scene — single rule or seal mark |
+| Accent (MUJI red) | `#C8161D` | Corner mark only; never fill or CTA color |
+| Forbidden | — | Saturated blues, purples, cyans, greens as fills; any gradient |
 
 ### Typography (1280×720 px)
-- **Display**: Editorial serif (e.g., Canela Light 300, Freight Display Pro, or GT Sectra Regular) — 80–120px; generous tracking (-0.01em)
-- **Support**: Quiet humanist sans (e.g., Söhne Buch 350 or Aktiv Grotesk Light 300) — 26–34px; generous line-height (1.55)
-- **Data**: Tabular humanist sans or restrained serif with `font-variant-numeric: tabular-nums` — 20–26px; same palette as support
-- **Metadata**: small, tracked, upper case — 14–18px; same weight as support
-- **Weight contrast**: 300 vs 300 (restrained) or 300 vs 700 for one emphasis element
-- **Letter-spacing**: -0.01em display; +0.10em on upper metadata
-- **Forbidden**: condensed sans for display, bold display serif, italic as decoration (only for quotes), Inter, Poppins, system sans
+| Role | Family | Weight | Size at 720p | Size at 4K |
+|---|---|---|---|---|
+| Display (serif) | GT Sectra / Lyon Text / Suisse Works | 400, italic available | 72–100px | 200–280px |
+| Display (humanist sans) | Söhne / Calibre / Inter Tight | 400–500 max | 64–88px | 180–240px |
+| Body | same family as display | 400 | 32–38px | 88–108px |
+| Label / small-caps | Söhne / Helvetica Now | 400, small-caps | 18–20px | 52–60px |
+
+- **Weight contrast:** Minimal. Use 400 throughout. Never bolder than 500 (MUJI rule). Use size contrast instead of weight contrast.
+- **Letter-spacing:** Display: 0.00–0.02em (open, never tight). Small-caps labels: +0.10–0.14em. Body: 0.
+- **Italic:** Available for serif display — a key signature move. Never italic on labels.
+- **Forbidden:** Bold weights 600+, condensed grotesques, gradient text, Inter at default weight, any sans at display scale without editorial intent, Poppins, system sans.
 
 ### Composition
-- **Grid**: loose — rule of thirds; deliberate off-center placement; no strict column snap
-- **Hero element**: product or subject owns 50–65% of frame in clean, well-lit isolation; editorial treatment (not diagram)
-- **Focal points**: 2 — subject/product + title or claim; everything else is metadata
-- **Negative space**: 40–55%; whitespace is the primary visual material, not leftover
-- **Edge anchoring**: title may anchor bottom-left or right; product may bleed one edge deliberately
-- **Text safe areas**: 64px from edges; no subtitle running under hero object
+- **Grid:** Asymmetric. Title bottom-left, product image right-center or right-top. Never a centered stack.
+- **Hero element:** Single product object — 40–55% of frame area. Photographed (or treated as photographed), not diagrammed. Surrounded by intentional empty space.
+- **Focal points:** 1–2 maximum. Product/image + one title block. Never a feature card row.
+- **Negative space:** 40–60% intentional emptiness. This is not leftover space — it is the primary design material.
+- **Edge anchoring:** Titles anchor bottom or left edge. Metadata pins top-right with small-caps label. Product floats upper or right zone.
+- **Photography treatment:** Warm-graded, raking light from top-left, single soft shadow. Never stock-photo brightness or saturation.
 
 ### Motion Posture
-- **Entrance**: slow fade or slow mask reveal (600–900ms); `sine.inOut` or `power2.inOut`
-- **Hold**: 2–3s for primary element; long deliberate pauses between reveals
-- **Transition**: opacity cross-fade (400–600ms) or slow mask slice; never a wipe plate; never hard cut
-- **GSAP eases**: `sine.inOut` for ambient; `power2.inOut` for entrance; `linear` for continuous ambient motion
-- **Energy level**: 2 / 10 — meditative; any higher feels wrong for this school
-- **Ambient motion**: very slow product rotation or drift (0.02deg/frame), or none
-- **Forbidden motion**: kinetic type hits, shape bursts, stinger cuts, bounce, spring, any entrance faster than 400ms
+- **Entrance:** Slow opacity fade 600–900ms `sine.inOut`. Product may scale from 0.96 to 1.0 during reveal (barely perceptible). No slide, no wipe, no mask.
+- **Hold:** 2.0–4.0s. This school holds long. Silence between reveals is deliberate and designed.
+- **Transition:** Crossfade 800ms `sine.inOut`. No wipes, no slices, no cuts.
+- **Energy level:** 2/10 — the motion should feel like the product breathing, not announcing itself.
+- **GSAP eases:** `sine.inOut` throughout. `power1.out` for product scale micro-reveal. Never `power4`, `expo`, `back`, `elastic`.
+- **Key forbidden motion:** Kinetic type, particle systems, mask slices, camera zoom, stagger-burst entries, spring physics. The frame must feel like it is inhaling, not launching.
 
 ### Sonic Character
-- **Material metaphor**: soft air, linen, matte ceramic — quiet and close
-- **Transient shape**: soft swell with no attack; barely-perceptible ambient fade
-- **Density**: very sparse — 1–2 SFX for a 30s clip; silence is the primary "sound"
-- **Bed**: low sustained air or room tone — just enough to prevent emptiness
-- **Micro-feedback**: none, or an almost inaudible page-breath
-- **Accent hit**: one restrained low-frequency sine hit for the main product reveal — no transient
-- **Final lock**: silence, or a single sustained low note that fades to nothing
-- **Forbidden sounds**: whoosh, UI click, stinger, any sharp transient, cinematic impact, drum hit
+- **Material metaphor:** Paper and cloth. The sound of a well-made object placed on a linen surface.
+- **Transient shape:** Soft swell with a short tail. Attack 30–60ms rise. Decay 200–400ms. No hard transient edge.
+- **Density:** Very sparse — 1–2 cues per clip. Long silence between. Silence is the primary sound design choice.
+- **Bed:** Very low cloth ambience at -28dBFS or none.
+- **Forbidden sounds:** UI clicks, digital swooshes, data hits, synthetic beeps, broadcast snaps, hard impacts, any SaaS product sound.
 
-### Best for
-Luxury product launches, high-consideration B2C (cosmetics, fashion, furniture, premium food), premium SaaS brand films, personal brand / portfolio, editorial journalism, lifestyle brand identity.
+### Best For
+Luxury product launches, high-consideration B2C (cosmetics, skincare, furniture, premium food), premium SaaS brand films, lifestyle goods campaigns, editorial journalism films, B2C products where restraint signals confidence.
 
-### Forbidden elements
-Neon or saturated accent, gradient background, HUD, any card grid, kinetic text burst, data visualization, feature list, any element that reads as "SaaS", hard shadows.
+### Forbidden Elements
+- Any saturated color applied as fill or background
+- Bold typography (weight 600+) in any role
+- Bouncy motion of any kind
+- Centered stack of feature cards
+- Photography treated as a wallpaper background
+- Multiple competing focal points
+- Any animation faster than 400ms
+
+### Anti-Slop Check
+- **Generic AI output would:** Use black background, add soft purple glow around the product, set the headline in Inter Bold 700, apply gradient text on the product name.
+- **This school does instead:** Grounds the product on `#F2EFE8` warm chamois, allows 50% of the frame to sit empty, sets the title in GT Sectra 400 at 88px with no decoration, places one amber 1px rule below the product name, and lets the reveal breathe for 900ms without any secondary motion.
 
 ---
 
