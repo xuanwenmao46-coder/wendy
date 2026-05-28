@@ -293,18 +293,67 @@ of the recipe's DNA? Would a practitioner of this school recognize the clip as b
 
 ---
 
-## Audit Anti-Patterns
+## Anti-Patterns in Video Aesthetic Critique
 
-❌ **Vague aesthetic claims**: "the colors feel off" — unacceptable. "The `#3B82F6` accent is a SaaS-blue cliché; the Aesop school requires amber/sage at < 3% of frame" — correct.
+These are ways a critique can be technically present but practically useless. The audit should be
+a tool that improves the clip, not a tool that generates approval or avoids the hard conversation.
 
-❌ **Praising "cinematic" or "premium" without school grounding**: if the word "cinematic" appears in praise without explaining which school's cinematic quality it expresses, it means nothing.
+❌ **Vague aesthetic claims without hex values, px sizes, or named eases**
+Unacceptable: "the colors feel off." Acceptable: "The accent `#3B82F6` is a default SaaS blue; the
+aesop recipe requires `#7A4623` amber appearing at exactly one instance in the frame."
 
-❌ **Accepting any dark palette as "premium"**: dark background alone is not premium. It may be Brutalist (high contrast), Experimental (generative), or Tool/SaaS (warm dark). Premium without restraint and careful detail is just dark.
+❌ **Praising 'cinematic' or 'premium' without school grounding**
+If the word "cinematic" appears in praise without specifying which school's motion posture is being
+expressed, it is meaningless. Stripe Press is cinematic at 1200ms cross-dissolves and 4° book
+rotation. Field.io is cinematic through generative particle choreography. These are not the same
+cinematic. Naming the school is required.
 
-❌ **Confusing motion energy with quality**: fast motion is not better motion. Editorial/Minimalist at energy level 2/10 done correctly beats sloppy Experimental at 9/10.
+❌ **Accepting any dark palette as 'premium'**
+Dark background is not a school. `#000000` with purple-to-cyan gradient is the AI default. `#08090A`
+with hairline borders is Linear. `#0A0E1A` with amber monospaced data is Bloomberg Terminal. `#0B0B0F`
+with an electromagnetic field is Field.io. Premium requires discipline in WHAT is on the dark ground,
+not just the ground itself.
 
-❌ **Mixing severity**: a critical philosophy failure (wrong school entirely) listed alongside a polish note (1px spacing inconsistency) in the same tier. Always sort ⚠️ → ⚡ → 💡.
+❌ **Confusing motion energy with motion quality**
+A Field.io clip at energy level 9/10 done poorly is worse than an Aesop clip at energy level 2/10
+done precisely. Speed is not a quality signal. Restraint within the school's energy level is the
+quality signal. Do not score motion coherence higher because the clip is energetic.
 
-❌ **More than 7 fix items**: group related issues ("five spacing inconsistencies across metadata labels" = one item).
+❌ **Treating 'minimalist' as a positive independent of the named recipe**
+"The layout feels minimal and clean" is not a compliment in a Pentagram review — Pentagram is NOT
+minimal. It is typographically aggressive. A "clean" Pentagram clip is an under-executed Pentagram
+clip. Always evaluate against the named recipe, not against a generic aesthetic preference.
 
-❌ **Accepting "I couldn't find the right SFX"**: for School 2 (Editorial), the right choice is silence; for School 3 (Experimental), design the sound; for School 4 (Brutalist), use a dry stamp. The school always has an answer — the asset gap is solvable.
+❌ **Missing the distinction between school and recipe**
+"Editorial/Minimalist" is a school. "Aesop" is a recipe within that school. A clip that is
+editorial minimalist in the school sense may score 5 on Philosophy Alignment if the recipe is Aesop
+specifically and the chamois ground, italic serif, and amber accent are absent. Score at recipe level,
+not school level.
+
+❌ **Mixing severity tiers without a reason**
+A philosophy failure (wrong school palette entirely) and a polish note (1px spacing inconsistency in
+metadata labels) are not the same severity. Philosophy failures are ⚠️ Critical. Execution polish is
+💡. Listing both in the same tier signals that the critic does not understand what matters.
+
+❌ **More than 7 fix items without grouping**
+If more than 7 issues are identified, group related issues: "five spacing inconsistencies across
+all metadata labels" = one ⚡ item, not five separate items. More than 7 items signals the critic is
+cataloging problems, not prioritizing them. The Quick Wins section exists specifically for this reason.
+
+❌ **Accepting 'I couldn't find the right SFX' as a reason for wrong sound**
+Every school has a sound direction that does not require a specific file. Aesop: use silence or a
+single low ceramic bowl strike — no exotic SFX required. Bloomberg Terminal: a dry keyboard click is
+in any SFX pack. Field.io: a 60–80Hz sine drone can be synthesized. Muji: silence is correct. The
+school always provides an answer; the asset gap is always solvable.
+
+❌ **Praising 'motion variety' in a school that demands consistency**
+Linear and Bloomberg Terminal are schools of motion restraint. If the clip has 6 different entrance
+animations on 6 different elements, that is not "variety" — it is a failure to apply the school's
+consistent motion posture. Praising variety in a restraint school signals the critic is evaluating
+generic motion quality, not school fidelity.
+
+❌ **Accepting 'soft dark mode' as Bloomberg Terminal**
+Dark background + amber accents + monospaced font = not automatically Bloomberg Terminal. The
+terminal requires: pane grid (not a single panel), 0px border-radius, 13–24px font range only, and
+instant (steps(1)) state changes. Soft dark mode with amber accents is AI-generated finance aesthetic,
+not Bloomberg Terminal. The distinction is in the density, the pane grid, and the font ceiling.
