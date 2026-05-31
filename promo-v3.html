@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>AI Video Tool — Promo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 1280px;
+      height: 720px;
+      overflow: hidden;
+      background: #0B0D11;
+    }
+
+    :root {
+      --bg:         #0B0D11;
+      --surface:    #141720;
+      --surface-hi: #1E2230;
+      --border:     rgba(255,255,255,0.07);
+      --text:       #EAECF0;
+      --text-dim:   rgba(234,236,240,0.48);
+      --accent:     #5B6AEB;
+      --accent-bg:  rgba(91,106,235,0.12);
+
+      /* typography-optics tokens */
+      --t-hero:    -0.04em;   /* CJK 80-120px 700w */
+      --t-support:  0em;      /* CJK 28-48px 400w  */
+      --t-label:    0.08em;   /* Latin uppercase 12-14px */
+
+      --font-cjk:  "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
+      --font-mono: "DejaVu Sans Mono", monospace;
+
+      --mx: 96px;
+      --my: 64px;
+    }
+
+    /* ── Grain overlay ─────────────────────────────────────────────── */
+    .grain {
+      position: fixed; inset: 0; z-index: 9000;
+      pointer-events: none; opacity: 0.04; mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 256px 256px;
+      animation: grain 0.15s steps(1) infinite;
+    }
+    @keyframes grain {
+      0%  { transform: translate(0,0); }
+      25% { transform: translate(-3px,2px); }
+      50% { transform: translate(2px,-2px); }
+      75% { transform: translate(3px,3px); }
+    }
+
+    /* ── Vignette ──────────────────────────────────────────────────── */
+    .vignette {
+      position: fixed; inset: 0; z-index: 8999; pointer-events: none;
+      background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.22) 100%);
+    }
+
+    /* ── Scene base ────────────────────────────────────────────────── */
+    .scene {
+      position: absolute; inset: 0; opacity: 0;
+      display: flex; flex-direction: column;
+      padding: var(--my) var(--mx);
+    }
+    .scene.bottom { justify-content: flex-end; }
+    .scene.middle { justify-content: center; }
+
+    /* ── S1: Pain intro ────────────────────────────────────────────── */
+    .s1-label {
+      font-family: var(--font-mono);
+      font-size: 12px; font-weight: 400;
+      letter-spacing: var(--t-label);
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 18px;
+    }
+    .s1-hero {
+      font-family: var(--font-cjk);
+      font-size: 100px; font-weight: 700;
+      letter-spacing: var(--t-hero);
+      color: var(--text); line-height: 1.1;
+    }
+
+    /* ── S2: Pain detail ───────────────────────────────────────────── */
+    .s2-line {
+      font-family: var(--font-cjk);
+      font-size: 46px; font-weight: 400;
+      letter-spacing: var(--t-support);
+      color: var(--text-dim); line-height: 1.45;
+    }
+
+    /* ── S3: Core trigger ──────────────────────────────────────────── */
+    .s3-input {
+      display: flex; align-items: center;
+      width: 480px; height: 52px;
+      border: 1px solid var(--border);
+      border-radius: 3px; padding: 0 18px;
+      margin-bottom: 44px;
+      background: var(--surface);
+    }
+    .s3-ph {
+      font-family: var(--font-cjk);
+      font-size: 15px; color: var(--text-dim);
+      flex: 1;
+    }
+    .s3-cursor {
+      width: 2px; height: 20px;
+      background: var(--accent); flex-shrink: 0;
+    }
+    .s3-trigger {
+      font-family: var(--font-cjk);
+      font-size: 82px; font-weight: 700;
+      letter-spacing: var(--t-hero);
+      color: var(--text); line-height: 1.2;
+    }
+
+    /* ── S4: Task automation ───────────────────────────────────────── */
+    .s4-label {
+      font-family: var(--font-mono);
+      font-size: 11px; letter-spacing: var(--t-label);
+      text-transform: uppercase; color: var(--text-dim);
+      margin-bottom: 36px;
+    }
+    .task-row {
+      display: flex; align-items: center; gap: 24px;
+      height: 58px; border-bottom: 1px solid var(--border);
+    }
+    .task-row:last-child { border-bottom: none; }
+    .task-num {
+      font-family: var(--font-mono);
+      font-size: 11px; letter-spacing: var(--t-label);
+      text-transform: uppercase; color: var(--accent);
+      min-width: 72px;
+    }
+    .task-text {
+      font-family: var(--font-cjk);
+      font-size: 26px; font-weight: 400;
+      letter-spacing: var(--t-support);
+      color: var(--text); flex: 1;
+    }
+    .task-ind {
+      width: 22px; height: 22px;
+      border: 1.5px solid rgba(255,255,255,0.15);
+      border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; color: var(--accent);
+    }
+    .task-tick {
+      opacity: 0; transform: scale(0);
+    }
+
+    /* ── S5: Workflow ──────────────────────────────────────────────── */
+    .s5-rail-wrap { margin-bottom: 44px; }
+    .s5-rail-track {
+      position: relative;
+      width: 560px; height: 2px;
+      background: var(--surface-hi);
+      margin-bottom: 16px;
+    }
+    .s5-rail-fill {
+      position: absolute; top: 0; left: 0;
+      height: 2px; width: 0;
+      background: var(--accent);
+    }
+    .s5-nodes { display: flex; width: 560px; justify-content: space-between; }
+    .s5-node { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .s5-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent); margin-top: -3px;
+    }
+    .s5-node-label {
+      font-family: var(--font-cjk);
+      font-size: 14px; font-weight: 400;
+      color: var(--text-dim);
+    }
+    .s5-headline {
+      font-family: var(--font-cjk);
+      font-size: 56px; font-weight: 700;
+      letter-spacing: var(--t-hero);
+      color: var(--text); line-height: 1.2;
+    }
+
+    /* ── S6: Value prop ────────────────────────────────────────────── */
+    .s6-line {
+      font-family: var(--font-cjk);
+      font-size: 82px; font-weight: 700;
+      letter-spacing: var(--t-hero);
+      color: var(--text); line-height: 1.2;
+    }
+    .s6-accent { color: var(--accent); }
+    .s6-cta {
+      display: inline-flex; align-items: center;
+      height: 54px; padding: 0 36px;
+      background: var(--accent); border-radius: 3px;
+      margin-top: 52px;
+      font-family: var(--font-cjk);
+      font-size: 18px; font-weight: 700;
+      color: #fff; letter-spacing: var(--t-support);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grain"></div>
+  <div class="vignette"></div>
+
+  <!-- S1: 痛点 -->
+  <div class="scene bottom" id="s1">
+    <div class="s1-label" id="s1Label">PAIN POINT — 01</div>
+    <div class="s1-hero" id="s1Hero">想法很多，成片总卡住。</div>
+  </div>
+
+  <!-- S2: 痛点细节 -->
+  <div class="scene bottom" id="s2">
+    <div class="s2-line" id="s2L1">脚本、画面、节奏，</div>
+    <div class="s2-line" id="s2L2">被拆成一堆零散任务。</div>
+  </div>
+
+  <!-- S3: 核心功能 -->
+  <div class="scene middle" id="s3">
+    <div class="s3-input" id="s3Input">
+      <span class="s3-ph">输入主题…</span>
+      <div class="s3-cursor" id="s3Cursor"></div>
+    </div>
+    <div class="s3-trigger" id="s3Trigger">输入主题，<br>创作引擎启动。</div>
+  </div>
+
+  <!-- S4: 自动化流程 -->
+  <div class="scene middle" id="s4">
+    <div class="s4-label" id="s4Label">SYSTEM — AUTO PROCESSING</div>
+    <div class="task-row" id="t1">
+      <span class="task-num">TASK 01</span>
+      <span class="task-text">把主题拆成 30 秒叙事结构</span>
+      <div class="task-ind" id="ind1"><span class="task-tick" id="chk1">✓</span></div>
+    </div>
+    <div class="task-row" id="t2">
+      <span class="task-num">TASK 02</span>
+      <span class="task-text">生成镜头、标题、画面节奏</span>
+      <div class="task-ind" id="ind2"><span class="task-tick" id="chk2">✓</span></div>
+    </div>
+    <div class="task-row" id="t3">
+      <span class="task-num">TASK 03</span>
+      <span class="task-text">自动组织成可渲染时间线</span>
+      <div class="task-ind" id="ind3"><span class="task-tick" id="chk3">✓</span></div>
+    </div>
+  </div>
+
+  <!-- S5: 工作流 -->
+  <div class="scene middle" id="s5">
+    <div class="s5-rail-wrap" id="s5Rail">
+      <div class="s5-rail-track">
+        <div class="s5-rail-fill" id="railFill"></div>
+      </div>
+      <div class="s5-nodes">
+        <div class="s5-node" id="n1"><div class="s5-dot"></div><span class="s5-node-label">脚本</span></div>
+        <div class="s5-node" id="n2"><div class="s5-dot"></div><span class="s5-node-label">画面</span></div>
+        <div class="s5-node" id="n3"><div class="s5-dot"></div><span class="s5-node-label">动效</span></div>
+      </div>
+    </div>
+    <div class="s5-headline" id="s5Head">脚本、画面、动效，连续编排。</div>
+  </div>
+
+  <!-- S6: 价值主张 -->
+  <div class="scene middle" id="s6">
+    <div>
+      <div class="s6-line" id="s6L1">把复杂交给系统，</div>
+      <div class="s6-line" id="s6L2">把表达，<span class="s6-accent">留给你。</span></div>
+      <div class="s6-cta" id="s6Cta">开始创作</div>
+    </div>
+  </div>
+
+  <script src="./gsap.min.js"></script>
+  <script>
+    const eStd    = "cubic-bezier(0.25, 0.10, 0.25, 1.00)";
+    const eImpact = "cubic-bezier(0.16, 1, 0.30, 1)";
+    const eExit   = "cubic-bezier(0.45, 0, 0.55, 1)";
+
+    // ── initial states (all hidden, all offset)
+    gsap.set(["#s1","#s2","#s3","#s4","#s5","#s6"], { opacity: 0 });
+    gsap.set(["#s1Label","#s1Hero"], { opacity: 0 });
+    gsap.set("#s1Hero", { y: 14 });
+    gsap.set(["#s2L1","#s2L2"], { opacity: 0, y: 10 });
+    gsap.set(["#s3Input","#s3Trigger"], { opacity: 0 });
+    gsap.set("#s3Trigger", { y: 14 });
+    gsap.set("#s3Cursor", { opacity: 0 });
+    gsap.set(["#s4Label","#t1","#t2","#t3"], { opacity: 0 });
+    gsap.set(["#t1","#t2","#t3"], { x: -20 });
+    gsap.set(["#chk1","#chk2","#chk3"], { opacity: 0, scale: 0 });
+    gsap.set(["#s5Rail","#s5Head"], { opacity: 0 });
+    gsap.set("#s5Head", { y: 10 });
+    gsap.set("#railFill", { width: 0 });
+    gsap.set(["#n1","#n2","#n3"], { opacity: 0 });
+    gsap.set(["#s6L1","#s6L2","#s6Cta"], { opacity: 0, y: 14 });
+
+    // ── timeline
+    const tl = gsap.timeline({ defaults: { ease: eStd } });
+
+    // S1: Pain intro ─ 0 → 4.2s
+    tl
+      .to("#s1",      { opacity: 1, duration: 0.05 },               0.1)
+      .to("#s1Label", { opacity: 1, duration: 0.45 },                0.3)
+      .to("#s1Hero",  { opacity: 1, y: 0, duration: 0.75, ease: eImpact }, 0.65)
+      .to("#s1",      { opacity: 0, duration: 0.5, ease: eExit },   3.9)
+
+    // S2: Pain detail ─ 4.4 → 8.2s
+      .to("#s2",  { opacity: 1, duration: 0.05 },             4.4)
+      .to("#s2L1",{ opacity: 1, y: 0, duration: 0.6 },        4.55)
+      .to("#s2L2",{ opacity: 1, y: 0, duration: 0.6 },        4.95)
+      .to("#s2",  { opacity: 0, duration: 0.5, ease: eExit },  7.8)
+
+    // S3: Core trigger ─ 8.3 → 12.2s
+      .to("#s3",       { opacity: 1, duration: 0.05 },              8.3)
+      .to("#s3Input",  { opacity: 1, duration: 0.45 },              8.5)
+      .to("#s3Cursor", { opacity: 1, duration: 0.2 },               8.85)
+      .to("#s3Cursor", { opacity: 0, duration: 0.25, repeat: 5, yoyo: true }, 9.1)
+      .to("#s3Trigger",{ opacity: 1, y: 0, duration: 0.7, ease: eImpact }, 9.3)
+      .to("#s3",       { opacity: 0, duration: 0.5, ease: eExit },   12.0)
+
+    // S4: Task automation ─ 12.4 → 18.0s
+      .to("#s4",      { opacity: 1, duration: 0.05 },                      12.4)
+      .to("#s4Label", { opacity: 1, duration: 0.4 },                       12.55)
+      // task 1
+      .to("#t1",  { opacity: 1, x: 0, duration: 0.5, ease: eImpact },     12.95)
+      .to("#chk1",{ opacity: 1, scale: 1, duration: 0.3, ease: "back.out(1.6)" }, 13.9)
+      // task 2
+      .to("#t2",  { opacity: 1, x: 0, duration: 0.5, ease: eImpact },     14.2)
+      .to("#t1",  { opacity: 0.3, duration: 0.35 },                        14.5)
+      .to("#chk2",{ opacity: 1, scale: 1, duration: 0.3, ease: "back.out(1.6)" }, 15.1)
+      // task 3
+      .to("#t3",  { opacity: 1, x: 0, duration: 0.5, ease: eImpact },     15.4)
+      .to("#t2",  { opacity: 0.3, duration: 0.35 },                        15.65)
+      .to("#chk3",{ opacity: 1, scale: 1, duration: 0.3, ease: "back.out(1.6)" }, 16.3)
+      .to("#s4",  { opacity: 0, duration: 0.5, ease: eExit },               17.6)
+
+    // S5: Workflow ─ 18.1 → 21.8s
+      .to("#s5",       { opacity: 1, duration: 0.05 },              18.1)
+      .to("#s5Rail",   { opacity: 1, duration: 0.4 },               18.3)
+      .to("#railFill", { width: 560, duration: 0.8, ease: eImpact }, 18.5)
+      .to("#n1",       { opacity: 1, duration: 0.3 },               18.8)
+      .to("#n2",       { opacity: 1, duration: 0.3 },               19.1)
+      .to("#n3",       { opacity: 1, duration: 0.3 },               19.4)
+      .to("#s5Head",   { opacity: 1, y: 0, duration: 0.6, ease: eImpact }, 19.8)
+      .to("#s5",       { opacity: 0, duration: 0.5, ease: eExit },   21.6)
+
+    // S6: Value prop + CTA ─ 22.0 → 30.0s
+      .to("#s6",    { opacity: 1, duration: 0.05 },                  22.0)
+      .to("#s6L1",  { opacity: 1, y: 0, duration: 0.75, ease: eImpact }, 22.2)
+      .to("#s6L2",  { opacity: 1, y: 0, duration: 0.75, ease: eImpact }, 23.3)
+      .to("#s6Cta", { opacity: 1, y: 0, duration: 0.6, ease: eImpact },  25.1);
+
+    tl.eventCallback("onComplete", () => { window.__done = true; });
+  </script>
+</body>
+</html>
