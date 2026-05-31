@@ -28,6 +28,7 @@ The clip must have:
 2. Choose one primary scenario from [SCENARIO-PLAYBOOK.md](SCENARIO-PLAYBOOK.md).
 3. Select a flagship reference direction from [FLAGSHIP-REFERENCES.md](FLAGSHIP-REFERENCES.md).
 4. Run the Aspect Ratio / Responsiveness Gate below before layout, style, or animation decisions.
+4.0. **Run the Aesthetic Governor** before any design decision. Load [AESTHETIC-GOVERNOR.md](AESTHETIC-GOVERNOR.md) and route the brief through all 6 director layers: Creative Director → Art Director → Typography Director → Color Director → Motion Director → Photography Director. Output the Governor Brief block. No random visual decisions are allowed from this point forward. If the user names a designer, photographer, or brand as reference, load the corresponding profile from [AESTHETIC-MANAGER.md](AESTHETIC-MANAGER.md). If none is named, select the appropriate fallback profile based on clip type.
 4.5. Apply `aesthetic-layout-direction` to anchor the visual school before any style or palette decisions. If the user names a designer, studio, or brand as aesthetic reference (e.g., "Aesop-feeling", "Linear-style", "Bloomberg data authority"), map directly to that school. Otherwise, present 3 schools from different design territories as differentiated directions and let the user choose. Translate the chosen school's DNA into video-native design tokens (palette, typography voice, composition posture, motion posture, sonic character) before step 5.
 5. Run the Style Selection Layer below before writing `DESIGN.md` or code. Style selection must be grounded in the design school established in step 4.5; all palette, typography, and sonic choices must trace back to the named anchor's DNA, not to generic labels.
 6. Decide whether the output is a `moving_slide` or a `video_ad`. For 15s+ product intros, brand ads, launch films, and social ads, default to `video_ad`.
@@ -231,6 +232,21 @@ Before implementation, write:
 
 ```markdown
 ## Flagship Video Direction
+
+### Aesthetic Governor Brief (Step 4.0)
+- Aesthetic profile loaded:
+- Rhythm profile: [explosive / editorial / luxury / technical / humanist]
+- Primary creative benchmark:
+- Art direction language (3 words):
+- Typography posture:
+- Color register:
+- Motion register:
+- Cinematography language:
+- Film grain / texture level: [none / subtle / medium / pronounced]
+- Forbidden aesthetic moves:
+- Museum test (1 sentence):
+
+### Production Brief
 - Scenario:
 - Audience:
 - One-sentence concept:
@@ -249,13 +265,17 @@ Before implementation, write:
 - Design school:
 - Named anchor(s):
 - Style layer:
-- Palette:
+- Palette (70% / 20% / 10%):
+- LUT reference:
 - Visual language:
 - Typography voice:
+- Dynamic tracking animation:
+- Text placement (asymmetric anchor):
 - Diagram/animation modules:
 - Clip/module lifecycle:
 - Text strategy:
 - Motion strategy:
+- Motion level (0–100 for AI generators):
 - Narration/TTS timing:
 - Sound design hierarchy:
 - Sonic identity:
@@ -288,3 +308,5 @@ Before implementation, write:
 - For RAG metadata, read [RAG-METADATA.md](RAG-METADATA.md).
 - **For anchoring the visual aesthetic to a named design school before style decisions, use `aesthetic-layout-direction`.**
 - **For optical tracking correction, CJK character compensation, mixed-script lines, and animation stability — run `typography-optics` after `typography-selection`. It converts font choices into correctly-spaced CSS tokens and flags unsafe animation patterns before render.**
+- **For the top-level Aesthetic Governor System (Creative Director → Art Director → Typography Director → Color Director → Motion Director → Photography Director), read [AESTHETIC-GOVERNOR.md](AESTHETIC-GOVERNOR.md). This runs at Step 4.0 before any design decision.**
+- **For named aesthetic style profiles (Peter Lindbergh, Apple Keynote, A24, Saint Laurent, Loewe, Linear, Bloomberg, MUJI/Fukasawa), read [AESTHETIC-MANAGER.md](AESTHETIC-MANAGER.md).**

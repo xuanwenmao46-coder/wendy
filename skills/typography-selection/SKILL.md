@@ -39,6 +39,46 @@ Use this before writing final clip HTML. Fonts are not decoration; they define t
 - If a color slice, wipe, or poster block crosses headline text, plan an inversion, mask, outline, or layout split before coding.
 - Audit the final lockup as a still image. If the key words are not readable in one glance, change the color relationship before adjusting animation.
 
+## Dynamic Tracking Animation (Kinetic Typography)
+
+Typography in premium video is not static. Letter-spacing should breathe with the composition.
+
+### The Luxury Breath Rule
+High-end advertisements and editorial videos animate letter-spacing slowly — not to call attention to the animation, but to create a sense of the text "opening" as it arrives, then "settling" into its authority. This is the opposite of a zoom-in bounce.
+
+Standard pattern:
+```css
+/* Arrival: tracking opens slightly, then settles */
+/* Start:  tracking_start → tracking_end  over 0.6–1.0s, cubic-bezier(0.25, 0.1, 0.25, 1) */
+```
+
+Rules:
+- **Opening animation**: `tracking_start` slightly tighter than final, opens to `tracking_end`. Difference: 0.04–0.08em maximum. Subtle — the viewer should not consciously notice the tracking change, only feel the premium quality.
+- **Cinematic hold**: tracking stays at `tracking_end` for the full hold duration. Never animate tracking during the hold.
+- **Exit**: do not animate tracking on exit — opacity fade is sufficient.
+- **Large display (80px+)**: tracking animation is acceptable and adds luxury feel.
+- **Support/caption text**: do NOT animate tracking — keep it static. Only display headlines earn this treatment.
+- **CJK display text**: tracking animation on CJK is acceptable but keep the range very tight (max 0.02em difference). CJK density makes wide tracking range look unstable.
+
+### Asymmetric Layout Rule
+Do not always center text. Use the visual weight of the composition:
+
+- **Bottom-left anchor**: most common in editorial and luxury. Places the viewer's eye after they've processed the image.
+- **Bottom-right anchor**: creates tension when the hero image is on the left.
+- **Top-left anchor**: establishes before the image is revealed — used in brand drops.
+- **Centered only when**: the subject is perfectly symmetrical and the scene is deliberately monumental (e.g., Apple product-as-sculpture lockup, or final CTA with nothing competing for attention).
+
+Minimum page margins for premium work:
+- Desktop (1280×720): left/right margins ≥ 80px (6.25%), top/bottom ≥ 64px. Preferred left/right ≥ 96px.
+- Never place display text closer than 64px from the frame edge unless it is an intentional bleed (Brutalist/Raw school only).
+
+### Saliency-Based Text Placement
+When a hero image occupies the frame, place text in the visual void — the low-saliency region of the image. Rules:
+- If the image has a strong left subject, text goes right.
+- If the image is dense in the center, text anchors to the bottom edge.
+- If the image has a clear sky, open water, or negative space region, text enters that region.
+- Never place text over the primary subject's face, product surface, or the visual apex of the composition.
+
 ## Banned Defaults
 
 Do not use these for premium work unless the brand explicitly requires them:

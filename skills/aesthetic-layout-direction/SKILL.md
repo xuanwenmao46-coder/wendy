@@ -204,3 +204,7 @@ If any of these fields are vague, return to step 4 and reload the web recipe.
 - For SFX and audio mixing: `sound-design-for-motion/SKILL.md`
 - For font selection and embedding: `typography-selection/SKILL.md`
 - **For optical tracking corrections, CJK density compensation, and motion velocity limits — after `typography-selection` produces the font brief, run `typography-optics` to convert school-level tracking guidance into precise CSS `letter-spacing` tokens. STYLE-SCHOOL-MAP.md tracking values are school-level ranges; OPTICAL-TABLES.md provides size-exact corrections.**
+- **For the Aesthetic Governor System (runs at Step 4.0, BEFORE this skill) — read [AESTHETIC-GOVERNOR.md](AESTHETIC-GOVERNOR.md). This skill runs at 4.5, after the Governor has established the unified art direction language.**
+- **For named style profiles with specific typography/color/motion/composition parameters — read [AESTHETIC-MANAGER.md](AESTHETIC-MANAGER.md). When a user names a designer/photographer/brand, load the matching profile before translating to school tokens.**
+- **For Color Director layer (70/20/10 ratio, LUT references, film grain, palette science) — read [COLOR-DIRECTOR.md](COLOR-DIRECTOR.md).**
+- **For Photography/Cinematography Director layer (composition, camera vocabulary, motion level) — read [PHOTOGRAPHY-DIRECTOR.md](PHOTOGRAPHY-DIRECTOR.md).**

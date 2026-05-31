@@ -135,6 +135,47 @@ Reject the implementation if:
 - A state machine, route map, curve, and large headline are all active at once.
 - The timeline adds new layers but has no corresponding `.to(... autoAlpha: 0 ...)`, scale-down, mask-out, or screen switch.
 
+## Cinematic Motion Principles (Aesthetic Governor Layer)
+
+These rules encode the Motion Director layer from the Aesthetic Governor System. They apply to every clip regardless of school or register.
+
+### The Inertia Principle
+All motion must feel physically believable. Objects should appear to have mass:
+- **Micro acceleration**: elements start from rest, briefly accelerate, then decelerate into position. Never start at full velocity.
+- **Micro deceleration**: the final 15–20% of travel decelerates. Objects do not stop abruptly.
+- **Anticipation**: for large or impactful elements, a very brief (40–80ms) backward micro-move before the main travel makes the landing feel heavier.
+- **Follow-through**: after a large element settles, micro-elements (labels, accents, rules) arrive 80–160ms later, as if carried by inertia.
+
+### Compression / Release Rhythm
+Every clip must alternate between dense and empty states:
+- **Compression**: multiple elements active, information density high, motion active.
+- **Release**: one or zero elements, information density near zero, complete stillness.
+- The ratio should be approximately 40% compression / 60% release in premium editorial work.
+- Never hold compression for more than 3 seconds without a release beat.
+- The final lockup is always a release — the frame must breathe before the video ends.
+
+### The Static Shot Principle
+The most sophisticated cinematography in premium video is **no camera movement**. Elements within the frame move; the camera does not. Default to static shot unless:
+- A slow zoom (< 2% scale change per second) serves the narrative (product reveal, text arrival).
+- A slow pan serves the subject (product entering frame from edge).
+- A deliberate camera move is a scene metaphor.
+Never use camera moves to compensate for a weak composition.
+
+### Motion Level by Register
+For AI video generation tools (motion level 0–100):
+- 0–15: Luxury editorial, still-life, luxury product, fashion campaign
+- 16–35: Premium SaaS, quiet brand, editorial data story
+- 36–60: Feature demo, product workflow, explainer
+- 61–80: Brand film, launch event, kinetic sequence
+- 81–100: **Forbidden** for premium work — creates cheap AI aesthetic
+
+### Easing Vocabulary (cinematic)
+- `cubic-bezier(0.25, 0.10, 0.25, 1.00)` — standard cinematic settle; use for main entrances
+- `cubic-bezier(0.16, 1, 0.30, 1)` — expo-like; for brand impact moments
+- `cubic-bezier(0.45, 0, 0.55, 1)` — symmetrical ease-in-out; for ambient drift and exits
+- Never `linear` on text or hero elements. Linear motion is mechanical, not physical.
+- Never `bounce` or `elastic`. These are cartoon physics, not cinematic physics.
+
 ## GSAP Choreography Rules
 
 - Prefer one timeline with named labels: `intro`, `hit`, `burst`, `hold`, `out`.

@@ -20,6 +20,8 @@ Use this skill before writing animation code. The job is to design the static fr
 7. Design the hero frame as a poster: one clear focal point, one secondary focal point, strong negative space, visible structure.
 8. Only after the static frame works, define motion: entrance order, holds, transitions, ambient movement.
 9. Run an anti-slop audit before implementation.
+9.5. **Apply the Color Director layer** (see [COLOR-DIRECTOR.md](COLOR-DIRECTOR.md)): confirm the 70/20/10 palette ratio, assign a LUT character reference, specify film grain level (none / subtle / medium / pronounced), and write the color constraint prompts (positive + negative) for any AI-generated assets. No palette is final until this step passes.
+9.6. **Apply the Photography/Cinematography Director layer** (see [PHOTOGRAPHY-DIRECTOR.md](PHOTOGRAPHY-DIRECTOR.md)): confirm composition principle for every key frame (rule of thirds / negative space / asymmetric balance / depth framing), assign the camera vocabulary (slow zoom / slow pan / static-with-motion), and set the motion level (0–100) for any AI video generation. Reject any composition that relies on centered subject + generic white/gradient ground.
 
 ## Design Register
 
@@ -254,3 +256,6 @@ Then create or update `DESIGN.md` using `DESIGN-TEMPLATE.md`.
 - For font choice and embedding, use the `typography-selection` skill.
 - **For anchoring the visual design to a named school (Aesop, Linear, Pentagram, Field.io, etc.) before style decisions, use `aesthetic-layout-direction`.**
 - **For optical tracking correction tables, CJK compensation, and animation safety limits — run `typography-optics` after `typography-selection` has produced the font brief.**
+- **For color science, LUT references, film grain, and palette audit — read [COLOR-DIRECTOR.md](COLOR-DIRECTOR.md).**
+- **For composition rules, camera vocabulary, motion level, and physical imperfection directives — read [PHOTOGRAPHY-DIRECTOR.md](PHOTOGRAPHY-DIRECTOR.md).**
+- **For top-level Aesthetic Governor brief (must run at Step 4.0 in flagship-video-director before this skill is called) — read [AESTHETIC-GOVERNOR.md](AESTHETIC-GOVERNOR.md).**
