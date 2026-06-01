@@ -1,0 +1,17 @@
+# AudioSync + PremiumColorReducer dependencies
+# All tools are designed to work with standard scientific Python stack.
+
+# Required
+numpy>=1.21.0
+
+# Optional: only needed if you replace the pure-numpy Lab conversion
+# with scikit-image (not required — the built-in converter is equivalent)
+# scikit-image>=0.19.0
+
+# Optional: enhanced audio analysis (not required — FFmpeg is the default engine)
+# librosa>=0.9.0
+# soundfile>=0.10.0
+
+# System requirement (must be on PATH):
+# ffmpeg >= 4.0  — required for audio_sync.py
+# ffprobe >= 4.0 — required for duration detection

@@ -1,0 +1,532 @@
+---
+title: Creative Motion Operating System V5
+system: CMOS
+layer: Creative Foundation (Step 0)
+version: 5.0.0
+status: production
+last_updated: 2026-06-01
+---
+
+# Creative Motion Operating System V5
+## World-Class Design Cinema
+
+---
+
+## Mission
+
+The objective is not to create videos.
+
+The objective is to create **award-winning design experiences**.
+
+Every output should feel like it was created by an international creative agency, motion design studio, editorial design team, and brand system team working together.
+
+The final work should resemble:
+
+- Brand launch films
+- Design festival openers
+- Creative conference visuals
+- Museum installations
+- Editorial motion graphics
+- Visual essays
+- Identity showcases
+- Information cinema
+- Premium storytelling systems
+
+Rather than: traditional social media videos, startup explainers, or AI-generated content.
+
+---
+
+## The Ten Director Pipeline
+
+Every brief passes through ten director roles in sequence. Each director's output is a constraint for all directors below. No director may contradict a director above them.
+
+```
+Creative Director
+↓ emotional premise, creative risk level, benchmark references
+Art Director
+↓ visual world, composition language, hierarchy of expression
+Brand Designer
+↓ identity coherence, system rules, visual consistency
+Typography Designer
+↓ type as architecture, kinetic type, structural role of letterforms
+Motion Designer
+↓ motion as narrative, easing as emotion, invisible physics
+Sound Designer
+↓ sound drives visuals, sonic motivation for every cut
+Data Storytelling Designer
+↓ information as discovery, cinematic data behavior
+Cinematographer
+↓ frame as photograph first, camera vocabulary, light direction
+Museum Curator
+↓ meaning unfolds gradually, exhibits not slides
+Anti-AI Detector
+↓ continuous rejection of templated, generated, or safe output
+```
+
+---
+
+## Reference Canon
+
+The Creative Director holds the brief against these references. If the output would not be accepted by at least three of these, it is not ready.
+
+### Studios and Agencies
+| Reference | What they prove |
+|---|---|
+| Pentagram | Typography at architectural scale; color as argument |
+| Giorgia Lupi | Data as humanist narrative; information as poetry |
+| Studio Dumbar | Identity systems with kinetic intelligence |
+| COLLINS | Brand transformation through surprise and wit |
+| Porto Rocha | Editorial rigor; editorial luxury |
+| Koto | Systematic beauty; identity coherence |
+| DIA Studio | Type as motion object; letterforms as protagonists |
+| Order Design | Information design with editorial authority |
+| Ordinary Folk | Warmth without sentimentality; precision without coldness |
+| Buck | Narrative motion; character through motion |
+| Territory Studio | Information cinema; UI as visual poetry |
+| ManvsMachine | Craft at scale; material simulation as design philosophy |
+| FIELD.IO | Generative identity; data as aesthetic material |
+
+### Editorial and Journalism
+| Reference | What they prove |
+|---|---|
+| The New York Times Graphics | Information that feels inevitable |
+| Bloomberg Graphics | Data that generates emotional response |
+| National Geographic Interactive | Immersive information architecture |
+
+### Film and Broadcast
+| Reference | What they prove |
+|---|---|
+| Apple Launch Films (2007–2019) | Product as protagonist; silence as confidence |
+| Nothing Brand Films | Raw material as luxury; anti-polish as sophistication |
+| A24 Title Sequences | Texture over spectacle; human scale |
+
+### Festivals and Events
+| Reference | What they prove |
+|---|---|
+| OFFF Festival | Experimentation as standard; risk as brand identity |
+| Adobe MAX | Scale without loss of craft |
+| Forward Festival | Central European design intelligence |
+| Motion Plus Design | Motion craft at highest level |
+| Typographics | Type culture; letterform intelligence |
+
+---
+
+## Anti-Generic System
+
+These patterns are **detected and rejected** at every stage.
+
+### Forbidden Aesthetics
+- Generic AI color behavior (black + cyan + gradient)
+- Social media editing styles
+- TikTok / CapCut template motion
+- Corporate explainer video structure
+- Startup design clichés (isometric icons, soft shadows, rounded cards)
+- Basic infographics (pie charts, stock bar charts)
+- Stock transitions (wipes, fades, zoom-blur)
+- Empty minimalism (nothing in the frame but three words)
+- Random gradients used for atmosphere
+- Rainbow category colors in data visualization
+- Overused futuristic tropes (glitch, hologram, circuit board)
+- Overused AI visual effects (temporal jitter, bloom, depth-map artifacts)
+
+### The Test
+**Nothing should feel templated. Nothing should feel generated.**
+
+If a frame could have been produced by any system, at any time, for any purpose — it fails.
+
+---
+
+## Emotional Foundation System
+
+All creative decisions originate from emotion. The pipeline begins here, not with visual choices.
+
+```
+1. EMOTION    — What feeling does this clip create?
+               (not what does it say — what does it make the viewer feel)
+2. TENSION    — What is held in unresolved suspension?
+3. ENERGY     — What is the physical sensation of watching?
+4. CURIOSITY  — What makes the viewer lean forward?
+5. NARRATIVE WEIGHT — How heavy is each moment?
+6. PSYCHOLOGICAL ATMOSPHERE — What world does the viewer inhabit?
+7. VIEWER EXPERIENCE — What do they remember after it ends?
+```
+
+The creative pipeline flows from emotion:
+
+```
+Emotion → Sound → Rhythm → Color → Typography → Space → Information → Motion → Output
+```
+
+Not:
+
+```
+Brief → Design → Output
+```
+
+---
+
+## Visual Density Engine
+
+Avoid visual emptiness. Avoid single-layer compositions.
+
+### The Seven Layers
+
+Every frame should contain all applicable layers:
+
+| Layer | Role | Example |
+|---|---|---|
+| 1. Primary | The main narrative element | Large headline, hero image, central data |
+| 2. Secondary | Context for the primary | Supporting text, secondary visual, annotation |
+| 3. Environmental | The space the scene inhabits | Background texture, surface, atmosphere |
+| 4. Typography | Structural letterforms | Even if small or peripheral |
+| 5. Atmospheric | Tone and mood material | Grain, vignette, light quality |
+| 6. Micro Detail | Fine-grain visual interest | Hairlines, small labels, subtle marks |
+| 7. Invisible Motion | Motion that is felt, not seen | Slow drift, breathing scale, imperceptible zoom |
+
+### The Density Test
+
+The frame should feel **rich** — not crowded. **Complex** — not chaotic.
+
+If the frame passes the density test at all seven layers, it will feel designed. If any layer is absent without deliberate reason, it will feel underdone.
+
+---
+
+## Information Cinema System
+
+Information behaves like narrative. It never displays directly.
+
+### Forbidden: Direct Display
+```
+Title
+↓
+Bullet point list
+↓
+Number
+↓
+Chart
+```
+
+### Required: Cinematic Emergence
+```
+Emotional hook
+↓
+Visual tension (before the data appears)
+↓
+Transformation (the data arrives as a change, not a placement)
+↓
+Reveal (the meaning becomes clear after the feeling)
+↓
+Insight (the viewer discovers, not receives)
+```
+
+**Viewers should first feel. Then understand.**
+
+Charts should feel cinematic. Data should feel alive. Numbers should arrive as events, not displays.
+
+---
+
+## Creative Surprise Engine
+
+Every sequence must contain surprise. Surprise that is intelligent — not random.
+
+### Required Surprise Elements (minimum 2 per 30-second clip)
+
+- **Unexpected scale shift** — text suddenly at 400% or 10% of expected size
+- **Unexpected typography behavior** — type that becomes structure, mask, or environment
+- **Unexpected compositional change** — frame relationship reverses, negative space activates
+- **Unexpected information reveal** — data appears from an unexpected direction or method
+- **Unexpected motion transformation** — an element changes function mid-sequence
+- **Unexpected color event** — color appears or disappears as narrative punctuation
+- **Unexpected spatial transition** — the viewer's sense of space shifts
+- **Unexpected narrative turn** — the emotional register changes
+
+### The Surprise Test
+
+Surprise must create: **continuous visual curiosity — the viewer always wonders what is coming next.**
+
+If the viewer can predict the next 5 seconds, the sequence needs more surprise.
+
+---
+
+## Creative Risk System
+
+| Default AI choice | CMOS choice |
+|---|---|
+| Safe, balanced composition | Asymmetry that creates tension |
+| Full subject in frame | Deliberate cropping that implies more |
+| Normal type size | Overscaled type at 200–400% of expected |
+| Smooth, comfortable motion | Visual friction that makes the viewer work |
+| Balanced hierarchy | Radical hierarchy imbalance |
+| Predictable structure | Controlled chaos with underlying logic |
+| Conventional narrative order | Experimental storytelling sequence |
+
+**Prefer: memorable over safe. Bold over conventional. Tension over comfort. Originality over familiarity.**
+
+If a decision feels too safe, push further. The correct amount of risk makes the viewer slightly uncomfortable — that discomfort is attention.
+
+---
+
+## Typographic Dominance System
+
+Typography is not labels. Typography is **architecture. Motion. Composition.**
+
+### What Typography May Do
+
+- Leave frame boundaries (bleed, crop, extend beyond safe area)
+- Be fragmented (letters separated, words broken across cuts)
+- Become structure (the type IS the grid, not placed on it)
+- Become transitions (letter becomes the mask for the next scene)
+- Become masking systems (image visible only through letterforms)
+- Become environmental elements (text scattered in physical space)
+- Become the primary motion event (the text is what moves, not an object)
+
+### Scale Rules
+
+- Display type may reach 300–600px at 1280×720 (bleed permitted)
+- Type may be intentionally illegible if its graphic function supersedes its reading function
+- Type at reduced size must be optically precise (typography-optics tracking rules apply)
+
+**Large-scale typography is encouraged. Typography should often be the main visual event.**
+
+---
+
+## Color Narrative System
+
+Color controls emotion, hierarchy, and pacing. Color is never decorative.
+
+### Mode A — Editorial Luxury
+
+For: brand films, museum contexts, luxury product, quiet premium
+
+| Role | Colors |
+|---|---|
+| Ground (70%) | Warm Ivory `#F5EFE4`, Fog White `#EDE8E0`, Graphite `#2A2A2A` |
+| Supporting (20%) | Stone `#8B8680`, Charcoal `#3D3D3D`, Cool Linen `#D4CFC8` |
+| Accent (10%, once) | Cobalt `#1B3A8C`, Burgundy `#7C1D2E`, Acid Yellow `#D4E317` |
+
+### Mode B — Design Festival
+
+For: OFFF-register work, kinetic identity, high-energy launches, experimental
+
+| Role | Colors |
+|---|---|
+| Ground (70%) | Near Black `#0E0E0E`, Ultra White `#F5F5F5` |
+| Supporting (20%) | Reduced version of one accent hue |
+| Accent (10%, once) | Acid Green `#A8E63D`, Electric Purple `#7B2FBE`, Hot Pink `#E83E8C`, Signal Red `#E52222`, Ultra Yellow `#FFE500` |
+
+### Color Narrative Rules
+
+1. **Color appears when narrative intensity increases.** Not by default.
+2. **Avoid meaningless color.** If color has no emotional or hierarchical function, remove it.
+3. **The 70/20/10 law applies in both modes.** See `aesthetic-governor/COLOR-DIRECTOR.md`.
+4. **Color can become the protagonist.** In festival mode, color may drive the entire narrative.
+
+### The PremiumColorReducer Tool
+
+When AI-generated assets arrive with incorrect color, use `tools/premium_color_reducer.py` to map every pixel to the nearest palette color in CIELAB space. See `TOOL-GUIDE.md`.
+
+---
+
+## Motion Psychology System
+
+Motion communicates psychological states. Every motion choice is a communication act.
+
+### What Motion Must Communicate
+
+| Motion quality | Communicates |
+|---|---|
+| Acceleration into position | Growth, arrival, momentum |
+| Deceleration at settle | Confidence, weight, resolution |
+| Micro-pause before a hit | Anticipation, breath, preparation |
+| Follow-through after a hit | Physical reality, consequence |
+| Very slow drift | Atmosphere, presence, time |
+| Sudden stillness after motion | Emphasis, silence as punctuation |
+
+### Forbidden Motion Patterns
+
+- **Linear motion**: mechanical, not physical — forbidden on all premium elements
+- **Preset easing**: `ease-in-out` without custom curve — always specify exact cubic-bezier
+- **Template transitions**: wipe, slide, dissolve as primary transition — replace with motivated cuts
+- **Bounce or elastic**: cartoon physics — forbidden in editorial register
+- **Identical easing on all elements**: one ease for entries, a different one for exits, a third for ambient
+
+**Motion should feel inevitable. The viewer should not be able to imagine it moving any other way.**
+
+### Motion Layer Stack
+
+Every scene must have active motion at multiple layers simultaneously:
+
+| Layer | Description | Example |
+|---|---|---|
+| 1. Primary | Main narrative motion | Headline entering, data chart drawing |
+| 2. Supporting | Context motion | Secondary element responding |
+| 3. Atmospheric | Environmental motion | Background texture shifting |
+| 4. Micro | Small-scale feedback | Label appearing after main element |
+| 5. Invisible | Below-perceptibility threshold | 0.5% scale breath, imperceptible drift |
+
+**No scene should ever feel static.**
+
+---
+
+## Sound Direction System
+
+Sound drives design. Visuals emerge from sound — not the reverse.
+
+### Preferred Sound Characters
+
+| Character | Description | Use for |
+|---|---|---|
+| Organic Minimalism | Single-source acoustic material, no reverb | Luxury editorial, museum register |
+| Architectural Sound | Large-space acoustics, concrete resonance | Structural, data-driven |
+| Spatial Ambience | Environmental texture, room tone, air | Atmospheric transitions |
+| Tactile Percussion | Material impacts: wood, paper, metal, glass | Kinetic type hits, data arrivals |
+| Analog Texture | Tape hiss, vinyl crackle, analog warmth | Warm humanist, archival register |
+| Micro Acoustics | Near-field recording, body sounds, breath | Intimate, human scale |
+
+### Forbidden Sounds
+
+- Corporate music (elevator jazz, soft piano with strings)
+- Stock EDM (four-on-the-floor with generic synth lead)
+- Generic cinematic trailers (low-brass stab + rising string + boom)
+- Whoosh transition sounds (these are CapCut, not cinema)
+- UI click sounds from design system libraries
+
+**Every transition requires sonic motivation.** If there is no sound reason for a visual cut, the cut may be wrong.
+
+### AudioSync Tool
+
+To align audio peaks with animation keyframes at millisecond precision, use `tools/audio_sync.py`. See `TOOL-GUIDE.md`.
+
+---
+
+## Design Festival Mode
+
+When the brief calls for maximum creative ambition (OFFF, Adobe MAX, Forward Festival, creative industry launch):
+
+**Increase all of the following:**
+
+| Parameter | Standard | Festival Mode |
+|---|---|---|
+| Typography scale | 100–200% of body | 200–600% — bleed permitted |
+| Color energy | Mode A (editorial) | Mode B (festival) or hybrid |
+| Visual density | 5–7 layers | All 7 layers at maximum |
+| Surprise factor | 2 per 30s | 4+ per 30s |
+| Creative risk | Bold | Experimental |
+| Motion complexity | 3-layer stack | Full 5-layer stack |
+
+**Festival mode targets:** OFFF, Adobe MAX, Forward Festival, Motion Plus Design, Awwwards, Creative Review, It's Nice That.
+
+---
+
+## Museum Curation System
+
+Every scene behaves like an exhibit in a museum. Meaning unfolds gradually.
+
+### Exhibit Principles
+
+1. **Discovery, not presentation.** The viewer arrives at the meaning — it is not handed to them.
+2. **One exhibit at a time.** No two primary information elements compete simultaneously.
+3. **Space is part of the exhibit.** Negative space communicates. It is not empty.
+4. **Time is part of the exhibit.** The duration a frame holds is a design decision.
+5. **Exit is part of the exhibit.** How an element leaves is as designed as how it arrives.
+6. **Label logic applies.** In museums, labels are small and secondary. In video, supporting text is small and secondary. The exhibit is the main event.
+
+---
+
+## Anti-AI Detector
+
+The Anti-AI Detector runs continuously. It looks for the following AI behavioral patterns and rejects any output that exhibits them.
+
+### AI Typography Markers
+- Inter, Roboto, or Poppins used without creative justification
+- All text centered by default
+- Equal font weights throughout (no contrast)
+- Line-height set to default (1.5)
+- Letter-spacing at 0 (no optical correction)
+
+### AI Color Markers
+- Black background + cyan glow + gradient text
+- Purple / teal / orange tri-color combinations
+- All colors at full saturation simultaneously
+- Color used symmetrically (same intensity in all zones)
+
+### AI Motion Markers
+- All elements fade in simultaneously
+- Elements hold for identical durations
+- Linear easing on any hero element
+- Camera zoom used as substitute for composition
+- All transitions are dissolves or wipes
+
+### AI Composition Markers
+- Subject perfectly centered in every shot
+- Equal margin on all sides
+- Text placed symmetrically above or below subject
+- Grid used as decoration rather than structure
+
+### AI Pacing Markers
+- All scenes approximately equal length
+- Information arrives in predictable sequence
+- No silence or visual rest between beats
+- Energy remains constant throughout
+
+### Rejection Protocol
+
+If any marker is detected:
+1. **Name the specific marker**
+2. **Identify which director is responsible** (typography, color, motion, composition, or pacing)
+3. **Return to that director's constraint set**
+4. **Re-execute with the correct constraint applied**
+5. **Re-run the Anti-AI Detector**
+
+Do not release output that would survive an Anti-AI Detector pass.
+
+---
+
+## Final Quality Test
+
+Before any output leaves the system, ask:
+
+> **Would this frame, this sequence, this production be accepted inside:**
+> - Pentagram
+> - Studio Dumbar
+> - COLLINS
+> - Territory Studio
+> - ManvsMachine
+> - OFFF Festival
+> - Adobe MAX
+> - Apple Launch Event
+> - A24 Opening Sequence
+> - Museum Motion Exhibition
+> - International Design Annual
+
+**If not — refine again.**
+
+Every frame should feel directed.
+Every sequence should feel curated.
+Every visual decision should feel intentional.
+No frame should feel generated.
+
+---
+
+## Output Contract
+
+After running CMOS V5, write this block before passing to the Aesthetic Governor:
+
+```markdown
+## CMOS V5 Brief
+
+**Emotional premise:** [one sentence — the feeling this production creates]
+**Tension:** [what is held unresolved]
+**Energy:** [physical sensation of watching]
+**Creative risk level:** [conservative / bold / experimental / festival]
+**Primary reference:** [named studio/work from the canon]
+**Secondary reference:** [second named reference that creates tension with primary]
+**Anti-AI markers to watch:** [list 3 specific AI patterns this brief is most at risk of]
+**Color mode:** [A — Editorial Luxury / B — Design Festival]
+**Density target:** [number of active layers per frame]
+**Surprise moments planned:** [list 2+ specific unexpected events]
+**Sound character:** [named character from the Sound Direction System]
+**Festival mode:** [on / off]
+**Museum curator note:** [how meaning unfolds — discovery sequence]
+**Quality test:** [which 3 canon references this must pass]
+```
