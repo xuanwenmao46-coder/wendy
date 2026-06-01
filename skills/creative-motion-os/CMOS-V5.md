@@ -2,7 +2,7 @@
 title: Creative Motion Operating System V5
 system: CMOS
 layer: Creative Foundation (Step 0)
-version: 5.0.0
+version: 5.1.0
 status: production
 last_updated: 2026-06-01
 ---
@@ -73,18 +73,19 @@ The Creative Director holds the brief against these references. If the output wo
 | Reference | What they prove |
 |---|---|
 | Pentagram | Typography at architectural scale; color as argument |
-| Giorgia Lupi | Data as humanist narrative; information as poetry |
-| Studio Dumbar | Identity systems with kinetic intelligence |
-| COLLINS | Brand transformation through surprise and wit |
+| Studio Dumbar | Identity systems with kinetic intelligence; color as protagonist |
 | Porto Rocha | Editorial rigor; editorial luxury |
-| Koto | Systematic beauty; identity coherence |
-| DIA Studio | Type as motion object; letterforms as protagonists |
-| Order Design | Information design with editorial authority |
-| Ordinary Folk | Warmth without sentimentality; precision without coldness |
-| Buck | Narrative motion; character through motion |
+| COLLINS | Brand transformation through surprise and wit |
 | Territory Studio | Information cinema; UI as visual poetry |
 | ManvsMachine | Craft at scale; material simulation as design philosophy |
 | FIELD.IO | Generative identity; data as aesthetic material |
+| DIA Studio | Type as motion object; letterforms as protagonists |
+| Koto | Systematic beauty; identity coherence |
+| Order Design | Information design with editorial authority |
+| Buck | Narrative motion; character through motion |
+| MotionArray | High-energy kinetic promo; dynamic color behavior |
+| Giorgia Lupi | Data as humanist narrative; information as poetry |
+| Ordinary Folk | Warmth without sentimentality; precision without coldness |
 
 ### Editorial and Journalism
 | Reference | What they prove |
@@ -111,6 +112,35 @@ The Creative Director holds the brief against these references. If the output wo
 
 ---
 
+## Final Output Target
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+OUTPUT COMPOSITION
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+40%  Studio Dumbar       — Bold color, kinetic identity, visual energy
+20%  Territory Studio    — Information cinema, data as imagery
+15%  COLLINS             — Wit, surprise, brand transformation
+10%  Porto Rocha         — Editorial rigor, editorial luxury
+10%  MotionArray         — High-energy kinetic promo, color mutation
+ 5%  Pentagram           — Typographic authority, structural precision
+
+Result:
+
+Bold Typography
+High-Energy Color
+Information Density
+Image + Data Fusion
+Creative Risk
+Visual Surprise
+Motion Everywhere
+Design Festival Quality
+Award-Level Motion Graphics
+```
+
+---
+
 ## Anti-Generic System
 
 These patterns are **detected and rejected** at every stage.
@@ -121,13 +151,15 @@ These patterns are **detected and rejected** at every stage.
 - TikTok / CapCut template motion
 - Corporate explainer video structure
 - Startup design clichés (isometric icons, soft shadows, rounded cards)
-- Basic infographics (pie charts, stock bar charts)
+- Basic infographics (pie charts, stock bar charts displayed without cinema logic)
 - Stock transitions (wipes, fades, zoom-blur)
 - Empty minimalism (nothing in the frame but three words)
 - Random gradients used for atmosphere
 - Rainbow category colors in data visualization
 - Overused futuristic tropes (glitch, hologram, circuit board)
 - Overused AI visual effects (temporal jitter, bloom, depth-map artifacts)
+- **Apple / Bloomberg / Pentagram safe palettes when festival energy is required**
+- **Static palettes throughout an entire piece — color must evolve**
 
 ### The Test
 **Nothing should feel templated. Nothing should feel generated.**
@@ -165,6 +197,159 @@ Brief → Design → Output
 
 ---
 
+## Color Explosion System
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+COLOR EXPLOSION SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+Color is not decoration. Color is **the primary narrative.**
+
+Color may become motion. Color may become hierarchy. Color may become the entire story.
+
+### The Color Arsenal
+
+| Color | Hex | Energy |
+|---|---|---|
+| Acid Green | `#A8E63D` / `#B8FF00` | Disruptive, electric, alive |
+| Electric Purple | `#7B2FBE` / `#9B30FF` | Intensity, depth, surprise |
+| Ultra Yellow | `#FFE500` / `#FFEF00` | Confidence, authority, signal |
+| Hot Pink | `#E83E8C` / `#FF1E78` | Energy, emotion, bold presence |
+| Signal Orange | `#FF6B35` / `#FF4500` | Urgency, heat, impact |
+| Infrared Red | `#E52222` / `#FF0000` | Power, danger, drama |
+| Electric Blue | `#0066FF` / `#0040FF` | Precision, cool energy, depth |
+| Neon Lime | `#CCFF00` | Toxic brightness, maximum contrast |
+| Toxic Cyan | `#00FFEE` | Hyperreal, synthetic, alive |
+| Hyper Magenta | `#FF00FF` / `#CC00CC` | Maximum frequency, saturated presence |
+
+### Rules
+
+- High contrast combinations are **encouraged**, not avoided
+- Safe palettes are **forbidden** when the brief has energy
+- Corporate palettes are **forbidden** in festival mode
+- Neutral-only solutions are **forbidden** for high-energy work
+- Every project should **explore bold contemporary color behavior**
+
+Color should create excitement. Color should create memorability. Color should create surprise.
+
+### Mode A — Editorial Luxury (quiet premium, museum register)
+
+| Role | Colors |
+|---|---|
+| Ground (70%) | Warm Ivory `#F5EFE4`, Fog White `#EDE8E0`, Graphite `#2A2A2A` |
+| Supporting (20%) | Stone `#8B8680`, Charcoal `#3D3D3D`, Cool Linen `#D4CFC8` |
+| Accent (10%, once) | Cobalt `#1B3A8C`, Burgundy `#7C1D2E`, Acid Yellow `#D4E317` |
+
+### Mode B — Design Festival (OFFF-register, high energy, kinetic)
+
+| Role | Colors |
+|---|---|
+| Ground (70%) | Near Black `#0E0E0E`, Ultra White `#F5F5F5` |
+| Supporting (20%) | Reduced version of one explosive accent hue |
+| Accent (10%, once per scene) | Any from the Color Arsenal above |
+
+### Mode C — Color Explosion (Studio Dumbar / Porto Rocha / MotionArray register)
+
+**Full-spectrum color as protagonist.** Not a single accent. Color IS the system.
+
+- Multiple bold colors may coexist when each serves a different narrative function
+- Color hierarchy must be intentional: dominant / supporting / punctuation
+- Color must feel directed — not random, not equal
+- Use color to create visual rhythm, narrative chapters, emotional beats
+
+---
+
+## Dynamic Color Mutation System
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+DYNAMIC COLOR MUTATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+Color systems **evolve continuously** with narrative progression.
+
+### Permitted Mutations
+
+| Mutation Type | What it means |
+|---|---|
+| **Palette shift** | Entire color register changes between scenes |
+| **Accent migration** | The accent hue changes as the emotional arc progresses |
+| **Color takeover** | One color expands from accent to dominant mid-sequence |
+| **Chromatic transition** | The scene transitions through color — not through dissolve |
+| **Color hierarchy inversion** | Background becomes foreground via color alone |
+| **Temperature shift** | Warm to cool, cool to warm as emotional state changes |
+
+### Rules
+
+- Static palettes throughout an entire piece are **forbidden**
+- One-color dominance throughout the entire piece is **forbidden**
+- Color should mutate with **narrative progression**
+- Each scene may introduce, evolve, or retire a color
+
+### PremiumColorReducer Tool
+
+When AI-generated assets arrive with incorrect color, use `tools/premium_color_reducer.py` to map every pixel to the nearest palette color in CIELAB space. See `TOOL-GUIDE.md`.
+
+---
+
+## Image + Graphic + Data Fusion System
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+IMAGE GRAPHIC DATA FUSION SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Isolated content blocks are forbidden.** Images, graphics, typography, and data must coexist within unified compositions.
+
+### What Must Be Merged
+
+| Element | How it participates |
+|---|---|
+| Photography | Becomes the background for data; becomes the texture for type |
+| Video | Provides atmosphere; becomes the layer beneath information |
+| Data | Overlays imagery; becomes the image itself |
+| Typography | Becomes structure; becomes masking; becomes spatial environment |
+| Shapes | Become containers; become motion paths; become emphasis marks |
+| System UI | Becomes visual material; becomes narrative context |
+| Textures | Become surface depth; become atmospheric environment |
+| Motion Graphics | Become organic to the scene, not overlaid separately |
+
+### Fusion Rules
+
+- Images should become data carriers
+- Data should become imagery
+- Typography should become structural architecture
+- Graphics should become the narrative — not illustration of it
+
+### Forbidden: Sequential Content Blocks
+
+```
+✗  Photography block
+   ↓
+   Chart block
+   ↓
+   Text block
+   ↓
+   Photography block
+```
+
+### Required: Simultaneous Composition Layers
+
+```
+✓  Photography
+   + Data overlay
+   + Typographic annotation
+   + Motion graphic element
+   + Atmospheric system
+   → All active simultaneously
+```
+
+---
+
 ## Visual Density Engine
 
 Avoid visual emptiness. Avoid single-layer compositions.
@@ -183,11 +368,32 @@ Every frame should contain all applicable layers:
 | 6. Micro Detail | Fine-grain visual interest | Hairlines, small labels, subtle marks |
 | 7. Invisible Motion | Motion that is felt, not seen | Slow drift, breathing scale, imperceptible zoom |
 
-### The Density Test
+### Hyper Visual Abundance
 
-The frame should feel **rich** — not crowded. **Complex** — not chaotic.
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+HYPER VISUAL ABUNDANCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
 
-If the frame passes the density test at all seven layers, it will feel designed. If any layer is absent without deliberate reason, it will feel underdone.
+Visual emptiness is **not sophistication**. It is a missed opportunity for richness.
+
+Every frame may contain:
+
+- Typography
+- Imagery
+- Data
+- UI elements
+- Motion Graphics
+- Textures
+- Micro Details
+- Annotations
+- Secondary Discoveries
+- Atmospheric Systems
+
+Visual richness should feel **intentional** — not cluttered. **Complex** — not chaotic.
+
+The density test: strip any single layer from the frame. If the result is clearly worse — the layer was essential. If nothing changes — the layer was decorative noise.
 
 ---
 
@@ -225,6 +431,113 @@ Charts should feel cinematic. Data should feel alive. Numbers should arrive as e
 
 ---
 
+## Auto Chart Cinema System
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+AUTO CHART CINEMA SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+When numerical information exists — automatically enter **cinematic data storytelling mode**.
+
+No data should be displayed as-is. All data is a narrative waiting to be staged.
+
+### Chart Cinema Transformations
+
+| Data Type | Cinema Treatment |
+|---|---|
+| Bar Chart | Bars slam in with physical weight; not slide-in from left |
+| Line Chart | Line draws itself as a dramatic journey; values arrive as events |
+| Scatter System | Points materialize from noise; clusters emerge from chaos |
+| Network Graph | Connections build with intention; nodes activate in sequence |
+| Timeline | Events appear as a march; scale shifts reveal perspective |
+| Growth Visualization | Expansion feels physically real; scaling has weight |
+| Ranking Sequence | Competition narrative; the ranking changes with tension |
+| Comparison System | Contrast is spatial and physical, not side-by-side static |
+
+### What Charts Must Never Be
+
+- Not analytical (bar charts in spreadsheet register)
+- Not dashboard-like (multiple charts competing simultaneously)
+- Not PowerPoint (labeled columns, plain backgrounds)
+
+### What Charts Must Always Be
+
+- **Alive** — motion is motivated, not decorative
+- **Dramatic** — each data point arrival is an event
+- **Cinematic** — the chart behaves like an actor in a scene
+
+---
+
+## Data to Visual Drama Engine
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+DATA TO VISUAL DRAMA ENGINE
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+Statistics are **raw material for emotion**, not information to be displayed.
+
+### Transformation Table
+
+| Data Pattern | Visual Drama Treatment |
+|---|---|
+| Large number | Scale shift — the number fills the frame |
+| Percentage | The space divides — the viewer inhabits both halves |
+| Growth trend | Physical expansion — space is conquered |
+| Decline | Collapse — the frame contracts, elements recede |
+| Comparison | Conflict — two forces oppose each other spatially |
+| Ranking | Competition — sequential reveal creates suspense |
+| Outlier | Surprise — the outlier arrives unexpectedly, breaks the pattern |
+| Threshold | Tension — the line approaches, crosses, reveals |
+
+### The Drama Test
+
+Data should generate **emotion**, not merely information.
+
+If the viewer understands the data without feeling anything — the treatment failed.
+
+```
+Data → Tension → Reveal → Emotion → Understanding
+```
+
+Not:
+
+```
+Data → Label → Chart → Understanding
+```
+
+---
+
+## Auto Image Storytelling System
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+AUTO IMAGE STORYTELLING SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+When an image is provided, do not display it. **Activate it**.
+
+Every image should generate:
+
+| Treatment | What it creates |
+|---|---|
+| **Zoom narrative** | The frame slowly reveals — distance becomes intimacy |
+| **Detail reveal** | Macro focus on a specific element — the part tells the whole |
+| **Typographic annotation** | Text appears at precise compositional points within the image |
+| **Data overlay** | Statistics appear anchored to visual elements |
+| **Graphic interaction** | Shapes, lines, or systems respond to image content |
+| **Spatial transition** | The image becomes the environment for the next scene |
+| **Environmental extension** | The image bleeds beyond its frame into the design space |
+| **Atmospheric extraction** | Color is pulled from the image and becomes the palette |
+
+Images should **evolve** across time. Images should **transform**. Images should **participate** in storytelling — not sit in a container.
+
+---
+
 ## Creative Surprise Engine
 
 Every sequence must contain surprise. Surprise that is intelligent — not random.
@@ -239,6 +552,7 @@ Every sequence must contain surprise. Surprise that is intelligent — not rando
 - **Unexpected color event** — color appears or disappears as narrative punctuation
 - **Unexpected spatial transition** — the viewer's sense of space shifts
 - **Unexpected narrative turn** — the emotional register changes
+- **Unexpected color mutation** — palette shifts mid-sequence with narrative intention
 
 ### The Surprise Test
 
@@ -259,6 +573,10 @@ If the viewer can predict the next 5 seconds, the sequence needs more surprise.
 | Balanced hierarchy | Radical hierarchy imbalance |
 | Predictable structure | Controlled chaos with underlying logic |
 | Conventional narrative order | Experimental storytelling sequence |
+| **Corporate color palette** | **Explosive color from the Color Arsenal** |
+| **Static palette throughout** | **Evolving palette that mutates with narrative** |
+| **Image displayed in container** | **Image activated as cinematic material** |
+| **Data in chart form** | **Data as visual drama** |
 
 **Prefer: memorable over safe. Bold over conventional. Tension over comfort. Originality over familiarity.**
 
@@ -287,43 +605,6 @@ Typography is not labels. Typography is **architecture. Motion. Composition.**
 - Type at reduced size must be optically precise (typography-optics tracking rules apply)
 
 **Large-scale typography is encouraged. Typography should often be the main visual event.**
-
----
-
-## Color Narrative System
-
-Color controls emotion, hierarchy, and pacing. Color is never decorative.
-
-### Mode A — Editorial Luxury
-
-For: brand films, museum contexts, luxury product, quiet premium
-
-| Role | Colors |
-|---|---|
-| Ground (70%) | Warm Ivory `#F5EFE4`, Fog White `#EDE8E0`, Graphite `#2A2A2A` |
-| Supporting (20%) | Stone `#8B8680`, Charcoal `#3D3D3D`, Cool Linen `#D4CFC8` |
-| Accent (10%, once) | Cobalt `#1B3A8C`, Burgundy `#7C1D2E`, Acid Yellow `#D4E317` |
-
-### Mode B — Design Festival
-
-For: OFFF-register work, kinetic identity, high-energy launches, experimental
-
-| Role | Colors |
-|---|---|
-| Ground (70%) | Near Black `#0E0E0E`, Ultra White `#F5F5F5` |
-| Supporting (20%) | Reduced version of one accent hue |
-| Accent (10%, once) | Acid Green `#A8E63D`, Electric Purple `#7B2FBE`, Hot Pink `#E83E8C`, Signal Red `#E52222`, Ultra Yellow `#FFE500` |
-
-### Color Narrative Rules
-
-1. **Color appears when narrative intensity increases.** Not by default.
-2. **Avoid meaningless color.** If color has no emotional or hierarchical function, remove it.
-3. **The 70/20/10 law applies in both modes.** See `aesthetic-governor/COLOR-DIRECTOR.md`.
-4. **Color can become the protagonist.** In festival mode, color may drive the entire narrative.
-
-### The PremiumColorReducer Tool
-
-When AI-generated assets arrive with incorrect color, use `tools/premium_color_reducer.py` to map every pixel to the nearest palette color in CIELAB space. See `TOOL-GUIDE.md`.
 
 ---
 
@@ -408,11 +689,14 @@ When the brief calls for maximum creative ambition (OFFF, Adobe MAX, Forward Fes
 | Parameter | Standard | Festival Mode |
 |---|---|---|
 | Typography scale | 100–200% of body | 200–600% — bleed permitted |
-| Color energy | Mode A (editorial) | Mode B (festival) or hybrid |
+| Color energy | Mode A (editorial) | Mode C (explosion) or Mode B |
+| Color behavior | Static palette | Dynamic mutation across scenes |
 | Visual density | 5–7 layers | All 7 layers at maximum |
 | Surprise factor | 2 per 30s | 4+ per 30s |
 | Creative risk | Bold | Experimental |
 | Motion complexity | 3-layer stack | Full 5-layer stack |
+| Image treatment | Display | Activate (Auto Image Storytelling) |
+| Data treatment | Chart | Cinema (Auto Chart Cinema) |
 
 **Festival mode targets:** OFFF, Adobe MAX, Forward Festival, Motion Plus Design, Awwwards, Creative Review, It's Nice That.
 
@@ -449,6 +733,8 @@ The Anti-AI Detector runs continuously. It looks for the following AI behavioral
 - Purple / teal / orange tri-color combinations
 - All colors at full saturation simultaneously
 - Color used symmetrically (same intensity in all zones)
+- **Static palette throughout entire piece**
+- **Safe corporate palette when brief calls for energy**
 
 ### AI Motion Markers
 - All elements fade in simultaneously
@@ -469,11 +755,17 @@ The Anti-AI Detector runs continuously. It looks for the following AI behavioral
 - No silence or visual rest between beats
 - Energy remains constant throughout
 
+### AI Data Markers
+- Data displayed in chart container without cinematic staging
+- Charts use default colors (rainbow categories, blue bars)
+- Numbers appear without dramatic context
+- Comparisons shown as side-by-side bars rather than spatial tension
+
 ### Rejection Protocol
 
 If any marker is detected:
 1. **Name the specific marker**
-2. **Identify which director is responsible** (typography, color, motion, composition, or pacing)
+2. **Identify which director is responsible** (typography, color, motion, composition, pacing, or data)
 3. **Return to that director's constraint set**
 4. **Re-execute with the correct constraint applied**
 5. **Re-run the Anti-AI Detector**
@@ -487,23 +779,26 @@ Do not release output that would survive an Anti-AI Detector pass.
 Before any output leaves the system, ask:
 
 > **Would this frame, this sequence, this production be accepted inside:**
-> - Pentagram
 > - Studio Dumbar
+> - Porto Rocha
 > - COLLINS
 > - Territory Studio
 > - ManvsMachine
 > - OFFF Festival
 > - Adobe MAX
-> - Apple Launch Event
+> - MotionArray (top tier work)
 > - A24 Opening Sequence
 > - Museum Motion Exhibition
 > - International Design Annual
+> - Pentagram
 
 **If not — refine again.**
 
 Every frame should feel directed.
 Every sequence should feel curated.
 Every visual decision should feel intentional.
+Every color should feel chosen.
+Every data point should feel staged.
 No frame should feel generated.
 
 ---
@@ -522,11 +817,14 @@ After running CMOS V5, write this block before passing to the Aesthetic Governor
 **Primary reference:** [named studio/work from the canon]
 **Secondary reference:** [second named reference that creates tension with primary]
 **Anti-AI markers to watch:** [list 3 specific AI patterns this brief is most at risk of]
-**Color mode:** [A — Editorial Luxury / B — Design Festival]
+**Color mode:** [A — Editorial Luxury / B — Design Festival / C — Color Explosion]
+**Color mutation plan:** [how the palette evolves across scenes]
 **Density target:** [number of active layers per frame]
 **Surprise moments planned:** [list 2+ specific unexpected events]
 **Sound character:** [named character from the Sound Direction System]
 **Festival mode:** [on / off]
 **Museum curator note:** [how meaning unfolds — discovery sequence]
+**Data treatment:** [cinematic / chart cinema / drama engine / none]
+**Image treatment:** [auto storytelling / static display / none]
 **Quality test:** [which 3 canon references this must pass]
 ```
