@@ -1,585 +1,616 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=1920, height=1080" />
-    <script src="./node_modules/gsap/dist/gsap.min.js"></script>
-    <style>
-      :root { --k:#0C0C0C; --a:#C6FF00; --w:#F2F2EE; }
-      * { margin:0; padding:0; box-sizing:border-box; }
-      html,body { width:1920px; height:1080px; overflow:hidden; background:#0C0C0C;
-        font-family:'Bebas Neue',Impact,'Arial Black',sans-serif; }
-
-      #stage { position:absolute; inset:0; width:1920px; height:1080px; overflow:hidden; }
-
-      /* ── Colour flood layers ───────────────────────────── */
-      .flood { position:absolute; inset:0; clip-path:inset(0 100% 0 0); z-index:2; pointer-events:none; }
-      #fl-acid  { background:#C6FF00; }
-      #fl-white { background:#F2F2EE; }
-
-      /* ── Grid texture ──────────────────────────────────── */
-      #grid-tex {
-        position:absolute; inset:0; z-index:1; opacity:0; pointer-events:none;
-        background-image:
-          linear-gradient(rgba(198,255,0,.07) 1px,transparent 1px),
-          linear-gradient(90deg,rgba(198,255,0,.07) 1px,transparent 1px);
-        background-size:120px 120px;
-      }
-
-      /* ── Scan line ─────────────────────────────────────── */
-      #scan { position:absolute; left:0; width:100%; height:2px;
-        background:#C6FF00; top:-4px; z-index:30; opacity:0; pointer-events:none; }
-
-      /* ── S01 Logo ──────────────────────────────────────── */
-      #s01 { position:absolute; inset:0; z-index:10; }
-      #logo-row { position:absolute; top:50%; left:50%; transform:translate(-50%,-55%);
-        display:flex; gap:0; }
-      .ll { font-size:300px; font-weight:400; line-height:.9; color:#F2F2EE;
-        opacity:0; display:block; }
-      .ll.a { color:#C6FF00; }
-      #s01-eye { position:absolute; bottom:110px; left:50%; transform:translateX(-50%);
-        font-family:'Space Grotesk','Helvetica Neue',Arial,sans-serif;
-        font-size:14px; letter-spacing:.55em; color:rgba(242,242,238,.45);
-        text-transform:uppercase; opacity:0; white-space:nowrap; }
-
-      /* ── S02 Colour System ─────────────────────────────── */
-      #s02 { position:absolute; inset:0; z-index:9; pointer-events:none; }
-      .clbl { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-        font-size:220px; font-weight:400; line-height:.9; opacity:0; }
-      #clbl-p { color:#0C0C0C; }
-      #clbl-s { color:#C6FF00; }
-      #clbl-ac { color:#F2F2EE; }
-      #clbl-sy { color:#C6FF00; }
-      #swatches { position:absolute; bottom:90px; left:50%; transform:translateX(-50%);
-        display:flex; gap:18px; opacity:0; z-index:12; }
-      .sw { width:88px; height:88px; }
-
-      /* ── S03 Typography ────────────────────────────────── */
-      #s03 { position:absolute; inset:0; z-index:10; pointer-events:none; }
-      .tw { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-        font-weight:400; line-height:.88; opacity:0; }
-      #tw1 { font-size:420px; color:#F2F2EE; letter-spacing:-.01em; }
-      #tw2 { font-size:200px; color:#C6FF00; letter-spacing:.18em; }
-      #tw3 { font-size:340px; color:transparent; -webkit-text-stroke:2px #F2F2EE;
-        letter-spacing:.06em; }
-      #tw4 { font-size:160px; color:rgba(242,242,238,.28); letter-spacing:.7em; }
-      #tw5 { font-size:500px; color:#C6FF00; letter-spacing:-.02em; }
-
-      /* ── S04 Infographics ──────────────────────────────── */
-      #s04 { position:absolute; inset:0; z-index:8; opacity:0; pointer-events:none; }
-
-      /* ── S05 Grid ──────────────────────────────────────── */
-      #s05 { position:absolute; top:50%; left:50%;
-        transform:translate(-50%,-50%);
-        display:grid; grid-template-columns:repeat(3,336px);
-        grid-template-rows:repeat(3,198px); gap:10px;
-        z-index:10; opacity:0; }
-      .mc { opacity:0; overflow:hidden; }
-
-      /* ── S06 App labels ────────────────────────────────── */
-      .aplbl { position:absolute; top:50%; left:50%;
-        transform:translate(-50%,-50%);
-        font-size:380px; font-weight:400; line-height:.88; opacity:0; z-index:12; }
-      #apl-rule { position:absolute; top:calc(50% + 230px); left:50%;
-        transform:translateX(-50%); width:0; height:3px; background:#C6FF00;
-        opacity:0; z-index:12; }
-
-      /* ── S07 System blast ──────────────────────────────── */
-      #s07 { position:absolute; inset:0; z-index:9; opacity:0; pointer-events:none; }
-
-      /* ── S08 Final ─────────────────────────────────────── */
-      #s08 { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-        text-align:center; z-index:15; opacity:0; }
-      #f-brand { font-size:240px; color:#F2F2EE; letter-spacing:.04em; line-height:.9; }
-      #f-tag { font-family:'Space Grotesk','Helvetica Neue',Arial,sans-serif;
-        font-size:17px; color:rgba(242,242,238,.42); letter-spacing:.65em;
-        text-transform:uppercase; margin-top:28px; }
-      #f-swrow { display:flex; gap:14px; justify-content:center; margin-top:36px; }
-      .fsw { height:18px; }
-    </style>
-  </head>
-  <body>
-  <div id="root" data-composition-id="forma-reel"
-       data-start="0" data-duration="60"
-       data-width="1920" data-height="1080"
-       style="overflow:hidden;">
-  <div id="stage" data-layout-allow-overflow="true">
-
-    <div id="grid-tex"></div>
-    <div id="scan"></div>
-    <div class="flood" id="fl-acid"></div>
-    <div class="flood" id="fl-white"></div>
-
-    <!-- ══ S01 LOGO REVEAL 0–3s ═══════════════════════════════════ -->
-    <div id="s01" class="clip" data-start="0" data-duration="3.2" data-track-index="1">
-      <div id="logo-row">
-        <span class="ll"   id="ll-f">F</span>
-        <span class="ll a" id="ll-o">O</span>
-        <span class="ll"   id="ll-r">R</span>
-        <span class="ll a" id="ll-m">M</span>
-        <span class="ll"   id="ll-a2">A</span>
-      </div>
-      <div id="s01-eye">BRAND IDENTITY SYSTEM — 2026</div>
-    </div>
-
-    <!-- ══ S02 COLOUR SYSTEM 3–8s ═════════════════════════════════ -->
-    <div id="s02" class="clip" data-start="3" data-duration="5" data-track-index="2">
-      <div class="clbl" id="clbl-p">PRIMARY</div>
-      <div class="clbl" id="clbl-s">SECONDARY</div>
-      <div class="clbl" id="clbl-ac">ACCENT</div>
-      <div class="clbl" id="clbl-sy">SYSTEM</div>
-    </div>
-    <div id="swatches" class="clip" data-start="6.4" data-duration="1.6" data-track-index="3">
-      <div class="sw" style="background:#0C0C0C;border:1px solid rgba(242,242,238,.18)"></div>
-      <div class="sw" style="background:#C6FF00"></div>
-      <div class="sw" style="background:#F2F2EE"></div>
-    </div>
-
-    <!-- ══ S03 TYPOGRAPHY 8–15s ════════════════════════════════════ -->
-    <div id="s03" class="clip" data-start="8" data-duration="7" data-track-index="4">
-      <div class="tw" id="tw1">THINK</div>
-      <div class="tw" id="tw2">THINKING</div>
-      <div class="tw" id="tw3">SYSTEM</div>
-      <div class="tw" id="tw4">STRUCTURE</div>
-      <div class="tw" id="tw5">DESIGN</div>
-    </div>
-
-    <!-- ══ S04 INFOGRAPHICS 15–22s ════════════════════════════════ -->
-    <svg id="s04" class="clip" data-start="15" data-duration="7" data-track-index="5"
-         viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
-      <!-- axis lines -->
-      <g id="s4-axes" opacity="0">
-        <line x1="0" y1="540" x2="1920" y2="540" stroke="rgba(198,255,0,.12)" stroke-width="1"/>
-        <line x1="960" y1="0"  x2="960"  y2="1080" stroke="rgba(198,255,0,.12)" stroke-width="1"/>
-      </g>
-
-      <!-- LINE CHART left -->
-      <g id="s4-line" opacity="0">
-        <line x1="120" y1="210" x2="120" y2="820" stroke="rgba(242,242,238,.25)" stroke-width="1.2"/>
-        <line x1="120" y1="820" x2="780" y2="820" stroke="rgba(242,242,238,.25)" stroke-width="1.2"/>
-        <line x1="120" y1="620" x2="780" y2="620" stroke="rgba(242,242,238,.07)" stroke-width="1" stroke-dasharray="6 8"/>
-        <line x1="120" y1="420" x2="780" y2="420" stroke="rgba(242,242,238,.07)" stroke-width="1" stroke-dasharray="6 8"/>
-        <path id="lp" d="M120,800 C200,775 280,720 380,640 C480,560 560,460 660,370 C710,325 745,285 778,250"
-          fill="none" stroke="#C6FF00" stroke-width="3.5" stroke-linecap="round"
-          stroke-dasharray="1300" stroke-dashoffset="1300"/>
-        <path d="M120,800 C200,775 280,720 380,640 C480,560 560,460 660,370 C710,325 745,285 778,250 L778,820 Z"
-          fill="rgba(198,255,0,.05)" id="lp-fill" opacity="0"/>
-        <circle id="dp1" cx="120" cy="800" r="6" fill="#C6FF00" opacity="0"/>
-        <circle id="dp2" cx="380" cy="640" r="6" fill="#C6FF00" opacity="0"/>
-        <circle id="dp3" cx="660" cy="370" r="6" fill="#C6FF00" opacity="0"/>
-        <circle id="dp4" cx="778" cy="250" r="6" fill="#C6FF00" opacity="0"/>
-        <text x="120" y="870" fill="rgba(242,242,238,.35)" font-family="'Space Grotesk',Arial,sans-serif" font-size="16" letter-spacing=".28em">GROWTH INDEX</text>
-      </g>
-
-      <!-- BAR CHART center -->
-      <g id="s4-bar" opacity="0">
-        <line x1="880" y1="820" x2="1120" y2="820" stroke="rgba(242,242,238,.25)" stroke-width="1.2"/>
-        <rect id="ba1" x="900"  y="820" width="44" height="0" fill="#C6FF00"/>
-        <rect id="ba2" x="958"  y="820" width="44" height="0" fill="rgba(242,242,238,.9)"/>
-        <rect id="ba3" x="1016" y="820" width="44" height="0" fill="rgba(198,255,0,.55)"/>
-        <rect id="ba4" x="1074" y="820" width="44" height="0" fill="rgba(242,242,238,.55)"/>
-        <text x="1000" y="870" fill="rgba(242,242,238,.35)" font-family="'Space Grotesk',Arial,sans-serif" font-size="16" text-anchor="middle" letter-spacing=".28em">EFFICIENCY</text>
-      </g>
-
-      <!-- RING right -->
-      <g id="s4-ring" opacity="0">
-        <circle cx="1500" cy="515" r="230" fill="none" stroke="rgba(242,242,238,.1)" stroke-width="28"/>
-        <circle id="rp" cx="1500" cy="515" r="230" fill="none" stroke="#C6FF00" stroke-width="28"
-          stroke-dasharray="1445" stroke-dashoffset="1445" stroke-linecap="round"
-          transform="rotate(-90 1500 515)"/>
-        <text x="1500" y="492" fill="#F2F2EE" font-family="'Bebas Neue',Impact,sans-serif" font-size="88" text-anchor="middle">87</text>
-        <text x="1500" y="544" fill="rgba(242,242,238,.4)" font-family="'Space Grotesk',Arial,sans-serif" font-size="18" text-anchor="middle" letter-spacing=".35em">SCORE</text>
-      </g>
-
-      <!-- NODE NETWORK bottom -->
-      <g id="s4-nodes" opacity="0">
-        <line id="nl1" x1="400" y1="940" x2="600" y2="910" stroke="rgba(198,255,0,.4)" stroke-width="1.5" stroke-dasharray="220" stroke-dashoffset="220"/>
-        <line id="nl2" x1="600" y1="910" x2="800" y2="940" stroke="rgba(198,255,0,.4)" stroke-width="1.5" stroke-dasharray="220" stroke-dashoffset="220"/>
-        <line id="nl3" x1="600" y1="910" x2="540" y2="990" stroke="rgba(198,255,0,.28)" stroke-width="1.2" stroke-dasharray="110" stroke-dashoffset="110"/>
-        <line id="nl4" x1="600" y1="910" x2="670" y2="985" stroke="rgba(198,255,0,.28)" stroke-width="1.2" stroke-dasharray="110" stroke-dashoffset="110"/>
-        <circle cx="400" cy="940" r="7" fill="#C6FF00" id="nd1" opacity="0"/>
-        <circle cx="600" cy="910" r="9" fill="#C6FF00" id="nd2" opacity="0"/>
-        <circle cx="800" cy="940" r="7" fill="#C6FF00" id="nd3" opacity="0"/>
-        <circle cx="540" cy="990" r="5" fill="rgba(198,255,0,.6)" id="nd4" opacity="0"/>
-        <circle cx="670" cy="985" r="5" fill="rgba(198,255,0,.6)" id="nd5" opacity="0"/>
-      </g>
-
-      <!-- Count label -->
-      <text id="s4-count" x="1500" y="150" fill="rgba(198,255,0,.65)" font-family="'Bebas Neue',Impact,sans-serif" font-size="130" text-anchor="middle" opacity="0">2.4M</text>
-      <text x="1500" y="188" fill="rgba(242,242,238,.3)" font-family="'Space Grotesk',Arial,sans-serif" font-size="15" text-anchor="middle" letter-spacing=".35em" id="s4-unit" opacity="0">ACTIVE USERS</text>
-    </svg>
-
-    <!-- ══ S05 PRODUCT GRID 22–30s ════════════════════════════════ -->
-    <div id="s05" class="clip" data-start="22" data-duration="8" data-track-index="6" data-layout-allow-overflow="true">
-      <!-- card 1: APP UI -->
-      <div class="mc" id="mc1">
-        <svg width="336" height="198" viewBox="0 0 336 198"><rect width="336" height="198" fill="#141414"/>
-          <rect x="16" y="16" width="180" height="12" rx="2" fill="#C6FF00" opacity=".85"/>
-          <rect x="16" y="36" width="110" height="8"  rx="2" fill="rgba(242,242,238,.18)"/>
-          <rect x="16" y="58" width="304" height="88" rx="3" fill="rgba(198,255,0,.08)" stroke="rgba(198,255,0,.25)" stroke-width="1"/>
-          <text x="26" y="110" fill="#C6FF00" font-family="'Bebas Neue',Impact,sans-serif" font-size="36">APP UI</text>
-          <rect x="16" y="160" width="88" height="10" rx="2" fill="rgba(198,255,0,.4)"/>
-          <rect x="112" y="160" width="64" height="10" rx="2" fill="rgba(242,242,238,.14)"/>
-        </svg>
-      </div>
-      <!-- card 2: POSTER -->
-      <div class="mc" id="mc2">
-        <svg width="336" height="198" viewBox="0 0 336 198"><rect width="336" height="198" fill="#C6FF00"/>
-          <text x="22" y="106" fill="#0C0C0C" font-family="'Bebas Neue',Impact,sans-serif" font-size="72">FORMA</text>
-          <rect x="22" y="116" width="180" height="3" fill="#0C0C0C"/>
-          <text x="22" y="148" fill="rgba(12,12,12,.55)" font-family="'Space Grotesk',Arial,sans-serif" font-size="11" letter-spacing=".3em">DESIGN SYSTEM · 2026</text>
-        </svg>
-      </div>
-      <!-- card 3: WEB -->
-      <div class="mc" id="mc3">
-        <svg width="336" height="198" viewBox="0 0 336 198"><rect width="336" height="198" fill="#111"/>
-          <rect x="0" y="0" width="336" height="28" fill="#1C1C1C"/>
-          <circle cx="16" cy="14" r="5" fill="#FF5F57"/><circle cx="32" cy="14" r="5" fill="#FEBC2E"/><circle cx="48" cy="14" r="5" fill="#28C840"/>
-          <rect x="80" y="8" width="176" height="12" rx="6" fill="rgba(255,255,255,.06)"/>
-          <rect x="16" y="46" width="304" height="44" rx="2" fill="rgba(198,255,0,.07)" stroke="rgba(198,255,0,.22)" stroke-width=".8"/>
-          <text x="26" y="74" fill="#C6FF00" font-family="'Bebas Neue',Impact,sans-serif" font-size="26">WEBSITE SYSTEM</text>
-          <rect x="16" y="104" width="140" height="8" rx="2" fill="rgba(242,242,238,.15)"/>
-          <rect x="16" y="118" width="100" height="8" rx="2" fill="rgba(242,242,238,.09)"/>
-          <rect x="16" y="140" width="64" height="24" rx="2" fill="#C6FF00"/>
-          <text x="26" y="157" fill="#0C0C0C" font-family="'Space Grotesk',Arial,sans-serif" font-size="11" font-weight="700">EXPLORE</text>
-        </svg>
-      </div>
-      <!-- card 4: PACKAGING -->
-      <div class="mc" id="mc4">
-        <svg width="336" height="198" viewBox="0 0 336 198"><rect width="336" height="198" fill="#0C0C0C"/>
-          <rect x="98" y="28" width="140" height="142" fill="#1A1A1A" stroke="rgba(198,255,0,.35)" stroke-width="1"/>
-          <rect x="98" y="28" width="140" height="32" fill="#C6FF00"/>
-          <text x="168" y="51" fill="#0C0C0C" font-family="'Bebas Neue',Impact,sans-serif" font-size="20" text-anchor="middle">FORMA</text>
-          <text x="168" y="112" fill="#F2F2EE" font-family="'Space Grotesk',Arial,sans-serif" font-size="10" text-anchor="middle" letter-spacing=".22em">PACKAGING</text>
-          <line x1="98" y1="84" x2="238" y2="84" stroke="rgba(198,255,0,.18)" stroke-width=".8"/>
-        </svg>
-      </div>
-      <!-- card 5: SOCIAL -->
-      <div class="mc" id="mc5">
-        <svg width="336" height="198" viewBox="0 0 336 198"><rect width="336" height="198" fill="#C6FF00"/>
-          <text x="168" y="108" fill="#0C0C0C" font-family="'Bebas Neue',Impact,sans-serif" font-size="96" text-anchor="middle">F</text>
-          <text x="168" y="140" fill="rgba(12,12,12,.55)" font-family="'Space Grotesk',Arial,sans-serif" font-size="10" text-anchor="middle" letter-spacing=".42em">SOCIAL MEDIA</text>
-          <rect x="68" y="154" width="200" height="1" fill="rgba(12,12,12,.18)"/>
-          <text x="168" y="174" fill="rgba(12,12,12,.4)" font-family="'Space Grotesk',Arial,sans-serif" font-size="9" text-anchor="middle" letter-spacing=".3em">@FORMA.SYSTEM</text>
-        </svg>
-      </div>
-      <!-- card 6: CARD -->
-      <div class="mc" id="mc6">
-        <svg width="336" height="198" viewBox="0 0 336 198"><rect width="336" height="198" fill="#1A1A1A"/>
-          <rect x="68" y="54" width="200" height="90" fill="#0C0C0C" rx="4" stroke="rgba(198,255,0,.28)" stroke-width=".8"/>
-          <text x="88" y="100" fill="#F2F2EE" font-family="'Bebas Neue',Impact,sans-serif" font-size="34">FORMA</text>
-          <text x="88" y="122" fill="rgba(198,255,0,.65)" font-family="'Space Grotesk',Arial,sans-serif" font-size="9" letter-spacing=".22em">DESIGN DIRECTOR</text>
-          <text x="220" y="136" fill="rgba(242,242,238,.25)" font-family="'Space Grotesk',Arial,sans-serif" font-size="8" letter-spacing=".15em">CARD</text>
-        </svg>
-      </div>
-      <!-- card 7: MERCH -->
-      <div class="mc" id="mc7">
-        <svg width="336" height="198" viewBox="0 0 336 198"><rect width="336" height="198" fill="#F2F2EE"/>
-          <path d="M108,44 L64,72 L94,84 L94,162 L242,162 L242,84 L272,72 L228,44 L198,58 C184,70 152,70 138,58 Z" fill="#0C0C0C" stroke-width="1.5"/>
-          <text x="168" y="124" fill="#C6FF00" font-family="'Bebas Neue',Impact,sans-serif" font-size="26" text-anchor="middle">FORMA</text>
-          <text x="264" y="186" fill="rgba(12,12,12,.28)" font-family="'Space Grotesk',Arial,sans-serif" font-size="9" letter-spacing=".2em">MERCH</text>
-        </svg>
-      </div>
-      <!-- card 8: OOH -->
-      <div class="mc" id="mc8">
-        <svg width="336" height="198" viewBox="0 0 336 198"><rect width="336" height="198" fill="#0C0C0C"/>
-          <rect x="20" y="18" width="296" height="120" fill="#C6FF00"/>
-          <text x="168" y="94" fill="#0C0C0C" font-family="'Bebas Neue',Impact,sans-serif" font-size="62" text-anchor="middle">FORMA</text>
-          <rect x="104" y="138" width="7" height="46" fill="rgba(242,242,238,.2)"/>
-          <rect x="225" y="138" width="7" height="46" fill="rgba(242,242,238,.2)"/>
-          <text x="168" y="192" fill="rgba(198,255,0,.4)" font-family="'Space Grotesk',Arial,sans-serif" font-size="9" text-anchor="middle" letter-spacing=".3em">OOH ADVERTISING</text>
-        </svg>
-      </div>
-      <!-- card 9: MOTION -->
-      <div class="mc" id="mc9">
-        <svg width="336" height="198" viewBox="0 0 336 198"><rect width="336" height="198" fill="#141414"/>
-          <circle cx="168" cy="99" r="68" fill="none" stroke="rgba(198,255,0,.3)" stroke-width="1.2"/>
-          <circle cx="168" cy="99" r="48" fill="none" stroke="rgba(198,255,0,.18)" stroke-width=".8"/>
-          <circle cx="168" cy="99" r="28" fill="none" stroke="#C6FF00" stroke-width="1.5"/>
-          <circle cx="168" cy="99" r="5"  fill="#C6FF00"/>
-          <text x="168" y="182" fill="rgba(198,255,0,.45)" font-family="'Space Grotesk',Arial,sans-serif" font-size="10" text-anchor="middle" letter-spacing=".3em">MOTION</text>
-        </svg>
-      </div>
-    </div>
-
-    <!-- ══ S06 APPLICATION 30–40s ══════════════════════════════════ -->
-    <div class="aplbl clip" id="apl-1" data-start="30"   data-duration="1.8" data-track-index="7" style="color:#F2F2EE;">POSTER</div>
-    <div class="aplbl clip" id="apl-2" data-start="31.8" data-duration="1.6" data-track-index="7" style="color:#0C0C0C;">SOCIAL</div>
-    <div class="aplbl clip" id="apl-3" data-start="33.4" data-duration="1.6" data-track-index="7" style="color:#F2F2EE;">PACK</div>
-    <div class="aplbl clip" id="apl-4" data-start="35"   data-duration="1.6" data-track-index="7" style="color:#0C0C0C;">APP</div>
-    <div class="aplbl clip" id="apl-5" data-start="36.6" data-duration="1.6" data-track-index="7" style="color:#F2F2EE;">WEB</div>
-    <div class="aplbl clip" id="apl-6" data-start="38.2" data-duration="1.8" data-track-index="7" style="color:#0C0C0C;">OOH</div>
-    <div id="apl-rule" class="clip" data-start="30" data-duration="10" data-track-index="8"></div>
-
-    <!-- ══ S07 SYSTEM BLAST 40–50s ════════════════════════════════ -->
-    <svg id="s07" class="clip" data-start="40" data-duration="10" data-track-index="9" data-layout-allow-overflow="true"
-         viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
-      <text id="s7-bg" x="960" y="640" fill="rgba(242,242,238,.05)"
-        font-family="'Bebas Neue',Impact,sans-serif" font-size="680" text-anchor="middle" opacity="0">F</text>
-      <g id="s7-grid" opacity="0">
-        <line x1="0"    y1="360" x2="1920" y2="360"  stroke="rgba(198,255,0,.18)" stroke-width="1"/>
-        <line x1="0"    y1="720" x2="1920" y2="720"  stroke="rgba(198,255,0,.18)" stroke-width="1"/>
-        <line x1="640"  y1="0"   x2="640"  y2="1080" stroke="rgba(198,255,0,.18)" stroke-width="1"/>
-        <line x1="1280" y1="0"   x2="1280" y2="1080" stroke="rgba(198,255,0,.18)" stroke-width="1"/>
-      </g>
-      <g id="s7-els" opacity="0">
-        <!-- mini line chart TL -->
-        <path id="s7-lp" d="M80,320 L200,270 L360,200 L520,140"
-          fill="none" stroke="#C6FF00" stroke-width="2.5"
-          stroke-dasharray="520" stroke-dashoffset="520"/>
-        <!-- mini bars TR -->
-        <rect id="s7-b1" x="1480" y="320" width="32" height="0" fill="rgba(198,255,0,.65)"/>
-        <rect id="s7-b2" x="1526" y="320" width="32" height="0" fill="rgba(198,255,0,.45)"/>
-        <rect id="s7-b3" x="1572" y="320" width="32" height="0" fill="rgba(198,255,0,.55)"/>
-        <!-- ring BL -->
-        <circle cx="220" cy="820" r="90" fill="none" stroke="rgba(198,255,0,.22)" stroke-width="16"/>
-        <circle id="s7-rp" cx="220" cy="820" r="90" fill="none" stroke="#C6FF00" stroke-width="16"
-          stroke-dasharray="565" stroke-dashoffset="565" stroke-linecap="round"
-          transform="rotate(-90 220 820)"/>
-        <!-- text fragments -->
-        <text x="720" y="190" fill="rgba(242,242,238,.28)" font-family="'Bebas Neue',Impact,sans-serif" font-size="44" letter-spacing=".55em">BRAND SYSTEM 2026</text>
-        <text x="80"  y="980" fill="rgba(198,255,0,.45)" font-family="'Bebas Neue',Impact,sans-serif" font-size="64">IDENTITY</text>
-        <text x="1440" y="980" fill="rgba(242,242,238,.38)" font-family="'Bebas Neue',Impact,sans-serif" font-size="64">MOTION</text>
-      </g>
-      <!-- cross-hair center -->
-      <line id="s7-ch" x1="860" y1="540" x2="1060" y2="540" stroke="#C6FF00" stroke-width="1.2" opacity="0"/>
-      <line id="s7-cv" x1="960" y1="440" x2="960"  y2="640" stroke="#C6FF00" stroke-width="1.2" opacity="0"/>
-    </svg>
-
-    <!-- ══ S08 FINAL LOCKUP 50–60s ════════════════════════════════ -->
-    <div id="s08" class="clip" data-start="50" data-duration="10" data-track-index="10">
-      <div id="f-brand">FORMA</div>
-      <div id="f-tag">SYSTEM · IDENTITY · MOTION</div>
-      <div id="f-swrow">
-        <div class="fsw" style="width:80px;background:#0C0C0C;border:1px solid rgba(242,242,238,.2)"></div>
-        <div class="fsw" style="width:80px;background:#C6FF00"></div>
-        <div class="fsw" style="width:80px;background:#F2F2EE"></div>
-      </div>
-    </div>
-
-  </div><!-- #stage -->
-  </div><!-- #root -->
-
-  <script>
-    window.__timelines = window.__timelines || {};
-    const tl = gsap.timeline({ paused: true });
-
-    tl.set("#apl-rule", { opacity:0, width:0 }, 0);
-
-    // helper: scan line drop
-    function scanDrop(t, dur) {
-      tl.set("#scan", { y: 0, opacity: 1 }, t);
-      tl.to("#scan",  { y: 1084, opacity: 1, duration: dur, ease:"power1.in" }, t);
-      tl.set("#scan", { opacity: 0 }, t + dur + .01);
-    }
-
-    // ── S01  LOGO REVEAL  0–3s ────────────────────────────────────
-    tl.to("#grid-tex", { opacity:1, duration:.1 }, 0);
-    tl.to("#grid-tex", { opacity:0, duration:.5 }, .4);
-
-    tl.fromTo("#ll-f",  {opacity:0,scale:9,y:-260},{opacity:1,scale:1,y:0,duration:.2,ease:"power4.out"}, .08);
-    tl.fromTo("#ll-o",  {opacity:0,scale:9,y: 260},{opacity:1,scale:1,y:0,duration:.2,ease:"power4.out"}, .18);
-    tl.fromTo("#ll-r",  {opacity:0,scale:9,x:-360},{opacity:1,scale:1,x:0,duration:.2,ease:"power4.out"}, .28);
-    tl.fromTo("#ll-m",  {opacity:0,scale:9,x: 360},{opacity:1,scale:1,x:0,duration:.2,ease:"power4.out"}, .38);
-    tl.fromTo("#ll-a2", {opacity:0,scale:9,y:-260},{opacity:1,scale:1,y:0,duration:.2,ease:"power4.out"}, .48);
-
-    tl.to("#s01-eye", { opacity:1, duration:.4, ease:"power2.out" }, 1.5);
-
-    // brief grid snap at 2.2s
-    tl.to("#grid-tex", { opacity:.45, duration:.06 }, 2.2);
-    tl.to("#grid-tex", { opacity:0,   duration:.35 }, 2.28);
-
-    // burst out
-    tl.to("#ll-f",  {x:-580,opacity:0,duration:.22,ease:"power3.in"}, 2.72);
-    tl.to("#ll-o",  {y:-420,opacity:0,duration:.22,ease:"power3.in"}, 2.74);
-    tl.to("#ll-r",  {x: 220,y:320,opacity:0,duration:.22,ease:"power3.in"}, 2.76);
-    tl.to("#ll-m",  {x:-220,y:320,opacity:0,duration:.22,ease:"power3.in"}, 2.78);
-    tl.to("#ll-a2", {x: 580,opacity:0,duration:.22,ease:"power3.in"}, 2.80);
-    tl.to("#s01-eye",{ opacity:0, duration:.18 }, 2.82);
-    tl.set("#ll-f",   { opacity:0 }, 3.0);
-    tl.set("#ll-o",   { opacity:0 }, 3.0);
-    tl.set("#ll-r",   { opacity:0 }, 3.0);
-    tl.set("#ll-m",   { opacity:0 }, 3.0);
-    tl.set("#ll-a2",  { opacity:0 }, 3.0);
-    tl.set("#s01-eye",{ opacity:0 }, 3.0);
-
-    // ── S02  COLOUR SYSTEM  3–8s ──────────────────────────────────
-    // acid PRIMARY
-    tl.fromTo("#fl-acid",{clipPath:"inset(0 100% 0 0)"},{clipPath:"inset(0 0% 0 0)",duration:.18,ease:"power4.out"}, 3.0);
-    tl.fromTo("#clbl-p", {opacity:0,scale:1.5},{opacity:1,scale:1,duration:.18,ease:"power3.out"}, 3.08);
-    tl.to("#fl-acid",  {clipPath:"inset(0 0 0 100%)",duration:.18,ease:"power4.in"}, 3.85);
-    tl.to("#clbl-p",   {opacity:0,duration:.14}, 3.85);
-
-    // white SECONDARY
-    tl.fromTo("#fl-white",{clipPath:"inset(0 100% 0 0)"},{clipPath:"inset(0 0% 0 0)",duration:.18,ease:"power4.out"}, 4.1);
-    tl.fromTo("#clbl-s", {opacity:0,scale:1.5},{opacity:1,scale:1,duration:.18,ease:"power3.out"}, 4.18);
-    tl.to("#fl-white", {clipPath:"inset(0 0 0 100%)",duration:.18,ease:"power4.in"}, 4.95);
-    tl.to("#clbl-s",   {opacity:0,duration:.14}, 4.95);
-
-    // acid ACCENT  (dark text on acid)
-    tl.fromTo("#fl-acid",{clipPath:"inset(0 100% 0 0)"},{clipPath:"inset(0 0% 0 0)",duration:.18,ease:"power4.out"}, 5.25);
-    tl.fromTo("#clbl-ac",{opacity:0,scale:1.5},{opacity:1,scale:1,duration:.18,ease:"power3.out"}, 5.33);
-    tl.to("#fl-acid",  {clipPath:"inset(0 0 0 100%)",duration:.18,ease:"power4.in"}, 6.05);
-    tl.to("#clbl-ac",  {opacity:0,duration:.14}, 6.05);
-
-    // SYSTEM + swatches
-    tl.fromTo("#clbl-sy",{opacity:0,y:70},{opacity:1,y:0,duration:.25,ease:"back.out(2)"}, 6.35);
-    tl.to("#swatches",   {opacity:1,duration:.3}, 6.55);
-    tl.to("#clbl-sy",    {opacity:0,duration:.2}, 7.7);
-    tl.to("#swatches",   {opacity:0,duration:.2}, 7.8);
-
-    scanDrop(7.9, .5);
-
-    // ── S03  TYPOGRAPHY  8–15s ────────────────────────────────────
-    scanDrop(8.0, .75);
-
-    // THINK — compresses then expands
-    tl.fromTo("#tw1",{opacity:0,scale:1.55},{opacity:1,scale:1,duration:.2,ease:"power4.out",overwrite:"auto"}, 8.05);
-    tl.to("#tw1",{letterSpacing:".55em",duration:.82,ease:"power2.out"}, 8.26);
-    tl.to("#tw1",{opacity:0,scale:.82,duration:.2,ease:"power3.in"}, 9.1);
-
-    // THINKING
-    tl.fromTo("#tw2",{opacity:0,letterSpacing:"-.08em"},{opacity:1,letterSpacing:".18em",duration:.28,ease:"power3.out"}, 9.22);
-    tl.to("#tw2",{opacity:0,y:-90,duration:.22,ease:"power3.in"}, 10.65);
-
-    scanDrop(10.72, .55);
-
-    // SYSTEM — stroke outline
-    tl.fromTo("#tw3",{opacity:0,scale:.55},{opacity:1,scale:1,duration:.22,ease:"back.out(1.4)"}, 10.8);
-    tl.to("#tw3",{letterSpacing:".28em",duration:.95}, 11.0);
-    tl.to("#tw3",{opacity:0,duration:.2}, 12.05);
-
-    // STRUCTURE — ghost tracking
-    tl.fromTo("#tw4",{opacity:0,letterSpacing:".25em"},{opacity:1,letterSpacing:".7em",duration:1.1,ease:"power1.out"}, 12.1);
-    tl.to("#tw4",{opacity:0,duration:.25}, 13.45);
-
-    // DESIGN — giant acid slam
-    tl.fromTo("#tw5",{opacity:0,y:220},{opacity:1,y:0,duration:.26,ease:"power4.out"}, 13.55);
-    tl.to("#tw5",{opacity:0,scale:1.35,duration:.3,ease:"power3.in"}, 14.72);
-
-    scanDrop(14.75, .5);
-
-    // ── S04  INFOGRAPHICS  15–22s ─────────────────────────────────
-    tl.to("#s04", {opacity:1,duration:.1}, 15.0);
-    tl.to("#s4-axes",{opacity:1,duration:.25}, 15.1);
-
-    // line chart
-    tl.to("#s4-line",{opacity:1,duration:.15}, 15.25);
-    tl.to("#lp",{strokeDashoffset:0,duration:1.3,ease:"power2.inOut"}, 15.35);
-    tl.to("#lp-fill",{opacity:1,duration:.6}, 15.8);
-    ["#dp1","#dp2","#dp3","#dp4"].forEach((d,i)=>
-      tl.to(d,{opacity:1,duration:.15}, 15.55+i*.3));
-
-    // bars
-    tl.to("#s4-bar",{opacity:1,duration:.15}, 16.4);
-    tl.to("#ba1",{attr:{y:540,height:280},duration:.38,ease:"power3.out"}, 16.5);
-    tl.to("#ba2",{attr:{y:620,height:200},duration:.38,ease:"power3.out"}, 16.6);
-    tl.to("#ba3",{attr:{y:580,height:240},duration:.38,ease:"power3.out"}, 16.7);
-    tl.to("#ba4",{attr:{y:640,height:180},duration:.38,ease:"power3.out"}, 16.8);
-
-    // ring
-    tl.to("#s4-ring",{opacity:1,duration:.15}, 17.5);
-    tl.to("#rp",{strokeDashoffset: 1445*.13, duration:1.3,ease:"power2.inOut"}, 17.6);
-    tl.to("#s4-count",{opacity:1,duration:.3}, 18.3);
-    tl.to("#s4-unit",{opacity:1,duration:.3}, 18.5);
-
-    // nodes
-    tl.to("#s4-nodes",{opacity:1,duration:.2}, 19.0);
-    ["#nd1","#nd2","#nd3","#nd4","#nd5"].forEach((d,i)=>
-      tl.to(d,{opacity:1,duration:.15}, 19.1+i*.1));
-    ["#nl1","#nl2","#nl3","#nl4"].forEach((d,i)=>
-      tl.to(d,{strokeDashoffset:0,duration:.5,ease:"power2.out"}, 19.15+i*.08));
-
-    tl.to("#s04",{opacity:0,scale:1.06,duration:.45,ease:"power2.in"}, 21.5);
-
-    // ── S05  PRODUCT GRID  22–30s ─────────────────────────────────
-    tl.to("#s05",{opacity:1,duration:.1}, 22.0);
-    ["mc1","mc2","mc3","mc4","mc5","mc6","mc7","mc8","mc9"].forEach((id,i)=>{
-      tl.fromTo(`#${id}`,{opacity:0,scale:.82,y:28},{opacity:1,scale:1,y:0,duration:.3,ease:"back.out(1.4)"}, 22.1+i*.18);
-    });
-
-    scanDrop(24.6, 1.1);
-
-    // pulse cascade
-    ["mc1","mc2","mc3","mc4","mc5","mc6","mc7","mc8","mc9"].forEach((id,i)=>{
-      tl.to(`#${id}`,{scale:1.05,duration:.2,ease:"power1.inOut",yoyo:true,repeat:1}, 26.6+i*.08);
-    });
-
-    tl.to("#s05",{scale:.88,opacity:0,duration:.35,ease:"power3.in"}, 29.6);
-
-    // ── S06  APPLICATION  30–40s ──────────────────────────────────
-    const aplData = [
-      {id:"apl-1", fl:"#fl-acid",  flt:30.0},
-      {id:"apl-2", fl:"#fl-white", flt:31.8},
-      {id:"apl-3", fl:"#fl-acid",  flt:33.4},
-      {id:"apl-4", fl:"#fl-white", flt:35.0},
-      {id:"apl-5", fl:"#fl-acid",  flt:36.6},
-      {id:"apl-6", fl:"#fl-white", flt:38.2},
-    ];
-    aplData.forEach(({id, fl, flt}) => {
-      const t = flt;
-      tl.fromTo(fl,{clipPath:"inset(0 100% 0 0)"},{clipPath:"inset(0 0% 0 0)",duration:.1,ease:"none"}, t);
-      tl.fromTo(`#${id}`,{opacity:0,scale:1.7,rotation:fl==="#fl-acid"?-4:4},
-        {opacity:1,scale:1,rotation:0,duration:.2,ease:"power4.out"}, t+.04);
-      tl.to("#apl-rule",{opacity:1,width:840,duration:.28,ease:"power2.out"}, t+.05);
-      tl.to(fl,{clipPath:"inset(0 0 0 100%)",duration:.1,ease:"none"}, t+.22);
-      tl.to(`#${id}`,{opacity:0,duration:.18,ease:"power3.in"}, t+1.55);
-      tl.to("#apl-rule",{width:0,opacity:0,duration:.18}, t+1.5);
-    });
-
-    scanDrop(39.5, .4);
-
-    // ── S07  SYSTEM BLAST  40–50s ─────────────────────────────────
-    tl.to("#s07",{opacity:1,duration:.1}, 40.0);
-    tl.to("#s7-bg",{opacity:1,duration:.4}, 40.1);
-    tl.to("#s7-grid",{opacity:1,duration:.25}, 40.25);
-    tl.to("#s7-ch",{opacity:1,duration:.2}, 40.5);
-    tl.to("#s7-cv",{opacity:1,duration:.2}, 40.5);
-
-    tl.to("#s7-els",{opacity:1,duration:.3}, 40.8);
-    tl.to("#s7-lp",{strokeDashoffset:0,duration:1.6,ease:"power2.inOut"}, 40.9);
-    tl.to("#s7-rp",{strokeDashoffset:0,duration:1.3,ease:"power2.inOut"}, 41.1);
-    tl.to("#s7-b1",{attr:{y:120,height:200},duration:.4,ease:"power3.out"}, 41.2);
-    tl.to("#s7-b2",{attr:{y:180,height:140},duration:.4,ease:"power3.out"}, 41.35);
-    tl.to("#s7-b3",{attr:{y:140,height:180},duration:.4,ease:"power3.out"}, 41.5);
-
-    // rapid colour flashes
-    [[43.0,"#fl-acid"],[43.5,"#fl-white"],[44.2,"#fl-acid"]].forEach(([t,fl])=>{
-      tl.fromTo(fl,{clipPath:"inset(0 100% 0 0)"},{clipPath:"inset(0 0% 0 0)",duration:.1,ease:"none"}, t);
-      tl.to(fl,{clipPath:"inset(0 0 0 100%)",duration:.1,ease:"none"}, t+.2);
-    });
-
-    // bg letter pulses
-    tl.to("#s7-bg",{scale:1.12,transformOrigin:"center",duration:1.8,ease:"sine.inOut",yoyo:true,repeat:3}, 43.0);
-    tl.to("#s7-grid",{opacity:.4,duration:.9,ease:"sine.inOut",yoyo:true,repeat:4}, 43.2);
-
-    scanDrop(44.9,.38);
-    scanDrop(46.1,.38);
-
-    tl.to("#s07",{opacity:0,scale:.95,duration:.4,ease:"power2.in"}, 49.55);
-
-    // ── S08  FINAL LOCKUP  50–60s ─────────────────────────────────
-    // acid flash
-    tl.fromTo("#fl-acid",{clipPath:"inset(0 100% 0 0)"},{clipPath:"inset(0 0% 0 0)",duration:.18,ease:"power4.out"}, 50.0);
-    tl.to("#fl-acid",{clipPath:"inset(0 0 0 100%)",duration:.18,ease:"power4.in"}, 50.3);
-
-    tl.fromTo("#s08",{opacity:0},{opacity:1,duration:.1}, 50.28);
-    tl.fromTo("#f-brand",{opacity:0,scale:1.35,y:70},{opacity:1,scale:1,y:0,duration:.42,ease:"power4.out"}, 50.35);
-    tl.fromTo("#f-tag",{opacity:0,letterSpacing:".2em"},{opacity:1,letterSpacing:".65em",duration:.65,ease:"power2.out"}, 50.85);
-    tl.fromTo(".fsw",{scaleX:0},{scaleX:1,duration:.3,stagger:.12,ease:"power3.out",transformOrigin:"left center"}, 51.6);
-
-    tl.to("#grid-tex",{opacity:.18,duration:1.6}, 52.0);
-
-    // subtle pulse
-    tl.to("#f-brand",{scale:1.025,transformOrigin:"center",duration:2.2,ease:"sine.inOut",yoyo:true,repeat:3}, 52.8);
-
-    scanDrop(55.5,.75);
-
-    // final acid underline
-    tl.fromTo("#fl-acid",{clipPath:"inset(98% 0 0 0)"},{clipPath:"inset(94% 0 0 0)",duration:.4,ease:"power2.out"}, 56.2);
-    tl.to("#fl-acid",{clipPath:"inset(98% 0 0 0)",duration:.4,ease:"power2.in"}, 57.5);
-
-    window.__timelines["forma-reel"] = tl;
-  </script>
-  </body>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="hyperframes-composition" content="true">
+<meta name="composition-id" content="forma-v3">
+<meta name="composition-duration" content="60">
+<meta name="composition-width" content="1920">
+<meta name="composition-height" content="1080">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1920px;height:1080px;overflow:hidden;background:#0C0C0C;font-family:'Bebas Neue',sans-serif}
+#root{position:absolute;inset:0;overflow:hidden}
+#stage{position:absolute;inset:0}
+
+#scan{position:absolute;left:0;top:0;width:1920px;height:3px;background:rgba(198,255,0,.55);opacity:0;z-index:999;pointer-events:none}
+
+.flood{position:absolute;inset:0;z-index:50;pointer-events:none}
+#fl-acid{background:#C6FF00;clip-path:polygon(0 0,0 0,0 100%,0 100%)}
+#fl-white{background:#F2F2EE;clip-path:polygon(0 0,0 0,0 100%,0 100%)}
+#fl-black{background:#0C0C0C;clip-path:polygon(0 0,0 0,0 100%,0 100%)}
+
+#grid-tex{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:40px 40px;z-index:1}
+
+.clip{position:absolute;inset:0;opacity:0;pointer-events:none}
+
+/* S01 */
+#s01{z-index:10}
+#s01-bg{position:absolute;inset:0;background:#0C0C0C}
+.ll{position:absolute;font-family:'Bebas Neue',sans-serif;font-size:320px;line-height:1;color:#F2F2EE;letter-spacing:-.02em}
+#ll-f{left:80px;top:280px}
+#ll-o{left:278px;top:280px;color:#C6FF00}
+#ll-r{left:476px;top:280px}
+#ll-m{left:658px;top:280px}
+#ll-a{left:900px;top:280px}
+#s01-sub{position:absolute;bottom:120px;left:80px;font-family:'Space Grotesk',sans-serif;font-size:18px;letter-spacing:.35em;color:rgba(242,242,238,.5);text-transform:uppercase}
+#s01-year{position:absolute;bottom:120px;right:80px;font-family:'Space Grotesk',sans-serif;font-size:18px;letter-spacing:.25em;color:rgba(242,242,238,.5)}
+#s01-rule{position:absolute;bottom:160px;left:80px;width:0;height:1px;background:#C6FF00}
+#s01-mask{position:absolute;inset:0;background:#C6FF00;transform:scaleX(0);transform-origin:left center;z-index:20}
+
+/* S02 */
+#s02{z-index:10}
+#s02-bg{position:absolute;inset:0;background:#0C0C0C}
+.col-block{position:absolute;top:0;height:1080px;clip-path:polygon(0 0,0 0,0 100%,0 100%)}
+#cb-pri{left:0;width:640px;background:#C6FF00}
+#cb-sec{left:640px;width:640px;background:#F2F2EE}
+#cb-acc{left:1280px;width:640px;background:#0C0C0C;border-left:2px solid #C6FF00}
+.col-label{position:absolute;font-family:'Bebas Neue',sans-serif;font-size:96px;line-height:1}
+#cl-pri{top:140px;left:60px;color:#0C0C0C}
+#cl-sec{top:140px;left:700px;color:#0C0C0C}
+#cl-acc{top:140px;left:1340px;color:#C6FF00}
+.col-hex{position:absolute;font-family:'Space Grotesk',sans-serif;font-size:22px;letter-spacing:.15em}
+#ch-pri{top:260px;left:60px;color:#0C0C0C}
+#ch-sec{top:260px;left:700px;color:#0C0C0C}
+#ch-acc{top:260px;left:1340px;color:#C6FF00}
+.col-desc{position:absolute;font-family:'Space Grotesk',sans-serif;font-size:15px;letter-spacing:.1em;line-height:1.8;opacity:.7}
+#cd-pri{top:330px;left:60px;color:#0C0C0C}
+#cd-sec{top:330px;left:700px;color:#0C0C0C}
+#cd-acc{top:330px;left:1340px;color:#C6FF00}
+#s02-title{position:absolute;bottom:60px;right:80px;font-family:'Space Grotesk',sans-serif;font-size:14px;letter-spacing:.4em;color:rgba(242,242,238,.35);text-transform:uppercase}
+#s02-divv1{position:absolute;top:0;left:640px;width:2px;height:0;background:rgba(0,0,0,.15)}
+#s02-divv2{position:absolute;top:0;left:1280px;width:2px;height:0;background:#C6FF00;opacity:.4}
+
+/* S03 */
+#s03{z-index:10}
+#s03-bg{position:absolute;inset:0;background:#F2F2EE}
+.tw{position:absolute;font-family:'Bebas Neue',sans-serif;color:#0C0C0C;line-height:1;transform-origin:left center}
+#tw1{font-size:240px;top:60px;left:80px;letter-spacing:-.01em}
+#tw2{font-size:160px;top:310px;left:80px;letter-spacing:.04em;-webkit-text-stroke:2px #C6FF00;color:transparent}
+#tw3{font-size:200px;top:470px;left:80px;letter-spacing:-.01em}
+#tw4{font-size:120px;top:700px;left:80px;letter-spacing:.18em;color:rgba(12,12,12,.25)}
+#tw5{font-size:300px;top:600px;right:-20px;letter-spacing:-.03em;color:rgba(12,12,12,.06);transform-origin:right center}
+.t-rule{position:absolute;height:2px;background:#0C0C0C;width:0}
+#tr1{top:305px;left:80px}
+#tr2{top:465px;left:80px}
+#s03-counter{position:absolute;top:60px;right:80px;font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.3em;color:rgba(12,12,12,.4);opacity:0}
+#s03-mask{position:absolute;inset:0;background:#0C0C0C;clip-path:polygon(0 0,0 0,0 100%,0 100%);z-index:20}
+
+/* S04 */
+#s04{z-index:10}
+#s04-bg{position:absolute;inset:0;background:#0C0C0C}
+.gv,.gh{stroke:#C6FF00;stroke-width:1;opacity:0}
+.gi-dot{fill:#C6FF00;opacity:0}
+.col-num{fill:rgba(198,255,0,.4);font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:.15em;opacity:0}
+#s04-title{position:absolute;bottom:48px;left:80px;font-family:'Bebas Neue',sans-serif;font-size:64px;color:#C6FF00;opacity:0}
+#s04-subtitle{position:absolute;bottom:52px;right:80px;font-family:'Space Grotesk',sans-serif;font-size:14px;letter-spacing:.3em;color:rgba(198,255,0,.45);opacity:0}
+
+/* S05 */
+#s05{z-index:10}
+#s05-bg{position:absolute;inset:0;background:#0C0C0C}
+#lc-path{fill:none;stroke:#C6FF00;stroke-width:3;stroke-dasharray:800;stroke-dashoffset:800}
+#lc-fill{opacity:0}
+#lc-bg{fill:none;stroke:rgba(198,255,0,.12);stroke-width:1;opacity:0}
+.bar{opacity:0}
+#ba1{fill:#C6FF00}
+#ba2{fill:rgba(198,255,0,.7)}
+#ba3{fill:rgba(198,255,0,.45)}
+#ba4{fill:rgba(198,255,0,.25)}
+#ring-bg{fill:none;stroke:rgba(198,255,0,.1);stroke-width:28}
+#ring-fg{fill:none;stroke:#C6FF00;stroke-width:28;stroke-dasharray:565;stroke-dashoffset:565;stroke-linecap:round;opacity:0}
+#ring-pct{fill:#C6FF00;font-family:'Bebas Neue',sans-serif;font-size:56px;text-anchor:middle;dominant-baseline:central;opacity:0}
+.nd-line{stroke:rgba(198,255,0,.35);stroke-width:1;stroke-dasharray:200;stroke-dashoffset:200}
+.nd-circle{fill:#0C0C0C;stroke:#C6FF00;stroke-width:2;opacity:0}
+.nd-label{fill:#F2F2EE;font-family:'Space Grotesk',sans-serif;font-size:13px;text-anchor:middle;opacity:0}
+#s05-label{position:absolute;bottom:48px;right:80px;font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.35em;color:rgba(198,255,0,.4);text-transform:uppercase;opacity:0}
+
+/* S06 */
+#s06{z-index:10}
+#s06-bg{position:absolute;inset:0;background:#F2F2EE}
+.mock-card{position:absolute;border-radius:4px;overflow:hidden;opacity:0}
+.mock-inner{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;letter-spacing:.04em}
+#s06-title{position:absolute;top:60px;left:80px;font-family:'Bebas Neue',sans-serif;font-size:72px;color:#0C0C0C;letter-spacing:-.01em;opacity:0}
+#s06-sub{position:absolute;top:152px;left:80px;font-family:'Space Grotesk',sans-serif;font-size:15px;letter-spacing:.25em;color:rgba(12,12,12,.45);text-transform:uppercase;opacity:0}
+
+/* S07 */
+#s07{z-index:10}
+#s07-bg{position:absolute;inset:0;background:#0C0C0C}
+#s07-hero{position:absolute;top:0;left:0;width:1200px;height:1080px;background:#C6FF00;clip-path:polygon(0 0,0 0,0 100%,0 100%)}
+#s07-hero-text{position:absolute;top:220px;left:80px;font-family:'Bebas Neue',sans-serif;font-size:160px;color:#0C0C0C;line-height:.9;opacity:0}
+#s07-hero-sub{position:absolute;top:680px;left:80px;font-family:'Space Grotesk',sans-serif;font-size:20px;letter-spacing:.2em;color:rgba(12,12,12,.6);opacity:0}
+.ap-label{position:absolute;font-family:'Space Grotesk',sans-serif;letter-spacing:.2em;text-transform:uppercase}
+#apl1{top:200px;left:1260px;font-size:13px;color:rgba(242,242,238,.5);opacity:0}
+#apl2{top:320px;left:1260px;font-size:22px;color:#C6FF00;opacity:0}
+#apl3{top:400px;left:1260px;font-size:13px;color:rgba(242,242,238,.5);opacity:0}
+#apl4{top:500px;left:1260px;font-size:16px;color:#F2F2EE;opacity:0}
+#apl5{top:580px;left:1260px;font-size:13px;color:rgba(242,242,238,.5);opacity:0}
+#apl6{top:660px;left:1260px;font-size:16px;color:#F2F2EE;opacity:0}
+#ap-rule{position:absolute;top:0;left:1240px;width:1px;height:0;background:rgba(198,255,0,.3);opacity:0}
+
+/* S08 */
+#s08{z-index:10}
+#s08-bg{position:absolute;inset:0;background:#0C0C0C}
+.mc{position:absolute;opacity:0;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:.06em}
+
+/* S09 */
+#s09{z-index:10}
+#s09-bg{position:absolute;inset:0;background:#0C0C0C}
+.cf{position:absolute;font-family:'Bebas Neue',sans-serif;opacity:0}
+#s09-logo{position:absolute;top:490px;left:960px;font-family:'Bebas Neue',sans-serif;font-size:180px;color:#C6FF00;letter-spacing:-.02em;opacity:0}
+#s09-tagline{position:absolute;top:650px;left:960px;font-family:'Space Grotesk',sans-serif;font-size:16px;letter-spacing:.4em;color:rgba(198,255,0,.6);opacity:0;white-space:nowrap}
+
+/* S10 */
+#s10{z-index:10}
+#s10-bg{position:absolute;inset:0;background:#C6FF00}
+#s10-main{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+#s10-logo{font-family:'Bebas Neue',sans-serif;font-size:240px;color:#0C0C0C;letter-spacing:-.02em;line-height:1}
+#s10-tagline{font-family:'Space Grotesk',sans-serif;font-size:18px;letter-spacing:.5em;color:rgba(12,12,12,.5);text-transform:uppercase;margin-top:12px}
+#s10-year{position:absolute;bottom:60px;right:80px;font-family:'Space Grotesk',sans-serif;font-size:14px;letter-spacing:.3em;color:rgba(12,12,12,.35)}
+#s10-rule{position:absolute;bottom:100px;left:80px;right:80px;height:1px;background:rgba(12,12,12,.15)}
+#s10-ul{position:absolute;bottom:60px;left:80px;font-family:'Space Grotesk',sans-serif;font-size:14px;letter-spacing:.25em;color:rgba(12,12,12,.35)}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="forma-v3" data-width="1920" data-height="1080" data-start="0" data-duration="60" style="overflow:hidden">
+<div id="stage" data-layout-allow-overflow="true">
+
+<div id="grid-tex"></div>
+<div id="scan"></div>
+<div class="flood" id="fl-acid"></div>
+<div class="flood" id="fl-white"></div>
+<div class="flood" id="fl-black"></div>
+
+<!-- S01 Opening Impact (0-3s) -->
+<div class="clip" id="s01" data-start="0" data-duration="3" data-track-index="0">
+  <div id="s01-bg"></div>
+  <div class="ll" id="ll-f">F</div>
+  <div class="ll" id="ll-o">O</div>
+  <div class="ll" id="ll-r">R</div>
+  <div class="ll" id="ll-m">M</div>
+  <div class="ll" id="ll-a">A</div>
+  <div id="s01-sub">Brand Identity System — 2026</div>
+  <div id="s01-year">FORMA</div>
+  <div id="s01-rule"></div>
+  <div id="s01-mask"></div>
+</div>
+
+<!-- S02 Color Package (3-7s) -->
+<div class="clip" id="s02" data-start="3" data-duration="4" data-track-index="0">
+  <div id="s02-bg"></div>
+  <div class="col-block" id="cb-pri"></div>
+  <div class="col-block" id="cb-sec"></div>
+  <div class="col-block" id="cb-acc"></div>
+  <div id="s02-divv1"></div>
+  <div id="s02-divv2"></div>
+  <div class="col-label" id="cl-pri">PRIMARY</div>
+  <div class="col-label" id="cl-sec">SECONDARY</div>
+  <div class="col-label" id="cl-acc">ACCENT</div>
+  <div class="col-hex" id="ch-pri">#C6FF00</div>
+  <div class="col-hex" id="ch-sec">#F2F2EE</div>
+  <div class="col-hex" id="ch-acc">#0C0C0C</div>
+  <div class="col-desc" id="cd-pri">Acid Green<br>Energy · Growth<br>Innovation</div>
+  <div class="col-desc" id="cd-sec">Warm White<br>Clarity · Space<br>Precision</div>
+  <div class="col-desc" id="cd-acc">Deep Black<br>Authority · Depth<br>Foundation</div>
+  <div id="s02-title">COLOR SYSTEM — FORMA 2026</div>
+</div>
+
+<!-- S03 Typography System (7-12s) -->
+<div class="clip" id="s03" data-start="7" data-duration="5" data-track-index="0">
+  <div id="s03-bg"></div>
+  <div class="tw" id="tw1">THINK</div>
+  <div class="tw" id="tw2">SYSTEM</div>
+  <div class="tw" id="tw3">MOTION</div>
+  <div class="tw" id="tw4">STRUCTURE / DESIGN</div>
+  <div class="tw" id="tw5">FORMA</div>
+  <div class="t-rule" id="tr1"></div>
+  <div class="t-rule" id="tr2"></div>
+  <div id="s03-counter">03 / TYPOGRAPHY</div>
+  <div id="s03-mask"></div>
+</div>
+
+<!-- S04 Grid System (12-18s) -->
+<div class="clip" id="s04" data-start="12" data-duration="6" data-track-index="0">
+  <div id="s04-bg"></div>
+  <svg width="1920" height="1080" style="position:absolute;inset:0" data-layout-allow-overflow="true">
+    <line class="gv" id="gv1"  x1="160"  y1="0" x2="160"  y2="1080"/>
+    <line class="gv" id="gv2"  x1="320"  y1="0" x2="320"  y2="1080"/>
+    <line class="gv" id="gv3"  x1="480"  y1="0" x2="480"  y2="1080"/>
+    <line class="gv" id="gv4"  x1="640"  y1="0" x2="640"  y2="1080"/>
+    <line class="gv" id="gv5"  x1="800"  y1="0" x2="800"  y2="1080"/>
+    <line class="gv" id="gv6"  x1="960"  y1="0" x2="960"  y2="1080"/>
+    <line class="gv" id="gv7"  x1="1120" y1="0" x2="1120" y2="1080"/>
+    <line class="gv" id="gv8"  x1="1280" y1="0" x2="1280" y2="1080"/>
+    <line class="gv" id="gv9"  x1="1440" y1="0" x2="1440" y2="1080"/>
+    <line class="gv" id="gv10" x1="1600" y1="0" x2="1600" y2="1080"/>
+    <line class="gv" id="gv11" x1="1760" y1="0" x2="1760" y2="1080"/>
+    <line class="gh" id="gh1" x1="0" y1="135" x2="1920" y2="135"/>
+    <line class="gh" id="gh2" x1="0" y1="270" x2="1920" y2="270"/>
+    <line class="gh" id="gh3" x1="0" y1="405" x2="1920" y2="405"/>
+    <line class="gh" id="gh4" x1="0" y1="540" x2="1920" y2="540"/>
+    <line class="gh" id="gh5" x1="0" y1="675" x2="1920" y2="675"/>
+    <line class="gh" id="gh6" x1="0" y1="810" x2="1920" y2="810"/>
+    <line class="gh" id="gh7" x1="0" y1="945" x2="1920" y2="945"/>
+    <circle class="gi-dot" id="gd1" cx="160" cy="135" r="4"/>
+    <circle class="gi-dot" id="gd2" cx="320" cy="135" r="4"/>
+    <circle class="gi-dot" id="gd3" cx="480" cy="270" r="4"/>
+    <circle class="gi-dot" id="gd4" cx="640" cy="270" r="4"/>
+    <circle class="gi-dot" id="gd5" cx="960" cy="540" r="4"/>
+    <circle class="gi-dot" id="gd6" cx="1280" cy="675" r="4"/>
+    <circle class="gi-dot" id="gd7" cx="1440" cy="810" r="4"/>
+    <circle class="gi-dot" id="gd8" cx="1600" cy="945" r="4"/>
+    <text class="col-num" id="cn1" x="160"  y="55" text-anchor="middle">01</text>
+    <text class="col-num" id="cn2" x="320"  y="55" text-anchor="middle">02</text>
+    <text class="col-num" id="cn3" x="480"  y="55" text-anchor="middle">03</text>
+    <text class="col-num" id="cn4" x="640"  y="55" text-anchor="middle">04</text>
+    <text class="col-num" id="cn5" x="800"  y="55" text-anchor="middle">05</text>
+    <text class="col-num" id="cn6" x="960"  y="55" text-anchor="middle">06</text>
+    <text class="col-num" id="cn7" x="1120" y="55" text-anchor="middle">07</text>
+    <text class="col-num" id="cn8" x="1280" y="55" text-anchor="middle">08</text>
+    <text class="col-num" id="cn9" x="1440" y="55" text-anchor="middle">09</text>
+    <text class="col-num" id="cn10" x="1600" y="55" text-anchor="middle">10</text>
+    <text class="col-num" id="cn11" x="1760" y="55" text-anchor="middle">11</text>
+    <rect id="s04-hl" x="0" y="525" width="1920" height="30" fill="rgba(198,255,0,.06)" opacity="0"/>
+  </svg>
+  <div id="s04-title">12-COLUMN GRID SYSTEM</div>
+  <div id="s04-subtitle">LAYOUT / STRUCTURE / PRECISION</div>
+</div>
+
+<!-- S05 Infographic Package (18-24s) -->
+<div class="clip" id="s05" data-start="18" data-duration="6" data-track-index="0">
+  <div id="s05-bg"></div>
+  <svg width="1920" height="1080" style="position:absolute;inset:0" data-layout-allow-overflow="true">
+    <text id="ct-line" x="80" y="80" fill="#F2F2EE" font-family="Bebas Neue" font-size="28" letter-spacing="4" opacity="0">GROWTH METRICS</text>
+    <polyline id="lc-bg" points="80,320 240,300 400,280 560,260 720,220 880,195"/>
+    <polyline id="lc-path" points="80,320 240,300 400,280 560,260 720,220 880,195" fill="none" stroke="#C6FF00" stroke-width="3" stroke-dasharray="800" stroke-dashoffset="800"/>
+    <polygon id="lc-fill" points="80,320 240,300 400,280 560,260 720,220 880,195 880,380 80,380" fill="#C6FF00" opacity="0"/>
+    <line x1="80" y1="380" x2="880" y2="380" stroke="rgba(198,255,0,.2)" stroke-width="1"/>
+    <line x1="80" y1="320" x2="80" y2="380" stroke="rgba(198,255,0,.2)" stroke-width="1"/>
+    <text id="cl-a" x="80"  y="400" fill="rgba(242,242,238,.4)" font-family="Space Grotesk" font-size="11" letter-spacing="2" opacity="0">Q1</text>
+    <text id="cl-b" x="400" y="400" fill="rgba(242,242,238,.4)" font-family="Space Grotesk" font-size="11" letter-spacing="2" opacity="0">Q2</text>
+    <text id="cl-c" x="720" y="400" fill="rgba(242,242,238,.4)" font-family="Space Grotesk" font-size="11" letter-spacing="2" opacity="0">Q3</text>
+    <text id="ct-bar" x="1040" y="80" fill="#F2F2EE" font-family="Bebas Neue" font-size="28" letter-spacing="4" opacity="0">CATEGORY SPLIT</text>
+    <rect class="bar" id="ba1" x="1040" y="820" width="120" height="0"/>
+    <rect class="bar" id="ba2" x="1200" y="820" width="120" height="0"/>
+    <rect class="bar" id="ba3" x="1360" y="820" width="120" height="0"/>
+    <rect class="bar" id="ba4" x="1520" y="820" width="120" height="0"/>
+    <line x1="1040" y1="820" x2="1680" y2="820" stroke="rgba(198,255,0,.2)" stroke-width="1"/>
+    <text id="ct-ring" x="80" y="520" fill="#F2F2EE" font-family="Bebas Neue" font-size="28" letter-spacing="4" opacity="0">COMPLETION</text>
+    <circle id="ring-bg" cx="250" cy="720" r="90"/>
+    <circle id="ring-fg" cx="250" cy="720" r="90" transform="rotate(-90 250 720)"/>
+    <text id="ring-pct" x="250" y="720" fill="#C6FF00" font-family="Bebas Neue" font-size="52" text-anchor="middle" dominant-baseline="central">78%</text>
+    <text id="ct-node" x="700" y="520" fill="#F2F2EE" font-family="Bebas Neue" font-size="28" letter-spacing="4" opacity="0">SYSTEM NODES</text>
+    <line class="nd-line" id="nl1" x1="900" y1="700" x2="1100" y2="620"/>
+    <line class="nd-line" id="nl2" x1="900" y1="700" x2="1100" y2="780"/>
+    <line class="nd-line" id="nl3" x1="1100" y1="620" x2="1300" y2="580"/>
+    <line class="nd-line" id="nl4" x1="1100" y1="780" x2="1300" y2="840"/>
+    <line class="nd-line" id="nl5" x1="1100" y1="620" x2="1300" y2="700"/>
+    <circle class="nd-circle" id="nc1" cx="900"  cy="700" r="18"/>
+    <circle class="nd-circle" id="nc2" cx="1100" cy="620" r="14"/>
+    <circle class="nd-circle" id="nc3" cx="1100" cy="780" r="14"/>
+    <circle class="nd-circle" id="nc4" cx="1300" cy="580" r="10"/>
+    <circle class="nd-circle" id="nc5" cx="1300" cy="700" r="10"/>
+    <circle class="nd-circle" id="nc6" cx="1300" cy="840" r="10"/>
+    <text class="nd-label" id="nlb1" x="900"  y="740">CORE</text>
+    <text class="nd-label" id="nlb2" x="1100" y="660">UI</text>
+    <text class="nd-label" id="nlb3" x="1100" y="820">DATA</text>
+  </svg>
+  <div id="s05-label">05 / DATA VISUALIZATION</div>
+</div>
+
+<!-- S06 Product Mockup (24-32s) -->
+<div class="clip" id="s06" data-start="24" data-duration="8" data-track-index="0">
+  <div id="s06-bg"></div>
+  <div id="s06-title">PRODUCT MOCKUPS</div>
+  <div id="s06-sub">Application Surfaces</div>
+  <div class="mock-card" id="mc1" style="left:80px;top:200px;width:560px;height:270px;background:#0C0C0C"><div class="mock-inner" style="font-size:72px;color:#C6FF00">FORMA</div></div>
+  <div class="mock-card" id="mc2" style="left:660px;top:200px;width:560px;height:270px;background:#C6FF00"><div class="mock-inner" style="font-size:36px;color:#0C0C0C">BRAND SYSTEM</div></div>
+  <div class="mock-card" id="mc3" style="left:1240px;top:200px;width:600px;height:270px;background:#1a1a1a;border:1px solid rgba(198,255,0,.2)"><div class="mock-inner" style="font-size:24px;color:#C6FF00;letter-spacing:.2em">DIGITAL</div></div>
+  <div class="mock-card" id="mc4" style="left:80px;top:490px;width:270px;height:270px;background:#C6FF00"><div class="mock-inner" style="font-size:48px;color:#0C0C0C">F</div></div>
+  <div class="mock-card" id="mc5" style="left:370px;top:490px;width:560px;height:270px;background:#111;border:1px solid #C6FF00"><div class="mock-inner" style="font-size:28px;color:#F2F2EE;letter-spacing:.15em">MOTION DESIGN</div></div>
+  <div class="mock-card" id="mc6" style="left:950px;top:490px;width:380px;height:270px;background:#C6FF00"><div class="mock-inner" style="font-size:48px;color:#0C0C0C">2026</div></div>
+  <div class="mock-card" id="mc7" style="left:1350px;top:490px;width:490px;height:270px;background:#0C0C0C;border:1px solid rgba(198,255,0,.15)"><div class="mock-inner" style="font-size:22px;color:rgba(198,255,0,.7);letter-spacing:.2em">IDENTITY</div></div>
+  <div class="mock-card" id="mc8" style="left:80px;top:780px;width:830px;height:220px;background:#C6FF00"><div class="mock-inner" style="font-size:56px;color:#0C0C0C;letter-spacing:-.01em">FORMA STUDIO</div></div>
+  <div class="mock-card" id="mc9" style="left:930px;top:780px;width:910px;height:220px;background:#1a1a1a"><div class="mock-inner" style="font-size:32px;color:#F2F2EE;letter-spacing:.1em">BRAND x MOTION</div></div>
+</div>
+
+<!-- S07 Application System (32-40s) -->
+<div class="clip" id="s07" data-start="32" data-duration="8" data-track-index="0">
+  <div id="s07-bg"></div>
+  <div id="s07-hero"></div>
+  <div id="s07-hero-text">FORMA<br>STUDIO</div>
+  <div id="s07-hero-sub">Brand · Motion · Identity</div>
+  <div id="ap-rule"></div>
+  <div class="ap-label" id="apl1">FOUNDED</div>
+  <div class="ap-label" id="apl2">2026</div>
+  <div class="ap-label" id="apl3">DISCIPLINE</div>
+  <div class="ap-label" id="apl4">MOTION DESIGN</div>
+  <div class="ap-label" id="apl5">SCOPE</div>
+  <div class="ap-label" id="apl6">BRAND IDENTITY</div>
+</div>
+
+<!-- S08 Matrix Transition (40-48s) -->
+<div class="clip" id="s08" data-start="40" data-duration="8" data-track-index="0">
+  <div id="s08-bg"></div>
+  <div class="mc" id="mc-0-0" style="left:0;top:0;width:384px;height:360px;background:#C6FF00;color:#0C0C0C">FORMA</div>
+  <div class="mc" id="mc-1-0" style="left:384px;top:0;width:384px;height:360px;background:#0C0C0C;color:#C6FF00">GRID</div>
+  <div class="mc" id="mc-2-0" style="left:768px;top:0;width:384px;height:360px;background:#C6FF00;color:#0C0C0C">TYPE</div>
+  <div class="mc" id="mc-3-0" style="left:1152px;top:0;width:384px;height:360px;background:#F2F2EE;color:#0C0C0C">DATA</div>
+  <div class="mc" id="mc-4-0" style="left:1536px;top:0;width:384px;height:360px;background:#0C0C0C;color:#C6FF00">MOTION</div>
+  <div class="mc" id="mc-0-1" style="left:0;top:360px;width:384px;height:360px;background:#0C0C0C;color:#C6FF00">COLOR</div>
+  <div class="mc" id="mc-1-1" style="left:384px;top:360px;width:384px;height:360px;background:#C6FF00;color:#0C0C0C">LAYOUT</div>
+  <div class="mc" id="mc-2-1" style="left:768px;top:360px;width:384px;height:360px;background:#F2F2EE;color:#0C0C0C">BRAND</div>
+  <div class="mc" id="mc-3-1" style="left:1152px;top:360px;width:384px;height:360px;background:#C6FF00;color:#0C0C0C">SYSTEM</div>
+  <div class="mc" id="mc-4-1" style="left:1536px;top:360px;width:384px;height:360px;background:#0C0C0C;color:#C6FF00">FORMA</div>
+  <div class="mc" id="mc-0-2" style="left:0;top:720px;width:384px;height:360px;background:#C6FF00;color:#0C0C0C">SHAPE</div>
+  <div class="mc" id="mc-1-2" style="left:384px;top:720px;width:384px;height:360px;background:#0C0C0C;color:#F2F2EE">OUTPUT</div>
+  <div class="mc" id="mc-2-2" style="left:768px;top:720px;width:384px;height:360px;background:#F2F2EE;color:#0C0C0C">DESIGN</div>
+  <div class="mc" id="mc-3-2" style="left:1152px;top:720px;width:384px;height:360px;background:#0C0C0C;color:#C6FF00">SCALE</div>
+  <div class="mc" id="mc-4-2" style="left:1536px;top:720px;width:384px;height:360px;background:#C6FF00;color:#0C0C0C">IDENTITY</div>
+</div>
+
+<!-- S09 System Collapse (48-55s) -->
+<div class="clip" id="s09" data-start="48" data-duration="7" data-track-index="0">
+  <div id="s09-bg"></div>
+  <div class="cf" id="cf1" style="left:80px;top:80px;font-size:120px;color:#C6FF00">FORMA</div>
+  <div class="cf" id="cf2" style="right:80px;top:80px;font-size:80px;color:#F2F2EE;text-align:right">SYSTEM</div>
+  <div class="cf" id="cf3" style="left:80px;bottom:80px;font-size:100px;color:rgba(198,255,0,.6)">GRID</div>
+  <div class="cf" id="cf4" style="right:80px;bottom:80px;font-size:90px;color:#F2F2EE;text-align:right">MOTION</div>
+  <div class="cf" id="cf5" style="left:660px;top:80px;font-size:60px;color:rgba(198,255,0,.4)">TYPE</div>
+  <div class="cf" id="cf6" style="left:80px;top:460px;font-size:70px;color:rgba(242,242,238,.3)">COLOR</div>
+  <div class="cf" id="cf7" style="right:80px;top:460px;font-size:70px;color:rgba(198,255,0,.3);text-align:right">DATA</div>
+  <div class="cf" id="cf8" style="left:760px;bottom:80px;font-size:60px;color:rgba(242,242,238,.3)">BRAND</div>
+  <div id="s09-logo">FORMA</div>
+  <div id="s09-tagline">BRAND IDENTITY SYSTEM · 2026</div>
+</div>
+
+<!-- S10 Final Frame (55-60s) -->
+<div class="clip" id="s10" data-start="55" data-duration="5" data-track-index="0">
+  <div id="s10-bg"></div>
+  <div id="s10-main">
+    <div id="s10-logo">FORMA</div>
+    <div id="s10-tagline">Brand Identity System</div>
+  </div>
+  <div id="s10-rule"></div>
+  <div id="s10-ul">FORMA STUDIO © 2026</div>
+  <div id="s10-year">BRAND · MOTION · IDENTITY</div>
+</div>
+
+</div>
+</div>
+
+<script src="node_modules/gsap/dist/gsap.min.js"></script>
+<script>
+(function(){
+var gsap = window.gsap;
+var tl = gsap.timeline({ paused:true });
+
+function scanDrop(t, dur) {
+  dur = dur || .45;
+  tl.set("#scan", { y:0, opacity:1 }, t);
+  tl.to("#scan", { y:1084, duration:dur, ease:"power1.in" }, t);
+  tl.set("#scan", { opacity:0 }, t+dur+.01);
+}
+function diagonalIn(id, t, dur) {
+  dur = dur || .22;
+  tl.fromTo(id,
+    { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" },
+    { clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)", duration:dur, ease:"power3.out" }, t);
+}
+function diagonalOut(id, t, dur) {
+  dur = dur || .2;
+  tl.to(id, { clipPath:"polygon(40% 0,100% 0,100% 100%,70% 100%)", duration:dur*.55, ease:"power2.in" }, t);
+  tl.to(id, { clipPath:"polygon(100% 0,100% 0,100% 100%,100% 100%)", duration:dur*.45, ease:"power2.in" }, t+dur*.55);
+}
+
+/* S01 (0-3s) */
+tl.set("#s01", { opacity:1 }, 0);
+tl.set(["#ll-f","#ll-o","#ll-r","#ll-m","#ll-a"], { opacity:0, y:80 }, 0);
+tl.set(["#s01-sub","#s01-year"], { opacity:0 }, 0);
+tl.set("#s01-rule", { width:0 }, 0);
+tl.set("#s01-mask", { scaleX:0, transformOrigin:"left center" }, 0);
+tl.to("#ll-f", { opacity:1, y:0, duration:.18, ease:"power4.out" }, 0.05);
+tl.to("#ll-o", { opacity:1, y:0, duration:.18, ease:"power4.out" }, 0.10);
+tl.to("#ll-r", { opacity:1, y:0, duration:.18, ease:"power4.out" }, 0.15);
+tl.to("#ll-m", { opacity:1, y:0, duration:.18, ease:"power4.out" }, 0.20);
+tl.to("#ll-a", { opacity:1, y:0, duration:.18, ease:"power4.out" }, 0.25);
+tl.to("#s01-rule", { width:400, duration:.35, ease:"power3.out" }, 0.35);
+tl.to(["#s01-sub","#s01-year"], { opacity:1, duration:.25 }, 0.45);
+scanDrop(0.6);
+tl.to("#s01-mask", { scaleX:1, duration:.18, ease:"power4.in" }, 2.78);
+tl.set(["#ll-f","#ll-o","#ll-r","#ll-m","#ll-a","#s01-sub","#s01-year","#s01-rule"], { opacity:0 }, 3.0);
+tl.set("#s01", { opacity:0 }, 3.0);
+
+/* S02 (3-7s) */
+tl.set("#s02", { opacity:1 }, 3.0);
+tl.set(["#cb-pri","#cb-sec","#cb-acc"], { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" }, 3.0);
+tl.set(["#cl-pri","#cl-sec","#cl-acc","#ch-pri","#ch-sec","#ch-acc","#cd-pri","#cd-sec","#cd-acc"], { opacity:0 }, 3.0);
+tl.set(["#s02-divv1","#s02-divv2"], { height:0 }, 3.0);
+diagonalIn("#cb-pri", 3.05, .22);
+diagonalIn("#cb-sec", 3.18, .22);
+diagonalIn("#cb-acc", 3.31, .22);
+tl.to("#s02-divv1", { height:1080, duration:.25, ease:"power2.out" }, 3.12);
+tl.to("#s02-divv2", { height:1080, duration:.25, ease:"power2.out" }, 3.25);
+tl.to(["#cl-pri","#cl-sec","#cl-acc"], { opacity:1, stagger:.08, duration:.2 }, 3.55);
+tl.to(["#ch-pri","#ch-sec","#ch-acc"], { opacity:1, stagger:.06, duration:.18 }, 3.75);
+tl.to(["#cd-pri","#cd-sec","#cd-acc"], { opacity:1, stagger:.06, duration:.18 }, 3.95);
+scanDrop(4.2);
+diagonalOut("#cb-pri", 6.65, .22);
+diagonalOut("#cb-sec", 6.72, .22);
+diagonalOut("#cb-acc", 6.79, .22);
+tl.set("#s02", { opacity:0 }, 7.0);
+
+/* S03 (7-12s) */
+tl.set("#s03", { opacity:1 }, 7.0);
+tl.set(["#tw1","#tw2","#tw3","#tw4","#tw5"], { opacity:0, x:-40 }, 7.0);
+tl.set(["#tr1","#tr2"], { width:0 }, 7.0);
+tl.set("#s03-mask", { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" }, 7.0);
+tl.to("#tw1", { opacity:1, x:0, duration:.25, ease:"power3.out" }, 7.08);
+tl.to("#tr1", { width:1760, duration:.3, ease:"power2.out" }, 7.25);
+tl.to("#tw2", { opacity:1, x:0, duration:.25, ease:"power3.out" }, 7.35);
+tl.to("#tr2", { width:1760, duration:.3, ease:"power2.out" }, 7.52);
+tl.to("#tw3", { opacity:1, x:0, duration:.25, ease:"power3.out" }, 7.60);
+tl.to("#tw4", { opacity:1, x:0, duration:.35, ease:"power2.out" }, 7.85);
+tl.to("#tw5", { opacity:1, x:0, duration:.4, ease:"power2.out" }, 7.95);
+tl.to("#tw1", { letterSpacing:"0.08em", duration:.45, ease:"power2.out" }, 8.26);
+tl.to("#tw1", { letterSpacing:"-0.01em", duration:.3, ease:"power2.in" }, 8.72);
+tl.to("#s03-counter", { opacity:1, duration:.2 }, 7.5);
+scanDrop(8.8);
+tl.to("#s03-mask", { clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)", duration:.22, ease:"power4.in" }, 11.74);
+tl.set("#s03", { opacity:0 }, 12.0);
+
+/* S04 (12-18s) */
+tl.set("#s04", { opacity:1 }, 12.0);
+tl.set([".gv",".gh",".gi-dot",".col-num","#s04-title","#s04-subtitle","#s04-hl"], { opacity:0 }, 12.0);
+var gvIds = ["#gv1","#gv2","#gv3","#gv4","#gv5","#gv6","#gv7","#gv8","#gv9","#gv10","#gv11"];
+gvIds.forEach(function(id,i){ tl.to(id, { opacity:.35, duration:.12 }, 12.12 + i*0.06); });
+var ghIds = ["#gh1","#gh2","#gh3","#gh4","#gh5","#gh6","#gh7"];
+ghIds.forEach(function(id,i){ tl.to(id, { opacity:.2, duration:.12 }, 12.25 + i*0.08); });
+tl.to("#s04-hl", { opacity:1, duration:.3 }, 12.8);
+tl.to(".gi-dot", { opacity:1, stagger:.04, duration:.1 }, 13.0);
+tl.to(".col-num", { opacity:1, stagger:.03, duration:.08 }, 13.4);
+tl.to("#s04-title", { opacity:1, duration:.3 }, 13.7);
+tl.to("#s04-subtitle", { opacity:1, duration:.3 }, 13.95);
+scanDrop(14.5);
+scanDrop(16.5);
+tl.fromTo("#fl-black",
+  { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" },
+  { clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)", duration:.2, ease:"power4.in" }, 17.76);
+tl.set("#s04", { opacity:0 }, 18.0);
+tl.set("#fl-black", { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" }, 18.01);
+
+/* S05 (18-24s) */
+tl.set("#s05", { opacity:1 }, 18.0);
+tl.set(["#lc-path","#lc-fill","#lc-bg","#ct-line","#ct-bar","#ct-ring","#ct-node","#cl-a","#cl-b","#cl-c",".bar","#ring-fg","#ring-pct",".nd-line",".nd-circle",".nd-label","#s05-label"], { opacity:0 }, 18.0);
+tl.to("#ct-line", { opacity:1, duration:.2 }, 18.1);
+tl.to("#lc-bg", { opacity:1, duration:.2 }, 18.2);
+tl.to("#lc-path", { strokeDashoffset:0, opacity:1, duration:.65, ease:"power2.out" }, 18.3);
+tl.to("#lc-fill", { opacity:.12, duration:.4 }, 18.75);
+tl.to(["#cl-a","#cl-b","#cl-c"], { opacity:1, stagger:.05, duration:.15 }, 18.95);
+tl.to("#ct-bar", { opacity:1, duration:.2 }, 19.1);
+tl.set(".bar", { opacity:1 }, 19.3);
+tl.to("#ba1", { attr:{ y:540, height:280 }, duration:.38, ease:"power3.out" }, 19.3);
+tl.to("#ba2", { attr:{ y:620, height:200 }, duration:.38, ease:"power3.out" }, 19.45);
+tl.to("#ba3", { attr:{ y:680, height:140 }, duration:.38, ease:"power3.out" }, 19.60);
+tl.to("#ba4", { attr:{ y:740, height:80  }, duration:.38, ease:"power3.out" }, 19.75);
+tl.to("#ct-ring", { opacity:1, duration:.2 }, 20.0);
+tl.to("#ring-fg", { strokeDashoffset:124, opacity:1, duration:.8, ease:"power2.out" }, 20.2);
+tl.to("#ring-pct", { opacity:1, duration:.3 }, 20.7);
+tl.to("#ct-node", { opacity:1, duration:.2 }, 20.9);
+tl.to(".nd-line", { strokeDashoffset:0, opacity:1, stagger:.08, duration:.3 }, 21.0);
+tl.to(".nd-circle", { opacity:1, stagger:.07, duration:.15 }, 21.5);
+tl.to(".nd-label", { opacity:1, stagger:.07, duration:.15 }, 21.7);
+tl.to("#s05-label", { opacity:1, duration:.3 }, 22.0);
+scanDrop(22.5);
+tl.fromTo("#fl-white",
+  { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" },
+  { clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)", duration:.22, ease:"power4.in" }, 23.74);
+tl.set("#s05", { opacity:0 }, 24.0);
+tl.set("#fl-white", { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" }, 24.01);
+
+/* S06 (24-32s) */
+tl.set("#s06", { opacity:1 }, 24.0);
+tl.set(["#s06-title","#s06-sub",".mock-card"], { opacity:0 }, 24.0);
+tl.to("#s06-title", { opacity:1, duration:.3, ease:"power3.out" }, 24.1);
+tl.to("#s06-sub", { opacity:1, duration:.25 }, 24.35);
+["#mc1","#mc2","#mc3","#mc4","#mc5","#mc6","#mc7","#mc8","#mc9"].forEach(function(id,i){
+  tl.fromTo(id, { opacity:0, y:30 }, { opacity:1, y:0, duration:.28, ease:"power3.out" }, 24.5 + i*0.09);
+});
+scanDrop(27.0);
+tl.fromTo("#fl-acid",
+  { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" },
+  { clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)", duration:.2, ease:"power4.in" }, 31.76);
+tl.set("#s06", { opacity:0 }, 32.0);
+tl.set("#fl-acid", { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" }, 32.01);
+
+/* S07 (32-40s) */
+tl.set("#s07", { opacity:1 }, 32.0);
+tl.set(["#s07-hero-text","#s07-hero-sub","#apl1","#apl2","#apl3","#apl4","#apl5","#apl6"], { opacity:0 }, 32.0);
+tl.set("#ap-rule", { height:0, opacity:0 }, 32.0);
+tl.set("#s07-hero", { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" }, 32.0);
+diagonalIn("#s07-hero", 32.05, .28);
+tl.to("#s07-hero-text", { opacity:1, duration:.3 }, 32.4);
+tl.to("#s07-hero-sub", { opacity:1, duration:.3 }, 32.7);
+tl.to("#ap-rule", { height:1080, opacity:1, duration:.35, ease:"power3.out" }, 32.5);
+tl.to("#apl1", { opacity:1, duration:.2 }, 32.85);
+tl.to("#apl2", { opacity:1, duration:.25, ease:"power3.out" }, 33.05);
+tl.to("#apl3", { opacity:1, duration:.2 }, 33.35);
+tl.to("#apl4", { opacity:1, duration:.2 }, 33.55);
+tl.to("#apl5", { opacity:1, duration:.2 }, 33.85);
+tl.to("#apl6", { opacity:1, duration:.2 }, 34.05);
+scanDrop(35.5);
+scanDrop(38.0);
+diagonalOut("#s07-hero", 39.65, .25);
+tl.set("#s07", { opacity:0 }, 40.0);
+
+/* S08 (40-48s) */
+tl.set("#s08", { opacity:1 }, 40.0);
+tl.set(".mc", { opacity:0 }, 40.0);
+var matrixIds = [
+  "#mc-0-0","#mc-1-0","#mc-2-0","#mc-3-0","#mc-4-0",
+  "#mc-0-1","#mc-1-1","#mc-2-1","#mc-3-1","#mc-4-1",
+  "#mc-0-2","#mc-1-2","#mc-2-2","#mc-3-2","#mc-4-2"
+];
+matrixIds.forEach(function(id,i){ tl.to(id, { opacity:1, duration:.06 }, 40.1 + i*0.08); });
+matrixIds.forEach(function(id,i){
+  var t = 41.5 + (i % 5)*0.12;
+  tl.to(id, { opacity:0, duration:.04 }, t);
+  tl.to(id, { opacity:1, duration:.04 }, t+.08);
+});
+[2,7,11,0,13,4,9,1,14,6].forEach(function(idx,i){
+  var id = matrixIds[idx];
+  var t = 43.0 + i*0.1;
+  tl.to(id, { opacity:0, duration:.05 }, t);
+  tl.to(id, { opacity:1, duration:.05 }, t+.1);
+});
+scanDrop(44.0);
+matrixIds.forEach(function(id,i){
+  tl.to(id, { opacity:0, duration:.04, ease:"power4.in" }, 46.5 + i*0.05);
+});
+tl.fromTo("#fl-black",
+  { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" },
+  { clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)", duration:.25, ease:"power4.in" }, 47.7);
+tl.set("#s08", { opacity:0 }, 48.0);
+tl.set("#fl-black", { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" }, 48.01);
+
+/* S09 (48-55s) */
+tl.set("#s09", { opacity:1 }, 48.0);
+tl.set([".cf","#s09-logo","#s09-tagline"], { opacity:0 }, 48.0);
+tl.to("#cf1", { opacity:1, duration:.15 }, 48.1);
+tl.to("#cf2", { opacity:1, duration:.15 }, 48.2);
+tl.to("#cf3", { opacity:1, duration:.15 }, 48.3);
+tl.to("#cf4", { opacity:1, duration:.15 }, 48.4);
+tl.to("#cf5", { opacity:1, duration:.15 }, 48.5);
+tl.to("#cf6", { opacity:1, duration:.15 }, 48.6);
+tl.to("#cf7", { opacity:1, duration:.15 }, 48.7);
+tl.to("#cf8", { opacity:1, duration:.15 }, 48.8);
+scanDrop(49.2);
+tl.to("#cf1", { x:880, y:460, scale:.05, opacity:0, duration:1.1, ease:"power2.in" }, 49.8);
+tl.to("#cf2", { x:-880, y:460, scale:.05, opacity:0, duration:1.1, ease:"power2.in" }, 49.9);
+tl.to("#cf3", { x:880, y:-380, scale:.05, opacity:0, duration:1.1, ease:"power2.in" }, 50.0);
+tl.to("#cf4", { x:-880, y:-380, scale:.05, opacity:0, duration:1.1, ease:"power2.in" }, 50.1);
+tl.to("#cf5", { y:420, scale:.05, opacity:0, duration:1.0, ease:"power2.in" }, 50.0);
+tl.to("#cf6", { x:820, scale:.05, opacity:0, duration:1.0, ease:"power2.in" }, 50.1);
+tl.to("#cf7", { x:-820, scale:.05, opacity:0, duration:1.0, ease:"power2.in" }, 50.1);
+tl.to("#cf8", { y:-340, scale:.05, opacity:0, duration:1.0, ease:"power2.in" }, 50.0);
+tl.set("#s09-logo", { xPercent:-50, yPercent:-50 }, 48.0);
+tl.set("#s09-tagline", { xPercent:-50 }, 48.0);
+tl.fromTo("#s09-logo",
+  { opacity:0, scale:.08, xPercent:-50, yPercent:-50 },
+  { opacity:1, scale:1, xPercent:-50, yPercent:-50, duration:.55, ease:"back.out(1.4)" }, 51.0);
+tl.to("#s09-tagline", { opacity:1, duration:.4 }, 51.65);
+scanDrop(53.0);
+tl.fromTo("#fl-acid",
+  { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" },
+  { clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)", duration:.22, ease:"power4.in" }, 54.74);
+tl.set("#s09", { opacity:0 }, 55.0);
+tl.set("#fl-acid", { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" }, 55.01);
+
+/* S10 (55-60s) — static */
+tl.set("#s10", { opacity:1 }, 55.0);
+
+window.__timelines = window.__timelines || {};
+window.__timelines["forma-v3"] = tl;
+})();
+</script>
+</body>
 </html>
