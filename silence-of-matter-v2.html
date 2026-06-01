@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>Silence of Matter — Editorial Infographic</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 1280px; height: 720px; overflow: hidden; background: #E8E3DA; }
+
+    :root {
+      --bg:  #E8E3DA;   /* warm linen */
+      --mid: #B9B2A7;   /* stone */
+      --dim: #D2CCC3;   /* medium linen */
+      --deep:#2A2622;   /* ink shadow */
+      --sage:#6F7A6A;   /* accent — used sparingly */
+      --f-serif:   "DejaVu Serif", Georgia, serif;
+      --f-grotesk: "Liberation Sans", Helvetica, sans-serif;
+    }
+
+    /* ── Fixed overlays ──────────────────────────────────────────────── */
+    .grain {
+      position: fixed; inset: 0; z-index: 9500; pointer-events: none;
+      opacity: 0.040; mix-blend-mode: multiply;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") repeat;
+      background-size: 256px 256px; animation: gr 0.14s steps(1) infinite;
+    }
+    @keyframes gr { 0%{transform:translate(0,0)} 33%{transform:translate(-3px,2px)} 66%{transform:translate(2px,-3px)} }
+
+    .vignette {
+      position: fixed; inset: 0; z-index: 9400; pointer-events: none;
+      background: radial-gradient(ellipse at center, transparent 42%, rgba(42,38,34,0.18) 100%);
+    }
+
+    .scene { position: absolute; inset: 0; opacity: 0; }
+
+    /* ── Shared typography ───────────────────────────────────────────── */
+    .line {
+      position: absolute;
+      font-family: var(--f-serif);
+      font-size: 13.5px; font-weight: 400; font-style: italic;
+      letter-spacing: 0.18em; line-height: 1.75;
+      color: var(--deep); opacity: 0;
+    }
+    .data-caption {
+      position: absolute;
+      font-family: var(--f-grotesk);
+      font-size: 9px; letter-spacing: 0.28em;
+      color: rgba(42,38,34,0.42); text-transform: uppercase; opacity: 0;
+    }
+
+    /* ── Shared vessel CSS ───────────────────────────────────────────── */
+    .v-lid {
+      width: 148px; height: 21px;
+      background: linear-gradient(to bottom, rgba(232,227,218,0.90), rgba(185,178,167,0.80));
+      border-radius: 50% / 58%; margin: 0 auto -2px;
+      position: relative; z-index: 2;
+      box-shadow: 0 -3px 12px rgba(255,252,244,0.10);
+    }
+    .v-jar {
+      width: 130px; height: 194px;
+      position: relative; overflow: hidden;
+      border-radius: 3px 3px 7px 7px;
+      background: linear-gradient(162deg,
+        rgba(232,227,218,0.88) 0%, rgba(185,178,167,0.78) 38%,
+        rgba(111,122,106,0.58) 68%, rgba(42,38,34,0.80) 100%);
+      box-shadow:
+        inset -8px 0 26px rgba(42,38,34,0.20),
+        inset 0 -10px 26px rgba(42,38,34,0.12),
+        0 28px 88px rgba(14,11,8,0.52);
+    }
+    .v-band {
+      position: absolute; bottom: 44px; left: 0; right: 0; height: 30px;
+      border-top: 0.5px solid rgba(232,227,218,0.13);
+      border-bottom: 0.5px solid rgba(232,227,218,0.13);
+    }
+    .v-arc {
+      position: absolute; top: -60%; left: -90px; width: 56px; height: 320%;
+      background: linear-gradient(to right, transparent, rgba(255,253,244,0.28), transparent);
+      transform: skewX(-14deg); opacity: 0;
+    }
+    .v-shadow {
+      width: 106px; height: 14px;
+      background: radial-gradient(ellipse, rgba(14,11,8,0.48) 0%, transparent 68%);
+      margin: 10px auto 0;
+    }
+    .v-wrap { position: absolute; top: 50%; transform: translateY(-50%); }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       S1 — VOID ENTRY   0–5s
+       ═══════════════════════════════════════════════════════════════════ */
+    #s1 { background: var(--bg); }
+    #s1-light {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 22% 28%, rgba(255,253,248,0.60) 0%, transparent 55%);
+    }
+    #s1-rule { position: absolute; left: 88px; bottom: 168px; width: 0; height: 1px; background: rgba(42,38,34,0.12); }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       S2 — PRODUCT PRESENCE   5–12s
+       ═══════════════════════════════════════════════════════════════════ */
+    #s2 {
+      background: linear-gradient(148deg,
+        #1E1B18 0%, #2A2622 18%, #3D3730 44%,
+        #857E75 74%, #C8C1B7 100%);
+    }
+    #s2-vw { left: 38%; }
+    #s2-text { bottom: 112px; right: 100px; text-align: right; }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       S3 — DATA ACTIVATION   12–22s
+       ═══════════════════════════════════════════════════════════════════ */
+    #s3 { background: var(--bg); }
+    #s3-light {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 28% 42%, rgba(255,253,248,0.50) 0%, transparent 52%);
+    }
+    #s3-grid {
+      position: absolute; inset: 0; opacity: 0;
+      background-image:
+        linear-gradient(rgba(42,38,34,0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(42,38,34,0.045) 1px, transparent 1px);
+      background-size: 106.67px 106.67px;
+    }
+    #s3-vw { left: 35%; opacity: 0; }
+    #s3-svg { position: absolute; inset: 0; overflow: visible; }
+    #s3-text1 { bottom: 170px; left: 88px; }
+    #s3-text2 { bottom: 140px; left: 88px; font-size: 9px; font-style: normal; letter-spacing: 0.30em; }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       S4 — SYSTEM EXPANSION   22–32s
+       ═══════════════════════════════════════════════════════════════════ */
+    #s4 { background: #DEDAD2; }
+    #s4-grid {
+      position: absolute; inset: 0; opacity: 0;
+      background-image:
+        linear-gradient(rgba(42,38,34,0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(42,38,34,0.055) 1px, transparent 1px);
+      background-size: 106.67px 106.67px;
+    }
+    /* zoom wrapper for pull-back */
+    #s4-zoom {
+      position: absolute; inset: 0;
+      transform-origin: center center;
+    }
+    #s4-vw { left: 35%; opacity: 0; }
+    #s4-svg { position: absolute; inset: 0; overflow: visible; }
+    #s4-node {
+      position: absolute; top: 50%; left: 35%;
+      transform: translate(-50%, -50%);
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: rgba(42,38,34,0.55);
+      border: 1px solid rgba(42,38,34,0.35);
+      opacity: 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       S5 — TRANSITION BREAK   32–40s
+       ═══════════════════════════════════════════════════════════════════ */
+    #s5 { background: #C8C2B9; }
+    .ring {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0.4);
+      border-radius: 50%;
+      border: 0.5px solid rgba(42,38,34,0.20);
+      opacity: 0;
+    }
+    #r1 { width:  70px; height:  70px; }
+    #r2 { width: 180px; height: 180px; }
+    #r3 { width: 340px; height: 340px; }
+    #r4 { width: 560px; height: 560px; }
+    #s5-text { bottom: 108px; left: 0; right: 0; text-align: center; }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       S6 — FINAL STILLNESS   40–45s
+       ═══════════════════════════════════════════════════════════════════ */
+    #s6 { background: var(--bg); }
+    #s6-aura {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 46%, rgba(255,253,248,0.55) 0%, transparent 50%);
+    }
+    #s6-vw {
+      left: 50%; top: 50%;
+      transform: translate(-50%, -52%);
+    }
+    /* smaller vessel for final scene */
+    #s6-vw .v-lid { width: 100px; height: 15px; }
+    #s6-vw .v-jar  { width: 88px; height: 132px; }
+    #s6-vw .v-shadow { width: 66px; height: 8px; margin-top: 7px; }
+    #s6-vw { opacity: 0; }
+    #s6-rule { position: absolute; bottom: 132px; left: 88px; width: 0; height: 1px; background: rgba(42,38,34,0.14); }
+    #s6-text { bottom: 104px; left: 88px; font-style: normal; letter-spacing: 0.24em; font-size: 11px; }
+    #s6-attr {
+      position: absolute; bottom: 44px; right: 88px;
+      font-family: var(--f-grotesk); font-size: 9px; letter-spacing: 0.32em;
+      color: rgba(42,38,34,0.28); text-transform: uppercase; opacity: 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="vignette"></div>
+
+<!-- ═══ S1: VOID ENTRY ═══════════════════════════════════════════════ -->
+<div class="scene" id="s1">
+  <div id="s1-light"></div>
+  <div id="s1-rule"></div>
+</div>
+
+<!-- ═══ S2: PRODUCT PRESENCE ════════════════════════════════════════ -->
+<div class="scene" id="s2">
+  <div class="v-wrap" id="s2-vw">
+    <div class="v-lid"></div>
+    <div class="v-jar">
+      <div class="v-band"></div>
+      <div class="v-arc" id="s2-arc"></div>
+    </div>
+    <div class="v-shadow"></div>
+  </div>
+  <p class="line" id="s2-text">There is no urgency here.</p>
+</div>
+
+<!-- ═══ S3: DATA ACTIVATION ═════════════════════════════════════════ -->
+<div class="scene" id="s3">
+  <div id="s3-light"></div>
+  <div id="s3-grid"></div>
+
+  <!-- Vessel (dimmed) -->
+  <div class="v-wrap" id="s3-vw">
+    <div class="v-lid"></div>
+    <div class="v-jar"><div class="v-band"></div></div>
+    <div class="v-shadow"></div>
+  </div>
+
+  <!-- Full-canvas SVG: charts + annotations -->
+  <svg id="s3-svg" viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+
+    <!-- ── Annotation lines: vessel ↔ charts ─────────────────────── -->
+    <g id="ann" opacity="0">
+      <line x1="548" y1="295" x2="645" y2="195" stroke="#2A2622" stroke-width="0.5" stroke-dasharray="3 2.5" opacity="0.38"/>
+      <circle cx="548" cy="295" r="2" fill="#2A2622" opacity="0.45"/>
+      <circle cx="645" cy="195" r="1.5" fill="#2A2622" opacity="0.40"/>
+      <line x1="550" y1="388" x2="802" y2="448" stroke="#2A2622" stroke-width="0.5" stroke-dasharray="3 2.5" opacity="0.30"/>
+      <circle cx="550" cy="388" r="2" fill="#2A2622" opacity="0.40"/>
+      <circle cx="802" cy="448" r="1.5" fill="#2A2622" opacity="0.35"/>
+    </g>
+
+    <!-- ── LINE CHART — upper right (translate 625, 85) ────────────── -->
+    <g id="lc" transform="translate(625,85)" opacity="0">
+      <text x="0" y="-13" font-family="Liberation Sans, sans-serif" font-size="7.5"
+            fill="#2A2622" opacity="0.48" letter-spacing="2">PERCEPTION INDEX</text>
+      <!-- axes -->
+      <line x1="0" y1="0" x2="0" y2="110" stroke="#2A2622" stroke-width="0.4" opacity="0.18"/>
+      <line x1="0" y1="110" x2="310" y2="110" stroke="#2A2622" stroke-width="0.4" opacity="0.18"/>
+      <!-- horizontal guides -->
+      <line x1="0" y1="27" x2="310" y2="27" stroke="#2A2622" stroke-width="0.3" stroke-dasharray="2 4" opacity="0.12"/>
+      <line x1="0" y1="55" x2="310" y2="55" stroke="#2A2622" stroke-width="0.3" stroke-dasharray="2 4" opacity="0.12"/>
+      <line x1="0" y1="82" x2="310" y2="82" stroke="#2A2622" stroke-width="0.3" stroke-dasharray="2 4" opacity="0.12"/>
+      <!-- fill area -->
+      <path id="lc-fill"
+            d="M0,110 L0,95 L50,82 L100,68 L150,52 L200,38 L250,26 L310,15 L310,110 Z"
+            fill="rgba(42,38,34,0.07)" opacity="0"/>
+      <!-- line (animated strokeDashoffset) -->
+      <polyline id="lc-line" points="0,95 50,82 100,68 150,52 200,38 250,26 310,15"
+                fill="none" stroke="#2A2622" stroke-width="0.9" opacity="0.48"
+                stroke-dasharray="400" stroke-dashoffset="400"/>
+      <!-- endpoint dot -->
+      <circle id="lc-dot" cx="310" cy="15" r="2.5" fill="#2A2622" opacity="0"/>
+      <!-- x labels -->
+      <text x="-2"   y="123" font-family="Liberation Sans, sans-serif" font-size="7" fill="#2A2622" opacity="0.35">I</text>
+      <text x="73"   y="123" font-family="Liberation Sans, sans-serif" font-size="7" fill="#2A2622" opacity="0.35">II</text>
+      <text x="148"  y="123" font-family="Liberation Sans, sans-serif" font-size="7" fill="#2A2622" opacity="0.35">III</text>
+      <text x="223"  y="123" font-family="Liberation Sans, sans-serif" font-size="7" fill="#2A2622" opacity="0.35">IV</text>
+      <text x="298"  y="123" font-family="Liberation Sans, sans-serif" font-size="7" fill="#2A2622" opacity="0.35">V</text>
+      <!-- current value -->
+      <text id="lc-val" x="318" y="19" font-family="Liberation Sans, sans-serif"
+            font-size="11" font-weight="400" fill="#2A2622" opacity="0">0</text>
+      <text x="318" y="30" font-family="Liberation Sans, sans-serif" font-size="6.5"
+            fill="#2A2622" opacity="0.38" id="lc-unit">pts</text>
+    </g>
+
+    <!-- ── BAR CHART — lower right (translate 808, 382) ────────────── -->
+    <g id="bc" transform="translate(808,382)" opacity="0">
+      <text x="0" y="-12" font-family="Liberation Sans, sans-serif" font-size="7.5"
+            fill="#2A2622" opacity="0.48" letter-spacing="2">MATERIAL QUALITIES</text>
+      <!-- baseline -->
+      <line x1="-4" y1="120" x2="248" y2="120" stroke="#2A2622" stroke-width="0.4" opacity="0.22"/>
+      <!-- bar 1: Texture 85 -->
+      <rect id="b1" x="8"   y="120" width="38" height="0" fill="rgba(42,38,34,0.18)"/>
+      <text id="bv1" x="27"  y="115" font-family="Liberation Sans, sans-serif" font-size="8.5"
+            fill="#2A2622" opacity="0" text-anchor="middle">0</text>
+      <text x="27"  y="133" font-family="Liberation Sans, sans-serif" font-size="6.5"
+            fill="#2A2622" opacity="0.35" text-anchor="middle">TXTR</text>
+      <!-- bar 2: Clarity 71 -->
+      <rect id="b2" x="70"  y="120" width="38" height="0" fill="rgba(42,38,34,0.14)"/>
+      <text id="bv2" x="89"  y="115" font-family="Liberation Sans, sans-serif" font-size="8.5"
+            fill="#2A2622" opacity="0" text-anchor="middle">0</text>
+      <text x="89"  y="133" font-family="Liberation Sans, sans-serif" font-size="6.5"
+            fill="#2A2622" opacity="0.35" text-anchor="middle">CLRT</text>
+      <!-- bar 3: Density 58 -->
+      <rect id="b3" x="132" y="120" width="38" height="0" fill="rgba(42,38,34,0.11)"/>
+      <text id="bv3" x="151" y="115" font-family="Liberation Sans, sans-serif" font-size="8.5"
+            fill="#2A2622" opacity="0" text-anchor="middle">0</text>
+      <text x="151" y="133" font-family="Liberation Sans, sans-serif" font-size="6.5"
+            fill="#2A2622" opacity="0.35" text-anchor="middle">DNST</text>
+      <!-- bar 4: Depth 91 (sage accent — used once) -->
+      <rect id="b4" x="194" y="120" width="38" height="0" fill="rgba(111,122,106,0.22)"/>
+      <text id="bv4" x="213" y="115" font-family="Liberation Sans, sans-serif" font-size="8.5"
+            fill="#2A2622" opacity="0" text-anchor="middle">0</text>
+      <text x="213" y="133" font-family="Liberation Sans, sans-serif" font-size="6.5"
+            fill="#2A2622" opacity="0.35" text-anchor="middle">DPTH</text>
+    </g>
+
+  </svg><!-- end s3-svg -->
+
+  <p class="line" id="s3-t1">Only matter, as it is.</p>
+  <p class="data-caption" id="s3-t2" style="bottom:112px;left:88px;">texture defines memory.</p>
+</div><!-- end s3 -->
+
+<!-- ═══ S4: SYSTEM EXPANSION ════════════════════════════════════════ -->
+<div class="scene" id="s4">
+  <div id="s4-grid"></div>
+  <div id="s4-zoom">
+    <!-- Ghost vessel (very faint) -->
+    <div class="v-wrap" id="s4-vw">
+      <div class="v-lid"></div>
+      <div class="v-jar"><div class="v-band"></div></div>
+      <div class="v-shadow"></div>
+    </div>
+
+    <!-- Product node dot -->
+    <div id="s4-node"></div>
+
+    <!-- Full-canvas SVG for system diagram -->
+    <svg id="s4-svg" viewBox="0 0 1280 720" width="1280" height="720" xmlns="http://www.w3.org/2000/svg">
+
+      <!-- Connection line: node → diagram center -->
+      <line id="sys-conn" x1="448" y1="360" x2="780" y2="310"
+            stroke="#2A2622" stroke-width="0.5" stroke-dasharray="3 2.5"
+            opacity="0" style="stroke-dashoffset:400;"/>
+
+      <!-- ── CIRCULAR SYSTEM DIAGRAM (center ~780, 310) ─────────────── -->
+      <g id="circ" transform="translate(780,308)" opacity="0">
+        <!-- outer ring -->
+        <circle id="c-outer" cx="0" cy="0" r="130" fill="none"
+                stroke="#2A2622" stroke-width="0.5" opacity="0.28"
+                stroke-dasharray="817" stroke-dashoffset="817"/>
+        <!-- inner ring -->
+        <circle id="c-inner" cx="0" cy="0" r="70" fill="none"
+                stroke="#2A2622" stroke-width="0.3" opacity="0.18"
+                stroke-dasharray="440" stroke-dashoffset="440"/>
+        <!-- axis lines -->
+        <line x1="-130" y1="0" x2="130" y2="0" stroke="#2A2622" stroke-width="0.3" stroke-dasharray="2 3" opacity="0.14"/>
+        <line x1="0" y1="-130" x2="0" y2="130" stroke="#2A2622" stroke-width="0.3" stroke-dasharray="2 3" opacity="0.14"/>
+        <!-- node dots -->
+        <circle id="cn-t"  cx="0"    cy="-130" r="3.5" fill="#2A2622" opacity="0"/>
+        <circle id="cn-r"  cx="130"  cy="0"    r="3.5" fill="#2A2622" opacity="0"/>
+        <circle id="cn-b"  cx="0"    cy="130"  r="3.5" fill="#2A2622" opacity="0"/>
+        <circle id="cn-l"  cx="-130" cy="0"    r="3.5" fill="#2A2622" opacity="0"/>
+        <circle           cx="0"    cy="0"    r="2.5" fill="#2A2622" opacity="0.35"/>
+        <!-- labels -->
+        <text id="cl-t"  x="0"    y="-143" text-anchor="middle" font-family="Liberation Sans, sans-serif"
+              font-size="7.5" fill="#2A2622" opacity="0" letter-spacing="2">MATERIAL</text>
+        <text id="cl-r"  x="143"  y="4"    text-anchor="start"  font-family="Liberation Sans, sans-serif"
+              font-size="7.5" fill="#2A2622" opacity="0" letter-spacing="2">CRAFT</text>
+        <text id="cl-b"  x="0"    y="149"  text-anchor="middle" font-family="Liberation Sans, sans-serif"
+              font-size="7.5" fill="#2A2622" opacity="0" letter-spacing="2">MEMORY</text>
+        <text id="cl-l"  x="-143" y="4"    text-anchor="end"    font-family="Liberation Sans, sans-serif"
+              font-size="7.5" fill="#2A2622" opacity="0" letter-spacing="2">FORM</text>
+      </g>
+
+      <!-- Echo of line chart (faint ghost, same position as s3) -->
+      <g id="lc-echo" transform="translate(625,85)" opacity="0">
+        <polyline points="0,95 50,82 100,68 150,52 200,38 250,26 310,15"
+                  fill="none" stroke="#2A2622" stroke-width="0.6" opacity="0.20"/>
+        <line x1="0" y1="110" x2="310" y2="110" stroke="#2A2622" stroke-width="0.3" opacity="0.12"/>
+      </g>
+
+    </svg>
+  </div><!-- end s4-zoom -->
+</div><!-- end s4 -->
+
+<!-- ═══ S5: TRANSITION BREAK ════════════════════════════════════════ -->
+<div class="scene" id="s5">
+  <div class="ring" id="r1"></div>
+  <div class="ring" id="r2"></div>
+  <div class="ring" id="r3"></div>
+  <div class="ring" id="r4"></div>
+  <p class="line" id="s5-text">form disappears.&nbsp;&nbsp; essence remains.</p>
+</div>
+
+<!-- ═══ S6: FINAL STILLNESS ═════════════════════════════════════════ -->
+<div class="scene" id="s6">
+  <div id="s6-aura"></div>
+  <div class="v-wrap" id="s6-vw">
+    <div class="v-lid"></div>
+    <div class="v-jar"><div class="v-band"></div></div>
+    <div class="v-shadow"></div>
+  </div>
+  <div id="s6-rule"></div>
+  <p class="line" id="s6-text">A quiet study of material.</p>
+  <p id="s6-attr">Silence of Matter</p>
+</div>
+
+<script src="./gsap.min.js"></script>
+<script>
+  const eIn  = "power2.inOut";
+  const eOut = "power1.out";
+  const eLin = "none";
+
+  // ── Initial states ──────────────────────────────────────────────────
+  gsap.set(["#s1","#s2","#s3","#s4","#s5","#s6"], { opacity: 0 });
+
+  // S1
+  gsap.set("#s1-rule", { width: 0 });
+
+  // S2
+  gsap.set("#s2-vw",   { opacity: 0 });
+  gsap.set("#s2-arc",  { x: 0, opacity: 0 });
+  gsap.set("#s2-text", { opacity: 0 });
+
+  // S3
+  gsap.set("#s3-vw",   { opacity: 0 });
+  gsap.set("#s3-grid", { opacity: 0 });
+  gsap.set("#ann",     { opacity: 0 });
+  gsap.set("#lc",      { opacity: 0 });
+  gsap.set("#bc",      { opacity: 0 });
+  gsap.set("#lc-fill", { opacity: 0 });
+  gsap.set("#lc-dot",  { opacity: 0 });
+  gsap.set("#lc-val",  { opacity: 0 });
+  gsap.set("#lc-unit", { opacity: 0.35 });
+  gsap.set(["#bv1","#bv2","#bv3","#bv4"], { opacity: 0 });
+  // Bars start with height=0 at baseline
+  gsap.set("#b1", { attr: { height: 0, y: 120 } });
+  gsap.set("#b2", { attr: { height: 0, y: 120 } });
+  gsap.set("#b3", { attr: { height: 0, y: 120 } });
+  gsap.set("#b4", { attr: { height: 0, y: 120 } });
+  gsap.set("#s3-t1",   { opacity: 0 });
+  gsap.set("#s3-t2",   { opacity: 0 });
+
+  // S4
+  gsap.set("#s4-grid", { opacity: 0 });
+  gsap.set("#s4-vw",   { opacity: 0 });
+  gsap.set("#s4-node", { opacity: 0, scale: 0 });
+  gsap.set("#sys-conn",{ opacity: 0 });
+  gsap.set("#circ",    { opacity: 0 });
+  gsap.set("#c-outer", { attr: { strokeDashoffset: 817 } });
+  gsap.set("#c-inner", { attr: { strokeDashoffset: 440 } });
+  gsap.set(["#cn-t","#cn-r","#cn-b","#cn-l"], { opacity: 0 });
+  gsap.set(["#cl-t","#cl-r","#cl-b","#cl-l"], { opacity: 0 });
+  gsap.set("#lc-echo", { opacity: 0 });
+  gsap.set("#s4-zoom", { scale: 1, transformOrigin: "center center" });
+
+  // S5
+  gsap.set(["#r1","#r2","#r3","#r4"], { opacity: 0, scale: 0.4 });
+  gsap.set("#s5-text", { opacity: 0 });
+
+  // S6
+  gsap.set("#s6-vw",   { opacity: 0 });
+  gsap.set("#s6-rule", { width: 0 });
+  gsap.set("#s6-text", { opacity: 0 });
+  gsap.set("#s6-attr", { opacity: 0 });
+
+  // ── Count-up helper ─────────────────────────────────────────────────
+  function countUp(elId, target, at, dur) {
+    const o = { n: 0 };
+    const el = document.getElementById(elId);
+    tl.to(o, { n: target, duration: dur, ease: "power1.out",
+      onUpdate() { el.textContent = Math.round(o.n); } }, at);
+  }
+
+  // ── Master timeline ─────────────────────────────────────────────────
+  const tl = gsap.timeline({ defaults: { ease: "power1.inOut" } });
+
+  // ═══ S1: VOID ENTRY   0 → 5.5s ═══════════════════════════════════
+  tl
+    .to("#s1",      { opacity: 1, duration: 2.8, ease: eIn },      0.0)
+    .to("#s1-rule", { width: 200, duration: 2.0 },                  1.8)
+    .to("#s1",      { opacity: 0, duration: 1.8, ease: eOut },      4.2)
+
+  // ═══ S2: PRODUCT PRESENCE   5 → 12.5s ═══════════════════════════
+    .to("#s2",      { opacity: 1, duration: 2.0, ease: eIn },       5.0)
+    .to("#s2-vw",   { opacity: 1, duration: 3.8, ease: eIn },       6.5)
+    // arc light sweep
+    .to("#s2-arc",  { x: 310, duration: 5.8, ease: eLin },          8.2)
+    .to("#s2-arc",  { opacity: 0.80, duration: 1.6, ease: eIn },    8.2)
+    .to("#s2-arc",  { opacity: 0, duration: 1.8, ease: eOut },      12.2)
+    // text
+    .to("#s2-text", { opacity: 0.50, duration: 2.2, ease: eIn },    9.2)
+    .to("#s2-text", { opacity: 0, duration: 1.5, ease: eOut },      11.2)
+    .to("#s2",      { opacity: 0, duration: 1.8, ease: eOut },      11.8)
+
+  // ═══ S3: DATA ACTIVATION   12 → 22.5s ═══════════════════════════
+    .to("#s3",      { opacity: 1, duration: 1.8, ease: eIn },       12.0)
+    .to("#s3-grid", { opacity: 1, duration: 2.0 },                  12.5)
+    .to("#s3-vw",   { opacity: 0.45, duration: 2.2, ease: eIn },    12.8)
+    // annotation lines appear
+    .to("#ann",     { opacity: 1, duration: 1.8, ease: eIn },       14.2)
+    // line chart fades in then draws
+    .to("#lc",      { opacity: 1, duration: 0.8 },                  14.5)
+    .to("#lc-fill", { opacity: 1, duration: 1.5, ease: eIn },       15.0)
+    .to("#lc-line", { attr: { strokeDashoffset: 0 }, duration: 3.2, ease: eIn }, 14.8)
+    .to("#lc-dot",  { opacity: 1, duration: 0.6 },                  17.5)
+    .to("#lc-val",  { opacity: 1, duration: 0.8 },                  15.8)
+    // bar chart
+    .to("#bc",      { opacity: 1, duration: 0.8 },                  15.5)
+    .to("#b1",      { attr: { height: 102, y: 18  }, duration: 1.8, ease: "power2.out" }, 15.8)
+    .to("#b2",      { attr: { height:  89, y: 31  }, duration: 1.8, ease: "power2.out" }, 16.1)
+    .to("#b3",      { attr: { height:  73, y: 47  }, duration: 1.8, ease: "power2.out" }, 16.4)
+    .to("#b4",      { attr: { height: 109, y: 11  }, duration: 1.8, ease: "power2.out" }, 16.7)
+    .to(["#bv1","#bv2","#bv3","#bv4"], { opacity: 1, duration: 0.6, stagger: 0.3 }, 17.2)
+    // text
+    .to("#s3-t1",   { opacity: 0.50, duration: 2.0, ease: eIn },    16.5)
+    .to("#s3-t1",   { opacity: 0, duration: 1.2, ease: eOut },      19.2)
+    .to("#s3-t2",   { opacity: 1, duration: 1.5, ease: eIn },       19.8)
+    .to("#s3-t2",   { opacity: 0, duration: 1.0, ease: eOut },      21.2)
+    .to("#s3",      { opacity: 0, duration: 1.8, ease: eOut },      21.5)
+
+  // ═══ S4: SYSTEM EXPANSION   22 → 32.5s ══════════════════════════
+    .to("#s4",      { opacity: 1, duration: 1.8, ease: eIn },       22.0)
+    .to("#s4-grid", { opacity: 1, duration: 2.0 },                  22.3)
+    .to("#s4-vw",   { opacity: 0.14, duration: 2.0, ease: eIn },    22.5)
+    // node pulse in
+    .to("#s4-node", { opacity: 1, scale: 1, duration: 1.0, ease: "back.out(2)" }, 23.2)
+    // connection line draws
+    .to("#sys-conn",{ opacity: 1, attr: { strokeDashoffset: 0 }, duration: 1.5, ease: eIn }, 24.0)
+    // circular diagram
+    .to("#circ",    { opacity: 1, duration: 0.6 },                  24.8)
+    .to("#c-outer", { attr: { strokeDashoffset: 0 }, duration: 3.8, ease: eIn }, 25.0)
+    .to("#c-inner", { attr: { strokeDashoffset: 0 }, duration: 2.6, ease: eIn }, 26.2)
+    .to(["#cn-t","#cn-r","#cn-b","#cn-l"], { opacity: 0.55, stagger: 0.5, duration: 0.8 }, 26.5)
+    .to(["#cl-t","#cl-r","#cl-b","#cl-l"], { opacity: 0.48, stagger: 0.5, duration: 1.0 }, 26.8)
+    // echo of line chart
+    .to("#lc-echo", { opacity: 1, duration: 1.5, ease: eIn },       25.5)
+    // camera pull-back (slow scale)
+    .to("#s4-zoom", { scale: 0.87, duration: 8, ease: "power1.inOut" }, 24.0)
+    // fade out
+    .to("#s4",      { opacity: 0, duration: 2.0, ease: eOut },      31.2)
+
+  // ═══ S5: TRANSITION BREAK   32 → 40s ════════════════════════════
+    .to("#s5",      { opacity: 1, duration: 1.8, ease: eIn },       32.0)
+    .to("#r1", { opacity: 0.55, scale: 6.5, duration: 7.5, ease: eOut }, 32.5)
+    .to("#r1", { opacity: 0, duration: 2.5 },                       36.5)
+    .to("#r2", { opacity: 0.42, scale: 5.2, duration: 7.0, ease: eOut }, 33.2)
+    .to("#r2", { opacity: 0, duration: 2.5 },                       37.5)
+    .to("#r3", { opacity: 0.28, scale: 3.5, duration: 6.5, ease: eOut }, 33.8)
+    .to("#r3", { opacity: 0, duration: 2.5 },                       38.2)
+    .to("#r4", { opacity: 0.18, scale: 2.2, duration: 6.0, ease: eOut }, 34.2)
+    .to("#r4", { opacity: 0, duration: 2.0 },                       38.8)
+    .to("#s5-text", { opacity: 0.46, duration: 2.5, ease: eIn },    34.5)
+    .to("#s5-text", { opacity: 0, duration: 1.5, ease: eOut },      38.0)
+    .to("#s5",      { opacity: 0, duration: 1.8, ease: eOut },      38.8)
+
+  // ═══ S6: FINAL STILLNESS   40 → 45s ═════════════════════════════
+    .to("#s6",      { opacity: 1, duration: 2.8, ease: eIn },       40.0)
+    .to("#s6-vw",   { opacity: 1, duration: 3.5, ease: eIn },       41.5)
+    .to("#s6-rule", { width: 170, duration: 1.8 },                  42.2)
+    .to("#s6-text", { opacity: 0.46, duration: 2.5, ease: eIn },    42.8)
+    .to("#s6-attr", { opacity: 1, duration: 2.0, ease: eIn },       43.5);
+    // hold to 45s
+
+  // ── Count-ups inserted at correct timeline positions ─────────────
+  countUp("lc-val", 91, 16.0, 2.2);
+  countUp("bv1",    85, 17.5, 1.6);
+  countUp("bv2",    71, 17.8, 1.6);
+  countUp("bv3",    58, 18.1, 1.6);
+  countUp("bv4",    91, 18.4, 1.6);
+
+  tl.eventCallback("onComplete", () => { window.__done = true; });
+</script>
+</body>
+</html>
