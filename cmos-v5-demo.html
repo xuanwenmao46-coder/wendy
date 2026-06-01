@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>CMOS V5 — World-Class Design Cinema</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 1280px; height: 720px;
+      overflow: hidden; background: #0E0E0E;
+    }
+
+    :root {
+      --bg:      #0E0E0E;
+      --text:    #F5F5F5;
+      --dim:     rgba(245,245,245,0.35);
+      --ghost:   rgba(245,245,245,0.06);
+      --accent:  #FFE500;   /* ultra yellow — ONCE per scene */
+      --mono-dim:rgba(245,245,245,0.45);
+
+      /* typography-optics for oversized Latin display */
+      --t-200:  -0.055em;  /* 200px+ Latin */
+      --t-140:  -0.045em;  /* 130-200px Latin */
+      --t-80:   -0.03em;   /* 80-130px Latin */
+      --t-cjk:  -0.04em;   /* CJK display 80-120px 700w */
+      --t-label: 0.12em;   /* Latin uppercase micro labels */
+
+      --f-display: "Liberation Sans", "DejaVu Sans", sans-serif;
+      --f-cjk:     "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
+      --f-mono:    "DejaVu Sans Mono", monospace;
+    }
+
+    /* ── Fixed overlays ────────────────────────────────────────────── */
+    .grain {
+      position: fixed; inset: 0; z-index: 9500; pointer-events: none;
+      opacity: 0.075; mix-blend-mode: overlay;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") repeat;
+      background-size: 256px 256px;
+      animation: g 0.12s steps(1) infinite;
+    }
+    @keyframes g {
+      0%  { transform: translate(0,0); }
+      33% { transform: translate(-4px,2px); }
+      66% { transform: translate(3px,-3px); }
+    }
+    .vignette {
+      position: fixed; inset: 0; z-index: 9400; pointer-events: none;
+      background: radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,0.45) 100%);
+    }
+
+    /* ── Scene base ────────────────────────────────────────────────── */
+    .scene {
+      position: absolute; inset: 0; opacity: 0;
+      overflow: hidden;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SCENE 1 — IDENTITY STACK
+       ═══════════════════════════════════════════════════════════════ */
+    #s1 { background: var(--bg); }
+
+    /* Ghost "SYSTEM" fills the background — visual depth layer */
+    #s1-ghost {
+      position: absolute;
+      font-family: var(--f-display);
+      font-size: 420px; font-weight: 700;
+      letter-spacing: -0.07em;
+      color: var(--ghost);
+      bottom: -60px; right: -40px;
+      line-height: 1; white-space: nowrap;
+      user-select: none;
+    }
+
+    .s1-word {
+      position: absolute;
+      font-family: var(--f-display);
+      font-weight: 700;
+      color: var(--text);
+      line-height: 0.88;
+      text-transform: uppercase;
+    }
+    #w-creative  { font-size: 196px; letter-spacing: var(--t-200); top: 36px;  left: 56px; }
+    #w-motion    { font-size: 160px; letter-spacing: var(--t-140); top: 218px; left: 80px; }
+    #w-operating { font-size: 116px; letter-spacing: var(--t-140); top: 384px; left: 56px; }
+    #w-v5 {
+      position: absolute; bottom: 52px; right: 64px;
+      font-family: var(--f-mono);
+      font-size: 13px; font-weight: 400;
+      letter-spacing: var(--t-label);
+      color: var(--mono-dim);
+      text-transform: uppercase;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SCENE 2 — THE EQUATION
+       ═══════════════════════════════════════════════════════════════ */
+    #s2 {
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: 0 80px;
+    }
+
+    .eq-row {
+      display: flex; align-items: baseline; gap: 28px;
+      margin-bottom: 6px;
+    }
+    .eq-label {
+      font-family: var(--f-mono);
+      font-size: 11px; letter-spacing: var(--t-label);
+      color: var(--dim); text-transform: uppercase;
+      min-width: 60px; padding-top: 4px;
+    }
+    .eq-text {
+      font-family: var(--f-display);
+      font-size: 86px; font-weight: 700;
+      letter-spacing: var(--t-80);
+      color: var(--text); line-height: 1.1;
+    }
+    .eq-text.accent { color: var(--accent); }
+    .eq-op {
+      font-family: var(--f-display);
+      font-size: 52px; font-weight: 700;
+      color: var(--dim); padding-left: 80px;
+      line-height: 1;
+    }
+    .eq-result {
+      font-family: var(--f-display);
+      font-size: 40px; font-weight: 700;
+      letter-spacing: var(--t-80);
+      color: var(--dim); margin-top: 16px;
+      padding-left: 80px;
+    }
+    .eq-result .hi { color: var(--text); }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SCENE 3 — DIRECTOR ROLL
+       ═══════════════════════════════════════════════════════════════ */
+    #s3 {
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: 0 64px;
+    }
+    #s3-header {
+      font-family: var(--f-mono);
+      font-size: 11px; letter-spacing: var(--t-label);
+      color: var(--dim); text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    .director {
+      font-family: var(--f-display);
+      font-size: 64px; font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text); line-height: 1.0;
+      border-top: 1px solid rgba(245,245,245,0.08);
+      padding: 8px 0;
+    }
+    .director.active { color: var(--text); }
+    .director.done   { color: rgba(245,245,245,0.20); }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SCENE 4 — QUALITY TEST
+       ═══════════════════════════════════════════════════════════════ */
+    #s4 {
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 72px 80px;
+    }
+    #q-label {
+      font-family: var(--f-mono);
+      font-size: 11px; letter-spacing: var(--t-label);
+      color: var(--dim); text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    #q-question {
+      font-family: var(--f-display);
+      font-size: 48px; font-weight: 700;
+      letter-spacing: var(--t-80);
+      color: var(--dim); line-height: 1.2;
+    }
+    #q-target {
+      font-family: var(--f-display);
+      font-size: 120px; font-weight: 700;
+      letter-spacing: var(--t-140);
+      color: var(--text); line-height: 0.95;
+      margin-top: -8px;
+    }
+    /* "YES." — accent moment, bottom-right, huge */
+    #q-yes {
+      position: absolute;
+      font-family: var(--f-display);
+      font-size: 320px; font-weight: 700;
+      letter-spacing: -0.06em;
+      color: var(--accent);
+      bottom: -30px; right: 48px;
+      line-height: 0.85;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SCENE 5 — FINAL LOCKUP
+       ═══════════════════════════════════════════════════════════════ */
+    #s5 { overflow: hidden; }
+
+    #s5-bg-text {
+      position: absolute;
+      font-family: var(--f-display);
+      font-size: 380px; font-weight: 700;
+      letter-spacing: -0.07em;
+      color: rgba(245,245,245,0.04);
+      top: -40px; left: -20px;
+      line-height: 1; white-space: nowrap;
+      user-select: none;
+    }
+    #s5-cmos {
+      position: absolute;
+      font-family: var(--f-display);
+      font-size: 220px; font-weight: 700;
+      letter-spacing: var(--t-200);
+      color: var(--text);
+      bottom: 130px; left: 64px;
+      line-height: 0.9;
+    }
+    #s5-version {
+      position: absolute;
+      font-family: var(--f-mono);
+      font-size: 13px; letter-spacing: var(--t-label);
+      color: var(--dim); text-transform: uppercase;
+      bottom: 104px; right: 64px;
+    }
+    #s5-tagline {
+      position: absolute;
+      font-family: var(--f-display);
+      font-size: 22px; font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--dim);
+      bottom: 64px; left: 64px;
+      text-transform: uppercase;
+    }
+    #s5-rule {
+      position: absolute;
+      width: 0; height: 1px;
+      background: rgba(245,245,245,0.20);
+      bottom: 96px; left: 64px;
+    }
+    #s5-cjk {
+      position: absolute;
+      font-family: var(--f-cjk);
+      font-size: 18px; font-weight: 400;
+      letter-spacing: var(--t-cjk);
+      color: var(--mono-dim);
+      bottom: 36px; left: 64px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grain"></div>
+  <div class="vignette"></div>
+
+  <!-- ── SCENE 1: Identity ─────────────────────────────────────── -->
+  <div class="scene" id="s1">
+    <div id="s1-ghost">SYSTEM</div>
+    <div class="s1-word" id="w-creative">CREATIVE</div>
+    <div class="s1-word" id="w-motion">MOTION</div>
+    <div class="s1-word" id="w-operating">OPERATING</div>
+    <div id="w-v5">CMOS &nbsp; V5 &nbsp; 2026</div>
+  </div>
+
+  <!-- ── SCENE 2: Equation ─────────────────────────────────────── -->
+  <div class="scene" id="s2">
+    <div class="eq-row" id="eq-r1">
+      <span class="eq-label">INPUT</span>
+      <span class="eq-text" id="eq1">USER CONTENT</span>
+    </div>
+    <div class="eq-op" id="eq-op1">×</div>
+    <div class="eq-row" id="eq-r2">
+      <span class="eq-label">SYSTEM</span>
+      <span class="eq-text accent" id="eq2">ART DIRECTION</span>
+    </div>
+    <div class="eq-op" id="eq-op2">×</div>
+    <div class="eq-row" id="eq-r3">
+      <span class="eq-label">ENGINE</span>
+      <span class="eq-text" id="eq3">AI GENERATION</span>
+    </div>
+    <div class="eq-result" id="eq-result">= &nbsp;<span class="hi">WORLD-CLASS OUTPUT</span></div>
+  </div>
+
+  <!-- ── SCENE 3: Director roll ─────────────────────────────────── -->
+  <div class="scene" id="s3">
+    <div id="s3-header">THE TEN DIRECTOR PIPELINE</div>
+    <div class="director" id="d1">CREATIVE DIRECTOR</div>
+    <div class="director" id="d2">ART DIRECTOR</div>
+    <div class="director" id="d3">BRAND DESIGNER</div>
+    <div class="director" id="d4">TYPOGRAPHY DESIGNER</div>
+    <div class="director" id="d5">MOTION DESIGNER</div>
+    <div class="director" id="d6">SOUND DESIGNER</div>
+    <div class="director" id="d7">DATA STORYTELLING</div>
+    <div class="director" id="d8">CINEMATOGRAPHER</div>
+    <div class="director" id="d9">MUSEUM CURATOR</div>
+    <div class="director" id="d10">ANTI-AI DETECTOR</div>
+  </div>
+
+  <!-- ── SCENE 4: Quality test ──────────────────────────────────── -->
+  <div class="scene" id="s4">
+    <div id="q-label">FINAL QUALITY TEST</div>
+    <div id="q-question">WOULD THIS BE ACCEPTED BY</div>
+    <div id="q-target">PENTAGRAM?</div>
+    <div id="q-yes">YES.</div>
+  </div>
+
+  <!-- ── SCENE 5: Final lockup ──────────────────────────────────── -->
+  <div class="scene" id="s5">
+    <div id="s5-bg-text">CMOS</div>
+    <div id="s5-cmos">CMOS<br>V5</div>
+    <div id="s5-rule"></div>
+    <div id="s5-version">WORLD-CLASS DESIGN CINEMA</div>
+    <div id="s5-tagline">CREATIVE MOTION OPERATING SYSTEM</div>
+    <div id="s5-cjk">每一帧都应该被导演 &nbsp;·&nbsp; 每个决定都应该被辩护</div>
+  </div>
+
+  <script src="./gsap.min.js"></script>
+  <script>
+    // ── Easing vocabulary (cinematic) ──────────────────────────────
+    const eImpact = "cubic-bezier(0.16, 1, 0.30, 1)";   // brand slam
+    const eStd    = "cubic-bezier(0.25, 0.10, 0.25, 1)"; // standard settle
+    const eExit   = "cubic-bezier(0.45, 0, 0.55, 1)";    // exits
+    const eBack   = "back.out(1.4)";                      // overshoot for hits
+
+    // ── Set all initial states ─────────────────────────────────────
+    gsap.set(["#s1","#s2","#s3","#s4","#s5"], { opacity: 0 });
+
+    // S1
+    gsap.set("#s1-ghost",   { opacity: 0, scale: 1.08 });
+    gsap.set("#w-creative", { opacity: 0, y: -40 });
+    gsap.set("#w-motion",   { opacity: 0, x: -30 });
+    gsap.set("#w-operating",{ opacity: 0, x: 30 });
+    gsap.set("#w-v5",       { opacity: 0 });
+
+    // S2
+    gsap.set(["#eq-r1","#eq-op1","#eq-r2","#eq-op2","#eq-r3","#eq-result"],
+      { opacity: 0, x: -24 });
+
+    // S3
+    gsap.set("#s3-header", { opacity: 0 });
+    gsap.set(["#d1","#d2","#d3","#d4","#d5","#d6","#d7","#d8","#d9","#d10"],
+      { opacity: 0, x: -20 });
+
+    // S4
+    gsap.set(["#q-label","#q-question","#q-target","#q-yes"],
+      { opacity: 0 });
+    gsap.set("#q-yes", { scale: 0.85 });
+
+    // S5
+    gsap.set("#s5-bg-text",  { opacity: 0, scale: 1.05 });
+    gsap.set(["#s5-cmos","#s5-version","#s5-tagline","#s5-cjk"], { opacity: 0 });
+    gsap.set("#s5-cmos",   { y: 30 });
+    gsap.set("#s5-rule",   { width: 0 });
+
+    // ── Main timeline ──────────────────────────────────────────────
+    const tl = gsap.timeline({ defaults: { ease: eStd } });
+
+    // ═══ SCENE 1: Identity (0 → 3.8s) ════════════════════════════
+    tl
+      .to("#s1",        { opacity: 1, duration: 0.05 },             0.0)
+      .to("#s1-ghost",  { opacity: 1, scale: 1, duration: 1.2, ease: eExit }, 0.05)
+      .to("#w-creative",{ opacity: 1, y: 0, duration: 0.6, ease: eImpact },   0.25)
+      .to("#w-motion",  { opacity: 1, x: 0, duration: 0.55, ease: eImpact },  0.7)
+      .to("#w-operating",{ opacity: 1, x: 0, duration: 0.55, ease: eImpact }, 1.15)
+      .to("#w-v5",      { opacity: 1, duration: 0.4 },              1.8)
+      // hold 1.5s, then exit
+      .to("#s1",        { opacity: 0, duration: 0.35, ease: eExit }, 3.5)
+
+    // ═══ SCENE 2: Equation (4.0 → 8.0s) ══════════════════════════
+      .to("#s2",      { opacity: 1, duration: 0.05 },             4.0)
+      // Elements enter staggered left → right
+      .to("#eq-r1",   { opacity: 1, x: 0, duration: 0.5, ease: eImpact }, 4.15)
+      .to("#eq-op1",  { opacity: 1, x: 0, duration: 0.4 },                4.55)
+      .to("#eq-r2",   { opacity: 1, x: 0, duration: 0.6, ease: eImpact }, 4.85)
+      .to("#eq-op2",  { opacity: 1, x: 0, duration: 0.4 },                5.3)
+      .to("#eq-r3",   { opacity: 1, x: 0, duration: 0.5, ease: eImpact }, 5.55)
+      .to("#eq-result",{ opacity: 1, x: 0, duration: 0.6 },               6.15)
+      // hold, exit
+      .to("#s2",      { opacity: 0, duration: 0.3, ease: eExit },  7.7)
+
+    // ═══ SCENE 3: Director roll (8.1 → 14.2s) ════════════════════
+      .to("#s3",        { opacity: 1, duration: 0.05 },            8.1)
+      .to("#s3-header", { opacity: 1, duration: 0.35 },            8.2)
+      // 10 directors — tight stagger (0.52s each)
+      .to("#d1",  { opacity: 1, x: 0, duration: 0.3, ease: eImpact }, 8.55)
+      .to("#d2",  { opacity: 1, x: 0, duration: 0.3, ease: eImpact }, 9.05)
+      .to("#d1",  { opacity: 0.18, duration: 0.25 },                  9.1)
+      .to("#d3",  { opacity: 1, x: 0, duration: 0.3, ease: eImpact }, 9.55)
+      .to("#d2",  { opacity: 0.18, duration: 0.25 },                  9.6)
+      .to("#d4",  { opacity: 1, x: 0, duration: 0.3, ease: eImpact }, 10.05)
+      .to("#d3",  { opacity: 0.18, duration: 0.25 },                  10.1)
+      .to("#d5",  { opacity: 1, x: 0, duration: 0.3, ease: eImpact }, 10.55)
+      .to("#d4",  { opacity: 0.18, duration: 0.25 },                  10.6)
+      .to("#d6",  { opacity: 1, x: 0, duration: 0.3, ease: eImpact }, 11.05)
+      .to("#d5",  { opacity: 0.18, duration: 0.25 },                  11.1)
+      .to("#d7",  { opacity: 1, x: 0, duration: 0.3, ease: eImpact }, 11.55)
+      .to("#d6",  { opacity: 0.18, duration: 0.25 },                  11.6)
+      .to("#d8",  { opacity: 1, x: 0, duration: 0.3, ease: eImpact }, 12.05)
+      .to("#d7",  { opacity: 0.18, duration: 0.25 },                  12.1)
+      .to("#d9",  { opacity: 1, x: 0, duration: 0.3, ease: eImpact }, 12.55)
+      .to("#d8",  { opacity: 0.18, duration: 0.25 },                  12.6)
+      .to("#d10", { opacity: 1, x: 0, duration: 0.4, ease: eImpact }, 13.05)
+      .to("#d9",  { opacity: 0.18, duration: 0.25 },                  13.1)
+      // hold on #d10 (ANTI-AI DETECTOR), then exit
+      .to("#s3",  { opacity: 0, duration: 0.35, ease: eExit },        14.0)
+
+    // ═══ SCENE 4: Quality test (14.4 → 19.5s) ════════════════════
+      .to("#s4",         { opacity: 1, duration: 0.05 },             14.4)
+      .to("#q-label",    { opacity: 1, duration: 0.4 },              14.55)
+      .to("#q-question", { opacity: 1, duration: 0.5 },              14.9)
+      .to("#q-target",   { opacity: 1, duration: 0.6, ease: eImpact }, 15.3)
+      // ── silence / tension hold ── 15.9 → 17.2s
+      // YES. slams in with scale + overshoot — accent moment
+      .to("#q-yes", { opacity: 1, scale: 1, duration: 0.55, ease: eBack }, 17.2)
+      // hold final frame
+      .to("#s4",    { opacity: 0, duration: 0.4, ease: eExit },         19.2)
+
+    // ═══ SCENE 5: Final lockup (19.6 → 25.0s) ════════════════════
+      .to("#s5",        { opacity: 1, duration: 0.05 },               19.6)
+      .to("#s5-bg-text",{ opacity: 1, scale: 1, duration: 1.6, ease: eExit }, 19.65)
+      .to("#s5-cmos",   { opacity: 1, y: 0, duration: 0.8, ease: eImpact }, 19.9)
+      .to("#s5-rule",   { width: 580, duration: 0.7, ease: eImpact },  20.6)
+      .to("#s5-version",{ opacity: 1, duration: 0.5 },                 21.0)
+      .to("#s5-tagline",{ opacity: 1, duration: 0.5 },                 21.3)
+      .to("#s5-cjk",    { opacity: 1, duration: 0.5 },                 21.7);
+      // hold to end at 25s
+
+    tl.eventCallback("onComplete", () => { window.__done = true; });
+  </script>
+</body>
+</html>
