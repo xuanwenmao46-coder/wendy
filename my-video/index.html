@@ -160,6 +160,72 @@ body{width:1920px;height:1080px;overflow:hidden;background:#0C0C0C;font-family:'
 <div class="flood" id="fl-white"></div>
 <div class="flood" id="fl-black"></div>
 
+<!-- ===== AUDIO TRACKS ===== -->
+<!-- BGM: full 60s electronic beat -->
+<audio id="a-bgm" class="clip" data-start="0" data-duration="60" data-track-index="10" data-volume="0.38" src="audio/bgm.wav"></audio>
+
+<!-- SFX: S01 letter slam impacts (each on its own track, overlapping allowed) -->
+<audio id="a-imp1" class="clip" data-start="0.05" data-duration="0.6" data-track-index="11" data-volume="0.75" src="audio/sfx-impact.wav"></audio>
+<audio id="a-imp2" class="clip" data-start="0.10" data-duration="0.6" data-track-index="12" data-volume="0.65" src="audio/sfx-impact.wav"></audio>
+<audio id="a-imp3" class="clip" data-start="0.15" data-duration="0.6" data-track-index="13" data-volume="0.60" src="audio/sfx-impact.wav"></audio>
+<audio id="a-imp4" class="clip" data-start="0.20" data-duration="0.6" data-track-index="14" data-volume="0.55" src="audio/sfx-impact.wav"></audio>
+<audio id="a-imp5" class="clip" data-start="0.25" data-duration="0.6" data-track-index="15" data-volume="0.50" src="audio/sfx-impact.wav"></audio>
+
+<!-- SFX: S01→S02 acid mask sweep (track 16, no conflicts) -->
+<audio id="a-sw1" class="clip" data-start="2.78" data-duration="0.35" data-track-index="16" data-volume="0.7" src="audio/sfx-acid-sweep.wav"></audio>
+
+<!-- SFX: S02 diagonal color wipes (3 separate tracks) -->
+<audio id="a-wh1" class="clip" data-start="3.05" data-duration="0.35" data-track-index="11" data-volume="0.55" src="audio/sfx-whoosh.wav"></audio>
+<audio id="a-wh2" class="clip" data-start="3.18" data-duration="0.35" data-track-index="12" data-volume="0.5"  src="audio/sfx-whoosh.wav"></audio>
+<audio id="a-wh3" class="clip" data-start="3.31" data-duration="0.35" data-track-index="13" data-volume="0.45" src="audio/sfx-whoosh.wav"></audio>
+
+<!-- SFX: S03 word type-ins (alternate tracks 11/12) -->
+<audio id="a-ty1" class="clip" data-start="7.08" data-duration="0.12" data-track-index="11" data-volume="0.55" src="audio/sfx-type.wav"></audio>
+<audio id="a-ty2" class="clip" data-start="7.35" data-duration="0.12" data-track-index="12" data-volume="0.52" src="audio/sfx-type.wav"></audio>
+<audio id="a-ty3" class="clip" data-start="7.60" data-duration="0.12" data-track-index="11" data-volume="0.48" src="audio/sfx-type.wav"></audio>
+<audio id="a-ty4" class="clip" data-start="7.85" data-duration="0.12" data-track-index="12" data-volume="0.42" src="audio/sfx-type.wav"></audio>
+
+<!-- SFX: S03→S04 polygon mask wipe -->
+<audio id="a-sw2" class="clip" data-start="11.74" data-duration="0.35" data-track-index="11" data-volume="0.65" src="audio/sfx-acid-sweep.wav"></audio>
+
+<!-- SFX: S04 grid lines build — ticks alternate tracks 11/12 -->
+<audio id="a-tk1"  class="clip" data-start="12.12" data-duration="0.06" data-track-index="11" data-volume="0.35" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk2"  class="clip" data-start="12.18" data-duration="0.06" data-track-index="12" data-volume="0.35" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk3"  class="clip" data-start="12.24" data-duration="0.06" data-track-index="11" data-volume="0.33" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk4"  class="clip" data-start="12.30" data-duration="0.06" data-track-index="12" data-volume="0.33" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk5"  class="clip" data-start="12.36" data-duration="0.06" data-track-index="11" data-volume="0.31" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk6"  class="clip" data-start="12.42" data-duration="0.06" data-track-index="12" data-volume="0.31" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk7"  class="clip" data-start="12.48" data-duration="0.06" data-track-index="11" data-volume="0.29" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk8"  class="clip" data-start="12.54" data-duration="0.06" data-track-index="12" data-volume="0.29" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk9"  class="clip" data-start="12.60" data-duration="0.06" data-track-index="11" data-volume="0.27" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk10" class="clip" data-start="12.66" data-duration="0.06" data-track-index="12" data-volume="0.27" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk11" class="clip" data-start="12.72" data-duration="0.06" data-track-index="11" data-volume="0.25" src="audio/sfx-tick.wav"></audio>
+
+<!-- SFX: S05 chart reveals -->
+<audio id="a-tk12" class="clip" data-start="18.3"  data-duration="0.06" data-track-index="12" data-volume="0.4"  src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk13" class="clip" data-start="19.3"  data-duration="0.06" data-track-index="11" data-volume="0.42" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk14" class="clip" data-start="19.45" data-duration="0.06" data-track-index="12" data-volume="0.39" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk15" class="clip" data-start="19.60" data-duration="0.06" data-track-index="11" data-volume="0.36" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk16" class="clip" data-start="19.75" data-duration="0.06" data-track-index="12" data-volume="0.33" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk17" class="clip" data-start="21.0"  data-duration="0.06" data-track-index="11" data-volume="0.3"  src="audio/sfx-tick.wav"></audio>
+
+<!-- SFX: S05→S06 white flood -->
+<audio id="a-wh4" class="clip" data-start="23.74" data-duration="0.35" data-track-index="12" data-volume="0.6" src="audio/sfx-whoosh.wav"></audio>
+
+<!-- SFX: S06→S07 acid exit + S07 hero wipe (different tracks, no overlap) -->
+<audio id="a-sw3" class="clip" data-start="31.76" data-duration="0.35" data-track-index="11" data-volume="0.65" src="audio/sfx-acid-sweep.wav"></audio>
+<audio id="a-wh5" class="clip" data-start="32.05" data-duration="0.35" data-track-index="16" data-volume="0.58" src="audio/sfx-whoosh.wav"></audio>
+
+<!-- SFX: S08 matrix flash (full 8s) -->
+<audio id="a-mat" class="clip" data-start="40" data-duration="8" data-track-index="11" data-volume="0.72" src="audio/sfx-matrix.wav"></audio>
+
+<!-- SFX: S09 system collapse (7s) -->
+<audio id="a-col" class="clip" data-start="48" data-duration="7" data-track-index="11" data-volume="0.85" src="audio/sfx-collapse.wav"></audio>
+
+<!-- SFX: S09→S10 final acid sweep -->
+<audio id="a-sw4" class="clip" data-start="54.74" data-duration="0.35" data-track-index="12" data-volume="0.6" src="audio/sfx-acid-sweep.wav"></audio>
+<!-- ===== END AUDIO ===== -->
+
 <!-- S01 Opening Impact (0-3s) -->
 <div class="clip" id="s01" data-start="0" data-duration="3" data-track-index="0">
   <div id="s01-bg"></div>
