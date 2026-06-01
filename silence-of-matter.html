@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>Silence of Matter</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 1280px; height: 720px;
+      overflow: hidden;
+      background: #E8E3DA;
+    }
+
+    :root {
+      --bg:      #E8E3DA;  /* warm linen */
+      --mid:     #B9B2A7;  /* stone */
+      --deep:    #2A2622;  /* shadow depth */
+      --accent:  #6F7A6A;  /* sage — used once */
+      --f-serif: "DejaVu Serif", Georgia, serif;
+      --f-grotesk: "Liberation Sans", Helvetica, sans-serif;
+    }
+
+    /* ── Fixed overlays ──────────────────────────────────────────────── */
+    .grain {
+      position: fixed; inset: 0; z-index: 9500; pointer-events: none;
+      opacity: 0.038; mix-blend-mode: multiply;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") repeat;
+      background-size: 256px 256px;
+      animation: gr 0.14s steps(1) infinite;
+    }
+    @keyframes gr {
+      0%  { transform: translate(0, 0); }
+      33% { transform: translate(-3px, 2px); }
+      66% { transform: translate(2px, -3px); }
+    }
+
+    .vignette {
+      position: fixed; inset: 0; z-index: 9400; pointer-events: none;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(42,38,34,0.20) 100%);
+    }
+
+    /* ── Scene base ──────────────────────────────────────────────────── */
+    .scene {
+      position: absolute; inset: 0; opacity: 0;
+    }
+
+    /* ── Shared typography ───────────────────────────────────────────── */
+    .line {
+      position: absolute;
+      font-family: var(--f-serif);
+      font-size: 13.5px;
+      font-weight: 400;
+      font-style: italic;
+      letter-spacing: 0.19em;
+      line-height: 1.75;
+      color: var(--deep);
+      opacity: 0;
+    }
+
+    /* ══════════════════════════════════════════════════════════════════
+       SCENE 1 — VOID ENTRY   0–6s
+       ══════════════════════════════════════════════════════════════════ */
+    #s1 { background: var(--bg); }
+
+    /* Soft directional light from upper-left */
+    #s1-light {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 22% 28%, rgba(255,253,248,0.65) 0%, transparent 58%);
+    }
+
+    /* Very faint horizon line — grounding element */
+    #s1-rule {
+      position: absolute;
+      left: 88px; bottom: 165px;
+      width: 0; height: 1px;
+      background: rgba(42,38,34,0.12);
+    }
+
+    #s1-text { bottom: 140px; left: 88px; }
+
+    /* ══════════════════════════════════════════════════════════════════
+       SCENE 2 — OBJECT EMERGENCE   6–15s
+       ══════════════════════════════════════════════════════════════════ */
+    #s2 {
+      background: linear-gradient(
+        148deg,
+        #1E1B18 0%,
+        #2A2622 20%,
+        #3D3730 45%,
+        #857E75 75%,
+        #C8C1B7 100%
+      );
+    }
+
+    /* Vessel wrap — off-center left of frame */
+    #vw {
+      position: absolute;
+      top: 50%; left: 41%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+    }
+
+    /* Jar lid — ellipse */
+    #lid {
+      width: 148px; height: 22px;
+      background: linear-gradient(
+        to bottom,
+        rgba(232,227,218,0.90) 0%,
+        rgba(185,178,167,0.82) 100%
+      );
+      border-radius: 50% / 60%;
+      margin: 0 auto -2px;
+      position: relative; z-index: 2;
+      box-shadow: 0 -3px 14px rgba(255,252,244,0.12);
+    }
+
+    /* Jar body — straight-sided ceramic jar */
+    #jar {
+      width: 130px; height: 196px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 3px 3px 7px 7px;
+      background: linear-gradient(
+        162deg,
+        rgba(232,227,218,0.88) 0%,
+        rgba(185,178,167,0.78) 38%,
+        rgba(111,122,106,0.58) 68%,
+        rgba(42,38,34,0.80) 100%
+      );
+      box-shadow:
+        inset -8px 0 28px rgba(42,38,34,0.22),
+        inset 0 -10px 28px rgba(42,38,34,0.14),
+        0 28px 90px rgba(14,11,8,0.55);
+    }
+
+    /* Thin ceramic label band near bottom */
+    #jar-label-band {
+      position: absolute;
+      bottom: 44px; left: 0; right: 0;
+      height: 32px;
+      border-top: 0.5px solid rgba(232,227,218,0.14);
+      border-bottom: 0.5px solid rgba(232,227,218,0.14);
+    }
+
+    /* Arc light element — sweeps left → right */
+    #arc {
+      position: absolute;
+      top: -60%; left: -90px;
+      width: 58px; height: 320%;
+      background: linear-gradient(
+        to right,
+        transparent 0%,
+        rgba(255,253,244,0.30) 50%,
+        transparent 100%
+      );
+      transform: skewX(-14deg);
+      opacity: 0;
+    }
+
+    /* Contact shadow */
+    #jar-shadow {
+      width: 106px; height: 14px;
+      background: radial-gradient(ellipse at center, rgba(14,11,8,0.50) 0%, transparent 68%);
+      margin: 10px auto 0;
+    }
+
+    #s2-text { bottom: 108px; right: 100px; text-align: right; }
+
+    /* ══════════════════════════════════════════════════════════════════
+       SCENE 3 — MATERIAL STUDY   15–25s
+       ══════════════════════════════════════════════════════════════════ */
+    #s3 { background: #D2CCC3; }
+
+    /* Water / organic surface impression */
+    #m-water {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 27% 52%, rgba(232,227,218,0.72) 0%, transparent 26%),
+        radial-gradient(circle at 63% 28%, rgba(255,252,244,0.58) 0%, transparent 20%),
+        radial-gradient(circle at 48% 72%, rgba(185,178,167,0.48) 0%, transparent 18%),
+        radial-gradient(circle at 78% 60%, rgba(232,227,218,0.52) 0%, transparent 14%),
+        radial-gradient(circle at 14% 30%, rgba(185,178,167,0.42) 0%, transparent 22%),
+        radial-gradient(circle at 55% 45%, rgba(111,122,106,0.12) 0%, transparent 30%);
+      opacity: 0;
+    }
+
+    /* Glass surface reflection */
+    #m-glass {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        122deg,
+        transparent 0%,
+        rgba(255,253,248,0.10) 36%,
+        rgba(232,227,218,0.18) 50%,
+        rgba(255,253,248,0.08) 58%,
+        transparent 68%
+      );
+      opacity: 0;
+    }
+
+    /* Ceramic surface micro-grid */
+    #m-surface {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(42,38,34,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(42,38,34,0.035) 1px, transparent 1px);
+      background-size: 44px 44px;
+      opacity: 0;
+    }
+
+    /* Depth veil — simulates shallow DOF top edge */
+    #m-dof {
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 38%;
+      background: linear-gradient(to bottom, rgba(210,204,195,0.60) 0%, transparent 100%);
+      opacity: 0;
+    }
+    /* DOF bottom edge */
+    #m-dof-b {
+      position: absolute;
+      bottom: 0; left: 0; right: 0; height: 28%;
+      background: linear-gradient(to top, rgba(210,204,195,0.45) 0%, transparent 100%);
+      opacity: 0;
+    }
+
+    /* Sage accent — subtle, placed once, lower left */
+    #m-sage {
+      position: absolute;
+      bottom: 180px; left: 200px;
+      width: 180px; height: 90px;
+      background: radial-gradient(circle, rgba(111,122,106,0.20) 0%, transparent 70%);
+      opacity: 0;
+    }
+
+    #s3-text { bottom: 112px; left: 88px; }
+
+    /* ══════════════════════════════════════════════════════════════════
+       SCENE 4 — ABSTRACTION   25–35s
+       ══════════════════════════════════════════════════════════════════ */
+    #s4 { background: #C2BBB1; }
+
+    /* Ghost of the vessel — faint memory */
+    #ghost {
+      position: absolute;
+      top: 50%; left: 41%;
+      transform: translate(-50%, -50%);
+      width: 130px; height: 218px;
+      border-radius: 3px 3px 7px 7px;
+      border: 0.5px solid rgba(232,227,218,0.30);
+      background: rgba(185,178,167,0.10);
+      opacity: 0;
+    }
+
+    /* Expanding concentric rings */
+    .ring {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(1);
+      border-radius: 50%;
+      border: 0.5px solid rgba(42,38,34,0.18);
+      opacity: 0;
+    }
+    #r1 { width:  80px; height:  80px; }
+    #r2 { width: 200px; height: 200px; }
+    #r3 { width: 380px; height: 380px; }
+    #r4 { width: 580px; height: 580px; }
+
+    #s4-text {
+      bottom: 110px;
+      left: 0; right: 0;
+      text-align: center;
+    }
+
+    /* ══════════════════════════════════════════════════════════════════
+       SCENE 5 — CLOSURE   35–45s
+       ══════════════════════════════════════════════════════════════════ */
+    #s5 { background: var(--bg); }
+
+    /* Centered light source — radiant negative space */
+    #s5-aura {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 46%, rgba(255,253,248,0.55) 0%, transparent 52%);
+    }
+
+    /* Final vessel — smaller, humbler, still */
+    #vf {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -52%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      opacity: 0;
+    }
+
+    #lid-f {
+      width: 104px; height: 16px;
+      background: linear-gradient(
+        to bottom,
+        rgba(185,178,167,0.80),
+        rgba(111,122,106,0.70)
+      );
+      border-radius: 50% / 60%;
+      margin-bottom: -2px;
+    }
+
+    #jar-f {
+      width: 92px; height: 138px;
+      background: linear-gradient(
+        166deg,
+        rgba(185,178,167,0.75) 0%,
+        rgba(111,122,106,0.62) 52%,
+        rgba(42,38,34,0.55) 100%
+      );
+      border-radius: 3px 3px 5px 5px;
+      box-shadow:
+        inset -4px 0 18px rgba(42,38,34,0.12),
+        0 18px 64px rgba(42,38,34,0.24);
+    }
+
+    #shadow-f {
+      width: 72px; height: 8px;
+      background: radial-gradient(ellipse, rgba(42,38,34,0.20) 0%, transparent 70%);
+      margin-top: 8px;
+    }
+
+    /* Long horizontal rule — museum label separator */
+    #s5-rule {
+      position: absolute;
+      bottom: 132px; left: 88px;
+      width: 0; height: 1px;
+      background: rgba(42,38,34,0.14);
+    }
+
+    #s5-text {
+      bottom: 104px; left: 88px;
+      font-style: normal;
+      letter-spacing: 0.24em;
+      font-size: 11px;
+    }
+
+    /* Museum attribution — small grotesk, very faint */
+    #s5-attr {
+      position: absolute;
+      bottom: 44px; right: 88px;
+      font-family: var(--f-grotesk);
+      font-size: 9.5px;
+      letter-spacing: 0.32em;
+      color: rgba(42,38,34,0.28);
+      text-transform: uppercase;
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grain"></div>
+  <div class="vignette"></div>
+
+  <!-- ── SCENE 1: Void entry ─────────────────────────────────────── -->
+  <div class="scene" id="s1">
+    <div id="s1-light"></div>
+    <div id="s1-rule"></div>
+    <p class="line" id="s1-text">There is no urgency here.</p>
+  </div>
+
+  <!-- ── SCENE 2: Object emergence ──────────────────────────────── -->
+  <div class="scene" id="s2">
+    <div id="vw">
+      <div id="lid"></div>
+      <div id="jar">
+        <div id="jar-label-band"></div>
+        <div id="arc"></div>
+      </div>
+      <div id="jar-shadow"></div>
+    </div>
+    <p class="line" id="s2-text">Only matter, as it is.</p>
+  </div>
+
+  <!-- ── SCENE 3: Material study ────────────────────────────────── -->
+  <div class="scene" id="s3">
+    <div id="m-dof"></div>
+    <div id="m-water"></div>
+    <div id="m-glass"></div>
+    <div id="m-surface"></div>
+    <div id="m-sage"></div>
+    <div id="m-dof-b"></div>
+    <p class="line" id="s3-text">texture defines memory.</p>
+  </div>
+
+  <!-- ── SCENE 4: Abstraction ───────────────────────────────────── -->
+  <div class="scene" id="s4">
+    <div id="ghost"></div>
+    <div class="ring" id="r1"></div>
+    <div class="ring" id="r2"></div>
+    <div class="ring" id="r3"></div>
+    <div class="ring" id="r4"></div>
+    <p class="line" id="s4-text">form disappears.&nbsp;&nbsp;&nbsp;essence remains.</p>
+  </div>
+
+  <!-- ── SCENE 5: Closure ───────────────────────────────────────── -->
+  <div class="scene" id="s5">
+    <div id="s5-aura"></div>
+    <div id="vf">
+      <div id="lid-f"></div>
+      <div id="jar-f"></div>
+      <div id="shadow-f"></div>
+    </div>
+    <div id="s5-rule"></div>
+    <p class="line" id="s5-text">A quiet study of material.</p>
+    <p id="s5-attr">Silence of Matter</p>
+  </div>
+
+  <script src="./gsap.min.js"></script>
+  <script>
+    // ── Easing vocabulary — meditative, slow ──────────────────────
+    const eIn   = "power2.inOut";
+    const eOut  = "power1.out";
+    const eNone = "none";
+
+    // ── Initial states ────────────────────────────────────────────
+    gsap.set(["#s1","#s2","#s3","#s4","#s5"], { opacity: 0 });
+
+    // S1
+    gsap.set("#s1-rule",  { width: 0 });
+    gsap.set("#s1-text",  { opacity: 0 });
+
+    // S2
+    gsap.set("#vw",       { opacity: 0 });
+    gsap.set("#arc",      { x: 0, opacity: 0 });
+    gsap.set("#s2-text",  { opacity: 0 });
+
+    // S3
+    gsap.set(["#m-water","#m-glass","#m-surface","#m-dof","#m-dof-b","#m-sage"], { opacity: 0 });
+    gsap.set("#s3-text",  { opacity: 0 });
+
+    // S4
+    gsap.set("#ghost",    { opacity: 0 });
+    gsap.set(["#r1","#r2","#r3","#r4"], { opacity: 0, scale: 0.4 });
+    gsap.set("#s4-text",  { opacity: 0 });
+
+    // S5
+    gsap.set("#vf",       { opacity: 0 });
+    gsap.set("#s5-rule",  { width: 0 });
+    gsap.set("#s5-text",  { opacity: 0 });
+    gsap.set("#s5-attr",  { opacity: 0 });
+
+    // ── Main timeline ─────────────────────────────────────────────
+    const tl = gsap.timeline({ defaults: { ease: "power1.inOut" } });
+
+    // ═══ SCENE 1: Void entry  0 → 6s ════════════════════════════
+    tl
+      .to("#s1",        { opacity: 1, duration: 2.8, ease: eIn },           0.0)
+      .to("#s1-rule",   { width: 220, duration: 2.0 },                      2.0)
+      .to("#s1-text",   { opacity: 0.52, duration: 2.2, ease: eIn },        2.8)
+      .to("#s1-text",   { opacity: 0,    duration: 1.6, ease: eOut },       4.9)
+      .to("#s1",        { opacity: 0,    duration: 2.0, ease: eOut },       5.0)
+
+    // ═══ SCENE 2: Object emergence  6 → 15s ═════════════════════
+      .to("#s2",        { opacity: 1, duration: 2.4, ease: eIn },           6.0)
+      // Vessel emerges slowly from shadow
+      .to("#vw",        { opacity: 1, duration: 3.8, ease: eIn },           7.0)
+      // Arc light position sweep (linear, left→right across jar)
+      .to("#arc",       { x: 310, duration: 6.2, ease: eNone },             8.8)
+      // Arc opacity: fade in, hold, fade out
+      .to("#arc",       { opacity: 0.82, duration: 1.8, ease: eIn },        8.8)
+      .to("#arc",       { opacity: 0,    duration: 1.8, ease: eOut },       13.2)
+      // Text
+      .to("#s2-text",   { opacity: 0.50, duration: 2.2, ease: eIn },       11.2)
+      .to("#s2-text",   { opacity: 0,    duration: 1.5, ease: eOut },       13.5)
+      .to("#s2",        { opacity: 0,    duration: 2.0, ease: eOut },       14.0)
+
+    // ═══ SCENE 3: Material study  15 → 25s ══════════════════════
+      .to("#s3",        { opacity: 1, duration: 2.2, ease: eIn },          15.0)
+      .to("#m-dof",     { opacity: 1, duration: 2.0 },                     15.4)
+      .to("#m-dof-b",   { opacity: 1, duration: 2.0 },                     15.8)
+      .to("#m-water",   { opacity: 1, duration: 2.8, ease: eIn },          16.2)
+      .to("#m-sage",    { opacity: 1, duration: 2.5, ease: eIn },          17.0)
+      .to("#m-glass",   { opacity: 1, duration: 2.5, ease: eIn },          17.8)
+      .to("#m-surface", { opacity: 0.55, duration: 2.0, ease: eIn },       18.8)
+      .to("#s3-text",   { opacity: 0.50, duration: 2.2, ease: eIn },       20.0)
+      .to("#s3-text",   { opacity: 0,    duration: 1.5, ease: eOut },       23.5)
+      .to("#s3",        { opacity: 0,    duration: 2.0, ease: eOut },       24.0)
+
+    // ═══ SCENE 4: Abstraction  25 → 35s ═════════════════════════
+      .to("#s4",        { opacity: 1, duration: 2.2, ease: eIn },          25.0)
+      // Ghost vessel — brief echo of the object
+      .to("#ghost",     { opacity: 0.28, duration: 2.5, ease: eIn },       25.6)
+      .to("#ghost",     { opacity: 0,    duration: 3.8, ease: eOut },       28.0)
+      // Rings radiate and dissolve
+      .to("#r1", { opacity: 0.55, scale: 6.0, duration: 7.5, ease: eOut }, 26.5)
+      .to("#r1", { opacity: 0,    duration: 2.5 },                          30.5)
+      .to("#r2", { opacity: 0.42, scale: 4.8, duration: 7.0, ease: eOut }, 27.2)
+      .to("#r2", { opacity: 0,    duration: 2.5 },                          31.5)
+      .to("#r3", { opacity: 0.28, scale: 3.2, duration: 6.5, ease: eOut }, 27.8)
+      .to("#r3", { opacity: 0,    duration: 2.5 },                          32.5)
+      .to("#r4", { opacity: 0.18, scale: 2.2, duration: 6.0, ease: eOut }, 28.5)
+      .to("#r4", { opacity: 0,    duration: 2.5 },                          33.0)
+      // Text
+      .to("#s4-text",   { opacity: 0.48, duration: 2.2, ease: eIn },       29.0)
+      .to("#s4-text",   { opacity: 0,    duration: 1.5, ease: eOut },       33.5)
+      .to("#s4",        { opacity: 0,    duration: 2.0, ease: eOut },       34.0)
+
+    // ═══ SCENE 5: Closure  35 → 45s ═════════════════════════════
+      .to("#s5",        { opacity: 1, duration: 3.0, ease: eIn },          35.0)
+      // Vessel materialises — completely still
+      .to("#vf",        { opacity: 1, duration: 3.8, ease: eIn },          37.2)
+      // Rule and text
+      .to("#s5-rule",   { width: 180, duration: 1.8 },                      39.8)
+      .to("#s5-text",   { opacity: 0.48, duration: 2.8, ease: eIn },       40.8)
+      .to("#s5-attr",   { opacity: 1,    duration: 2.0, ease: eIn },       41.5)
+      // Hold to 45s — no exit
+      ;
+
+    tl.eventCallback("onComplete", () => { window.__done = true; });
+  </script>
+</body>
+</html>
