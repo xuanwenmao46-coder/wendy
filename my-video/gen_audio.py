@@ -1,4 +1,7 @@
-"""Generate all audio assets for FORMA v3 composition."""
+"""
+Generate FORMA v3 audio assets.
+BGM: Bicep-style hypnotic electronic — 130 BPM, 4-on-the-floor, driving, no climax.
+"""
 import numpy as np
 import wave, struct, os
 
@@ -6,248 +9,413 @@ SR = 44100
 OUT = os.path.join(os.path.dirname(__file__), "audio")
 os.makedirs(OUT, exist_ok=True)
 
-def write_wav(path, data, sr=SR):
+# ─── helpers ──────────────────────────────────────────────────────────────────
+def write_mono(path, data):
     data = np.clip(data, -1, 1)
     pcm = (data * 32767).astype(np.int16)
     with wave.open(path, 'w') as f:
-        f.setnchannels(1)
-        f.setsampwidth(2)
-        f.setframerate(sr)
+        f.setnchannels(1); f.setsampwidth(2); f.setframerate(SR)
         f.writeframes(pcm.tobytes())
 
-def stereo_wav(path, L, R, sr=SR):
-    L = np.clip(L, -1, 1)
-    R = np.clip(R, -1, 1)
-    interleaved = np.empty(len(L) + len(R), dtype=np.int16)
-    interleaved[0::2] = (L * 32767).astype(np.int16)
-    interleaved[1::2] = (R * 32767).astype(np.int16)
+def write_stereo(path, L, R):
+    L, R = np.clip(L, -1, 1), np.clip(R, -1, 1)
+    buf = np.empty(2 * max(len(L), len(R)), dtype=np.int16)
+    buf[0::2] = (L * 32767).astype(np.int16)
+    buf[1::2] = (R * 32767).astype(np.int16)
     with wave.open(path, 'w') as f:
-        f.setnchannels(2)
-        f.setsampwidth(2)
-        f.setframerate(sr)
-        f.writeframes(interleaved.tobytes())
+        f.setnchannels(2); f.setsampwidth(2); f.setframerate(SR)
+        f.writeframes(buf.tobytes())
 
-t = lambda dur: np.linspace(0, dur, int(SR * dur), endpoint=False)
+def t(dur): return np.linspace(0, dur, int(SR * dur), endpoint=False)
 
-# ─── BGM: 60s minimal electronic beat ─────────────────────────────────────────
-print("Generating bgm.wav ...")
-dur = 60.0
-n = int(SR * dur)
-T = np.linspace(0, dur, n, endpoint=False)
+# simple first-order IIR lowpass  (fc in Hz)
+def lpf(sig, fc):
+    alpha = 1.0 / (1.0 + SR / (2 * np.pi * fc))
+    out = np.zeros_like(sig)
+    y = 0.0
+    for i, x in enumerate(sig):
+        y = alpha * x + (1 - alpha) * y
+        out[i] = y
+    return out
 
-# Deep kick — 40Hz boom with short decay, every beat (0.5s = 120bpm)
-kick = np.zeros(n)
-bpm = 120
-beat_dur = 60 / bpm  # 0.5s
-kick_sr = int(SR * beat_dur)
-kick_env = np.exp(-np.linspace(0, 8, kick_sr))
-kick_tone = np.sin(2*np.pi * np.linspace(0, 1, kick_sr) * 80) * kick_env * 0.5
-# pitch drop: starts at 120hz, sweeps to 40hz
-kick_pitch = np.sin(2*np.pi * np.cumsum(np.linspace(120, 40, kick_sr) / SR)) * kick_env * 0.55
+# fast IIR lpf with numpy cumsum trick (first-order only, stable)
+def lpf_fast(sig, fc):
+    alpha = 2 * np.pi * fc / SR
+    alpha = min(alpha, 0.999)
+    b = alpha
+    a = 1 - alpha
+    # Direct form I via cumsum approximation isn't exact but is fast & good enough
+    out = np.zeros_like(sig, dtype=float)
+    prev = 0.0
+    # process in chunks of 4096
+    chunk = 4096
+    for start in range(0, len(sig), chunk):
+        end = min(start + chunk, len(sig))
+        for i in range(start, end):
+            prev = b * sig[i] + a * prev
+            out[i] = prev
+    return out
 
-for b in range(int(dur / beat_dur)):
-    s = b * kick_sr
-    e = s + kick_sr
-    if e <= n:
-        kick[s:e] += kick_pitch
+# soft clip / saturation
+def sat(sig, drive=1.2):
+    return np.tanh(sig * drive) / np.tanh(drive)
 
-# Hi-hat — every 8th note (0.25s), quiet
-hat_period = int(SR * 0.25)
-hat_env = np.exp(-np.linspace(0, 20, hat_period))
-hat_noise = np.random.default_rng(42).normal(0, 1, hat_period) * hat_env * 0.08
-hat = np.zeros(n)
-for b in range(int(dur * 4)):
-    s = b * hat_period
-    e = s + hat_period
-    if e <= n:
-        hat[s:e] += hat_noise
+# ADSR envelope
+def adsr(n, A, D, S_level, R, sr=SR):
+    a_n = int(A * sr); d_n = int(D * sr); r_n = int(R * sr)
+    s_n = max(0, n - a_n - d_n - r_n)
+    env = np.concatenate([
+        np.linspace(0, 1, a_n),
+        np.linspace(1, S_level, d_n),
+        np.full(s_n, S_level),
+        np.linspace(S_level, 0, r_n),
+    ])
+    return env[:n]
 
-# Bass synth — pulsed saw at 55Hz, every bar (2s)
-bass = np.zeros(n)
-bar_dur = 2.0
-bar_n = int(SR * bar_dur)
-saw_env = np.exp(-np.linspace(0, 3, bar_n))
-t_bar = np.linspace(0, bar_dur, bar_n, endpoint=False)
-saw_wave = (2 * (t_bar * 55 % 1) - 1) * saw_env * 0.22
-# slight detune
-saw_wave2 = (2 * (t_bar * 55.4 % 1) - 1) * saw_env * 0.1
-for b in range(int(dur / bar_dur)):
-    s = b * bar_n
-    e = s + bar_n
-    if e <= n:
-        bass[s:e] += saw_wave + saw_wave2
+# ─── BGM synthesis ────────────────────────────────────────────────────────────
+print("Generating bgm.wav (Bicep-style 130 BPM) ...")
 
-# Acid green pad — slow evolving sine chord (A minor feel: A2=110, E3=165, A3=220)
-pad = np.zeros(n)
-for freq, amp in [(110, 0.06), (165, 0.04), (220, 0.05), (330, 0.03)]:
-    lfo = 0.5 + 0.5 * np.sin(2*np.pi * 0.15 * T)
-    pad += np.sin(2*np.pi * freq * T) * amp * lfo
+BPM = 130
+BEAT = 60.0 / BPM        # 0.4615s
+BAR  = BEAT * 4           # 1.8462s
+SXN  = BEAT / 4           # 16th note
+EIGH = BEAT / 2           # 8th note
+DUR  = 60.0
+N    = int(SR * DUR)
+T    = np.linspace(0, DUR, N, endpoint=False)
 
-# Pulse synth — stabs every bar, C#4=277Hz
-stab = np.zeros(n)
-stab_dur = 0.18
-stab_n = int(SR * stab_dur)
-stab_env = np.exp(-np.linspace(0, 12, stab_n))
-t_stab = np.linspace(0, stab_dur, stab_n, endpoint=False)
-stab_wave = (np.sin(2*np.pi * 277 * t_stab) + 0.3*np.sin(2*np.pi * 554 * t_stab)) * stab_env * 0.14
-stab_beats = [4, 8, 10, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116]
-for sb in stab_beats:
-    s = sb * hat_period  # every 8th note position
-    e = s + stab_n
-    if e <= n:
-        stab[s:e] += stab_wave
+# ── Kick drum: pitch-swept sine, tight transient ──────────────────────────────
+def make_kick(amp=0.88):
+    dur_k = 0.45
+    n_k = int(SR * dur_k)
+    tk = np.linspace(0, dur_k, n_k, endpoint=False)
+    freq = np.linspace(180, 38, n_k)
+    freq_env = np.exp(-tk * 22)
+    tone = np.sin(2 * np.pi * np.cumsum(freq / SR)) * freq_env
+    # transient click
+    click_env = np.exp(-tk * 90)
+    click = np.sin(2 * np.pi * 900 * tk) * click_env * 0.35
+    k = sat(tone + click, 1.6) * amp
+    return k
 
-bgm = kick + hat + bass + pad + stab
+kick_one = make_kick()
+kick = np.zeros(N)
+# 4-on-the-floor
+for b in range(int(DUR / BEAT) + 1):
+    s = int(b * BEAT * SR)
+    e = s + len(kick_one)
+    if e <= N:
+        kick[s:e] += kick_one
 
-# Master envelope — fade in 2s, fade out 3s
-fade_in = np.minimum(T / 2.0, 1.0)
-fade_out = np.minimum((dur - T) / 3.0, 1.0)
-bgm *= fade_in * fade_out
+# ── Clap / snare: filtered noise, on beats 2+4 ───────────────────────────────
+rng = np.random.default_rng(17)
+def make_clap():
+    dur_c = 0.12
+    n_c = int(SR * dur_c)
+    noise = rng.normal(0, 1, n_c)
+    # two-layer envelope (snap + body)
+    env1 = np.exp(-np.linspace(0, 40, n_c))
+    env2 = np.exp(-np.linspace(0, 18, n_c))
+    c = noise * (env1 * 0.6 + env2 * 0.4)
+    # bandpass ~2kHz
+    c = lpf_fast(c, 4000) - lpf_fast(c, 800)
+    return c * 0.48
 
-# Stereo spread
-rng = np.random.default_rng(7)
-delay = int(SR * 0.012)
-L = bgm * 0.85 + np.concatenate([np.zeros(delay), bgm[:-delay]]) * 0.15
-R = bgm * 0.85 + np.concatenate([np.zeros(delay*2), bgm[:-delay*2]]) * 0.15
-stereo_wav(f"{OUT}/bgm.wav", L, R)
-print(f"  → {OUT}/bgm.wav ({dur}s)")
+clap_one = make_clap()
+clap = np.zeros(N)
+for b in range(int(DUR / BEAT) + 1):
+    if b % 4 in (1, 3):   # beat 2 and 4
+        s = int(b * BEAT * SR)
+        e = s + len(clap_one)
+        if e <= N:
+            clap[s:e] += clap_one
 
-# ─── SFX: Impact (S01 letters slam) ───────────────────────────────────────────
-print("Generating sfx-impact.wav ...")
+# ── Closed hi-hat: 16th notes, slight velocity pattern ───────────────────────
+def make_hat(amp):
+    dur_h = 0.055
+    n_h = int(SR * dur_h)
+    noise = rng.normal(0, 1, n_h)
+    env = np.exp(-np.linspace(0, 55, n_h))
+    h = lpf_fast(noise, 12000) * env * amp
+    return h
+
+hat = np.zeros(N)
+steps = int(DUR / SXN) + 1
+for i in range(steps):
+    # accent pattern: strong on 1, medium on 3, softer on 2/4
+    pos = i % 4
+    amp = [0.42, 0.22, 0.34, 0.22][pos]
+    s = int(i * SXN * SR)
+    hat_one = make_hat(amp)
+    e = s + len(hat_one)
+    if e <= N:
+        hat[s:e] += hat_one
+
+# ── Open hi-hat: offbeat 8th notes (Bicep "Glue" feel) ───────────────────────
+def make_open_hat(amp):
+    dur_oh = 0.22
+    n_oh = int(SR * dur_oh)
+    noise = rng.normal(0, 1, n_oh)
+    env = np.exp(-np.linspace(0, 12, n_oh))
+    oh = lpf_fast(noise, 14000) * env * amp
+    return oh
+
+oh = np.zeros(N)
+for b in range(int(DUR / BEAT) + 1):
+    # offbeat: halfway between beats
+    s = int((b + 0.5) * BEAT * SR)
+    oh_one = make_open_hat(0.18)
+    e = s + len(oh_one)
+    if e <= N:
+        oh[s:e] += oh_one
+
+# ── Deep bass: A minor feel, 2-bar pattern ────────────────────────────────────
+# Pattern: A1(55) A1 E2(82) A1  G1(49) A1 F1(44) E2(82)
+bass_notes = [55, 55, 82, 55, 49, 55, 44, 82]  # Hz, 8th note per step
+bass_amps  = [1.0, 0.6, 0.9, 0.55, 0.85, 0.5, 0.8, 0.75]
+
+def make_bass_note(freq, dur, amp):
+    n_b = int(SR * dur)
+    tb = np.linspace(0, dur, n_b, endpoint=False)
+    # slightly detuned sines for warmth
+    tone = (np.sin(2 * np.pi * freq * tb) * 0.65 +
+            np.sin(2 * np.pi * freq * 1.003 * tb) * 0.25 +
+            np.sin(2 * np.pi * freq * 2.0 * tb) * 0.12)
+    env = adsr(n_b, 0.008, 0.12, 0.7, 0.06)
+    return sat(tone * env, 1.4) * amp * 0.52
+
+bass = np.zeros(N)
+pattern_len = len(bass_notes) * EIGH  # 2 bars
+for rep in range(int(DUR / pattern_len) + 2):
+    for i, (freq, amp) in enumerate(zip(bass_notes, bass_amps)):
+        t_start = rep * pattern_len + i * EIGH
+        if t_start >= DUR:
+            break
+        s = int(t_start * SR)
+        note = make_bass_note(freq, EIGH * 0.88, amp)
+        e = s + len(note)
+        if e <= N:
+            bass[s:e] += note
+
+# LP-filter bass to keep it sub/low-mid only
+bass = lpf_fast(bass, 280)
+
+# ── Chord pad: Am – F – C – G, warm detuned sines, 2-bar cycle ───────────────
+# Am: A3(220) C4(262) E4(330)
+# F:  F3(175) A3(220) C4(262)
+# C:  C3(131) E3(165) G3(196)
+# G:  G3(196) B3(247) D4(294)
+chord_seq = [
+    [220, 262, 330],   # Am
+    [175, 220, 262],   # F
+    [131, 165, 196],   # C
+    [196, 247, 294],   # G
+]
+
+def make_pad_chord(freqs, dur, amp=0.11):
+    n_p = int(SR * dur)
+    tp = np.linspace(0, dur, n_p, endpoint=False)
+    sig = np.zeros(n_p)
+    for f in freqs:
+        detune = [1.0, 1.004, 0.997]
+        for d in detune:
+            sig += np.sin(2 * np.pi * f * d * tp) * (amp / len(freqs) / len(detune))
+    env = adsr(n_p, 0.15, 0.1, 0.85, 0.3)
+    return sig * env
+
+pad = np.zeros(N)
+chord_dur = BAR  # each chord lasts one bar
+for rep in range(int(DUR / (chord_dur * 4)) + 2):
+    for i, chord_freqs in enumerate(chord_seq):
+        t_start = rep * chord_dur * 4 + i * chord_dur
+        if t_start >= DUR:
+            break
+        s = int(t_start * SR)
+        p = make_pad_chord(chord_freqs, chord_dur * 1.05, 0.11)
+        e = s + len(p)
+        if e <= N:
+            pad[s:e] += p
+
+# LP filter pad for warmth (Bicep uses warm, not bright pads)
+pad = lpf_fast(pad, 1800)
+
+# ── Arpeggio: A minor pentatonic 16th notes (enters at bar 4 = ~7.4s) ────────
+# A2=110, C3=131, D3=147, E3=165, G3=196 — repeating motif
+arp_notes = [110, 165, 131, 196, 147, 196, 131, 165,
+             110, 165, 147, 220, 165, 196, 147, 165]
+
+def make_arp_note(freq, dur, amp=0.09):
+    n_a = int(SR * dur)
+    ta = np.linspace(0, dur, n_a, endpoint=False)
+    # sawtooth-ish (sum of harmonics)
+    sig = (np.sin(2 * np.pi * freq * ta) * 0.6 +
+           np.sin(2 * np.pi * freq * 2 * ta) * 0.25 +
+           np.sin(2 * np.pi * freq * 3 * ta) * 0.1)
+    env = adsr(n_a, 0.005, 0.08, 0.5, 0.04)
+    return sig * env * amp
+
+arp = np.zeros(N)
+arp_start = BAR * 4        # enters at bar 4
+arp_pattern_dur = len(arp_notes) * SXN
+for rep in range(int((DUR - arp_start) / arp_pattern_dur) + 2):
+    for i, freq in enumerate(arp_notes):
+        t_start = arp_start + rep * arp_pattern_dur + i * SXN
+        if t_start >= DUR:
+            break
+        s = int(t_start * SR)
+        note = make_arp_note(freq, SXN * 0.75)
+        e = s + len(note)
+        if e <= N:
+            arp[s:e] += note
+
+# Filter arp through animated LP (Bicep filter-sweep feel)
+# cutoff sweeps: 400→1400 over bars 4-8, holds, sweeps down at end
+arp_fc = np.interp(T, [arp_start, arp_start+BAR*4, arp_start+BAR*8, DUR-4, DUR],
+                      [400, 1400, 1200, 900, 400])
+# Apply time-varying filter: process in blocks
+arp_filt = np.zeros_like(arp)
+block = 2048
+prev_y = 0.0
+for start in range(0, N, block):
+    end = min(start + block, N)
+    fc_block = float(arp_fc[start])
+    alpha = 2 * np.pi * fc_block / SR
+    alpha = min(alpha, 0.999)
+    b, a = alpha, 1 - alpha
+    for i in range(start, end):
+        prev_y = b * arp[i] + a * prev_y
+        arp_filt[i] = prev_y
+arp = arp_filt
+
+# ── Master filter sweep (LPF): mimics Bicep's subtle freq rolling ─────────────
+# The whole mix is gently filtered — opens up over first 16 bars, stays open,
+# then softly closes in the last 4 bars.
+master_fc = np.interp(T,
+    [0,  BAR*2, BAR*8, BAR*16, DUR-6, DUR],
+    [600, 1200, 3500, 8000,   8000,  4000])
+
+def apply_lp_sweep(sig, fc_array):
+    out = np.zeros_like(sig)
+    prev = 0.0
+    block = 1024
+    for start in range(0, len(sig), block):
+        end = min(start + block, len(sig))
+        fc = float(fc_array[start])
+        alpha = min(2 * np.pi * fc / SR, 0.9999)
+        for i in range(start, end):
+            prev = alpha * sig[i] + (1 - alpha) * prev
+            out[i] = prev
+    return out
+
+# ── Mix ───────────────────────────────────────────────────────────────────────
+mix = (kick * 1.0 +
+       clap * 0.9 +
+       hat  * 0.85 +
+       oh   * 0.75 +
+       bass * 1.1 +
+       pad  * 1.0 +
+       arp  * 0.95)
+
+mix = apply_lp_sweep(mix, master_fc)
+
+# Master soft-clip limiter
+mix = sat(mix, 1.5)
+
+# Volume envelope: fade in 1.5s, fade out 3s
+vol = np.minimum(T / 1.5, 1.0) * np.minimum((DUR - T) / 3.0, 1.0)
+mix *= vol
+
+# ── Stereo width: comb-filter stereo spread ───────────────────────────────────
+delay_ms = 14
+delay_smp = int(SR * delay_ms / 1000)
+L = mix * 0.82 + np.concatenate([np.zeros(delay_smp), mix[:-delay_smp]]) * 0.18
+R = mix * 0.82 - np.concatenate([np.zeros(delay_smp * 2), mix[:-delay_smp * 2]]) * 0.12
+L = L[:N]; R = R[:N]
+
+write_stereo(f"{OUT}/bgm.wav", L, R)
+print(f"  → {OUT}/bgm.wav  ({DUR}s, {BPM}BPM Bicep-style)")
+
+# ─── SFX: Impact ──────────────────────────────────────────────────────────────
+print("Generating SFX ...")
+
 dur_i = 0.6
 ti = t(dur_i)
-# Sub boom
 boom_env = np.exp(-ti * 8)
-boom = np.sin(2*np.pi * np.cumsum(np.linspace(200, 40, len(ti)) / SR)) * boom_env * 0.7
-# Transient click
-click_env = np.exp(-ti * 60)
-click = np.sin(2*np.pi * 800 * ti) * click_env * 0.5
-# Noise burst
-rng2 = np.random.default_rng(12)
-noise_env = np.exp(-ti * 25)
-noise = rng2.normal(0, 1, len(ti)) * noise_env * 0.2
-impact = boom + click + noise
-write_wav(f"{OUT}/sfx-impact.wav", impact)
-print(f"  → {OUT}/sfx-impact.wav")
+boom = np.sin(2 * np.pi * np.cumsum(np.linspace(200, 38, len(ti)) / SR)) * boom_env * 0.7
+click_env = np.exp(-ti * 65)
+click = np.sin(2 * np.pi * 900 * ti) * click_env * 0.45
+noise_i = rng.normal(0, 1, len(ti)) * np.exp(-ti * 28) * 0.18
+impact = sat(boom + click + noise_i, 1.4)
+write_mono(f"{OUT}/sfx-impact.wav", impact)
 
-# ─── SFX: Whoosh (transitions) ────────────────────────────────────────────────
-print("Generating sfx-whoosh.wav ...")
-dur_w = 0.35
+dur_w = 0.32
 tw = t(dur_w)
-rng3 = np.random.default_rng(33)
-noise_w = rng3.normal(0, 1, len(tw))
-# Band-pass sweep: center freq 200→3000
-center = np.linspace(200, 3000, len(tw))
-# Simple FIR approximation using convolution in chunks is too slow; use modulated sine
-sweep = np.sin(2*np.pi * np.cumsum(center / SR))
+noise_w = rng.normal(0, 1, len(tw))
+center = np.linspace(180, 3400, len(tw))
+sweep_w = np.sin(2 * np.pi * np.cumsum(center / SR))
 env_w = np.sin(np.pi * tw / dur_w) ** 0.5
-whoosh = (noise_w * 0.4 + sweep * 0.35) * env_w * 0.6
-write_wav(f"{OUT}/sfx-whoosh.wav", whoosh)
-print(f"  → {OUT}/sfx-whoosh.wav")
+whoosh = (noise_w * 0.38 + sweep_w * 0.32) * env_w * 0.58
+write_mono(f"{OUT}/sfx-whoosh.wav", whoosh)
 
-# ─── SFX: Tick (grid build, chart reveal) ─────────────────────────────────────
-print("Generating sfx-tick.wav ...")
 dur_t = 0.06
 tt = t(dur_t)
-tick_env = np.exp(-tt * 80)
-tick = np.sin(2*np.pi * 1800 * tt) * tick_env * 0.35
-write_wav(f"{OUT}/sfx-tick.wav", tick)
-print(f"  → {OUT}/sfx-tick.wav")
+tick = np.sin(2 * np.pi * 1800 * tt) * np.exp(-tt * 80) * 0.35
+write_mono(f"{OUT}/sfx-tick.wav", tick)
 
-# ─── SFX: Matrix flash burst (S08) ────────────────────────────────────────────
-print("Generating sfx-matrix.wav ...")
 dur_m = 8.0
 tm = t(dur_m)
-rng4 = np.random.default_rng(77)
-# Rapid electronic stutter
 matrix = np.zeros(len(tm))
-# Clicks at 8th-note intervals, pitch rising then falling
 click_positions = np.arange(0, dur_m, 0.08)
 click_freqs = np.interp(click_positions, [0, 4, 8], [600, 2400, 300])
-click_n = int(SR * 0.04)
-click_env_m = np.exp(-np.linspace(0, 20, click_n))
+click_n_m = int(SR * 0.04)
+click_env_m = np.exp(-np.linspace(0, 20, click_n_m))
 for i, (cp, cf) in enumerate(zip(click_positions, click_freqs)):
-    s = int(cp * SR)
-    e = s + click_n
+    s = int(cp * SR); e = s + click_n_m
     if e <= len(tm):
-        tc = np.linspace(0, 0.04, click_n, endpoint=False)
-        c = np.sin(2*np.pi * cf * tc) * click_env_m
-        # alternate channels for interest
-        matrix[s:e] += c * (0.12 if i % 2 == 0 else 0.09)
-# Noise underlayer
-noise_m = rng4.normal(0, 1, len(tm))
+        tc = np.linspace(0, 0.04, click_n_m, endpoint=False)
+        matrix[s:e] += np.sin(2 * np.pi * cf * tc) * click_env_m * (0.12 if i % 2 == 0 else 0.09)
 noise_env_m = np.interp(tm, [0, 2, 5, 6.5, 8], [0, 0.06, 0.1, 0.06, 0])
-matrix += noise_m * noise_env_m
-# Strobe collapse at end (6.5-7.5s): rapid noise bursts
+matrix += rng.normal(0, 1, len(tm)) * noise_env_m
 for i in range(30):
-    s = int((6.5 + i * 0.033) * SR)
-    burst_n = int(0.02 * SR)
-    e = s + burst_n
+    s = int((6.5 + i * 0.033) * SR); bn = int(0.02 * SR); e = s + bn
     if e <= len(tm):
-        matrix[s:e] += rng4.normal(0, 1, burst_n) * 0.18 * (1 - i/30)
-write_wav(f"{OUT}/sfx-matrix.wav", matrix)
-print(f"  → {OUT}/sfx-matrix.wav")
+        matrix[s:e] += rng.normal(0, 1, bn) * 0.18 * (1 - i / 30)
+write_mono(f"{OUT}/sfx-matrix.wav", matrix)
 
-# ─── SFX: Collapse + logo reveal (S09) ─────────────────────────────────────────
-print("Generating sfx-collapse.wav ...")
 dur_c = 7.0
-tc = t(dur_c)
-rng5 = np.random.default_rng(99)
-col = np.zeros(len(tc))
-# Phase 1 (0-2.5s): fragments appear — quick pops
+tc2 = t(dur_c)
+col = np.zeros(len(tc2))
 for i in range(8):
-    s = int((0.1 + i*0.1) * SR)
-    p_n = int(0.05 * SR)
-    tp = np.linspace(0, 0.05, p_n, endpoint=False)
-    penv = np.exp(-tp * 40)
-    col[s:s+p_n] += np.sin(2*np.pi * (400 + i*100) * tp) * penv * 0.15
-# Phase 2 (1.8-3.2s): converge whoosh — descending pitch sweep
-conv_s = int(1.8 * SR)
-conv_n = int(1.4 * SR)
+    s = int((0.1 + i * 0.1) * SR); p_n = int(0.05 * SR)
+    tp2 = np.linspace(0, 0.05, p_n, endpoint=False)
+    col[s:s+p_n] += np.sin(2 * np.pi * (400 + i * 100) * tp2) * np.exp(-tp2 * 40) * 0.15
+conv_s = int(1.8 * SR); conv_n = int(1.4 * SR)
 conv_t = np.linspace(0, 1.4, conv_n, endpoint=False)
-conv_freq = np.linspace(1200, 60, conv_n)
-conv_env = np.sin(np.pi * conv_t / 1.4) ** 0.4
-conv_noise = rng5.normal(0, 1, conv_n)
-conv_sweep = np.sin(2*np.pi * np.cumsum(conv_freq / SR))
-col[conv_s:conv_s+conv_n] += (conv_sweep * 0.3 + conv_noise * 0.15) * conv_env
-# Phase 3 (3.0s): logo impact — massive boom
-logo_s = int(3.0 * SR)
-logo_n = int(1.5 * SR)
-logo_t = np.linspace(0, 1.5, logo_n, endpoint=False)
-logo_env = np.exp(-logo_t * 4)
-logo_boom = np.sin(2*np.pi * np.cumsum(np.linspace(300, 50, logo_n) / SR)) * logo_env * 0.65
-logo_air = rng5.normal(0, 1, logo_n) * np.exp(-logo_t * 8) * 0.15
-col[logo_s:logo_s+logo_n] += logo_boom + logo_air
-# Phase 4 (3.6-5s): acid tone ring — C6 sine resonance
-ring_s = int(3.65 * SR)
-ring_n = int(1.4 * SR)
-ring_t = np.linspace(0, 1.4, ring_n, endpoint=False)
-ring_env = np.exp(-ring_t * 2.5)
-col[ring_s:ring_s+ring_n] += np.sin(2*np.pi * 1047 * ring_t) * ring_env * 0.18
-col[ring_s:ring_s+ring_n] += np.sin(2*np.pi * 523 * ring_t) * ring_env * 0.12
-write_wav(f"{OUT}/sfx-collapse.wav", col)
-print(f"  → {OUT}/sfx-collapse.wav")
+conv_env2 = np.sin(np.pi * conv_t / 1.4) ** 0.4
+col[conv_s:conv_s+conv_n] += (
+    np.sin(2*np.pi*np.cumsum(np.linspace(1200, 60, conv_n)/SR)) * 0.3 +
+    rng.normal(0, 1, conv_n) * 0.15) * conv_env2
+logo_s = int(3.0 * SR); logo_n = int(1.5 * SR)
+logo_t2 = np.linspace(0, 1.5, logo_n, endpoint=False)
+col[logo_s:logo_s+logo_n] += (
+    np.sin(2*np.pi*np.cumsum(np.linspace(300, 50, logo_n)/SR)) * np.exp(-logo_t2*4) * 0.65 +
+    rng.normal(0, 1, logo_n) * np.exp(-logo_t2*8) * 0.15)
+ring_s = int(3.65 * SR); ring_n = int(1.4 * SR)
+ring_t2 = np.linspace(0, 1.4, ring_n, endpoint=False)
+ring_env2 = np.exp(-ring_t2 * 2.5)
+col[ring_s:ring_s+ring_n] += (np.sin(2*np.pi*1047*ring_t2)*0.18 + np.sin(2*np.pi*523*ring_t2)*0.12) * ring_env2
+write_mono(f"{OUT}/sfx-collapse.wav", col)
 
-# ─── SFX: Acid sweep (acid-green wipe transitions) ────────────────────────────
-print("Generating sfx-acid-sweep.wav ...")
 dur_a = 0.25
-ta = t(dur_a)
-rng6 = np.random.default_rng(55)
-acid_freq = np.linspace(80, 3200, len(ta))
-acid_sweep = np.sin(2*np.pi * np.cumsum(acid_freq / SR))
-acid_noise = rng6.normal(0, 1, len(ta))
-acid_env = np.sin(np.pi * ta / dur_a) ** 0.3
-acid = (acid_sweep * 0.4 + acid_noise * 0.25) * acid_env * 0.55
-write_wav(f"{OUT}/sfx-acid-sweep.wav", acid)
-print(f"  → {OUT}/sfx-acid-sweep.wav")
+ta2 = t(dur_a)
+acid_freq = np.linspace(80, 3200, len(ta2))
+acid = (np.sin(2*np.pi*np.cumsum(acid_freq/SR))*0.4 + rng.normal(0,1,len(ta2))*0.25) * \
+       np.sin(np.pi*ta2/dur_a)**0.3 * 0.55
+write_mono(f"{OUT}/sfx-acid-sweep.wav", acid)
 
-# ─── SFX: Type blip (S03 word reveal) ─────────────────────────────────────────
-print("Generating sfx-type.wav ...")
 dur_ty = 0.12
 tty = t(dur_ty)
-type_env = np.exp(-tty * 35)
-tyblip = np.sin(2*np.pi * 1200 * tty) * type_env * 0.22
-write_wav(f"{OUT}/sfx-type.wav", tyblip)
-print(f"  → {OUT}/sfx-type.wav")
+write_mono(f"{OUT}/sfx-type.wav", np.sin(2*np.pi*1200*tty) * np.exp(-tty*35) * 0.22)
 
 print("\nAll audio assets generated.")
+print(f"BGM: {BPM} BPM, {DUR}s — kick/clap/hat/bass/pad/arp, master LPF sweep")
