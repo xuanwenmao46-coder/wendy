@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=1920, height=1080" />
+    <meta name="viewport" content="width=1920, height=720" />
     <script src="./node_modules/gsap/dist/gsap.min.js"></script>
     <style>
       * {
@@ -11,236 +11,489 @@
         box-sizing: border-box;
       }
       html, body {
-        margin: 0;
         width: 1920px;
-        height: 1080px;
+        height: 720px;
         overflow: hidden;
-        background: #0d0d0d;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #ffffff;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       }
 
-      .bg-gradient {
+      /* Paper texture overlay */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='1' height='1' fill='%23000' opacity='0.03'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 9999;
+      }
+
+      .scene-bg {
         position: absolute;
         inset: 0;
-        background: radial-gradient(ellipse 80% 60% at 50% 50%, #1a1008 0%, #0d0d0d 100%);
+        background: #ffffff;
       }
 
-      .glow-orb {
+      /* Fade-to-black overlay for ch06 */
+      #fade-overlay {
         position: absolute;
-        border-radius: 50%;
-        filter: blur(120px);
+        inset: 0;
+        background: #000000;
+        opacity: 0;
+        z-index: 500;
+        pointer-events: none;
+      }
+
+      /* ========== CHAPTER 01 ========== */
+      .ch01-flash {
+        position: absolute;
+        font-weight: 900;
+        color: #000000;
+        text-transform: uppercase;
+        letter-spacing: -0.02em;
+        line-height: 1;
         opacity: 0;
       }
+      #f-screen-time    { top: 60px;    left: 80px;   font-size: 120px; }
+      #f-digital-age    { top: 60px;    right: 80px;  font-size: 80px;  text-align: right; }
+      #f-social-media   { bottom: 80px; left: 80px;   font-size: 60px; }
+      #f-attn-crisis    { top: 50%;     left: 50%;    transform: translate(-50%,-50%); font-size: 100px; text-align: center; }
+      #f-mental-fatigue { bottom: 80px; right: 80px;  font-size: 60px;  text-align: right; }
 
-      .orb-1 {
-        width: 700px;
-        height: 700px;
-        background: radial-gradient(circle, #d97757 0%, transparent 70%);
-        top: -100px;
-        left: 50%;
-        transform: translateX(-50%);
-      }
-
-      .orb-2 {
-        width: 500px;
-        height: 500px;
-        background: radial-gradient(circle, #7c3aed 0%, transparent 70%);
-        bottom: -80px;
-        right: 200px;
-      }
-
-      .logo-container {
+      #ch01-headline {
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
         text-align: center;
+        opacity: 0;
+        width: 1800px;
+      }
+      #ch01-headline .main-title {
+        font-size: 110px;
+        font-weight: 900;
+        color: #000000;
+        text-transform: uppercase;
+        letter-spacing: -0.04em;
+        line-height: 1.0;
+      }
+      #ch01-headline .sub-red {
+        font-size: 18px;
+        color: #CC0000;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-top: 18px;
+        font-weight: 500;
+      }
+
+      #ch01-attn-tag {
+        position: absolute;
+        bottom: 24px;
+        right: 40px;
+        font-size: 14px;
+        font-weight: 700;
+        color: #000000;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        border: 1px solid #000000;
+        padding: 4px 10px;
         opacity: 0;
       }
 
-      .logo-icon {
-        width: 120px;
-        height: 120px;
-        margin: 0 auto 32px;
-      }
-
-      .logo-name {
-        font-size: 120px;
+      /* ========== CHAPTER 02 ========== */
+      #ch02-heading-label {
+        position: absolute;
+        top: 30px;
+        left: 60px;
+        font-size: 18px;
         font-weight: 700;
-        color: #f5f5f5;
-        letter-spacing: -4px;
-        line-height: 1;
-        text-shadow: 0 0 40px rgba(255,255,255,0.3);
+        color: #000000;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        opacity: 0;
       }
 
-      .logo-by {
-        font-size: 28px;
-        color: #888;
-        letter-spacing: 6px;
+      #ch02-counter {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        text-align: center;
+        opacity: 0;
+      }
+      #ch02-counter .big-num {
+        font-size: 200px;
+        font-weight: 900;
+        color: #000000;
+        letter-spacing: -0.06em;
+        line-height: 1;
+      }
+      #ch02-counter .caption {
+        font-size: 24px;
+        color: #666666;
+        letter-spacing: 0.1em;
         text-transform: uppercase;
         margin-top: 16px;
-        font-weight: 400;
       }
 
-      .tagline {
+      #ch02-grid-wrap {
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
         opacity: 0;
-        width: 1400px;
       }
-
-      .tagline-text {
-        font-size: 80px;
-        font-weight: 600;
-        color: #ffffff;
-        letter-spacing: -2px;
-        line-height: 1.1;
+      #ch02-grid {
+        display: grid;
+        grid-template-columns: repeat(13, 46px);
+        grid-template-rows: repeat(10, 46px);
+        gap: 4px;
       }
-
-      .tagline-text .highlight {
-        color: #d97757;
-      }
-
-      .feature-container {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
+      .sq {
+        width: 46px;
+        height: 46px;
+        background: #000000;
         opacity: 0;
-        width: 1600px;
       }
-
-      .feature-label {
-        font-size: 22px;
-        color: #d97757;
-        letter-spacing: 8px;
-        text-transform: uppercase;
-        font-weight: 500;
-        margin-bottom: 24px;
-      }
-
-      .feature-text {
-        font-size: 88px;
-        font-weight: 700;
-        color: #ffffff;
-        letter-spacing: -3px;
-        line-height: 1.05;
-      }
-
-      .features-grid {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        display: flex;
-        gap: 48px;
-        opacity: 0;
-        width: 1600px;
-        justify-content: center;
-      }
-
-      .feature-card {
-        background: rgba(255,255,255,0.05);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 24px;
-        padding: 48px 56px;
-        flex: 1;
-        text-align: center;
-        backdrop-filter: blur(10px);
-      }
-
-      .feature-card-icon {
-        font-size: 56px;
-        margin-bottom: 24px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      .feature-card-icon svg {
-        width: 64px;
-        height: 64px;
-      }
-
-      .feature-card-title {
-        font-size: 40px;
-        font-weight: 600;
-        color: #ffffff;
-        margin-bottom: 16px;
-        letter-spacing: -1px;
-      }
-
-      .feature-card-desc {
-        font-size: 26px;
-        color: #888;
-        line-height: 1.5;
-      }
-
-      .cta-container {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-        opacity: 0;
-        width: 1400px;
-      }
-
-      .cta-eyebrow {
-        font-size: 24px;
-        color: #d97757;
-        letter-spacing: 8px;
-        text-transform: uppercase;
-        font-weight: 500;
-        margin-bottom: 32px;
-      }
-
-      .cta-headline {
-        font-size: 96px;
-        font-weight: 700;
-        color: #ffffff;
-        letter-spacing: -4px;
-        line-height: 1;
-        margin-bottom: 40px;
-      }
-
-      .cta-sub {
-        font-size: 36px;
-        color: #888;
-        line-height: 1.5;
-      }
-
-      .divider-line {
+      #ch02-grid-caption {
         position: absolute;
         bottom: 60px;
         left: 50%;
         transform: translateX(-50%);
-        width: 0;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, #d97757, transparent);
+        font-size: 22px;
+        color: #666666;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        opacity: 0;
+        text-align: center;
+      }
+      #ch02-a1 { position: absolute; top: 160px; left: 340px; font-size: 12px; font-weight: 700; color: #CC0000; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0; }
+      #ch02-a2 { position: absolute; top: 400px; right: 260px; font-size: 12px; font-weight: 700; color: #CC0000; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0; }
+      #ch02-a3 { position: absolute; bottom: 100px; left: 500px; font-size: 12px; font-weight: 700; color: #CC0000; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0; }
+
+      /* ========== CHAPTER 03 ========== */
+      #ch03-portrait {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 320px;
+        height: 400px;
+        background: #e0e0e0;
+        opacity: 0;
+      }
+      #ch03-portrait::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(to bottom right, transparent calc(50% - 0.5px), #aaaaaa calc(50% - 0.5px), #aaaaaa calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+          linear-gradient(to top right, transparent calc(50% - 0.5px), #aaaaaa calc(50% - 0.5px), #aaaaaa calc(50% + 0.5px), transparent calc(50% + 0.5px));
       }
 
-      .anthropic-badge {
+      .ch03-label {
         position: absolute;
-        bottom: 80px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 22px;
-        color: #aaa;
-        letter-spacing: 4px;
+        font-size: 15px;
+        font-weight: 700;
+        color: #000000;
+        letter-spacing: 0.14em;
         text-transform: uppercase;
         opacity: 0;
       }
+      #ch03-l-work          { top: 160px; left: 680px; }
+      #ch03-l-entertainment { top: 160px; right: 640px; }
+      #ch03-l-shopping      { bottom: 200px; left: 680px; }
+      #ch03-l-social        { bottom: 200px; right: 660px; }
 
-      .particle {
+      #ch03-annotation {
         position: absolute;
-        width: 4px;
-        height: 4px;
+        top: 180px;
+        left: 50%;
+        opacity: 0;
+      }
+      #ch03-annotation .ann-circle {
+        width: 160px;
+        height: 160px;
         border-radius: 50%;
-        background: #d97757;
+        border: 3px solid #CC0000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 700;
+        color: #CC0000;
+        letter-spacing: 0.08em;
+        line-height: 1.3;
+        text-transform: uppercase;
+      }
+
+      #ch03-time-label {
+        position: absolute;
+        top: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 28px;
+        font-weight: 700;
+        color: #000000;
+        letter-spacing: 0.1em;
+        opacity: 0;
+        white-space: nowrap;
+      }
+
+      #ch03-caption {
+        position: absolute;
+        bottom: 60px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 22px;
+        color: #666666;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        opacity: 0;
+        text-align: center;
+        white-space: nowrap;
+      }
+
+      .ch03-attn {
+        position: absolute;
+        font-size: 11px;
+        font-weight: 700;
+        color: #CC0000;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        opacity: 0;
+        border-bottom: 1px solid #CC0000;
+        padding-bottom: 2px;
+      }
+      #ch03-a1 { top: 80px;      left: 120px; }
+      #ch03-a2 { top: 260px;     left: 80px;  }
+      #ch03-a3 { top: 100px;     right: 100px;}
+      #ch03-a4 { bottom: 140px;  right: 160px;}
+
+      /* ========== CHAPTER 04 ========== */
+      #ch04-report-title {
+        position: absolute;
+        top: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 36px;
+        font-weight: 900;
+        color: #CC0000;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        opacity: 0;
+        text-align: center;
+        white-space: nowrap;
+      }
+
+      #ch04-donut-wrap {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        opacity: 0;
+      }
+
+      .ch04-seg-label {
+        position: absolute;
+        font-size: 14px;
+        font-weight: 700;
+        color: #000000;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        opacity: 0;
+        line-height: 1.4;
+      }
+      #ch04-sl1 { top: 60px;    left: -220px; text-align: right; }
+      #ch04-sl2 { top: 60px;    right: -220px; }
+      #ch04-sl3 { bottom: 60px; left: -220px; text-align: right; }
+      #ch04-sl4 { bottom: 60px; right: -220px; }
+
+      #ch04-bars-wrap {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 900px;
+        opacity: 0;
+      }
+      .bar-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 28px;
+      }
+      .bar-label-left {
+        width: 200px;
+        font-size: 15px;
+        font-weight: 700;
+        color: #000000;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        text-align: right;
+        padding-right: 20px;
+      }
+      .bar-track {
+        flex: 1;
+        height: 40px;
+        background: #eeeeee;
+        position: relative;
+        overflow: hidden;
+      }
+      .bar-fill {
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        width: 0;
+      }
+      .bar-pct {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 16px;
+        font-weight: 900;
+        color: #ffffff;
+      }
+      #bar1 .bar-fill { background: #000000; }
+      #bar2 .bar-fill { background: #333333; }
+      #bar3 .bar-fill { background: #666666; }
+      #bar4 .bar-fill { background: #999999; }
+
+      #ch04-caption {
+        position: absolute;
+        bottom: 36px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 22px;
+        color: #666666;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        opacity: 0;
+        text-align: center;
+        white-space: nowrap;
+      }
+
+      #ch04-a1 { position: absolute; top: 100px;  left: 80px;  font-size: 11px; font-weight: 700; color: #CC0000; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0; }
+      #ch04-a2 { position: absolute; top: 100px;  right: 80px; font-size: 11px; font-weight: 700; color: #CC0000; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0; }
+      #ch04-a3 { position: absolute; bottom: 120px; left: 80px; font-size: 11px; font-weight: 700; color: #CC0000; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0; }
+      #ch04-a4 { position: absolute; bottom: 120px; right: 80px; font-size: 11px; font-weight: 700; color: #CC0000; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0; }
+      #ch04-a5 { position: absolute; top: 50%; left: 60px; font-size: 11px; font-weight: 700; color: #CC0000; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0; }
+
+      /* ========== CHAPTER 05 ========== */
+      #ch05-bg-frags {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        opacity: 0;
+      }
+      .frag {
+        position: absolute;
+        font-size: 13px;
+        font-weight: 700;
+        color: #cccccc;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        line-height: 1.6;
+      }
+
+      #ch05-nine {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        font-size: 300px;
+        font-weight: 900;
+        color: #000000;
+        letter-spacing: -0.05em;
+        line-height: 1;
+        opacity: 0;
+      }
+      #ch05-years {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        font-size: 90px;
+        font-weight: 900;
+        color: #000000;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        opacity: 0;
+      }
+      #ch05-underline {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 6px;
+        background: #CC0000;
+        opacity: 1;
+      }
+      #ch05-caption {
+        position: absolute;
+        bottom: 60px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 20px;
+        color: #666666;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        opacity: 0;
+        text-align: center;
+        white-space: nowrap;
+      }
+      #ch05-a1 { position: absolute; font-size: 14px; top: 60px;    left: 80px;   font-weight: 900; color: #000000; text-transform: uppercase; letter-spacing: -0.02em; opacity: 0; }
+      #ch05-a2 { position: absolute; font-size: 22px; top: 160px;   right: 100px; font-weight: 900; color: #000000; text-transform: uppercase; letter-spacing: -0.02em; opacity: 0; }
+      #ch05-a3 { position: absolute; font-size: 10px; bottom: 200px; left: 120px; font-weight: 900; color: #000000; text-transform: uppercase; letter-spacing: -0.02em; opacity: 0; }
+      #ch05-a4 { position: absolute; font-size: 30px; bottom: 100px; right: 80px; font-weight: 900; color: #000000; text-transform: uppercase; letter-spacing: -0.02em; opacity: 0; }
+      #ch05-a5 { position: absolute; font-size: 16px; top: 280px;   left: 60px;   font-weight: 900; color: #000000; text-transform: uppercase; letter-spacing: -0.02em; opacity: 0; }
+      #ch05-a6 { position: absolute; font-size: 12px; top: 80px;    right: 300px; font-weight: 900; color: #000000; text-transform: uppercase; letter-spacing: -0.02em; opacity: 0; }
+      #ch05-a7 { position: absolute; font-size: 20px; bottom: 220px; left: 320px; font-weight: 900; color: #000000; text-transform: uppercase; letter-spacing: -0.02em; opacity: 0; }
+      #ch05-a8 { position: absolute; font-size: 11px; top: 380px;   right: 60px;  font-weight: 900; color: #000000; text-transform: uppercase; letter-spacing: -0.02em; opacity: 0; }
+
+      /* ========== CHAPTER 06 ========== */
+      #ch06-attn-wall {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        opacity: 0;
+      }
+      .wall-attn {
+        position: absolute;
+        font-weight: 900;
+        color: #000000;
+        text-transform: uppercase;
+        letter-spacing: -0.03em;
+        opacity: 0;
+      }
+
+      #ch06-center-attn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        font-size: 120px;
+        font-weight: 900;
+        color: #000000;
+        text-transform: uppercase;
+        letter-spacing: -0.04em;
+        opacity: 0;
+        white-space: nowrap;
+      }
+
+      #ch06-final {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        text-align: center;
+        opacity: 0;
+        z-index: 600;
+      }
+      #ch06-final .line1,
+      #ch06-final .line2 {
+        font-size: 72px;
+        font-weight: 700;
+        color: #ffffff;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+      #ch06-final .line3 {
+        font-size: 40px;
+        font-weight: 400;
+        color: #ffffff;
+        letter-spacing: 0.04em;
+        margin-top: 32px;
         opacity: 0;
       }
     </style>
@@ -248,154 +501,462 @@
   <body>
     <div
       id="root"
-      data-composition-id="main"
+      data-composition-id="root"
       data-start="0"
-      data-duration="20"
+      data-duration="65"
       data-width="1920"
-      data-height="1080"
+      data-height="720"
     >
-      <!-- Background -->
-      <div class="bg-gradient"></div>
-      <div class="glow-orb orb-1" id="orb1"></div>
-      <div class="glow-orb orb-2" id="orb2"></div>
+      <!-- White background -->
+      <div class="scene-bg"></div>
 
-      <!-- Particles -->
-      <div class="particle" id="p1" style="top:20%;left:10%"></div>
-      <div class="particle" id="p2" style="top:70%;left:15%"></div>
-      <div class="particle" id="p3" style="top:30%;right:12%"></div>
-      <div class="particle" id="p4" style="top:80%;right:20%"></div>
-      <div class="particle" id="p5" style="top:50%;left:5%"></div>
-      <div class="particle" id="p6" style="top:15%;right:8%"></div>
+      <!-- Fade-to-black overlay -->
+      <div id="fade-overlay" class="clip" data-start="54" data-duration="11" data-track-index="500"></div>
 
-      <!-- Scene 1: Claude Logo (0-4s) -->
-      <div id="scene-logo" class="clip logo-container" data-start="0" data-duration="4" data-track-index="1">
-        <svg class="logo-icon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="40" cy="40" r="38" fill="#d97757" opacity="0.15" stroke="#d97757" stroke-width="1.5"/>
-          <path d="M27 28 C27 22 33 18 40 18 C47 18 53 22 53 28 L53 36 C53 40 50 43 46 44 L50 58 C50 60 48 62 46 62 C44 62 42 60 42 58 L40 46 L38 58 C38 60 36 62 34 62 C32 62 30 60 30 58 L34 44 C30 43 27 40 27 36 Z" fill="#d97757"/>
-          <circle cx="35" cy="30" r="3" fill="#fff" opacity="0.9"/>
-          <circle cx="45" cy="30" r="3" fill="#fff" opacity="0.9"/>
+      <!-- ===================== CHAPTER 01 (0–8s) ===================== -->
+      <!-- Each flash word on its own unique track -->
+      <div id="f-screen-time"    class="clip ch01-flash" data-start="0" data-duration="8" data-track-index="1">SCREEN TIME</div>
+      <div id="f-digital-age"    class="clip ch01-flash" data-start="0" data-duration="8" data-track-index="2">DIGITAL AGE</div>
+      <div id="f-social-media"   class="clip ch01-flash" data-start="0" data-duration="8" data-track-index="3">SOCIAL MEDIA</div>
+      <div id="f-attn-crisis"    class="clip ch01-flash" data-start="0" data-duration="8" data-track-index="4">ATTENTION CRISIS</div>
+      <div id="f-mental-fatigue" class="clip ch01-flash" data-start="0" data-duration="8" data-track-index="5">MENTAL FATIGUE</div>
+
+      <div id="ch01-headline" class="clip" data-start="3" data-duration="5" data-track-index="6">
+        <div class="main-title">YOUR PHONE<br>STOLE HOW MUCH<br>OF YOUR LIFE?</div>
+        <div class="sub-red">An Editorial Motion Graphics Story</div>
+      </div>
+
+      <div id="ch01-attn-tag" class="clip" data-start="5" data-duration="3" data-track-index="7">ATTENTION</div>
+
+      <!-- ===================== CHAPTER 02 (8–18s) ===================== -->
+      <div id="ch02-heading-label" class="clip" data-start="8" data-duration="10" data-track-index="10"></div>
+
+      <div id="ch02-counter" class="clip" data-start="8" data-duration="6" data-track-index="11">
+        <div class="big-num" id="ch02-num">100</div>
+        <div class="caption" id="ch02-cap">Average daily phone checks</div>
+      </div>
+
+      <div id="ch02-grid-wrap" class="clip" data-start="14" data-duration="4" data-track-index="12">
+        <div id="ch02-grid"></div>
+      </div>
+
+      <div id="ch02-grid-caption" class="clip" data-start="15" data-duration="3" data-track-index="13">Every touch felt harmless.</div>
+
+      <div id="ch02-a1" class="clip" data-start="15"   data-duration="3"   data-track-index="14">ATTENTION</div>
+      <div id="ch02-a2" class="clip" data-start="15.3" data-duration="2.7" data-track-index="15">ATTENTION</div>
+      <div id="ch02-a3" class="clip" data-start="15.6" data-duration="2.4" data-track-index="16">ATTENTION</div>
+
+      <!-- ===================== CHAPTER 03 (18–30s) ===================== -->
+      <div id="ch03-portrait" class="clip" data-start="18" data-duration="12" data-track-index="20"></div>
+
+      <div id="ch03-l-work"          class="clip ch03-label" data-start="19.5" data-duration="10.5" data-track-index="21">WORK</div>
+      <div id="ch03-l-entertainment" class="clip ch03-label" data-start="20.2" data-duration="9.8"  data-track-index="22">ENTERTAINMENT</div>
+      <div id="ch03-l-shopping"      class="clip ch03-label" data-start="20.9" data-duration="9.1"  data-track-index="23">SHOPPING</div>
+      <div id="ch03-l-social"        class="clip ch03-label" data-start="21.6" data-duration="8.4"  data-track-index="24">SOCIAL</div>
+
+      <div id="ch03-annotation" class="clip" data-start="22.5" data-duration="7.5" data-track-index="25">
+        <div class="ann-circle">2 HRS<br>37 MIN</div>
+      </div>
+
+      <div id="ch03-time-label" class="clip" data-start="23.5" data-duration="6.5" data-track-index="26">9AM → 11PM</div>
+
+      <div id="ch03-caption" class="clip" data-start="24" data-duration="6" data-track-index="27">Five minutes became two hours.</div>
+
+      <div id="ch03-a1" class="clip ch03-attn" data-start="20"   data-duration="10" data-track-index="28">ATTENTION</div>
+      <div id="ch03-a2" class="clip ch03-attn" data-start="21"   data-duration="9"  data-track-index="29">ATTENTION</div>
+      <div id="ch03-a3" class="clip ch03-attn" data-start="22"   data-duration="8"  data-track-index="30">ATTENTION</div>
+      <div id="ch03-a4" class="clip ch03-attn" data-start="23"   data-duration="7"  data-track-index="31">ATTENTION</div>
+
+      <!-- ===================== CHAPTER 04 (30–42s) ===================== -->
+      <div id="ch04-report-title" class="clip" data-start="30" data-duration="12" data-track-index="40"></div>
+
+      <div id="ch04-donut-wrap" class="clip" data-start="30" data-duration="7" data-track-index="41">
+        <svg id="ch04-donut-svg" width="340" height="340" viewBox="0 0 340 340">
+          <circle cx="170" cy="170" r="130" fill="none" stroke="#eeeeee" stroke-width="50"/>
+          <!-- Entertainment 48% = 392.07 -->
+          <circle id="donut-seg1" cx="170" cy="170" r="130" fill="none" stroke="#000000" stroke-width="50"
+            stroke-dasharray="0 816.81" stroke-dashoffset="0" transform="rotate(-90 170 170)"/>
+          <!-- Social Media 23% = 187.87 — offset by seg1 -->
+          <circle id="donut-seg2" cx="170" cy="170" r="130" fill="none" stroke="#333333" stroke-width="50"
+            stroke-dasharray="0 816.81" stroke-dashoffset="-392.07" transform="rotate(-90 170 170)"/>
+          <!-- Shopping 16% = 130.69 -->
+          <circle id="donut-seg3" cx="170" cy="170" r="130" fill="none" stroke="#666666" stroke-width="50"
+            stroke-dasharray="0 816.81" stroke-dashoffset="-579.94" transform="rotate(-90 170 170)"/>
+          <!-- Others 13% = 106.18 -->
+          <circle id="donut-seg4" cx="170" cy="170" r="130" fill="none" stroke="#999999" stroke-width="50"
+            stroke-dasharray="0 816.81" stroke-dashoffset="-710.63" transform="rotate(-90 170 170)"/>
         </svg>
-        <div class="logo-name">Claude</div>
-        <div class="logo-by">by Anthropic</div>
+        <div id="ch04-sl1" class="ch04-seg-label">48%<br>ENTERTAINMENT</div>
+        <div id="ch04-sl2" class="ch04-seg-label">23%<br>SOCIAL MEDIA</div>
+        <div id="ch04-sl3" class="ch04-seg-label">16%<br>SHOPPING</div>
+        <div id="ch04-sl4" class="ch04-seg-label">13%<br>OTHERS</div>
       </div>
 
-      <!-- Scene 2: Tagline (4-8s) -->
-      <div id="scene-tagline" class="clip tagline" data-start="4" data-duration="4" data-track-index="1">
-        <div class="tagline-text">
-          Built for<br>
-          <span class="highlight">problem solvers.</span>
+      <div id="ch04-bars-wrap" class="clip" data-start="37" data-duration="5" data-track-index="42">
+        <div class="bar-row" id="bar1">
+          <div class="bar-label-left">ENTERTAINMENT</div>
+          <div class="bar-track"><div class="bar-fill" id="bf1"></div><div class="bar-pct">48%</div></div>
+        </div>
+        <div class="bar-row" id="bar2">
+          <div class="bar-label-left">SOCIAL MEDIA</div>
+          <div class="bar-track"><div class="bar-fill" id="bf2"></div><div class="bar-pct">23%</div></div>
+        </div>
+        <div class="bar-row" id="bar3">
+          <div class="bar-label-left">SHOPPING</div>
+          <div class="bar-track"><div class="bar-fill" id="bf3"></div><div class="bar-pct">16%</div></div>
+        </div>
+        <div class="bar-row" id="bar4">
+          <div class="bar-label-left">OTHERS</div>
+          <div class="bar-track"><div class="bar-fill" id="bf4"></div><div class="bar-pct">13%</div></div>
         </div>
       </div>
 
-      <!-- Scene 3: Feature 1 — Complex Challenges (8-11s) -->
-      <div id="scene-f1" class="clip feature-container" data-start="8" data-duration="3" data-track-index="1">
-        <div class="feature-label">What Claude does</div>
-        <div class="feature-text">Tackle complex<br>challenges</div>
+      <div id="ch04-caption" class="clip" data-start="30" data-duration="12" data-track-index="43">Where your attention goes</div>
+
+      <div id="ch04-a1" class="clip" data-start="31"   data-duration="11"   data-track-index="44">ATTENTION</div>
+      <div id="ch04-a2" class="clip" data-start="31.5" data-duration="10.5" data-track-index="45">ATTENTION</div>
+      <div id="ch04-a3" class="clip" data-start="32"   data-duration="10"   data-track-index="46">ATTENTION</div>
+      <div id="ch04-a4" class="clip" data-start="32.5" data-duration="9.5"  data-track-index="47">ATTENTION</div>
+      <div id="ch04-a5" class="clip" data-start="33"   data-duration="9"    data-track-index="48">ATTENTION</div>
+
+      <!-- ===================== CHAPTER 05 (42–54s) ===================== -->
+      <div id="ch05-bg-frags" class="clip" data-start="42" data-duration="12" data-track-index="50">
+        <div class="frag" style="top:40px;  left:60px">DAILY REPORT · TECHNOLOGY</div>
+        <div class="frag" style="top:80px;  right:80px">SCREEN ECONOMY ·· DIGITAL CRISIS</div>
+        <div class="frag" style="top:200px; left:40px; font-size:11px">QUARTERLY ANALYSIS ·· BEHAVIORAL DATA</div>
+        <div class="frag" style="bottom:120px; left:60px">COGNITIVE LOAD ·· SOCIETY &amp; TECH</div>
+        <div class="frag" style="bottom:60px; right:100px">EDITORIAL BOARD ·· OPINION</div>
+        <div class="frag" style="top:340px; right:60px; font-size:11px">RESEARCH REPORT ·· 2024</div>
       </div>
 
-      <!-- Scene 4: Feature grid — Analyze + Code (11-15s) -->
-      <div id="scene-grid" class="clip features-grid" data-start="11" data-duration="4" data-track-index="1">
-        <div class="feature-card" id="card1">
-          <div class="feature-card-icon">
-            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="8" y="32" width="12" height="24" rx="2" fill="#d97757"/>
-              <rect x="26" y="20" width="12" height="36" rx="2" fill="#d97757" opacity="0.8"/>
-              <rect x="44" y="8" width="12" height="48" rx="2" fill="#d97757" opacity="0.6"/>
-            </svg>
-          </div>
-          <div class="feature-card-title">Analyze Data</div>
-          <div class="feature-card-desc">Turn raw data into<br>clear insights</div>
-        </div>
-        <div class="feature-card" id="card2">
-          <div class="feature-card-icon">
-            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="6" y="10" width="52" height="44" rx="4" stroke="#d97757" stroke-width="3" fill="none"/>
-              <path d="M20 26 L12 32 L20 38" stroke="#d97757" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M44 26 L52 32 L44 38" stroke="#d97757" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M36 22 L28 42" stroke="#d97757" stroke-width="3" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <div class="feature-card-title">Write Code</div>
-          <div class="feature-card-desc">Debug, refactor, and<br>build faster</div>
-        </div>
-        <div class="feature-card" id="card3">
-          <div class="feature-card-icon">
-            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="32" cy="26" r="16" stroke="#d97757" stroke-width="3" fill="none"/>
-              <path d="M24 42 L26 52 L32 50 L38 52 L40 42" stroke="#d97757" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-              <circle cx="27" cy="24" r="2.5" fill="#d97757"/>
-              <circle cx="37" cy="24" r="2.5" fill="#d97757"/>
-              <path d="M27 30 Q32 34 37 30" stroke="#d97757" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-            </svg>
-          </div>
-          <div class="feature-card-title">Deep Thinking</div>
-          <div class="feature-card-desc">Reason through your<br>hardest problems</div>
-        </div>
+      <div id="ch05-nine"      class="clip" data-start="42" data-duration="12" data-track-index="51">9</div>
+      <div id="ch05-years"     class="clip" data-start="44" data-duration="10" data-track-index="52">YEARS</div>
+      <div id="ch05-underline" class="clip" data-start="44.5" data-duration="9.5" data-track-index="53"></div>
+      <div id="ch05-caption"   class="clip" data-start="46" data-duration="8" data-track-index="54">Average lifetime spent on screens.</div>
+
+      <div id="ch05-a1" class="clip" data-start="43"   data-duration="11"   data-track-index="55">ATTENTION</div>
+      <div id="ch05-a2" class="clip" data-start="43.5" data-duration="10.5" data-track-index="56">ATTENTION</div>
+      <div id="ch05-a3" class="clip" data-start="44"   data-duration="10"   data-track-index="57">ATTENTION</div>
+      <div id="ch05-a4" class="clip" data-start="44.5" data-duration="9.5"  data-track-index="58">ATTENTION</div>
+      <div id="ch05-a5" class="clip" data-start="45"   data-duration="9"    data-track-index="59">ATTENTION</div>
+      <div id="ch05-a6" class="clip" data-start="45.5" data-duration="8.5"  data-track-index="60">ATTENTION</div>
+      <div id="ch05-a7" class="clip" data-start="46"   data-duration="8"    data-track-index="61">ATTENTION</div>
+      <div id="ch05-a8" class="clip" data-start="46.5" data-duration="7.5"  data-track-index="62">ATTENTION</div>
+
+      <!-- ===================== CHAPTER 06 (54–65s) ===================== -->
+      <div id="ch06-attn-wall"    class="clip" data-start="54" data-duration="11" data-track-index="100" data-layout-allow-overflow="true"></div>
+      <div id="ch06-center-attn"  class="clip" data-start="57" data-duration="8"  data-track-index="101">ATTENTION</div>
+      <div id="ch06-final"        class="clip" data-start="60" data-duration="5"  data-track-index="600">
+        <div class="line1">Your attention</div>
+        <div class="line2">is your life.</div>
+        <div class="line3">What will you spend it on?</div>
       </div>
 
-      <!-- Scene 5: CTA (15-20s) -->
-      <div id="scene-cta" class="clip cta-container" data-start="15" data-duration="5" data-track-index="1">
-        <div class="cta-eyebrow">Anthropic AI</div>
-        <div class="cta-headline">Think through<br>your hardest work.</div>
-        <div class="cta-sub">claude.ai</div>
-      </div>
-
-      <!-- Bottom line decoration -->
-      <div class="divider-line" id="divider"></div>
-      <div class="anthropic-badge clip" id="badge" data-start="15" data-duration="5" data-track-index="2">
-        CLAUDE &nbsp;·&nbsp; ANTHROPIC &nbsp;·&nbsp; 2025
-      </div>
-    </div>
+    </div><!-- /#root -->
 
     <script>
+      // ─── Build grid squares ──────────────────────────────────────────────────
+      (function buildGrid() {
+        const grid = document.getElementById('ch02-grid');
+        for (let i = 0; i < 130; i++) {
+          const sq = document.createElement('div');
+          sq.className = 'sq';
+          sq.id = 'sq' + i;
+          grid.appendChild(sq);
+        }
+      })();
+
+      // ─── Build wall of ATTENTION ─────────────────────────────────────────────
+      (function buildWall() {
+        const wall = document.getElementById('ch06-attn-wall');
+        const data = [
+          [20,  40,  28], [20, 260, 48], [20, 600, 22], [20, 820, 64], [20, 1100, 30], [20, 1380, 44], [20, 1680, 20],
+          [100, 60,  40], [100, 380, 20], [100, 580, 56], [100, 900, 32], [100, 1200, 48], [100, 1560, 24],
+          [200, 40,  64], [200, 340, 28], [200, 640, 42], [200, 920, 20], [200, 1140, 60], [200, 1500, 34],
+          [310, 80,  36], [310, 380, 54], [310, 720, 24], [310, 960, 44], [310, 1240, 28], [310, 1540, 50],
+          [420, 60,  50], [420, 340, 30], [420, 600, 64], [420, 1000, 38], [420, 1360, 22],
+          [530, 80,  24], [530, 340, 60], [530, 700, 36], [530, 1040, 52], [530, 1440, 28],
+          [620, 60,  40], [620, 340, 28], [620, 640, 56], [620, 1040, 36], [620, 1440, 44],
+        ];
+        data.forEach(function(item, i) {
+          var el = document.createElement('div');
+          el.className = 'wall-attn';
+          el.id = 'wa' + i;
+          el.style.top = item[0] + 'px';
+          el.style.left = item[1] + 'px';
+          el.style.fontSize = item[2] + 'px';
+          el.textContent = 'ATTENTION';
+          wall.appendChild(el);
+        });
+      })();
+
+      // ─── Timeline ────────────────────────────────────────────────────────────
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
 
-      // Orb background glow
-      tl.to("#orb1", { opacity: 0.25, duration: 2 }, 0);
-      tl.to("#orb2", { opacity: 0.15, duration: 2 }, 1);
-
-      // Particles float in (finite repeat to fit 20s duration)
-      ["#p1","#p2","#p3","#p4","#p5","#p6"].forEach((id, i) => {
-        const cycleDuration = 3;
-        const repeatCount = Math.floor((20 - i * 0.4) / cycleDuration) - 1;
-        tl.to(id, { opacity: 0.6, y: -20, duration: cycleDuration, repeat: repeatCount, yoyo: true, ease: "sine.inOut" }, i * 0.4);
+      // ── CH01 FLASH WORDS ──
+      var flashes = ['#f-screen-time','#f-digital-age','#f-social-media','#f-attn-crisis','#f-mental-fatigue'];
+      flashes.forEach(function(id, i) {
+        tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: 0.08 }, 0.1 + i * 0.18);
+        tl.to(id, { opacity: 0, duration: 0.08 }, 0.22 + i * 0.18);
+        tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: 0.1 }, 0.5 + i * 0.14);
+        tl.to(id, { opacity: 0, duration: 0.08 }, 0.65 + i * 0.14);
+        tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: 0.15 }, 1.0 + i * 0.1);
+      });
+      // all freeze then exit
+      flashes.forEach(function(id) {
+        tl.set(id, { opacity: 1 }, 2.0);
+        tl.to(id, { opacity: 0, duration: 0.4 }, 2.8);
+        tl.set(id, { opacity: 0 }, 8.0);
       });
 
-      // Scene 1: Logo
-      tl.fromTo("#scene-logo", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, 0.3);
-      tl.to("#scene-logo", { opacity: 0, y: -20, duration: 0.6, ease: "power2.in" }, 3.4);
-      tl.set("#scene-logo", { opacity: 0 }, 4.0);
+      // Headline reveal
+      tl.fromTo('#ch01-headline', { opacity: 0, xPercent: -50, yPercent: -50, y: 40 }, { opacity: 1, xPercent: -50, yPercent: -50, y: 0, duration: 0.6, ease: 'power3.out' }, 3.0);
+      tl.to('#ch01-headline', { opacity: 0, xPercent: -50, yPercent: -50, duration: 0.4, ease: 'power2.in' }, 7.6);
+      tl.set('#ch01-headline', { opacity: 0 }, 8.0);
 
-      // Scene 2: Tagline
-      tl.fromTo("#scene-tagline", { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 0.7, ease: "power2.out" }, 4.2);
-      tl.to("#scene-tagline", { opacity: 0, y: -20, duration: 0.5, ease: "power2.in" }, 7.5);
-      tl.set("#scene-tagline", { opacity: 0 }, 8.0);
+      // ATTENTION corner tag
+      tl.fromTo('#ch01-attn-tag', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 5.2);
+      tl.to('#ch01-attn-tag', { opacity: 0, duration: 0.3 }, 7.7);
+      tl.set('#ch01-attn-tag', { opacity: 0 }, 8.0);
 
-      // Scene 3: Feature 1
-      tl.fromTo("#scene-f1", { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.7, ease: "power3.out" }, 8.2);
-      tl.to("#scene-f1", { opacity: 0, x: 60, duration: 0.5, ease: "power2.in" }, 10.5);
-      tl.set("#scene-f1", { opacity: 0 }, 11.0);
+      // ── CH02 HEADING LABEL ──
+      tl.fromTo('#ch02-heading-label', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 8.2);
+      tl.to('#ch02-heading-label', { opacity: 0, duration: 0.3 }, 17.7);
+      tl.set('#ch02-heading-label', { opacity: 0 }, 18.0);
 
-      // Scene 4: Feature grid
-      tl.fromTo("#scene-grid", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 11.2);
-      tl.fromTo("#card1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "back.out(1.7)" }, 11.3);
-      tl.fromTo("#card2", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "back.out(1.7)" }, 11.55);
-      tl.fromTo("#card3", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "back.out(1.7)" }, 11.8);
-      tl.to("#scene-grid", { opacity: 0, y: -20, duration: 0.5, ease: "power2.in" }, 14.5);
-      tl.set("#scene-grid", { opacity: 0 }, 15.0);
+      // ── CH02 COUNTER ──
+      // Use xPercent/yPercent to avoid transform conflict
+      tl.fromTo('#ch02-counter',
+        { opacity: 0, xPercent: -50, yPercent: -50, scale: 0.85 },
+        { opacity: 1, xPercent: -50, yPercent: -50, scale: 1, duration: 0.5, ease: 'back.out(1.4)' },
+        8.3);
 
-      // Divider line
-      tl.to("#divider", { width: 600, duration: 1, ease: "power2.out" }, 15.2);
+      var counterEl = document.getElementById('ch02-num');
+      var counterObj = { val: 100 };
+      tl.to(counterObj, {
+        val: 131,
+        duration: 3.5,
+        ease: 'power1.out',
+        onUpdate: function() {
+          counterEl.textContent = Math.round(counterObj.val);
+        }
+      }, 8.5);
+      tl.to('#ch02-counter', { opacity: 0, y: -30, xPercent: -50, yPercent: -50, duration: 0.4, ease: 'power2.in' }, 13.6);
+      tl.set('#ch02-counter', { opacity: 0 }, 14.0);
 
-      // Scene 5: CTA
-      tl.fromTo("#scene-cta", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.9, ease: "power2.out" }, 15.4);
-      tl.fromTo("#badge", { opacity: 0 }, { opacity: 1, duration: 0.8 }, 16.2);
+      // ── CH02 GRID ──
+      tl.fromTo('#ch02-grid-wrap',
+        { opacity: 0, xPercent: -50, yPercent: -50 },
+        { opacity: 1, xPercent: -50, yPercent: -50, duration: 0.3 },
+        14.0);
+      for (var i = 0; i < 130; i++) {
+        tl.fromTo('#sq' + i, { opacity: 0 }, { opacity: 1, duration: 0.05 }, 14.0 + i * 0.015);
+      }
+      tl.to('#ch02-grid-wrap', { opacity: 0, xPercent: -50, yPercent: -50, duration: 0.4 }, 17.6);
+      tl.set('#ch02-grid-wrap', { opacity: 0 }, 18.0);
 
-      // Orbs shift for CTA
-      tl.to("#orb1", { opacity: 0.35, scale: 1.2, duration: 1.5, ease: "power1.inOut" }, 15);
+      // Grid caption
+      tl.fromTo('#ch02-grid-caption', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 15.2);
+      tl.to('#ch02-grid-caption', { opacity: 0, duration: 0.3 }, 17.7);
 
-      window.__timelines["main"] = tl;
+      // ATTENTION labels on grid
+      tl.fromTo('#ch02-a1', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 15.2);
+      tl.set('#ch02-a1', { opacity: 0 }, 18.0);
+      tl.fromTo('#ch02-a2', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 15.55);
+      tl.set('#ch02-a2', { opacity: 0 }, 18.0);
+      tl.fromTo('#ch02-a3', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 15.9);
+      tl.set('#ch02-a3', { opacity: 0 }, 18.0);
+
+      // ── CH03 PORTRAIT ──
+      tl.fromTo('#ch03-portrait',
+        { opacity: 0, xPercent: -50, yPercent: -50, scale: 0.5 },
+        { opacity: 1, xPercent: -50, yPercent: -50, scale: 1, duration: 0.7, ease: 'power3.out' },
+        18.2);
+      tl.to('#ch03-portrait', { opacity: 0, xPercent: -50, yPercent: -50, duration: 0.4 }, 29.6);
+
+      // Labels
+      ['#ch03-l-work','#ch03-l-entertainment','#ch03-l-shopping','#ch03-l-social'].forEach(function(id, i) {
+        tl.fromTo(id, { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.35, ease: 'power2.out' }, 19.5 + i * 0.7);
+        tl.to(id, { opacity: 0, duration: 0.3 }, 29.5);
+        tl.set(id, { opacity: 0 }, 30.0);
+      });
+
+      // Annotation
+      tl.fromTo('#ch03-annotation',
+        { opacity: 0, xPercent: -50, scale: 0.4 },
+        { opacity: 1, xPercent: -50, scale: 1, duration: 0.5, ease: 'back.out(1.7)' },
+        22.5);
+      tl.to('#ch03-annotation', { opacity: 0, xPercent: -50, duration: 0.3 }, 29.5);
+      tl.set('#ch03-annotation', { opacity: 0 }, 30.0);
+
+      // Time label cycles
+      tl.fromTo('#ch03-time-label', { opacity: 0 }, { opacity: 1, duration: 0.2 }, 23.5);
+      tl.to('#ch03-time-label', { opacity: 0, duration: 0.15 }, 24.2);
+      tl.fromTo('#ch03-time-label', { opacity: 0 }, { opacity: 1, duration: 0.2 }, 24.5);
+      tl.to('#ch03-time-label', { opacity: 0, duration: 0.15 }, 25.2);
+      tl.fromTo('#ch03-time-label', { opacity: 0 }, { opacity: 1, duration: 0.2 }, 25.5);
+      tl.to('#ch03-time-label', { opacity: 0, duration: 0.3 }, 29.5);
+      tl.set('#ch03-time-label', { opacity: 0 }, 30.0);
+
+      tl.fromTo('#ch03-caption', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 24.0);
+      tl.to('#ch03-caption', { opacity: 0, duration: 0.3 }, 29.6);
+      tl.set('#ch03-caption', { opacity: 0 }, 30.0);
+
+      ['#ch03-a1','#ch03-a2','#ch03-a3','#ch03-a4'].forEach(function(id, i) {
+        tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: 0.3 }, 20.0 + i * 0.6);
+        tl.to(id, { opacity: 0, duration: 0.3 }, 29.5);
+        tl.set(id, { opacity: 0 }, 30.0);
+      });
+
+      // ── CH04 REPORT TITLE ──
+      tl.fromTo('#ch04-report-title', { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 30.2);
+      tl.to('#ch04-report-title', { opacity: 0, duration: 0.4 }, 41.6);
+
+      // ── CH04 DONUT ──
+      tl.fromTo('#ch04-donut-wrap',
+        { opacity: 0, xPercent: -50, yPercent: -50 },
+        { opacity: 1, xPercent: -50, yPercent: -50, duration: 0.3 },
+        30.5);
+
+      tl.fromTo('#donut-seg1',
+        { attr: { 'stroke-dasharray': '0 816.81' } },
+        { attr: { 'stroke-dasharray': '392.07 816.81' }, duration: 0.8, ease: 'power2.out' },
+        30.8);
+      tl.fromTo('#donut-seg2',
+        { attr: { 'stroke-dasharray': '0 816.81' } },
+        { attr: { 'stroke-dasharray': '187.87 816.81' }, duration: 0.6, ease: 'power2.out' },
+        31.7);
+      tl.fromTo('#donut-seg3',
+        { attr: { 'stroke-dasharray': '0 816.81' } },
+        { attr: { 'stroke-dasharray': '130.69 816.81' }, duration: 0.5, ease: 'power2.out' },
+        32.4);
+      tl.fromTo('#donut-seg4',
+        { attr: { 'stroke-dasharray': '0 816.81' } },
+        { attr: { 'stroke-dasharray': '106.18 816.81' }, duration: 0.4, ease: 'power2.out' },
+        33.0);
+
+      ['#ch04-sl1','#ch04-sl2','#ch04-sl3','#ch04-sl4'].forEach(function(id, i) {
+        tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: 0.35 }, 31.0 + i * 0.5);
+      });
+      tl.to('#ch04-donut-wrap', { opacity: 0, xPercent: -50, yPercent: -50, duration: 0.5, ease: 'power2.in' }, 36.5);
+      tl.set('#ch04-donut-wrap', { opacity: 0 }, 37.0);
+
+      // ── CH04 BARS ──
+      tl.fromTo('#ch04-bars-wrap',
+        { opacity: 0, xPercent: -50, yPercent: -50 },
+        { opacity: 1, xPercent: -50, yPercent: -50, duration: 0.4 },
+        37.2);
+      tl.to('#bf1', { width: '48%', duration: 0.6, ease: 'power2.out' }, 37.4);
+      tl.to('#bf2', { width: '23%', duration: 0.5, ease: 'power2.out' }, 37.7);
+      tl.to('#bf3', { width: '16%', duration: 0.4, ease: 'power2.out' }, 38.0);
+      tl.to('#bf4', { width: '13%', duration: 0.4, ease: 'power2.out' }, 38.3);
+      tl.to('#ch04-bars-wrap', { opacity: 0, xPercent: -50, yPercent: -50, duration: 0.5, ease: 'power2.in' }, 41.5);
+      tl.set('#ch04-bars-wrap', { opacity: 0 }, 42.0);
+
+      // ── CH04 CAPTION ──
+      tl.fromTo('#ch04-caption', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 31.0);
+      tl.to('#ch04-caption', { opacity: 0, duration: 0.3 }, 41.6);
+      tl.set('#ch04-caption', { opacity: 0 }, 42.0);
+
+      // ── CH04 ATTENTION LABELS ──
+      var ch04attnStyle = { position: 'absolute', fontSize: '11px', fontWeight: '700', color: '#CC0000', letterSpacing: '0.18em', textTransform: 'uppercase' };
+      var ch04aData = [
+        ['#ch04-a1', { top: '100px', left: '80px' }],
+        ['#ch04-a2', { top: '100px', right: '80px' }],
+        ['#ch04-a3', { bottom: '120px', left: '80px' }],
+        ['#ch04-a4', { bottom: '120px', right: '80px' }],
+        ['#ch04-a5', { top: '50%', left: '60px' }],
+      ];
+      ch04aData.forEach(function(item, i) {
+        var id = item[0];
+        var el = document.querySelector(id);
+        Object.keys(ch04attnStyle).forEach(function(k) { el.style[k] = ch04attnStyle[k]; });
+        Object.keys(item[1]).forEach(function(k) { el.style[k] = item[1][k]; });
+        tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: 0.3 }, 31.0 + i * 0.5);
+        tl.to(id, { opacity: 0, duration: 0.3 }, 41.5);
+        tl.set(id, { opacity: 0 }, 42.0);
+      });
+
+      // ── CH05 BACKGROUND ──
+      tl.fromTo('#ch05-bg-frags', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 42.2);
+      tl.to('#ch05-bg-frags', { opacity: 0, duration: 0.4 }, 53.6);
+      tl.set('#ch05-bg-frags', { opacity: 0 }, 54.0);
+
+      // ── CH05 NINE ──
+      tl.fromTo('#ch05-nine',
+        { opacity: 0, xPercent: -50, yPercent: -50, scale: 0.3 },
+        { opacity: 1, xPercent: -50, yPercent: -50, scale: 1, duration: 0.7, ease: 'power4.out' },
+        42.3);
+      tl.to('#ch05-nine', { opacity: 0, xPercent: -50, yPercent: -50, duration: 0.4 }, 53.6);
+
+      // ── CH05 YEARS ──
+      tl.fromTo('#ch05-years',
+        { opacity: 0, xPercent: -50, y: 80 },
+        { opacity: 1, xPercent: -50, y: 80, duration: 0.5, ease: 'power3.out' },
+        44.0);
+      tl.to('#ch05-years', { opacity: 0, xPercent: -50, y: 80, duration: 0.4 }, 53.6);
+
+      // ── CH05 UNDERLINE ──
+      tl.fromTo('#ch05-underline',
+        { xPercent: -50, y: 200, width: 0, opacity: 1 },
+        { xPercent: -50, y: 200, width: 560, duration: 0.6, ease: 'power2.out' },
+        44.5);
+      tl.to('#ch05-underline', { opacity: 0, xPercent: -50, y: 200, duration: 0.3 }, 53.6);
+
+      tl.fromTo('#ch05-caption', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 46.0);
+      tl.to('#ch05-caption', { opacity: 0, duration: 0.3 }, 53.6);
+      tl.set('#ch05-caption', { opacity: 0 }, 54.0);
+
+      // ── CH05 ATTENTION x8 ──
+      var ch05aPos = [
+        { top: '60px',    left: '80px',   fontSize: '14px' },
+        { top: '160px',   right: '100px', fontSize: '22px' },
+        { bottom: '200px',left: '120px',  fontSize: '10px' },
+        { bottom: '100px',right: '80px',  fontSize: '30px' },
+        { top: '280px',   left: '60px',   fontSize: '16px' },
+        { top: '80px',    right: '300px', fontSize: '12px' },
+        { bottom: '220px',left: '320px',  fontSize: '20px' },
+        { top: '380px',   right: '60px',  fontSize: '11px' },
+      ];
+      ch05aPos.forEach(function(pos, i) {
+        var el = document.getElementById('ch05-a' + (i+1));
+        Object.keys(pos).forEach(function(k) { el.style[k] = pos[k]; });
+        tl.fromTo('#ch05-a' + (i+1), { opacity: 0 }, { opacity: 1, duration: 0.4 }, 43.0 + i * 0.35);
+        tl.to('#ch05-a' + (i+1), { opacity: 0, duration: 0.3 }, 53.5);
+        tl.set('#ch05-a' + (i+1), { opacity: 0 }, 54.0);
+      });
+
+      // ── CH06 ATTENTION WALL ──
+      tl.fromTo('#ch06-attn-wall', { opacity: 0 }, { opacity: 1, duration: 0.5 }, 54.0);
+
+      var wallEls = document.querySelectorAll('.wall-attn');
+      wallEls.forEach(function(el, i) {
+        tl.fromTo(el, { opacity: 0 }, { opacity: 0.12 + (i % 5) * 0.1, duration: 0.3 + (i % 3) * 0.1 }, 54.1 + i * 0.06);
+      });
+      tl.to('.wall-attn', { opacity: 1, duration: 0.8, ease: 'power2.in' }, 56.5);
+
+      // ── CH06 CENTER ATTENTION ──
+      tl.fromTo('#ch06-center-attn',
+        { opacity: 0, xPercent: -50, yPercent: -50, scale: 0.5 },
+        { opacity: 1, xPercent: -50, yPercent: -50, scale: 1, duration: 0.7, ease: 'power3.out' },
+        57.0);
+      tl.to('#ch06-center-attn', { xPercent: -50, yPercent: -50, scale: 8, opacity: 0, duration: 1.0, ease: 'power2.in' }, 58.2);
+      tl.set('#ch06-center-attn', { opacity: 0 }, 65.0);
+
+      // ── FADE TO BLACK ──
+      tl.to('#ch06-attn-wall', { opacity: 0, duration: 0.6 }, 58.5);
+      tl.set('#ch06-attn-wall', { opacity: 0 }, 65.0);
+      tl.to('#fade-overlay', { opacity: 1, duration: 0.8, ease: 'power2.inOut' }, 58.8);
+
+      // ── FINAL TEXT ──
+      tl.fromTo('#ch06-final',
+        { opacity: 0, xPercent: -50, yPercent: -50 },
+        { opacity: 1, xPercent: -50, yPercent: -50, duration: 0.6 },
+        60.0);
+      tl.fromTo('#ch06-final .line3', { opacity: 0 }, { opacity: 1, duration: 0.6 }, 62.0);
+
+      window.__timelines['root'] = tl;
     </script>
   </body>
 </html>
