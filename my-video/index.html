@@ -128,16 +128,18 @@ body{width:1920px;height:1080px;overflow:hidden;background:#0C0C0C;font-family:'
 .pc-acid{background:#C6FF00}
 .pc-white{background:#F2F2EE}
 .pc-mid{background:#1a1a1a;border:1px solid rgba(198,255,0,.18)}
+/* CRT scanline overlay on dark/mid cards */
+.pc-mid::after,.pc-dark::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.18) 3px,rgba(0,0,0,.18) 4px);pointer-events:none;z-index:4}
 /* decorative bg letter */
-.pc-deco{position:absolute;font-family:'Bebas Neue',sans-serif;font-size:260px;line-height:1;right:-10px;bottom:-30px;opacity:.07;pointer-events:none}
-.pc-content{position:absolute;inset:0;padding:32px 36px;display:flex;flex-direction:column;justify-content:flex-end}
-.pc-tag{font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:.35em;text-transform:uppercase;margin-bottom:10px;opacity:.55}
-.pc-name{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:.02em;line-height:1.05}
+.pc-deco{position:absolute;font-family:'Bebas Neue',sans-serif;font-size:260px;line-height:1;right:-10px;bottom:-30px;opacity:.06;pointer-events:none;z-index:1}
+.pc-content{position:absolute;inset:0;padding:32px 36px;display:flex;flex-direction:column;justify-content:flex-end;z-index:2}
+.pc-tag{font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:.35em;text-transform:uppercase;margin-bottom:8px;opacity:.55}
+.pc-name{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:.02em;line-height:1.05}
+/* person silhouette SVG */
+.pc-silhouette{display:block;margin-bottom:14px;opacity:.85}
 /* stat cells */
 .pc-stat-num{font-family:'Bebas Neue',sans-serif;font-size:88px;line-height:1}
 .pc-stat-sub{font-family:'Space Grotesk',sans-serif;font-size:12px;letter-spacing:.28em;text-transform:uppercase;margin-top:6px}
-/* halftone avatar */
-.pc-hlt{width:72px;height:72px;border-radius:50%;margin-bottom:16px;background-image:radial-gradient(circle,currentColor 1.5px,transparent 1.5px);background-size:7px 7px;opacity:.45}
 /* ── Row 0 cells (y=120, h=320) ── */
 /* R0C0: CREATIVE DIRECTOR dark */
 #pc00{left:0;top:120px;width:480px;height:320px}
@@ -409,7 +411,15 @@ body{width:1920px;height:1080px;overflow:hidden;background:#0C0C0C;font-family:'
   <div class="pc pc-mid" id="pc00">
     <div class="pc-deco" style="color:#C6FF00">C</div>
     <div class="pc-content">
-      <div class="pc-hlt" style="color:#C6FF00"></div>
+      <!-- SVG human silhouette: head + shoulders, acid green stroke, dot-halftone fill -->
+      <svg class="pc-silhouette" viewBox="0 0 80 96" style="width:72px;height:86px" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="28" r="20" fill="rgba(198,255,0,.14)" stroke="#C6FF00" stroke-width="1.5"/>
+        <rect x="28" y="24" width="8" height="3" rx="1.5" fill="#C6FF00" opacity=".7"/>
+        <rect x="44" y="24" width="8" height="3" rx="1.5" fill="#C6FF00" opacity=".7"/>
+        <path d="M32 37 Q40 43 48 37" fill="none" stroke="#C6FF00" stroke-width="1.2" opacity=".55"/>
+        <path d="M6 96 Q6 64 40 60 Q74 64 74 96" fill="rgba(198,255,0,.1)" stroke="#C6FF00" stroke-width="1.5"/>
+        <line x1="6" y1="96" x2="74" y2="96" stroke="#C6FF00" stroke-width=".5" opacity=".3"/>
+      </svg>
       <div class="pc-tag" style="color:rgba(198,255,0,.5)">AUDIENCE 01</div>
       <div class="pc-name" style="color:#F2F2EE">CREATIVE<br>DIRECTORS</div>
     </div>
@@ -423,7 +433,16 @@ body{width:1920px;height:1080px;overflow:hidden;background:#0C0C0C;font-family:'
   <div class="pc pc-mid" id="pc02">
     <div class="pc-deco" style="color:#C6FF00">D</div>
     <div class="pc-content">
-      <div class="pc-hlt" style="color:#C6FF00"></div>
+      <svg class="pc-silhouette" viewBox="0 0 80 96" style="width:72px;height:86px" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="28" r="20" fill="rgba(198,255,0,.14)" stroke="#C6FF00" stroke-width="1.5"/>
+        <rect x="28" y="24" width="8" height="3" rx="1.5" fill="#C6FF00" opacity=".7"/>
+        <rect x="44" y="24" width="8" height="3" rx="1.5" fill="#C6FF00" opacity=".7"/>
+        <line x1="32" y1="37" x2="48" y2="37" stroke="#C6FF00" stroke-width="1.2" opacity=".5"/>
+        <path d="M6 96 Q6 64 40 60 Q74 64 74 96" fill="rgba(198,255,0,.1)" stroke="#C6FF00" stroke-width="1.5"/>
+        <!-- laptop hint -->
+        <rect x="28" y="76" width="24" height="14" rx="1" fill="none" stroke="#C6FF00" stroke-width="1" opacity=".5"/>
+        <line x1="22" y1="92" x2="58" y2="92" stroke="#C6FF00" stroke-width="1" opacity=".4"/>
+      </svg>
       <div class="pc-tag" style="color:rgba(198,255,0,.5)">AUDIENCE 02</div>
       <div class="pc-name" style="color:#F2F2EE">BRAND<br>DESIGNERS</div>
     </div>
@@ -444,7 +463,15 @@ body{width:1920px;height:1080px;overflow:hidden;background:#0C0C0C;font-family:'
   <div class="pc pc-mid" id="pc11">
     <div class="pc-deco" style="color:#C6FF00">S</div>
     <div class="pc-content">
-      <div class="pc-hlt" style="color:#C6FF00"></div>
+      <svg class="pc-silhouette" viewBox="0 0 80 96" style="width:72px;height:86px" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="28" r="20" fill="rgba(198,255,0,.14)" stroke="#C6FF00" stroke-width="1.5"/>
+        <rect x="28" y="24" width="8" height="3" rx="1.5" fill="#C6FF00" opacity=".7"/>
+        <rect x="44" y="24" width="8" height="3" rx="1.5" fill="#C6FF00" opacity=".7"/>
+        <path d="M34 38 Q40 42 46 38" fill="none" stroke="#C6FF00" stroke-width="1.2" opacity=".55"/>
+        <path d="M6 96 Q6 64 40 60 Q74 64 74 96" fill="rgba(198,255,0,.1)" stroke="#C6FF00" stroke-width="1.5"/>
+        <!-- tie hint -->
+        <path d="M40 60 L36 76 L40 80 L44 76 Z" fill="none" stroke="#C6FF00" stroke-width="1" opacity=".45"/>
+      </svg>
       <div class="pc-tag" style="color:rgba(198,255,0,.5)">AUDIENCE 03</div>
       <div class="pc-name" style="color:#F2F2EE">STARTUP<br>FOUNDERS</div>
     </div>
@@ -458,7 +485,15 @@ body{width:1920px;height:1080px;overflow:hidden;background:#0C0C0C;font-family:'
   <div class="pc pc-mid" id="pc13">
     <div class="pc-deco" style="color:#C6FF00">T</div>
     <div class="pc-content">
-      <div class="pc-hlt" style="color:#C6FF00"></div>
+      <svg class="pc-silhouette" viewBox="0 0 80 96" style="width:72px;height:86px" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="28" r="20" fill="rgba(198,255,0,.14)" stroke="#C6FF00" stroke-width="1.5"/>
+        <rect x="29" y="24" width="7" height="2.5" rx="1.2" fill="#C6FF00" opacity=".7"/>
+        <rect x="44" y="24" width="7" height="2.5" rx="1.2" fill="#C6FF00" opacity=".7"/>
+        <path d="M33 37 Q40 43 47 37" fill="none" stroke="#C6FF00" stroke-width="1.2" opacity=".55"/>
+        <path d="M6 96 Q6 64 40 60 Q74 64 74 96" fill="rgba(198,255,0,.1)" stroke="#C6FF00" stroke-width="1.5"/>
+        <!-- code brackets hint -->
+        <text x="24" y="84" fill="#C6FF00" font-size="14" opacity=".5" font-family="monospace">&lt;/&gt;</text>
+      </svg>
       <div class="pc-tag" style="color:rgba(198,255,0,.5)">AUDIENCE 04</div>
       <div class="pc-name" style="color:#F2F2EE">TECH<br>LEADS</div>
     </div>
@@ -467,7 +502,15 @@ body{width:1920px;height:1080px;overflow:hidden;background:#0C0C0C;font-family:'
   <div class="pc pc-mid" id="pc20">
     <div class="pc-deco" style="color:#C6FF00">M</div>
     <div class="pc-content">
-      <div class="pc-hlt" style="color:#C6FF00"></div>
+      <svg class="pc-silhouette" viewBox="0 0 80 96" style="width:72px;height:86px" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="28" r="20" fill="rgba(198,255,0,.14)" stroke="#C6FF00" stroke-width="1.5"/>
+        <rect x="28" y="24" width="8" height="3" rx="1.5" fill="#C6FF00" opacity=".7"/>
+        <rect x="44" y="24" width="8" height="3" rx="1.5" fill="#C6FF00" opacity=".7"/>
+        <path d="M33 39 Q40 44 47 39" fill="none" stroke="#C6FF00" stroke-width="1.2" opacity=".55"/>
+        <path d="M6 96 Q6 64 40 60 Q74 64 74 96" fill="rgba(198,255,0,.1)" stroke="#C6FF00" stroke-width="1.5"/>
+        <!-- play button hint -->
+        <polygon points="33,72 33,84 45,78" fill="none" stroke="#C6FF00" stroke-width="1" opacity=".5"/>
+      </svg>
       <div class="pc-tag" style="color:rgba(198,255,0,.5)">AUDIENCE 05</div>
       <div class="pc-name" style="color:#F2F2EE">MOTION<br>ARTISTS</div>
     </div>
@@ -481,7 +524,15 @@ body{width:1920px;height:1080px;overflow:hidden;background:#0C0C0C;font-family:'
   <div class="pc pc-mid" id="pc22">
     <div class="pc-deco" style="color:#C6FF00">B</div>
     <div class="pc-content">
-      <div class="pc-hlt" style="color:#C6FF00"></div>
+      <svg class="pc-silhouette" viewBox="0 0 80 96" style="width:72px;height:86px" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="28" r="20" fill="rgba(198,255,0,.14)" stroke="#C6FF00" stroke-width="1.5"/>
+        <rect x="28" y="24" width="8" height="3" rx="1.5" fill="#C6FF00" opacity=".7"/>
+        <rect x="44" y="24" width="8" height="3" rx="1.5" fill="#C6FF00" opacity=".7"/>
+        <path d="M33 38 Q40 43 47 38" fill="none" stroke="#C6FF00" stroke-width="1.2" opacity=".55"/>
+        <path d="M6 96 Q6 64 40 60 Q74 64 74 96" fill="rgba(198,255,0,.1)" stroke="#C6FF00" stroke-width="1.5"/>
+        <!-- star/brand hint -->
+        <polygon points="40,68 42,74 48,74 43,78 45,84 40,80 35,84 37,78 32,74 38,74" fill="none" stroke="#C6FF00" stroke-width="1" opacity=".45"/>
+      </svg>
       <div class="pc-tag" style="color:rgba(198,255,0,.5)">AUDIENCE 06</div>
       <div class="pc-name" style="color:#F2F2EE">BRAND<br>STUDIOS</div>
     </div>
