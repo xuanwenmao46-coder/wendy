@@ -8,435 +8,474 @@
       * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body {
         width: 1920px; height: 1080px; overflow: hidden;
-        background: #FFFFFF;
+        background: #ffffff;
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        color: #0A0A0A;
+        color: #000;
+      }
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 0;
       }
 
       .clip { opacity: 0; }
+      .scene { position: absolute; inset: 0; z-index: 10; }
       .mono { font-family: 'Courier New', monospace; }
 
-      .newsprint {
-        background-image:
-          repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(0,0,0,0.04) 28px),
-          repeating-linear-gradient(90deg, transparent, transparent 27px, rgba(0,0,0,0.02) 28px);
-      }
-      .halftone {
-        background-color: #2c2c2c;
-        background-image: radial-gradient(circle, #6a6a6a 1px, transparent 1px);
-        background-size: 6px 6px;
-      }
-      .doc-panel {
-        background: #F7F4EF;
-        border: 1px solid #CCCCCC;
-        padding: 24px;
-        font-size: 13px;
-        line-height: 1.5;
-        color: #333;
+      .photo-block {
+        background:
+          repeating-linear-gradient(0deg, #000 0px, #000 1px, transparent 1px, transparent 4px),
+          repeating-linear-gradient(90deg, #000 0px, #000 1px, transparent 1px, transparent 4px);
+        background-size: 4px 4px;
+        background-color: #ddd;
+        filter: contrast(200%) grayscale(100%);
       }
 
-      .grule { position: absolute; left: 0; width: 1920px; height: 1px; background: #0A0A0A; }
-      #g-rule-top { top: 8px; }
-      #g-rule-bottom { bottom: 40px; }
-      #g-archive {
-        position: absolute; bottom: 14px; left: 40px;
-        font-size: 11px; color: #666; letter-spacing: .04em; text-transform: uppercase;
+      /* ===================== PERSISTENT LAYER ===================== */
+      #persist { position: absolute; inset: 0; z-index: 100; }
+      #p-rule-top { position: absolute; left: 0; top: 60px; width: 1920px; height: 3px; background: #000; }
+      #p-masthead {
+        position: absolute; left: 60px; top: 70px;
+        font-size: 11px; letter-spacing: .32em; text-transform: uppercase; color: #000;
       }
-      #g-chapter {
-        position: absolute; top: 16px; left: 40px;
-        font-size: 11px; color: #666; letter-spacing: .15em;
-        font-family: 'Courier New', monospace;
+      #p-rule-bottom { position: absolute; left: 0; top: 1040px; width: 1920px; height: 1px; background: #000; }
+      #p-vol { position: absolute; left: 60px; top: 1050px; font-size: 10px; letter-spacing: .12em; color: #555; }
+      #p-arch { position: absolute; right: 60px; top: 1050px; font-size: 10px; letter-spacing: .12em; color: #555; }
+      #p-left { position: absolute; left: 60px; top: 60px; width: 1px; height: 980px; background: #000; }
+      #p-right { position: absolute; left: 1860px; top: 60px; width: 1px; height: 980px; background: #000; }
+      #p-page { position: absolute; right: 60px; top: 70px; font-size: 11px; letter-spacing: .28em; color: #000; }
+
+      .redbar { background: #c00; }
+      .red { color: #c00; }
+      .gray { color: #555; }
+
+      /* ===================== CH01 ===================== */
+      #c1-masthead { position: absolute; left: 90px; top: 110px; }
+      #c1-masthead .w { display: inline-block; font-size: 72px; font-weight: 700; letter-spacing: -.02em; color: #000; }
+      #c1-mrule { position: absolute; left: 90px; top: 210px; width: 1740px; height: 2px; background: #000; }
+
+      #c1-col1 { position: absolute; left: 90px; top: 240px; width: 400px; }
+      #c1-col1 h2 { font-size: 28px; font-weight: 700; line-height: 1.1; margin-bottom: 16px; }
+      #c1-col1 p { font-size: 10px; color: #555; line-height: 1.7; margin-bottom: 14px; }
+      #c1-col1 .by { font-size: 11px; font-weight: 700; letter-spacing: .04em; }
+
+      #c1-col2 { position: absolute; left: 560px; top: 250px; width: 600px; }
+      #c1-col2 .pull { font-size: 46px; font-weight: 700; line-height: 1.1; letter-spacing: -.01em; }
+      #c1-col2 .pullbar { width: 540px; height: 14px; margin-top: 24px; }
+
+      #c1-col3 { position: absolute; left: 1230px; top: 250px; width: 400px; }
+      #c1-col3 .frag { margin-bottom: 30px; }
+      #c1-col3 .frag h3 { font-size: 14px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; border-bottom: 1px solid #000; padding-bottom: 6px; margin-bottom: 10px; }
+      #c1-col3 .frag p { font-size: 10px; color: #555; line-height: 1.7; }
+      #c1-col3 .pb { width: 200px; height: 150px; }
+      #c1-col3 .cap { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: #555; margin-top: 7px; }
+
+      #c1-circle { position: absolute; left: 540px; top: 250px; width: 600px; height: 200px; z-index: 40; }
+
+      #c1-tags { position: absolute; left: 90px; top: 960px; display: flex; gap: 50px; }
+      #c1-tags .tag { font-size: 13px; font-weight: 700; letter-spacing: .06em; color: #c00; border-top: 2px solid #c00; padding-top: 8px; }
+
+      /* ===================== CH02 ===================== */
+      #ch02 { background: #fafaf8; }
+      #ch02 .ev {
+        position: absolute; background: #fff; border: 1px solid #000;
+        padding: 20px; box-shadow: 4px 6px 0 rgba(0,0,0,.08);
       }
-      .g-page {
-        position: absolute; bottom: 12px; right: 40px;
-        font-size: 22px; font-weight: 700; color: #0A0A0A; letter-spacing: .05em;
+      #ch02 .ev .eh { font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #c00; margin-bottom: 12px; }
+      #ch02 .ev p { font-size: 13px; line-height: 1.55; color: #222; }
+      #ch02 .ev .ft { font-size: 10px; letter-spacing: .08em; color: #555; margin-top: 14px; text-transform: uppercase; }
+      #ev1 { left: 130px; top: 200px; width: 380px; height: 260px; }
+      #ev1 .fnd { font-size: 18px; font-weight: 700; margin: 6px 0 12px; }
+      #ev2 { left: 560px; top: 250px; width: 320px; height: 200px; background: #f6f3ea; }
+      #ev2 .hd { font-size: 22px; font-weight: 700; line-height: 1.15; }
+      #ev3 { left: 940px; top: 200px; width: 350px; height: 240px; }
+      #ev4 { left: 1340px; top: 240px; width: 400px; height: 180px; }
+      #ev4 .ti { font-size: 20px; font-weight: 700; line-height: 1.2; margin-top: 4px; }
+      #ev5 { left: 360px; top: 540px; width: 260px; height: 160px; background: #f6f3ea; font-family: 'Courier New', monospace; }
+      #ev6 {
+        left: 700px; top: 560px; width: 300px; height: 200px;
+        clip-path: polygon(0 0,100% 0,100% 90%,93% 100%,84% 93%,73% 100%,60% 93%,47% 100%,33% 94%,20% 100%,8% 94%,0 100%);
+      }
+      #ev6 .mast { font-size: 30px; font-weight: 900; letter-spacing: -.03em; }
+      #c2-threads { position: absolute; inset: 0; z-index: 30; pointer-events: none; overflow: hidden; }
+      #ch02 { overflow: hidden; }
+
+      /* ===================== CH03 ===================== */
+      #c3-photo {
+        position: absolute; left: 130px; top: 200px; width: 800px; height: 600px;
+      }
+      #c3-pcap { position: absolute; left: 130px; top: 815px; font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: #555; }
+      #c3-plabel { position: absolute; left: 130px; top: 165px; font-size: 11px; font-weight: 700; letter-spacing: .14em; color: #c00; }
+      #c3-right { position: absolute; left: 1010px; top: 200px; width: 720px; }
+      #c3-rh { font-size: 14px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #c00; border-bottom: 1px solid #000; padding-bottom: 8px; margin-bottom: 18px; }
+      .c3row { display: flex; font-size: 21px; padding: 10px 0; border-bottom: 1px solid #ddd; }
+      .c3row .tm { width: 90px; font-family: 'Courier New', monospace; color: #c00; }
+      .c3row .ac { flex: 1; color: #000; }
+      .c3row .du { width: 90px; text-align: right; color: #555; font-family: 'Courier New', monospace; }
+      #c3-redline { position: absolute; left: 1010px; top: 0; width: 720px; height: 2px; background: #c00; z-index: 40; transform-origin: left; }
+      #c3-quote { position: absolute; left: 1010px; top: 640px; width: 720px; font-size: 36px; font-style: italic; line-height: 1.2; }
+      #c3-anno { position: absolute; left: 1010px; top: 780px; font-size: 12px; color: #c00; letter-spacing: .04em; }
+
+      /* ===================== CH04 ===================== */
+      #c4-rline { position: absolute; left: 90px; top: 95px; width: 1740px; height: 2px; background: #c00; }
+      #c4-kick { position: absolute; left: 90px; top: 110px; font-size: 11px; letter-spacing: .26em; text-transform: uppercase; color: #555; }
+      #c4-head { position: absolute; left: 90px; top: 140px; font-size: 52px; font-weight: 700; line-height: 1.05; width: 1500px; }
+      #c4-sub { position: absolute; left: 90px; top: 220px; font-size: 18px; color: #555; }
+      #c4-hrule { position: absolute; left: 90px; top: 270px; width: 1740px; height: 1px; background: #000; }
+      .finding { position: absolute; left: 90px; width: 1740px; }
+      .finding .top { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; letter-spacing: .12em; }
+      .finding .top .fig { color: #555; }
+      .finding .r { height: 1px; background: #000; margin: 12px 0; }
+      .finding .big { font-size: 30px; font-weight: 700; }
+      .finding .quote { font-size: 16px; color: #333; font-style: italic; line-height: 1.5; margin-top: 14px; }
+      .finding .src { font-size: 11px; color: #555; letter-spacing: .04em; margin-top: 10px; text-transform: uppercase; }
+      #find1 { top: 310px; }
+      #find2 { top: 510px; }
+      #find3 { top: 710px; }
+      #c4-circle { position: absolute; left: 540px; top: 720px; width: 360px; height: 90px; z-index: 40; }
+      #c4-foot { position: absolute; left: 90px; top: 990px; font-size: 9px; color: #555; letter-spacing: .14em; }
+      #c4-pg { position: absolute; right: 90px; top: 990px; font-size: 13px; color: #000; }
+
+      /* ===================== CH05 ===================== */
+      #c5-bg { position: absolute; inset: 0; z-index: 12; opacity: .2; }
+      #c5-bg .hl { position: absolute; font-weight: 900; color: #000; }
+      #c5-bg #b1 { left: 80px; top: 130px; font-size: 60px; width: 700px; line-height: 1; }
+      #c5-bg #b2 { left: 1100px; top: 200px; font-size: 40px; width: 700px; }
+      #c5-bg #b3 { left: 200px; top: 700px; font-size: 50px; width: 800px; }
+      .c5frag { position: absolute; z-index: 16; background: #fff; border: 1px solid #000; padding: 16px; box-shadow: 3px 4px 0 rgba(0,0,0,.1); }
+      .c5frag h4 { font-size: 18px; font-weight: 700; line-height: 1.15; }
+      .c5frag p { font-size: 11px; color: #555; line-height: 1.5; margin-top: 8px; }
+      #cf1 { left: 110px; top: 180px; width: 360px; transform: rotate(-2deg); }
+      #cf2 { left: 1380px; top: 200px; width: 360px; transform: rotate(3deg); }
+      #cf3 { left: 130px; top: 620px; width: 340px; transform: rotate(2deg); }
+      #cf4 { left: 1390px; top: 640px; width: 340px; transform: rotate(-3deg); }
+      .c5head { position: absolute; z-index: 20; font-weight: 700; line-height: 1.05; }
+      #h1 { left: 540px; top: 230px; width: 800px; font-size: 34px; }
+      #h2 { left: 560px; top: 360px; width: 820px; font-size: 30px; }
+      #h3 { left: 540px; top: 480px; width: 820px; font-size: 36px; color: #c00; }
+      #h4 { left: 580px; top: 600px; width: 760px; font-size: 32px; }
+      #h5 { left: 540px; top: 700px; width: 820px; font-size: 30px; }
+      #h6 { left: 560px; top: 800px; width: 820px; font-size: 28px; }
+      .c5att { position: absolute; z-index: 22; font-weight: 700; letter-spacing: .04em; color: #000; }
+      #a1 { left: 120px; top: 110px; font-size: 14px; }
+      #a2 { left: 1560px; top: 110px; font-size: 11px; }
+      #a3 { left: 120px; top: 1000px; font-size: 13px; }
+      #a4 { left: 1500px; top: 1000px; font-size: 11px; }
+      #a5 { left: 110px; top: 540px; font-size: 12px; }
+      #c5-stamp {
+        position: absolute; z-index: 30; left: 600px; top: 480px;
+        font-size: 64px; font-weight: 900; letter-spacing: .12em; color: #c00;
+        border: 5px solid #c00; padding: 16px 40px; transform: rotate(-15deg); opacity: 0;
       }
 
-      .scene { position: absolute; inset: 0; }
-      .lbl {
-        font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: #666;
-        font-family: 'Courier New', monospace;
+      /* ===================== CH06 ===================== */
+      #ch06 { background: #f5f5f5; }
+      #c6-block {
+        position: absolute; left: 50%; top: 220px; transform: translateX(-50%);
+        width: 1100px; background: #fff; border: 2px solid #000; padding: 40px 50px; text-align: center;
       }
-      .stamp {
-        font-size: 16px; letter-spacing: .25em; text-transform: uppercase;
-        color: #C8001E; font-weight: 700; border: 2px solid #C8001E;
-        padding: 6px 14px; display: inline-block; transform: rotate(-6deg);
-      }
-      .yhl { background: #FFFF99; padding: 0 3px; }
+      #c6-block .bh { font-size: 16px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; text-align: left; }
+      #c6-block .r { height: 1px; background: #000; margin: 18px 0; }
+      #c6-block .big { font-size: 280px; font-weight: 700; line-height: .9; letter-spacing: -.02em; }
+      #c6-block .sub { font-size: 30px; color: #000; margin-top: 6px; }
+      #c6-block .src { font-size: 13px; color: #555; text-align: left; line-height: 1.6; }
+      #c6-diag { position: absolute; right: 70px; bottom: 30px; font-size: 11px; color: #c00; transform: rotate(-6deg); }
+      #c6-underline { position: absolute; left: 50%; top: 540px; transform: translateX(-50%); width: 600px; height: 6px; background: #c00; z-index: 50; transform-origin: left; }
+      #c6-circle { position: absolute; left: 50%; top: 200px; transform: translateX(-50%); width: 760px; height: 460px; z-index: 50; }
+      .c6corner { position: absolute; z-index: 14; background: #fff; border: 1px solid #999; padding: 12px; width: 230px; font-size: 11px; color: #555; line-height: 1.4; box-shadow: 2px 3px 0 rgba(0,0,0,.07); }
+      #cc1 { left: 90px; top: 220px; transform: rotate(-3deg); }
+      #cc2 { left: 1600px; top: 240px; transform: rotate(2deg); }
+      #cc3 { left: 100px; top: 760px; transform: rotate(2deg); }
+      #cc4 { left: 1590px; top: 780px; transform: rotate(-2deg); }
 
-      /* ---------- CH01 ---------- */
-      #ch01 .docref {
-        position: absolute; top: 60px; left: 80px;
-        font-size: 13px; letter-spacing: .12em; color: #333; text-transform: uppercase;
-        border-left: 3px solid #C8001E; padding-left: 14px; line-height: 1.6;
-        font-family: 'Courier New', monospace;
-      }
-      #ch01-headline { position: absolute; top: 150px; left: 80px; width: 1500px; }
-      #ch01-headline .w {
-        display: inline-block; font-size: 96px; font-weight: 700;
-        letter-spacing: -0.03em; line-height: 1.02; margin-right: 22px; color: #0A0A0A;
-      }
-      #ch01-kicker {
-        position: absolute; top: 430px; left: 80px;
-        font-size: 24px; color: #333; letter-spacing: .02em; font-style: italic;
-      }
-      .frag { position: absolute; width: 540px; }
-      .frag h3 { font-size: 20px; font-weight: 700; line-height: 1.2; margin-bottom: 10px; color: #0A0A0A; }
-      .frag p { font-size: 12.5px; color: #555; line-height: 1.55; }
-      #frag-a { left: 80px; top: 560px; }
-      #frag-b { left: 690px; top: 560px; }
-      #frag-c { left: 1300px; top: 560px; }
-      #ch01-circle { position: absolute; left: 690px; top: 545px; width: 360px; height: 120px; }
-      #ch01-sources {
-        position: absolute; bottom: 60px; right: 40px;
-        font-size: 12px; color: #666; letter-spacing: .03em; text-align: right;
-      }
-      #ch01-stamp { position: absolute; top: 70px; right: 90px; }
+      /* ===================== CH07 ===================== */
+      .c7att { position: absolute; z-index: 16; font-weight: 700; color: #000; }
+      #c7-1 { left: 50%; top: 480px; transform: translate(-50%,-50%); font-size: 48px; }
+      #c7-2 { left: 1560px; top: 200px; font-size: 18px; }
+      #c7-3 { left: 200px; top: 800px; font-size: 32px; }
+      #c7-4 { left: 150px; top: 180px; font-size: 16px; }
+      #c7-5 { left: 1500px; top: 820px; font-size: 28px; }
+      #c7-6 { left: 1250px; top: 540px; font-size: 14px; }
+      #c7-7 { left: 240px; top: 520px; font-size: 24px; }
+      #c7-8 { left: 50%; top: 820px; transform: translateX(-50%); font-size: 40px; }
 
-      /* ---------- CH02 ---------- */
-      #ch02-masthead {
-        position: absolute; top: 46px; left: 80px; width: 1760px;
-        border-bottom: 3px solid #0A0A0A; padding-bottom: 12px;
-        font-size: 34px; font-weight: 700; letter-spacing: .03em;
-      }
-      #ch02-masthead span { font-size: 14px; color: #666; letter-spacing: .2em; float: right; margin-top: 18px; }
-      .ev-card { position: absolute; background: #FFFFFF; border: 1px solid #CCCCCC; padding: 22px; }
-      .ev-card .src { font-size: 11px; color: #C8001E; margin-top: 14px; letter-spacing: .08em; text-transform: uppercase; }
-      #ev1 { left: 80px; top: 170px; width: 620px; }
-      #ev1 .photo { width: 100%; height: 130px; margin-bottom: 16px; }
-      #ev1 .q { font-size: 26px; font-weight: 700; line-height: 1.25; }
-      #ev2 { right: 80px; top: 170px; width: 540px; background: #F7F4EF; }
-      #ev2 .t { font-size: 16px; line-height: 1.5; color: #333; }
-      #ev2 .t b { color: #0A0A0A; }
-      #ev3 { left: 80px; top: 560px; width: 600px; background: #F7F4EF; }
-      #ev3 .ttl { font-size: 24px; font-weight: 700; line-height: 1.25; }
-      #ev4 { left: 720px; top: 470px; width: 480px; background: #C8001E; color: #fff; border-color: #C8001E; }
-      #ev4 .q { font-size: 28px; font-weight: 700; line-height: 1.25; }
-      #ev4 .src { color: #ffd; }
-      #ev5 {
-        right: 80px; top: 560px; width: 540px; background: #F7F4EF;
-        clip-path: polygon(0 0, 100% 0, 100% 92%, 96% 100%, 88% 94%, 80% 100%, 70% 95%, 60% 100%, 48% 95%, 38% 100%, 26% 96%, 14% 100%, 5% 95%, 0 100%);
-      }
-      #ev5 .ttl { font-size: 24px; font-weight: 700; line-height: 1.25; padding-bottom: 26px; }
-      .rthread { position: absolute; height: 1px; background: #C8001E; transform-origin: left center; }
-
-      /* ---------- CH03 ---------- */
-      #ch03-bg { position: absolute; inset: 0; opacity: .4; }
-      #ch03-portrait {
-        position: absolute; left: 80px; top: 120px; width: 1040px; height: 820px;
-        border: 1px solid #999;
-        background-image:
-          radial-gradient(circle, #6a6a6a 1px, transparent 1px),
-          repeating-linear-gradient(45deg, rgba(255,255,255,0.04) 0 2px, transparent 2px 8px);
-        background-size: 6px 6px, auto;
-        background-color: #2c2c2c;
-      }
-      #ch03-portrait .meta {
-        position: absolute; left: 24px; bottom: 24px; color: #fff;
-        font-size: 13px; letter-spacing: .12em; font-family: 'Courier New', monospace; line-height: 1.8;
-      }
-      #ch03-portrait .filelabel {
-        position: absolute; left: 24px; top: 24px; color: #fff;
-        font-size: 11px; letter-spacing: .2em; opacity: .8;
-        font-family: 'Courier New', monospace;
-      }
-      #ch03-timeline { position: absolute; right: 80px; top: 120px; width: 640px; }
-      #ch03-timeline .tl-title { font-size: 14px; letter-spacing: .2em; color: #666; text-transform: uppercase; margin-bottom: 22px; }
-      .tl-row {
-        display: flex; gap: 20px; font-size: 21px; padding: 9px 0;
-        border-bottom: 1px solid #E5E5E5; line-height: 1.2;
-      }
-      .tl-row .t { font-family: 'Courier New', monospace; color: #C8001E; width: 78px; }
-      .tl-row .e { color: #0A0A0A; }
-      .tl-row.hl .e { position: relative; }
-      .tl-row.hl .e::after {
-        content: ''; position: absolute; left: 0; bottom: -3px; width: 100%; height: 2px; background: #C8001E;
-      }
-      #ch03-caption { position: absolute; left: 80px; bottom: 70px; font-size: 26px; font-style: italic; color: #333; }
-      #ch03-stamp { position: absolute; right: 80px; bottom: 130px; }
-      #ch03-mult { position: absolute; right: 90px; bottom: 90px; font-size: 22px; color: #C8001E; font-style: italic; letter-spacing: .05em; }
-
-      /* ---------- CH04 ---------- */
-      #ch04-header { position: absolute; top: 50px; left: 80px; font-size: 16px; letter-spacing: .2em; color: #666; text-transform: uppercase; }
-      #ch04-sub { position: absolute; top: 86px; left: 80px; width: 1500px; font-size: 32px; font-weight: 700; line-height: 1.2; }
-      .finding { position: absolute; top: 230px; width: 540px; border-top: 4px solid #0A0A0A; padding-top: 18px; }
-      .finding .num { font-size: 22px; font-weight: 700; letter-spacing: .1em; margin-bottom: 14px; }
-      .finding .body { font-size: 24px; line-height: 1.35; color: #0A0A0A; }
-      .finding .rule { height: 1px; background: #CCC; margin: 18px 0; }
-      .finding .src { font-size: 13px; color: #666; letter-spacing: .04em; text-transform: uppercase; }
-      #find1 { left: 80px; }
-      #find2 { left: 690px; }
-      #find3 { left: 1300px; }
-      #ch04-rule { position: absolute; left: 80px; top: 720px; width: 1760px; height: 1px; background: #0A0A0A; transform-origin: left; }
-      #ch04-close { position: absolute; left: 80px; top: 760px; font-size: 34px; font-weight: 700; line-height: 1.2; width: 1500px; }
-
-      /* ---------- CH05 ---------- */
-      .clip-art { position: absolute; width: 580px; background: #FFFFFF; border: 1px solid #CCC; padding: 20px; }
-      .clip-art h4 { font-size: 22px; font-weight: 700; line-height: 1.2; margin-bottom: 12px; }
-      .clip-art p { font-size: 12px; color: #666; line-height: 1.5; }
-      #ca1 { left: 70px;  top: 110px; }
-      #ca2 { left: 670px; top: 110px; }
-      #ca3 { left: 1270px;top: 110px; }
-      #ca4 { left: 70px;  top: 430px; }
-      #ca5 { left: 670px; top: 430px; }
-      #ca6 { left: 1270px;top: 430px; }
-      #ca7 { left: 370px; top: 750px; width: 1180px; }
-      #ch05-foot { position: absolute; left: 80px; bottom: 60px; font-size: 24px; font-style: italic; color: #333; }
-
-      /* ---------- CH06 ---------- */
-      #ch06-header { position: absolute; top: 50px; left: 80px; font-size: 16px; letter-spacing: .2em; color: #666; text-transform: uppercase; }
-      #ch06-central { position: absolute; left: 50%; top: 180px; transform: translateX(-50%); text-align: center; }
-      #ch06-central .big { font-size: 280px; font-weight: 700; line-height: .85; color: #0A0A0A; }
-      #ch06-central .yr { font-size: 48px; font-weight: 700; letter-spacing: .3em; color: #0A0A0A; }
-      #ch06-central .cap { font-size: 22px; color: #555; margin-top: 18px; }
-      #ch06-diag { position: absolute; left: 50%; top: 180px; transform: translateX(-50%); }
-      .c6frag { position: absolute; width: 420px; font-size: 16px; line-height: 1.5; }
-      #c6-left { left: 80px; top: 320px; }
-      #c6-left table { width: 100%; border-collapse: collapse; }
-      #c6-left td { border-bottom: 1px solid #CCC; padding: 8px 4px; font-family: 'Courier New', monospace; }
-      #c6-left td.r { text-align: right; color: #C8001E; }
-      #c6-right { right: 80px; top: 320px; font-style: italic; font-size: 22px; color: #333; }
-      #c6-bl { left: 80px; top: 720px; font-weight: 700; font-size: 24px; }
-      #c6-br { right: 80px; top: 740px; font-size: 14px; color: #666; }
-      #ch06-stamp { position: absolute; left: 50%; bottom: 110px; transform: translateX(-50%); }
-
-      /* ---------- CH07 ---------- */
-      #ch07-cap { position: absolute; left: 50%; top: 46%; transform: translateX(-50%); text-align: center; font-size: 30px; color: #333; width: 1200px; }
-      #ch07-cap2 { position: absolute; left: 50%; top: 54%; transform: translateX(-50%); text-align: center; font-size: 48px; font-weight: 700; color: #0A0A0A; }
-      .float-att { position: absolute; font-weight: 700; color: #0A0A0A; }
-
-      /* ---------- FINAL ---------- */
-      #finalbg { position: absolute; inset: 0; background: #000; z-index: 800; }
-      .wall-att { position: absolute; color: #FFFFFF; font-weight: 700; z-index: 810; }
-      #final-line1 {
-        position: absolute; left: 50%; top: 42%; transform: translate(-50%,-50%);
-        text-align: center; color: #FFFFFF; font-size: 72px; font-weight: 300;
-        letter-spacing: .05em; line-height: 1.25; z-index: 900;
-      }
-      #final-line2 {
-        position: absolute; left: 50%; top: 62%; transform: translate(-50%,-50%);
-        text-align: center; color: #FFFFFF; font-size: 36px; font-weight: 300;
-        letter-spacing: .2em; z-index: 900;
-      }
+      /* ===================== FINAL ===================== */
+      #fwall { position: absolute; inset: 0; z-index: 200; }
+      .wcell { position: absolute; font-weight: 700; color: #000; white-space: nowrap; max-width: 215px; overflow: hidden; }
+      #fwall2 { position: absolute; inset: 0; z-index: 205; }
+      .wcell2 { position: absolute; font-weight: 700; color: #c00; white-space: nowrap; width: 190px; overflow: hidden; }
+      #fblack { position: absolute; inset: 0; background: #000; z-index: 300; }
+      #f-l1 { position: absolute; left: 50%; top: 460px; transform: translateX(-50%); color: #fff; font-size: 48px; letter-spacing: .05em; z-index: 320; }
+      #f-l2 { position: absolute; left: 50%; top: 540px; transform: translateX(-50%); color: #fff; font-size: 48px; letter-spacing: .05em; z-index: 320; }
+      #f-l3 { position: absolute; left: 50%; top: 660px; transform: translateX(-50%); color: #888; font-size: 28px; letter-spacing: .04em; z-index: 320; }
     </style>
   </head>
   <body>
     <div id="root" data-composition-id="root" data-start="0" data-duration="90" data-width="1920" data-height="1080">
-    <!-- ===================== GLOBAL PERSISTENT LAYER ===================== -->
-    <div id="g-rule-top" class="grule clip" data-start="0" data-duration="83" data-track-index="0"></div>
-    <div id="g-rule-bottom" class="grule clip" data-start="0" data-duration="83" data-track-index="1"></div>
-    <div id="g-archive" class="clip" data-start="0" data-duration="83" data-track-index="2">INVESTIGATION FILE / YOUR PHONE STOLE HOW MUCH OF YOUR LIFE?</div>
-    <div id="g-chapter" class="clip" data-start="0" data-duration="12" data-track-index="3">CH.01</div>
+
+    <!-- ===================== PERSISTENT LAYER ===================== -->
+    <div id="persist">
+      <div id="p-rule-top" class="clip" data-start="0" data-duration="86" data-track-index="0"></div>
+      <div id="p-masthead" class="clip" data-start="0" data-duration="86" data-track-index="1">THE ATTENTION ECONOMY — AN EDITORIAL INVESTIGATION</div>
+      <div id="p-rule-bottom" class="clip" data-start="0" data-duration="86" data-track-index="2"></div>
+      <div id="p-vol" class="clip" data-start="0" data-duration="86" data-track-index="3">VOL. 01 / NO. 47</div>
+      <div id="p-arch" class="clip" data-start="0" data-duration="86" data-track-index="4">ATN-2024-REF-009</div>
+      <div id="p-left" class="clip" data-start="0" data-duration="86" data-track-index="5"></div>
+      <div id="p-right" class="clip" data-start="0" data-duration="86" data-track-index="6"></div>
+      <div id="p-page" class="clip" data-start="0" data-duration="86" data-track-index="7">01 / THE INVESTIGATION</div>
+    </div>
 
     <!-- ===================== CHAPTER 01 ===================== -->
     <div id="ch01" class="scene">
-      <div class="g-page clip" data-start="0" data-duration="12" data-track-index="4">01</div>
-      <div class="docref clip" data-start="0.2" data-duration="11.8" data-track-index="5">FILE REF: ATT-2024-001<br/>INVESTIGATION SERIES<br/>ISSUE 01</div>
-      <div id="ch01-stamp" class="clip" data-start="0.5" data-duration="11.5" data-track-index="6"><span class="stamp">CONFIDENTIAL RESEARCH FILE</span></div>
-
-      <div id="ch01-headline">
-        <span class="w clip" data-start="0.6" data-duration="11.4" data-track-index="7">We</span>
-        <span class="w clip" data-start="0.8" data-duration="11.2" data-track-index="8">Need</span>
-        <span class="w clip" data-start="1.0" data-duration="11.0" data-track-index="9">To</span>
-        <span class="w clip" data-start="1.2" data-duration="10.8" data-track-index="10">Talk</span>
-        <span class="w clip" data-start="1.4" data-duration="10.6" data-track-index="11">About</span>
-        <span class="w clip" data-start="1.6" data-duration="10.4" data-track-index="12">Your</span>
-        <span class="w clip" data-start="1.8" data-duration="10.2" data-track-index="13">Phone</span>
+      <div id="c1-masthead">
+        <span class="w clip" data-start="0.3" data-duration="9.7" data-track-index="10">THE</span>
+        <span class="w clip" data-start="0.45" data-duration="9.55" data-track-index="11">&nbsp;ATTENTION</span>
+        <span class="w clip" data-start="0.6" data-duration="9.4" data-track-index="12">&nbsp;ECONOMY</span>
       </div>
-      <div id="ch01-kicker" class="clip" data-start="2.4" data-duration="9.6" data-track-index="14">A Special Investigation into the Modern Attention Economy</div>
+      <div id="c1-mrule" class="clip" data-start="0.9" data-duration="9.1" data-track-index="13"></div>
 
-      <div id="frag-a" class="frag doc-panel newsprint clip" data-start="3.2" data-duration="8.8" data-track-index="15">
-        <h3>SCREEN TIME REACHES CRISIS LEVELS</h3>
+      <div id="c1-col1" class="clip" data-start="1.3" data-duration="8.7" data-track-index="14">
+        <h2>DIGITAL DISTRACTION REACHES CRISIS LEVELS</h2>
         <p>Across every demographic, daily device usage has climbed to figures once thought impossible. Analysts describe a quiet restructuring of how human beings allocate their waking hours, with consequences only now coming into focus.</p>
+        <p>Laboratories report measurable declines in sustained focus across age groups, prompting urgent calls for further study and a wider public reckoning with the costs of constant connection.</p>
+        <div class="by">By J. Morrison, Research Dept.</div>
       </div>
-      <div id="frag-b" class="frag doc-panel newsprint clip" data-start="3.5" data-duration="8.5" data-track-index="16">
-        <h3>RESEARCHERS ALARMED BY ATTENTION COLLAPSE</h3>
-        <p>A growing body of peer-reviewed work suggests sustained focus is eroding faster than at any prior point on record. Laboratories report measurable declines across age groups, prompting urgent calls for further study.</p>
+
+      <div id="c1-col2" class="clip" data-start="1.9" data-duration="8.1" data-track-index="15">
+        <div class="pull">2.7 billion smartphone users check their devices&mdash;</div>
+        <div class="pullbar redbar"></div>
       </div>
-      <div id="frag-c" class="frag doc-panel newsprint clip" data-start="3.8" data-duration="8.2" data-track-index="17">
-        <h3>THE TRILLION-DOLLAR ATTENTION MARKET</h3>
-        <p>Behind the screens lies an economy few consumers ever see. Every glance is bought, sold, and optimized in real time, forming one of the largest and least understood markets in modern commerce.</p>
+
+      <div id="c1-col3" class="clip" data-start="2.5" data-duration="7.5" data-track-index="16">
+        <div class="frag">
+          <h3>Behavioural Science Weekly</h3>
+          <p>A growing body of peer-reviewed work suggests sustained attention is eroding faster than at any prior point on record. Researchers warn the effect compounds quietly across years.</p>
+        </div>
+        <div class="frag">
+          <div class="pb photo-block"></div>
+          <div class="cap">FIG.01 — Subject during session</div>
+        </div>
       </div>
-      <svg id="ch01-circle" class="clip" data-start="5.5" data-duration="6.5" data-track-index="18" viewBox="0 0 360 120">
-        <ellipse cx="180" cy="60" rx="170" ry="48" fill="none" stroke="#C8001E" stroke-width="3"/>
+
+      <svg id="c1-circle" class="clip" data-start="6" data-duration="4" data-track-index="17" viewBox="0 0 600 200">
+        <path d="M40,100 C40,40 560,40 560,100 C560,160 40,160 40,100 Z" fill="none" stroke="#c00" stroke-width="3"/>
       </svg>
-      <div id="ch01-sources" class="clip" data-start="6.0" data-duration="6.0" data-track-index="19">Sources: Columbia Journalism Review · Pew Research · MIT Media Lab</div>
+
+      <div id="c1-tags">
+        <div class="tag clip" data-start="7.5" data-duration="2.5" data-track-index="18">ATTENTION CRISIS &#8599;</div>
+        <div class="tag clip" data-start="7.7" data-duration="2.3" data-track-index="19">ATTENTION MARKET GROWS 340%</div>
+        <div class="tag clip" data-start="7.9" data-duration="2.1" data-track-index="20">ATTENTION LOSS STUDY PUBLISHED</div>
+      </div>
     </div>
 
     <!-- ===================== CHAPTER 02 ===================== -->
     <div id="ch02" class="scene">
-      <div class="g-page clip" data-start="12" data-duration="14" data-track-index="20">02</div>
-      <div id="ch02-masthead" class="clip" data-start="12.1" data-duration="13.9" data-track-index="21">THE ATTENTION ECONOMY<span>EVIDENCE FILE</span></div>
-
-      <div id="ev1" class="ev-card clip" data-start="12.6" data-duration="13.4" data-track-index="22">
-        <div class="photo halftone"></div>
-        <div class="q">STUDY: "The average person checks their phone 96–131 times daily"</div>
-        <div class="src">Asurion Research, 2024</div>
+      <div id="ev1" class="ev clip" data-start="10.3" data-duration="9.7" data-track-index="30">
+        <div class="eh">Stanford Digital Wellness Report</div>
+        <div class="fnd">FINDING 01</div>
+        <p>Participants checked devices an average of 127 times per day. Peaks clustered around commute hours and late evening sessions.</p>
+        <div class="ft">Page 14 of 67 — Confidential Draft</div>
       </div>
-      <div id="ev2" class="ev-card clip" data-start="12.9" data-duration="13.1" data-track-index="23">
-        <div class="lbl">INTERVIEW TRANSCRIPT · EXCERPT</div>
-        <div class="t" style="margin-top:12px;"><b>Q:</b> When do you notice yourself reaching for your phone?<br/><br/><b>A:</b> Without even thinking about it. It just happens.</div>
+      <div id="ev2" class="ev clip" data-start="10.45" data-duration="9.55" data-track-index="31">
+        <div class="eh">News Clipping</div>
+        <div class="hd">Screen addiction costs economy $4.1T annually</div>
+        <div class="ft">J. Reyes — March 2024</div>
       </div>
-      <div id="ev3" class="ev-card clip" data-start="13.2" data-duration="12.8" data-track-index="24">
-        <div class="lbl">RESEARCH PAPER · FRAGMENT</div>
-        <div class="ttl" style="margin-top:10px;">"The Collapse of <span class="yhl">Attention</span>" — Diminishing Attention Spans in the Digital Era</div>
-        <div class="src">Harvard Medical School, 2023</div>
+      <div id="ev3" class="ev clip" data-start="10.6" data-duration="9.4" data-track-index="32">
+        <div class="eh">Interview Transcript — Subject A</div>
+        <p style="margin-top:6px;"><b>Q:</b> How many times did you check today?</p>
+        <p style="margin-top:14px;"><b>A:</b> I <span style="border-bottom:2px solid #c00;">stopped counting</span> after lunch.</p>
+        <div class="ft">Session 03 / Verbatim</div>
       </div>
-      <div id="ev4" class="ev-card clip" data-start="13.5" data-duration="12.5" data-track-index="25">
-        <div class="q">"Americans spend an average of 7 hrs/day on screens"</div>
-        <div class="src">Nielsen Total Audience Report</div>
+      <div id="ev4" class="ev clip" data-start="10.75" data-duration="9.25" data-track-index="33">
+        <div class="eh">Research Paper — Inst. of Cognitive Science · DOI:10.1038/atn.2024</div>
+        <div class="ti">ATTENTION ECONOMY: A QUANTITATIVE ANALYSIS</div>
       </div>
-      <div id="ev5" class="ev-card clip" data-start="13.8" data-duration="12.2" data-track-index="26">
-        <div class="lbl">ARTICLE CLIPPING</div>
-        <div class="ttl" style="margin-top:10px;">"How Silicon Valley Engineered Addiction"</div>
+      <div id="ev5" class="ev clip" data-start="10.9" data-duration="9.1" data-track-index="34">
+        <div class="eh" style="color:#000;">Index Card</div>
+        <p style="font-size:14px;">KEY INSIGHT: avg user generates <span id="ev5-circ" style="position:relative;">8hrs</span> of behavioral data/day</p>
       </div>
-
-      <div class="rthread clip" data-start="15.5" data-duration="10.5" data-track-index="27" style="left:700px; top:260px; width:140px;"></div>
-      <div class="rthread clip" data-start="15.7" data-duration="10.3" data-track-index="28" style="left:680px; top:620px; width:240px; transform:rotate(-12deg);"></div>
-      <div class="rthread clip" data-start="15.9" data-duration="10.1" data-track-index="29" style="left:1200px; top:520px; width:200px; transform:rotate(8deg);"></div>
-
-      <div id="ch02-archive" class="clip lbl" data-start="14.5" data-duration="11.5" data-track-index="30" style="position:absolute; bottom:60px; right:40px;">EVIDENCE FILE 02 / CLASSIFIED</div>
+      <div id="ev6" class="ev clip" data-start="11.05" data-duration="8.95" data-track-index="35">
+        <div class="mast">WIRED</div>
+        <div class="ti" style="font-size:22px;font-weight:700;margin-top:10px;">WHO OWNS YOUR MIND?</div>
+      </div>
+      <svg id="c2-threads" class="clip" data-start="13" data-duration="7" data-track-index="36" viewBox="0 0 1920 1080">
+        <path id="th1" d="M510,330 L560,350" stroke="#c00" stroke-width="1.5" fill="none"/>
+        <path id="th2" d="M720,450 L900,320" stroke="#c00" stroke-width="1.5" fill="none"/>
+        <path id="th3" d="M1290,320 L1340,330" stroke="#c00" stroke-width="1.5" fill="none"/>
+        <path id="th4" d="M620,620 L850,650" stroke="#c00" stroke-width="1.5" fill="none"/>
+        <path id="th5" d="M1000,650 L1340,420" stroke="#c00" stroke-width="1.5" fill="none"/>
+      </svg>
     </div>
 
     <!-- ===================== CHAPTER 03 ===================== -->
     <div id="ch03" class="scene">
-      <div class="g-page clip" data-start="26" data-duration="14" data-track-index="31">03</div>
-      <div id="ch03-bg" class="newsprint clip" data-start="26" data-duration="14" data-track-index="32"></div>
-      <div id="ch03-portrait" class="clip" data-start="26.2" data-duration="13.8" data-track-index="33">
-        <div class="filelabel">ATTENTION PATTERN FILE / SUBJECT 001</div>
-        <div class="meta">SUBJECT: ANONYMOUS<br/>AGE: 28<br/>OCCUPATION: DESIGNER</div>
+      <div id="c3-plabel" class="clip" data-start="20.2" data-duration="9.8" data-track-index="40">PORTRAIT / FIG.03</div>
+      <div id="c3-photo" class="photo-block clip" data-start="20" data-duration="10" data-track-index="41"></div>
+      <div id="c3-pcap" class="clip" data-start="20.4" data-duration="9.6" data-track-index="42">SUBJECT: DAILY COMMUTER — AGE 27 — LONDON</div>
+
+      <div id="c3-right">
+        <div id="c3-rh" class="clip" data-start="20.6" data-duration="9.4" data-track-index="43">THE DAILY LOG</div>
+        <div class="c3row clip" data-start="21" data-duration="9" data-track-index="44"><span class="tm">08:14</span><span class="ac">Checked notifications</span><span class="du">4 min</span></div>
+        <div class="c3row clip" data-start="21.3" data-duration="8.7" data-track-index="45"><span class="tm">08:31</span><span class="ac">Instagram scroll</span><span class="du">11 min</span></div>
+        <div class="c3row clip" data-start="21.6" data-duration="8.4" data-track-index="46"><span class="tm">09:02</span><span class="ac">Email — work</span><span class="du">8 min</span></div>
+        <div class="c3row clip" data-start="21.9" data-duration="8.1" data-track-index="47"><span class="tm">09:47</span><span class="ac">YouTube — "quick video"</span><span class="du">23 min</span></div>
+        <div class="c3row clip" data-start="22.2" data-duration="7.8" data-track-index="48"><span class="tm">11:15</span><span class="ac">Back to work</span><span class="du"></span></div>
       </div>
-      <div id="ch03-timeline">
-        <div class="tl-title clip" data-start="26.4" data-duration="13.6" data-track-index="34">DAILY ATTENTION LOG</div>
-        <div class="tl-row clip" data-start="26.8" data-duration="13.2" data-track-index="35"><span class="t">07:23</span><span class="e">Alarm. Phone unlocked.</span></div>
-        <div class="tl-row clip" data-start="27.2" data-duration="12.8" data-track-index="36"><span class="t">07:24</span><span class="e">Instagram. 4 minutes.</span></div>
-        <div class="tl-row clip" data-start="27.6" data-duration="12.4" data-track-index="37"><span class="t">08:12</span><span class="e">Email. 11 minutes.</span></div>
-        <div class="tl-row clip" data-start="28.0" data-duration="12.0" data-track-index="38"><span class="t">10:47</span><span class="e">News feed. 23 minutes.</span></div>
-        <div class="tl-row hl clip" data-start="28.4" data-duration="11.6" data-track-index="39"><span class="t">12:03</span><span class="e">YouTube. 47 minutes.</span></div>
-        <div class="tl-row clip" data-start="28.8" data-duration="11.2" data-track-index="40"><span class="t">14:22</span><span class="e">TikTok. 31 minutes.</span></div>
-        <div class="tl-row clip" data-start="29.2" data-duration="10.8" data-track-index="41"><span class="t">17:55</span><span class="e">Messages. 18 minutes.</span></div>
-        <div class="tl-row clip" data-start="29.6" data-duration="10.4" data-track-index="42"><span class="t">22:41</span><span class="e">"Just 5 more minutes."</span></div>
-        <div class="tl-row clip" data-start="30.0" data-duration="10.0" data-track-index="43"><span class="t">23:58</span><span class="e">Phone unlocked: 127th time today.</span></div>
-      </div>
-      <div id="ch03-caption" class="clip" data-start="31.0" data-duration="9.0" data-track-index="44">"Five minutes became two hours. Every time."</div>
-      <div id="ch03-stamp" class="clip" data-start="32.0" data-duration="8.0" data-track-index="45"><span class="stamp">DAILY AVERAGE</span></div>
-      <div id="ch03-mult" class="clip" data-start="32.6" data-duration="7.4" data-track-index="46">× 365 days</div>
+      <div id="c3-redline" class="clip" data-start="24" data-duration="6" data-track-index="49" style="top:330px;"></div>
+      <div id="c3-quote" class="clip" data-start="27" data-duration="3" data-track-index="50">Five minutes became two hours.</div>
+      <div id="c3-anno" class="clip" data-start="27.5" data-duration="2.5" data-track-index="51">&times;7 recorded incidents — see full case study ATN-003</div>
     </div>
 
     <!-- ===================== CHAPTER 04 ===================== -->
     <div id="ch04" class="scene">
-      <div class="g-page clip" data-start="40" data-duration="14" data-track-index="47">04</div>
-      <div id="ch04-header" class="clip" data-start="40.1" data-duration="13.9" data-track-index="48">ATTENTION RESEARCH QUARTERLY / VOL. 12 / ISSUE 3 / 2024</div>
-      <div id="ch04-sub" class="clip" data-start="40.3" data-duration="13.7" data-track-index="49">"Measuring the Fragmentation of Human Attention in the Smartphone Era"</div>
+      <div id="c4-rline" class="clip" data-start="30.1" data-duration="11.9" data-track-index="60"></div>
+      <div id="c4-kick" class="clip" data-start="30.2" data-duration="11.8" data-track-index="61">ATTENTION ANALYSIS INSTITUTE — QUARTERLY FINDINGS Q4 2024</div>
+      <div id="c4-head" class="clip" data-start="30.4" data-duration="11.6" data-track-index="62">PRELIMINARY FINDINGS: THE ATTENTION ECONOMY</div>
+      <div id="c4-sub" class="clip" data-start="30.7" data-duration="11.3" data-track-index="63">A 24-month longitudinal study across 47,000 participants</div>
+      <div id="c4-hrule" class="clip" data-start="31" data-duration="11" data-track-index="64"></div>
 
-      <div id="find1" class="finding clip" data-start="40.6" data-duration="13.4" data-track-index="50">
-        <div class="num">FINDING 01</div>
-        <div class="body">The average adult now has an attention span of 8.25 seconds. Down from 12 seconds in 2000.</div>
-        <div class="rule"></div>
-        <div class="src">Source: Microsoft Canada, 2023 · <span class="yhl">attention</span></div>
+      <div id="find1" class="finding clip" data-start="32" data-duration="10" data-track-index="65">
+        <div class="top"><span>FINDING 01</span><span class="fig">FIG.04-A</span></div>
+        <div class="r"></div>
+        <div class="big">Average daily screen checks: 127 TIMES</div>
+        <div class="quote">"Participants reported checking devices an average of 127.3 times per day, with peaks occurring during commute hours..."</div>
+        <div class="src">Source: Stanford Digital Wellness Study, 2024 / N=12,400</div>
       </div>
-      <div id="find2" class="finding clip" data-start="44.0" data-duration="10.0" data-track-index="51">
-        <div class="num">FINDING 02</div>
-        <div class="body">Social media platforms employ 1,400+ design tactics to capture and hold user attention.</div>
-        <div class="rule"></div>
-        <div class="src">Source: Center for Humane Technology · <span class="yhl">attention</span></div>
+      <div id="find2" class="finding clip" data-start="35" data-duration="7" data-track-index="66">
+        <div class="top"><span>FINDING 02</span><span class="fig">FIG.04-B</span></div>
+        <div class="r"></div>
+        <div class="big">Average daily social media usage: 2H 37MIN</div>
+        <div class="quote">"Distributed across 47 micro-sessions averaging 3.4 minutes..."</div>
+        <div class="src">Source: Global Digital Report 2024 / DataReportal / N=5.35B</div>
       </div>
-      <div id="find3" class="finding clip" data-start="48.0" data-duration="6.0" data-track-index="52">
-        <div class="num">FINDING 03</div>
-        <div class="body">The global attention economy is estimated at $4.2 trillion. Your attention is the product.</div>
-        <div class="rule"></div>
-        <div class="src">Source: Attention Economy Institute · <span class="yhl">attention</span></div>
+      <div id="find3" class="finding clip" data-start="38" data-duration="4" data-track-index="67">
+        <div class="top"><span>FINDING 03</span><span class="fig">FIG.04-C</span></div>
+        <div class="r"></div>
+        <div class="big">Estimated lifetime cost: 9 YEARS</div>
+        <div class="quote">"Based on current usage patterns, average users will spend..."</div>
+        <div class="src">Source: Digital Wellness Foundation Projection Model, 2024</div>
       </div>
-
-      <div id="ch04-rule" class="clip" data-start="50.5" data-duration="3.5" data-track-index="53"></div>
-      <div id="ch04-close" class="clip" data-start="51.0" data-duration="3.0" data-track-index="54">"The data is clear. The question is what we do with it."</div>
+      <svg id="c4-circle" class="clip" data-start="39" data-duration="3" data-track-index="68" viewBox="0 0 360 90">
+        <path d="M20,45 C20,15 340,15 340,45 C340,75 20,75 20,45 Z" fill="none" stroke="#c00" stroke-width="3"/>
+      </svg>
+      <div id="c4-foot" class="clip" data-start="31.5" data-duration="10.5" data-track-index="69">DRAFT — NOT FOR DISTRIBUTION — REF: ATN-REPORT-2024-Q4</div>
+      <div id="c4-pg" class="clip" data-start="31.5" data-duration="10.5" data-track-index="70">— 14 —</div>
     </div>
 
     <!-- ===================== CHAPTER 05 ===================== -->
     <div id="ch05" class="scene">
-      <div class="g-page clip" data-start="54" data-duration="10" data-track-index="55">05</div>
-      <div id="ca1" class="clip-art clip" data-start="54.2" data-duration="9.8" data-track-index="56"><h4>THE <span class="att yhl">ATTENTION</span> ECONOMY IS WORTH MORE THAN OIL</h4><p>Markets once measured in barrels are now measured in minutes. Analysts argue the most valuable resource of the century is the human gaze itself.</p></div>
-      <div id="ca2" class="clip-art clip" data-start="54.5" data-duration="9.5" data-track-index="57"><h4>HOW BRANDS BID FOR YOUR <span class="att yhl">ATTENTION</span></h4><p>Real-time auctions decide what you see milliseconds before a page loads. The highest bidder wins a fraction of your focus.</p></div>
-      <div id="ca3" class="clip-art clip" data-start="54.8" data-duration="9.2" data-track-index="58"><h4><span class="att yhl">ATTENTION</span> DEFICIT: A MODERN EPIDEMIC</h4><p>Clinicians report a sharp rise in difficulty sustaining concentration, with implications spanning education, work, and public health.</p></div>
-      <div id="ca4" class="clip-art clip" data-start="55.1" data-duration="8.9" data-track-index="59"><h4>YOUR <span class="att yhl">ATTENTION</span> IS BEING AUCTIONED RIGHT NOW</h4><p>Even as you read this sentence, systems are valuing and reselling your engagement to the highest available buyer.</p></div>
-      <div id="ca5" class="clip-art clip" data-start="55.4" data-duration="8.6" data-track-index="60"><h4>THE <span class="att yhl">ATTENTION</span> MARKET NEVER SLEEPS</h4><p>Unlike traditional exchanges, this marketplace runs continuously, around the clock, across every device and every time zone.</p></div>
-      <div id="ca6" class="clip-art clip" data-start="55.7" data-duration="8.3" data-track-index="61"><h4>RESEARCHERS TRACK <span class="att yhl">ATTENTION</span> COLLAPSE IN GEN Z</h4><p>Longitudinal studies follow a generation raised on infinite scroll, documenting changes in focus that have no historical precedent.</p></div>
-      <div id="ca7" class="clip-art clip" data-start="56.0" data-duration="8.0" data-track-index="62"><h4><span class="att yhl">ATTENTION</span>: THE CURRENCY OF THE DIGITAL AGE</h4><p>What money was to the industrial era, attention is to the digital one — scarce, tradable, and relentlessly pursued by everyone who can profit from it.</p></div>
-      <div id="ch05-foot" class="clip" data-start="60.5" data-duration="3.5" data-track-index="63">"The word appears 10,000 times per day in media. You just didn't notice."</div>
+      <div id="c5-bg">
+        <div id="b1" class="hl clip" data-start="42.1" data-duration="11.9" data-track-index="80">CRISIS DEEPENS AS SCREENS DOMINATE</div>
+        <div id="b2" class="hl clip" data-start="42.1" data-duration="11.9" data-track-index="81">THE COST OF CONSTANT CONNECTION</div>
+        <div id="b3" class="hl clip" data-start="42.1" data-duration="11.9" data-track-index="82">A GENERATION LOOKING DOWN</div>
+      </div>
+
+      <div id="cf1" class="c5frag clip" data-start="42.4" data-duration="11.6" data-track-index="83"><h4>STANFORD DIGITAL WELLNESS REPORT</h4><p>Finding 01 — 127 checks/day across 12,400 participants.</p></div>
+      <div id="cf2" class="c5frag clip" data-start="42.6" data-duration="11.4" data-track-index="84"><h4>INTERVIEW TRANSCRIPT — SUBJECT A</h4><p>"I stopped counting after lunch."</p></div>
+      <div id="cf3" class="c5frag clip" data-start="42.8" data-duration="11.2" data-track-index="85"><h4>ATTENTION: A QUANTITATIVE ANALYSIS</h4><p>DOI:10.1038/atn.2024 — peer reviewed.</p></div>
+      <div id="cf4" class="c5frag clip" data-start="43" data-duration="11" data-track-index="86"><h4>WIRED — WHO OWNS YOUR MIND?</h4><p>The marketplace for human focus, examined.</p></div>
+
+      <div id="h1" class="c5head clip" data-start="43.5" data-duration="10.5" data-track-index="87">ATTENTION DEFICIT DISORDER RATES UP 340%</div>
+      <div id="h2" class="c5head clip" data-start="44.3" data-duration="9.7" data-track-index="88">SILICON VALLEY ENGINEERS ADMIT: WE BUILT SLOT MACHINES</div>
+      <div id="h3" class="c5head clip" data-start="45.1" data-duration="8.9" data-track-index="89">ATTENTION MARKET NOW WORTH $4.1 TRILLION</div>
+      <div id="h4" class="c5head clip" data-start="45.9" data-duration="8.1" data-track-index="90">YOUR FOCUS IS THEIR REVENUE</div>
+      <div id="h5" class="c5head clip" data-start="46.7" data-duration="7.3" data-track-index="91">ATTENTION LOSS: THE SILENT EPIDEMIC</div>
+      <div id="h6" class="c5head clip" data-start="47.5" data-duration="6.5" data-track-index="92">ATTENTION TRACKING SOFTWARE DEPLOYED IN 60 COUNTRIES</div>
+
+      <div id="a1" class="c5att clip" data-start="43.2" data-duration="10.8" data-track-index="93">ATTENTION ECONOMY</div>
+      <div id="a2" class="c5att clip" data-start="43.3" data-duration="10.7" data-track-index="94">ATTENTION BEHAVIOUR STUDY</div>
+      <div id="a3" class="c5att clip" data-start="43.4" data-duration="10.6" data-track-index="95">ATTENTION DEFICIT CRISIS</div>
+      <div id="a4" class="c5att clip" data-start="43.5" data-duration="10.5" data-track-index="96">ATTENTION MARKET ANALYSIS</div>
+      <div id="a5" class="c5att clip" data-start="43.6" data-duration="10.4" data-track-index="97">ATTENTION LOSS CORRELATION</div>
+
+      <div id="c5-stamp" class="clip" data-start="50" data-duration="4" data-track-index="98">CLASSIFIED / UNDER REVIEW</div>
     </div>
 
     <!-- ===================== CHAPTER 06 ===================== -->
     <div id="ch06" class="scene">
-      <div class="g-page clip" data-start="64" data-duration="12" data-track-index="64">06</div>
-      <div id="ch06-header" class="clip" data-start="64.1" data-duration="11.9" data-track-index="65">ATTENTION LOSS: LIFETIME CALCULATION / CONFIDENTIAL</div>
-      <div id="ch06-central" class="clip" data-start="64.4" data-duration="11.6" data-track-index="66">
-        <div class="big">9</div>
-        <div class="yr">YEARS</div>
-        <div class="cap">Average lifetime spent on screens.</div>
-      </div>
-      <svg id="ch06-diag" class="clip" data-start="71.0" data-duration="5.0" data-track-index="67" width="560" height="540" viewBox="0 0 560 540">
-        <line x1="60" y1="500" x2="500" y2="40" stroke="#C8001E" stroke-width="2"/>
-        <ellipse cx="280" cy="170" rx="240" ry="120" fill="none" stroke="#C8001E" stroke-width="2.5"/>
-      </svg>
+      <div id="cc1" class="c6corner clip" data-start="54.4" data-duration="9.6" data-track-index="100">STANFORD DIGITAL WELLNESS REPORT — Finding 01 / 127 checks/day.</div>
+      <div id="cc2" class="c6corner clip" data-start="54.5" data-duration="9.5" data-track-index="101">GLOBAL DIGITAL REPORT 2024 — 2H 37MIN daily social media.</div>
+      <div id="cc3" class="c6corner clip" data-start="54.6" data-duration="9.4" data-track-index="102">INTERVIEW SUBJECT A — "I stopped counting after lunch."</div>
+      <div id="cc4" class="c6corner clip" data-start="54.7" data-duration="9.3" data-track-index="103">WIRED — WHO OWNS YOUR MIND? / marketplace for focus.</div>
 
-      <div id="c6-left" class="c6frag clip" data-start="65.5" data-duration="10.5" data-track-index="68">
-        <div class="lbl" style="margin-bottom:8px;">PROJECTED LOSS</div>
-        <table>
-          <tr><td>Age 20</td><td class="r">2.1 yr lost</td></tr>
-          <tr><td>Age 40</td><td class="r">4.8 yr lost</td></tr>
-          <tr><td>Age 60</td><td class="r">9.2 yr lost</td></tr>
-        </table>
+      <div id="c6-block" class="clip" data-start="54.2" data-duration="9.8" data-track-index="104">
+        <div class="bh">CONCLUSION — LIFETIME IMPACT ASSESSMENT</div>
+        <div class="r"></div>
+        <div class="big">9 YEARS</div>
+        <div class="sub">of your life will be spent on a screen.</div>
+        <div class="r"></div>
+        <div class="src">Based on: current avg 6.37hrs/day &times; 79yr lifespan<br/>Source: Digital Wellness Foundation / WHO Data 2024</div>
+        <div id="c6-diag" class="clip" data-start="55" data-duration="9" data-track-index="105">SEE APPENDIX C — FULL CALCULATION</div>
       </div>
-      <div id="c6-right" class="c6frag clip" data-start="66.0" data-duration="10.0" data-track-index="69">"We designed it to be this way."<br/><span style="font-size:14px; font-style:normal; color:#666;">— Former Senior Engineer, Meta</span></div>
-      <div id="c6-bl" class="c6frag clip" data-start="66.5" data-duration="9.5" data-track-index="70">"What Would You Do With 9 Extra Years?"</div>
-      <div id="c6-br" class="c6frag clip" data-start="67.0" data-duration="9.0" data-track-index="71">Peer-reviewed: Journal of Applied Psychology, 2024</div>
-      <div id="ch06-stamp" class="clip" data-start="72.0" data-duration="4.0" data-track-index="72"><span class="stamp">FINDING VERIFIED</span></div>
+      <div id="c6-underline" class="clip" data-start="57" data-duration="7" data-track-index="106"></div>
+      <svg id="c6-circle" class="clip" data-start="59" data-duration="5" data-track-index="107" viewBox="0 0 760 460">
+        <path d="M60,300 C60,200 700,200 700,300 C700,400 60,400 60,300 Z" fill="none" stroke="#c00" stroke-width="4"/>
+      </svg>
     </div>
 
     <!-- ===================== CHAPTER 07 ===================== -->
     <div id="ch07" class="scene">
-      <div class="float-att clip" data-start="79.0" data-duration="4.0" data-track-index="73" style="left:240px; top:200px; font-size:40px;">ATTENTION</div>
-      <div class="float-att clip" data-start="79.0" data-duration="4.0" data-track-index="74" style="left:1100px; top:300px; font-size:120px;">ATTENTION</div>
-      <div class="float-att clip" data-start="79.0" data-duration="4.0" data-track-index="75" style="left:600px; top:640px; font-size:80px;">ATTENTION</div>
-      <div class="float-att clip" data-start="79.0" data-duration="4.0" data-track-index="76" style="left:1400px; top:760px; font-size:40px;">ATTENTION</div>
-      <div id="ch07-cap" class="clip" data-start="76.5" data-duration="3.5" data-track-index="77">"Strip away the data. The research. The reports."</div>
-      <div id="ch07-cap2" class="clip" data-start="80.0" data-duration="3.0" data-track-index="78">"What's left?"</div>
+      <div id="c7-1" class="c7att clip" data-start="69" data-duration="7" data-track-index="120">ATTENTION ECONOMY</div>
+      <div id="c7-2" class="c7att clip" data-start="69.2" data-duration="6.8" data-track-index="121">attention market</div>
+      <div id="c7-3" class="c7att clip" data-start="69.4" data-duration="6.6" data-track-index="122">ATTENTION CRISIS</div>
+      <div id="c7-4" class="c7att clip" data-start="69.6" data-duration="6.4" data-track-index="123">attention loss</div>
+      <div id="c7-5" class="c7att clip" data-start="69.8" data-duration="6.2" data-track-index="124">ATTENTION DATA</div>
+      <div id="c7-6" class="c7att clip" data-start="70" data-duration="6" data-track-index="125">attention behaviour</div>
+      <div id="c7-7" class="c7att clip" data-start="70.2" data-duration="5.8" data-track-index="126">ATTENTION STUDY</div>
+      <div id="c7-8" class="c7att clip" data-start="70.4" data-duration="5.6" data-track-index="127">ATTENTION REPORT</div>
     </div>
 
-    <!-- ===================== FINAL CHAPTER ===================== -->
+    <!-- ===================== FINAL ===================== -->
     <div id="final" class="scene">
-      <div id="finalbg" class="clip" data-start="83" data-duration="7" data-track-index="79"></div>
-      <div id="wall-host"></div>
-      <div id="final-line1" class="clip" data-start="88" data-duration="2" data-track-index="80">Your attention<br/>is your life.</div>
-      <div id="final-line2" class="clip" data-start="89.5" data-duration="0.5" data-track-index="81">What will you spend it on?</div>
+      <div id="fwall"></div>
+      <div id="fwall2"></div>
+      <div id="fblack" class="clip" data-start="83" data-duration="7" data-track-index="170"></div>
+      <div id="f-l1" class="clip" data-start="86.5" data-duration="3.5" data-track-index="171">Your attention</div>
+      <div id="f-l2" class="clip" data-start="87.5" data-duration="2.5" data-track-index="172">is your life.</div>
+      <div id="f-l3" class="clip" data-start="89" data-duration="1" data-track-index="173">What will you spend it on?</div>
     </div>
 
     <script>
-      /* ---------- build deterministic ATTENTION wall (60+ spans) ---------- */
+      /* ---------- deterministic ATTENTION wall grid (8 x 5) ---------- */
+      var COMPOUNDS = [
+        'ATTENTION ECONOMY','attention market','ATTENTION CRISIS',
+        'ATTENTION BEHAVIOUR','attention deficit','ATTENTION LOSS',
+        'ATTENTION STUDY','ATTENTION DATA','attention tracking',
+        'ATTENTION REPORT','ATTENTION ANALYSIS','attention research'
+      ];
+      var ROW_SIZES = [24, 18, 30, 20, 26];
       (function buildWall() {
-        var host = document.getElementById('wall-host');
-        var cols = 10, rows = 8;
-        var sizes = [14, 20, 28, 34, 42, 52, 60, 72];
-        var idx = 0;
+        var host = document.getElementById('fwall');
+        var host2 = document.getElementById('fwall2');
+        var cols = 8, rows = 5, idx = 0;
         for (var r = 0; r < rows; r++) {
           for (var c = 0; c < cols; c++) {
-            var span = document.createElement('span');
-            span.className = 'wall-att clip att-w';
-            span.textContent = 'ATTENTION';
-            var fs = sizes[(r * 7 + c * 3) % sizes.length];
-            span.style.fontSize = fs + 'px';
-            var w = fs * 5.6; // approx rendered width of "ATTENTION"
-            var x = 30 + c * 178 + (r % 2) * 50 + (idx * 17) % 36;
-            if (x + w > 1900) x = Math.max(20, 1900 - w);
-            var y = 50 + r * 122 + (idx * 13) % 26;
-            span.style.left = x + 'px';
-            span.style.top = y + 'px';
-            span.dataset.tier = (r * cols + c);
-            // timing metadata so lint sees valid clip attributes
-            span.setAttribute('data-start', '83.4');
-            span.setAttribute('data-duration', '6.6');
-            span.setAttribute('data-track-index', '23');
-            host.appendChild(span);
+            var cell = document.createElement('div');
+            cell.className = 'wcell clip';
+            cell.textContent = COMPOUNDS[idx % COMPOUNDS.length];
+            cell.style.fontSize = ROW_SIZES[r] + 'px';
+            cell.style.left = (66 + c * 220) + 'px';
+            cell.style.top = (100 + r * 180) + 'px';
+            cell.dataset.seq = idx;
+            cell.setAttribute('data-start', '76');
+            cell.setAttribute('data-duration', '7');
+            cell.setAttribute('data-track-index', '150');
+            host.appendChild(cell);
+
+            var cell2 = document.createElement('div');
+            cell2.className = 'wcell2 clip';
+            cell2.textContent = COMPOUNDS[(idx + 5) % COMPOUNDS.length];
+            cell2.style.fontSize = (16 + ((idx * 7) % 22)) + 'px';
+            cell2.style.left = (80 + c * 200) + 'px';
+            cell2.style.top = (150 + r * 175) + 'px';
+            cell2.setAttribute('data-start', '81');
+            cell2.setAttribute('data-duration', '2');
+            cell2.setAttribute('data-track-index', '160');
+            host2.appendChild(cell2);
             idx++;
           }
         }
@@ -445,115 +484,116 @@
       window.__timelines = window.__timelines || {};
       var tl = gsap.timeline({ paused: true });
       window.__timelines.root = tl;
-
       gsap.defaults({ ease: 'power2.out' });
 
-      /* ----- global layer ----- */
-      tl.fromTo(['#g-rule-top', '#g-rule-bottom'], { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0);
-      tl.fromTo('#g-archive', { opacity: 0 }, { opacity: 1, duration: 0.6 }, 0.2);
-      tl.to(['#g-rule-top', '#g-rule-bottom', '#g-archive'], { opacity: 0, duration: 0.5 }, 82.5);
+      function drawIn(sel, t, dur) {
+        document.querySelectorAll(sel).forEach(function (p) {
+          var len = p.getTotalLength ? p.getTotalLength() : 1000;
+          p.style.strokeDasharray = len;
+          p.style.strokeDashoffset = len;
+          tl.to(p, { strokeDashoffset: 0, duration: dur || 0.6, ease: 'power2.inOut' }, t);
+        });
+      }
 
-      document.querySelectorAll('.g-page, #g-chapter').forEach(function (el) {
-        var s = parseFloat(el.getAttribute('data-start'));
-        var d = parseFloat(el.getAttribute('data-duration'));
-        tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.4 }, s);
-        tl.to(el, { opacity: 0, duration: 0.4 }, s + d - 0.5);
+      /* ----- persistent layer ----- */
+      tl.fromTo('#persist .clip', { opacity: 0 }, { opacity: 1, duration: 0.5, stagger: 0.05 }, 0);
+      tl.to('#persist .clip', { opacity: 0, duration: 0.4 }, 85.6);
+
+      /* page label per chapter */
+      var pg = document.getElementById('p-page');
+      [[0,'01 / THE INVESTIGATION'],[10,'02 / THE EVIDENCE WALL'],[20,'03 / THE HUMAN STORY'],
+       [30,'04 / THE DISCOVERY'],[42,'05 / ESCALATION'],[54,'06 / THE REAL COST'],
+       [64,'07 / COLLAPSE'],[76,'08 / THE WALL']].forEach(function (e) {
+        tl.set(pg, { textContent: e[1] }, e[0]);
       });
 
       /* ===== CH01 ===== */
-      tl.fromTo('#ch01 .docref', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6 }, 0.2);
-      tl.fromTo('#ch01-stamp', { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.6 }, 0.5);
-      tl.fromTo('#ch01-headline .w', { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.2 }, 0.6);
-      tl.fromTo('#ch01-kicker', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6 }, 2.4);
-      tl.fromTo('#frag-a', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7 }, 3.2);
-      tl.fromTo('#frag-b', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7 }, 3.5);
-      tl.fromTo('#frag-c', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7 }, 3.8);
-      tl.fromTo('#ch01-circle', { opacity: 0, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 0.6, transformOrigin: 'left center' }, 5.5);
-      tl.fromTo('#ch01-sources', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6 }, 6.0);
-      tl.to('#ch01', { opacity: 0, scale: 0.92, transformOrigin: '50% 40%', duration: 0.8 }, 11.3);
+      tl.fromTo('#c1-masthead .w', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.15 }, 0.3);
+      tl.fromTo('#c1-mrule', { opacity: 0, scaleX: 0, transformOrigin: 'left' }, { opacity: 1, scaleX: 1, duration: 0.5 }, 0.9);
+      tl.fromTo('#c1-col1', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6 }, 1.3);
+      tl.fromTo('#c1-col2', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6 }, 1.9);
+      tl.fromTo('#c1-col3', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6 }, 2.5);
+      tl.fromTo('#c1-circle', { opacity: 0 }, { opacity: 1, duration: 0.2 }, 6);
+      drawIn('#c1-circle path', 6, 0.7);
+      tl.fromTo('#c1-tags .tag', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.15 }, 7.5);
+      tl.to('#ch01 .clip', { opacity: 0, y: -60, duration: 0.5, ease: 'power2.in' }, 9.5);
 
       /* ===== CH02 ===== */
-      tl.fromTo('#ch02-masthead', { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.6 }, 12.1);
-      ['#ev1', '#ev2', '#ev3', '#ev4', '#ev5'].forEach(function (s, i) {
-        tl.fromTo(s, { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.6 }, 12.6 + i * 0.3);
+      ['#ev1','#ev2','#ev3','#ev4','#ev5','#ev6'].forEach(function (s, i) {
+        tl.fromTo(s, { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.4, ease: 'back.out(1.2)' }, 10.3 + i * 0.15);
       });
-      tl.fromTo('.rthread', { opacity: 0, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 0.5, stagger: 0.2 }, 15.5);
-      tl.fromTo('#ch02-archive', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6 }, 14.5);
-      tl.to('#ch02', { opacity: 0, y: 4, duration: 0.7 }, 25.3);
+      tl.fromTo('#c2-threads', { opacity: 0 }, { opacity: 1, duration: 0.2 }, 13);
+      drawIn('#c2-threads path', 13, 0.6);
+      tl.to('#ch02 .clip', { opacity: 0, duration: 0.5, ease: 'power2.in' }, 19.5);
 
       /* ===== CH03 ===== */
-      tl.fromTo('#ch03-bg', { opacity: 0 }, { opacity: 0.4, duration: 0.8 }, 26);
-      tl.fromTo('#ch03-portrait', { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.8 }, 26.2);
-      tl.fromTo('#ch03-timeline .tl-title', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5 }, 26.4);
-      tl.fromTo('#ch03-timeline .tl-row', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.45, stagger: 0.4 }, 26.8);
-      tl.fromTo('#ch03-caption', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6 }, 31.0);
-      tl.fromTo('#ch03-stamp', { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.6 }, 32.0);
-      tl.fromTo('#ch03-mult', { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5 }, 32.6);
-      tl.to('#ch03', { opacity: 0, y: 4, duration: 0.7 }, 39.3);
+      tl.fromTo('#c3-photo', { opacity: 0 }, { opacity: 1, duration: 0.6 }, 20);
+      tl.fromTo(['#c3-plabel','#c3-pcap','#c3-rh'], { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5 }, 20.4);
+      tl.fromTo('.c3row', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.3 }, 21);
+      tl.fromTo('#c3-redline', { opacity: 1, scaleX: 0, transformOrigin: 'left' }, { scaleX: 1, duration: 1.2, ease: 'power2.inOut' }, 24);
+      tl.fromTo('#c3-quote', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6 }, 27);
+      tl.fromTo('#c3-anno', { opacity: 0 }, { opacity: 1, duration: 0.5 }, 27.5);
+      tl.to('#ch03 .clip', { opacity: 0, y: -40, duration: 0.5, ease: 'power2.in' }, 29.5);
 
       /* ===== CH04 ===== */
-      tl.fromTo('#ch04-header', { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5 }, 40.1);
-      tl.fromTo('#ch04-sub', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6 }, 40.3);
-      [['#find1', 40.6], ['#find2', 44.0], ['#find3', 48.0]].forEach(function (f) {
-        var sel = f[0], t = f[1];
-        tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: 0.01 }, t);
-        tl.fromTo(sel + ' .num', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4 }, t);
-        tl.fromTo(sel + ' .body', { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5 }, t + 0.3);
-        tl.fromTo([sel + ' .rule', sel + ' .src'], { opacity: 0 }, { opacity: 1, duration: 0.4 }, t + 0.6);
+      tl.fromTo(['#c4-rline','#c4-kick','#c4-head','#c4-sub','#c4-hrule','#c4-foot','#c4-pg'],
+        { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.08 }, 30.1);
+      ['#find1','#find2','#find3'].forEach(function (s, i) {
+        tl.fromTo(s, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5 }, 32 + i * 3);
       });
-      tl.fromTo('#ch04-rule', { opacity: 0, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 0.6 }, 50.5);
-      tl.fromTo('#ch04-close', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6 }, 51.0);
-      tl.to('#ch04', { opacity: 0, y: 4, duration: 0.7 }, 53.3);
+      tl.fromTo('#c4-circle', { opacity: 0 }, { opacity: 1, duration: 0.2 }, 39);
+      drawIn('#c4-circle path', 39, 0.6);
+      tl.to('#ch04 .clip', { opacity: 0, y: -50, duration: 0.5, ease: 'power2.in' }, 41.5);
 
       /* ===== CH05 ===== */
-      ['#ca1', '#ca2', '#ca3', '#ca4', '#ca5', '#ca6', '#ca7'].forEach(function (s, i) {
-        tl.fromTo(s, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5 }, 54.2 + i * 0.3);
+      tl.fromTo('#c5-bg .hl', { opacity: 0 }, { opacity: 0.2, duration: 0.6, stagger: 0.1 }, 42.1);
+      ['#cf1','#cf2','#cf3','#cf4'].forEach(function (s, i) {
+        tl.fromTo(s, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5 }, 42.4 + i * 0.2);
       });
-      tl.to('#ch05 .att', { backgroundColor: '#C8001E', color: '#fff', duration: 0.35, stagger: 0.12, repeat: 1, yoyo: true }, 58.8);
-      tl.fromTo('#ch05-foot', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6 }, 60.5);
-      tl.to('#ch05', { opacity: 0, y: 4, duration: 0.7 }, 63.3);
+      ['#h1','#h2','#h3','#h4','#h5','#h6'].forEach(function (s, i) {
+        tl.fromTo(s, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5 }, 43.5 + i * 0.8);
+      });
+      tl.fromTo('#ch05 .c5att', { opacity: 0 }, { opacity: 1, duration: 0.5, stagger: 0.1 }, 43.2);
+      tl.fromTo('#c5-stamp', { opacity: 0 }, { opacity: 0.4, duration: 0.6 }, 50);
+      tl.to('#ch05 .clip', { opacity: 0, duration: 0.6, ease: 'power2.in' }, 53.4);
 
       /* ===== CH06 ===== */
-      tl.fromTo('#ch06-header', { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5 }, 64.1);
-      tl.fromTo('#ch06-central', { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.8 }, 64.4);
-      ['#c6-left', '#c6-right', '#c6-bl', '#c6-br'].forEach(function (s, i) {
-        tl.fromTo(s, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6 }, 65.5 + i * 0.5);
+      ['#cc1','#cc2','#cc3','#cc4'].forEach(function (s, i) {
+        tl.fromTo(s, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5 }, 54.4 + i * 0.1);
       });
-      tl.fromTo('#ch06-diag', { opacity: 0 }, { opacity: 1, duration: 0.7 }, 71.0);
-      tl.fromTo('#ch06-stamp', { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.6 }, 72.0);
-      tl.to('#ch06', { opacity: 0, scale: 0.97, duration: 0.7, transformOrigin: '50% 40%' }, 75.3);
+      tl.fromTo('#c6-block', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6 }, 54.2);
+      tl.fromTo('#c6-diag', { opacity: 0 }, { opacity: 1, duration: 0.5 }, 55);
+      tl.fromTo('#c6-underline', { opacity: 1, scaleX: 0, transformOrigin: 'left' }, { scaleX: 1, duration: 0.8, ease: 'power2.inOut' }, 57);
+      tl.fromTo('#c6-circle', { opacity: 0 }, { opacity: 1, duration: 0.2 }, 59);
+      drawIn('#c6-circle path', 59, 0.8);
+      tl.to('#ch06 .clip', { opacity: 0, y: -30, duration: 0.5, stagger: 0.05, ease: 'power2.in' }, 63.4);
 
       /* ===== CH07 collapse ===== */
-      tl.fromTo('#ch07-cap', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6 }, 76.5);
-      tl.to('#ch07-cap', { opacity: 0, duration: 0.5 }, 79.5);
-      tl.fromTo('#ch07 .float-att', { opacity: 0 }, { opacity: 0.15, duration: 0.8, stagger: 0.15 }, 79.0);
-      tl.fromTo('#ch07-cap2', { opacity: 0 }, { opacity: 1, duration: 0.5 }, 80.0);
-      tl.to(['#ch07 .float-att', '#ch07-cap2'], { opacity: 0, scale: 0.95, duration: 0.8, transformOrigin: '50% 50%' }, 82.0);
+      tl.fromTo('#ch07 .c7att', { opacity: 0 }, { opacity: 1, duration: 0.8, stagger: 0.1 }, 69);
+      tl.to('#c7-1', { fontSize: 80, duration: 1.2 }, 72);
+      tl.to(['#c7-2','#c7-3','#c7-4','#c7-5','#c7-6','#c7-7','#c7-8'],
+        { x: function (i, el) { var r = el.getBoundingClientRect(); return (960 - (r.left + r.width / 2)); },
+          y: function (i, el) { var r = el.getBoundingClientRect(); return (480 - (r.top + r.height / 2)); },
+          duration: 2.5, ease: 'power1.inOut' }, 72);
+      tl.to(['#c7-2','#c7-3','#c7-4','#c7-5','#c7-6','#c7-7','#c7-8'], { opacity: 0, duration: 0.8 }, 75);
 
-      /* ===== FINAL ===== */
-      tl.fromTo('#finalbg', { opacity: 0 }, { opacity: 1, duration: 0.5 }, 83.0);
-      var walls = Array.prototype.slice.call(document.querySelectorAll('.att-w'));
-      walls.forEach(function (el) {
-        var tier = parseInt(el.dataset.tier, 10);
-        var appear = 83.4 + (tier / 80) * 3.4;
-        var op = 0.35 + ((tier * 7) % 10) / 18;
-        tl.fromTo(el, { opacity: 0 }, { opacity: op, duration: 0.3 }, appear);
+      /* ===== FINAL phase 1: flood ===== */
+      var cells = Array.prototype.slice.call(document.querySelectorAll('.wcell'));
+      cells.forEach(function (el) {
+        var seq = parseInt(el.dataset.seq, 10);
+        tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.2 }, 76 + seq * 0.08);
       });
-      var central = walls[44];
-      if (central) {
-        central.style.left = '50%';
-        central.style.top = '46%';
-        central.style.transform = 'translate(-50%,-50%)';
-        central.style.fontSize = '120px';
-        var others = walls.filter(function (w) { return w !== central; });
-        tl.to(others, { opacity: 0, duration: 0.8 }, 87.2);
-        tl.to(central, { opacity: 1, duration: 0.4 }, 87.2);
-        tl.to(central, { opacity: 0, duration: 0.8 }, 87.6);
-      }
-      tl.fromTo('#final-line1', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.8 }, 88.0);
-      tl.fromTo('#final-line2', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.8 }, 89.5);
-      tl.to({}, { duration: 0.1 }, 90.0);
+      tl.to('.wcell', { color: '#c00', duration: 0.3 }, 80);
+      tl.fromTo('.wcell2', { opacity: 0 }, { opacity: 1, duration: 0.4, stagger: 0.02 }, 81);
+      /* ===== FINAL phase 2: silence ===== */
+      tl.to(['.wcell', '.wcell2'], { opacity: 0, duration: 0.3 }, 83);
+      tl.fromTo('#fblack', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 83);
+      /* ===== FINAL phase 3: question ===== */
+      tl.fromTo('#f-l1', { opacity: 0 }, { opacity: 1, duration: 0.6 }, 86.5);
+      tl.fromTo('#f-l2', { opacity: 0 }, { opacity: 1, duration: 0.6 }, 87.5);
+      tl.fromTo('#f-l3', { opacity: 0 }, { opacity: 1, duration: 0.6 }, 89);
+      tl.to({}, { duration: 0.1 }, 90);
     </script>
-      </div>
+    </div>
   </body>
 </html>
