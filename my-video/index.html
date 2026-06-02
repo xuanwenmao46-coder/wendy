@@ -2,961 +2,558 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=1920, height=720" />
+    <meta name="viewport" content="width=1920, height=1080" />
     <script src="./node_modules/gsap/dist/gsap.min.js"></script>
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body {
-        width: 1920px;
-        height: 720px;
-        overflow: hidden;
-        background: #ffffff;
+        width: 1920px; height: 1080px; overflow: hidden;
+        background: #FFFFFF;
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        color: #0A0A0A;
       }
 
-      /* Paper texture overlay */
-      body::before {
-        content: '';
-        position: fixed;
-        inset: 0;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='1' height='1' fill='%23000' opacity='0.03'/%3E%3C/svg%3E");
-        pointer-events: none;
-        z-index: 9999;
-      }
+      .clip { opacity: 0; }
+      .mono { font-family: 'Courier New', monospace; }
 
-      .scene-bg {
-        position: absolute;
-        inset: 0;
-        background: #ffffff;
+      .newsprint {
+        background-image:
+          repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(0,0,0,0.04) 28px),
+          repeating-linear-gradient(90deg, transparent, transparent 27px, rgba(0,0,0,0.02) 28px);
       }
-
-      /* Fade-to-black overlay for ch06 */
-      #fade-overlay {
-        position: absolute;
-        inset: 0;
-        background: #000000;
-        opacity: 0;
-        z-index: 500;
-        pointer-events: none;
+      .halftone {
+        background-color: #2c2c2c;
+        background-image: radial-gradient(circle, #6a6a6a 1px, transparent 1px);
+        background-size: 6px 6px;
       }
-
-      /* ========== CHAPTER 01 ========== */
-      .ch01-flash {
-        position: absolute;
-        font-weight: 900;
-        color: #000000;
-        text-transform: uppercase;
-        letter-spacing: -0.02em;
-        line-height: 1;
-        opacity: 0;
-      }
-      #f-screen-time    { top: 60px;    left: 80px;   font-size: 120px; }
-      #f-digital-age    { top: 60px;    right: 80px;  font-size: 80px;  text-align: right; }
-      #f-social-media   { bottom: 80px; left: 80px;   font-size: 60px; }
-      #f-attn-crisis    { top: 50%;     left: 50%;    transform: translate(-50%,-50%); font-size: 100px; text-align: center; }
-      #f-mental-fatigue { bottom: 80px; right: 80px;  font-size: 60px;  text-align: right; }
-
-      #ch01-headline {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        text-align: center;
-        opacity: 0;
-        width: 1800px;
-      }
-      #ch01-headline .main-title {
-        font-size: 110px;
-        font-weight: 900;
-        color: #000000;
-        text-transform: uppercase;
-        letter-spacing: -0.04em;
-        line-height: 1.0;
-      }
-      #ch01-headline .sub-red {
-        font-size: 18px;
-        color: #CC0000;
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
-        margin-top: 18px;
-        font-weight: 500;
-      }
-
-      #ch01-attn-tag {
-        position: absolute;
-        bottom: 24px;
-        right: 40px;
-        font-size: 14px;
-        font-weight: 700;
-        color: #000000;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-        border: 1px solid #000000;
-        padding: 4px 10px;
-        opacity: 0;
-      }
-
-      /* ========== CHAPTER 02 ========== */
-      #ch02-heading-label {
-        position: absolute;
-        top: 30px;
-        left: 60px;
-        font-size: 18px;
-        font-weight: 700;
-        color: #000000;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        opacity: 0;
-      }
-
-      #ch02-counter {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        text-align: center;
-        opacity: 0;
-      }
-      #ch02-counter .big-num {
-        font-size: 200px;
-        font-weight: 900;
-        color: #000000;
-        letter-spacing: -0.06em;
-        line-height: 1;
-      }
-      #ch02-counter .caption {
-        font-size: 24px;
-        color: #666666;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        margin-top: 16px;
-      }
-
-      #ch02-grid-wrap {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        opacity: 0;
-      }
-      #ch02-grid {
-        display: grid;
-        grid-template-columns: repeat(13, 46px);
-        grid-template-rows: repeat(10, 46px);
-        gap: 4px;
-      }
-      .sq {
-        width: 46px;
-        height: 46px;
-        background: #000000;
-        opacity: 0;
-      }
-      #ch02-grid-caption {
-        position: absolute;
-        bottom: 60px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 22px;
-        color: #666666;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        opacity: 0;
-        text-align: center;
-      }
-      #ch02-a1 { position: absolute; top: 160px; left: 340px; font-size: 12px; font-weight: 700; color: #CC0000; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0; }
-      #ch02-a2 { position: absolute; top: 400px; right: 260px; font-size: 12px; font-weight: 700; color: #CC0000; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0; }
-      #ch02-a3 { position: absolute; bottom: 100px; left: 500px; font-size: 12px; font-weight: 700; color: #CC0000; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0; }
-
-      /* ========== CHAPTER 03 ========== */
-      #ch03-portrait {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 320px;
-        height: 400px;
-        background: #e0e0e0;
-        opacity: 0;
-      }
-      #ch03-portrait::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background:
-          linear-gradient(to bottom right, transparent calc(50% - 0.5px), #aaaaaa calc(50% - 0.5px), #aaaaaa calc(50% + 0.5px), transparent calc(50% + 0.5px)),
-          linear-gradient(to top right, transparent calc(50% - 0.5px), #aaaaaa calc(50% - 0.5px), #aaaaaa calc(50% + 0.5px), transparent calc(50% + 0.5px));
-      }
-
-      .ch03-label {
-        position: absolute;
-        font-size: 15px;
-        font-weight: 700;
-        color: #000000;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        opacity: 0;
-      }
-      #ch03-l-work          { top: 160px; left: 680px; }
-      #ch03-l-entertainment { top: 160px; right: 640px; }
-      #ch03-l-shopping      { bottom: 200px; left: 680px; }
-      #ch03-l-social        { bottom: 200px; right: 660px; }
-
-      #ch03-annotation {
-        position: absolute;
-        top: 180px;
-        left: 50%;
-        opacity: 0;
-      }
-      #ch03-annotation .ann-circle {
-        width: 160px;
-        height: 160px;
-        border-radius: 50%;
-        border: 3px solid #CC0000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        font-size: 16px;
-        font-weight: 700;
-        color: #CC0000;
-        letter-spacing: 0.08em;
-        line-height: 1.3;
-        text-transform: uppercase;
-      }
-
-      #ch03-time-label {
-        position: absolute;
-        top: 40px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 28px;
-        font-weight: 700;
-        color: #000000;
-        letter-spacing: 0.1em;
-        opacity: 0;
-        white-space: nowrap;
-      }
-
-      #ch03-caption {
-        position: absolute;
-        bottom: 60px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 22px;
-        color: #666666;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        opacity: 0;
-        text-align: center;
-        white-space: nowrap;
-      }
-
-      .ch03-attn {
-        position: absolute;
-        font-size: 11px;
-        font-weight: 700;
-        color: #CC0000;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-        opacity: 0;
-        border-bottom: 1px solid #CC0000;
-        padding-bottom: 2px;
-      }
-      #ch03-a1 { top: 80px;      left: 120px; }
-      #ch03-a2 { top: 260px;     left: 80px;  }
-      #ch03-a3 { top: 100px;     right: 100px;}
-      #ch03-a4 { bottom: 140px;  right: 160px;}
-
-      /* ========== CHAPTER 04 ========== */
-      #ch04-report-title {
-        position: absolute;
-        top: 40px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 36px;
-        font-weight: 900;
-        color: #CC0000;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        opacity: 0;
-        text-align: center;
-        white-space: nowrap;
-      }
-
-      #ch04-donut-wrap {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        opacity: 0;
-      }
-
-      .ch04-seg-label {
-        position: absolute;
-        font-size: 14px;
-        font-weight: 700;
-        color: #000000;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        opacity: 0;
-        line-height: 1.4;
-      }
-      #ch04-sl1 { top: 60px;    left: -220px; text-align: right; }
-      #ch04-sl2 { top: 60px;    right: -220px; }
-      #ch04-sl3 { bottom: 60px; left: -220px; text-align: right; }
-      #ch04-sl4 { bottom: 60px; right: -220px; }
-
-      #ch04-bars-wrap {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 900px;
-        opacity: 0;
-      }
-      .bar-row {
-        display: flex;
-        align-items: center;
-        margin-bottom: 28px;
-      }
-      .bar-label-left {
-        width: 200px;
-        font-size: 15px;
-        font-weight: 700;
-        color: #000000;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        text-align: right;
-        padding-right: 20px;
-      }
-      .bar-track {
-        flex: 1;
-        height: 40px;
-        background: #eeeeee;
-        position: relative;
-        overflow: hidden;
-      }
-      .bar-fill {
-        position: absolute;
-        left: 0; top: 0; bottom: 0;
-        width: 0;
-      }
-      .bar-pct {
-        position: absolute;
-        right: 8px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 16px;
-        font-weight: 900;
-        color: #ffffff;
-      }
-      #bar1 .bar-fill { background: #000000; }
-      #bar2 .bar-fill { background: #333333; }
-      #bar3 .bar-fill { background: #666666; }
-      #bar4 .bar-fill { background: #999999; }
-
-      #ch04-caption {
-        position: absolute;
-        bottom: 36px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 22px;
-        color: #666666;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        opacity: 0;
-        text-align: center;
-        white-space: nowrap;
-      }
-
-      #ch04-a1 { position: absolute; top: 100px;  left: 80px;  font-size: 11px; font-weight: 700; color: #CC0000; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0; }
-      #ch04-a2 { position: absolute; top: 100px;  right: 80px; font-size: 11px; font-weight: 700; color: #CC0000; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0; }
-      #ch04-a3 { position: absolute; bottom: 120px; left: 80px; font-size: 11px; font-weight: 700; color: #CC0000; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0; }
-      #ch04-a4 { position: absolute; bottom: 120px; right: 80px; font-size: 11px; font-weight: 700; color: #CC0000; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0; }
-      #ch04-a5 { position: absolute; top: 50%; left: 60px; font-size: 11px; font-weight: 700; color: #CC0000; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0; }
-
-      /* ========== CHAPTER 05 ========== */
-      #ch05-bg-frags {
-        position: absolute;
-        inset: 0;
-        overflow: hidden;
-        opacity: 0;
-      }
-      .frag {
-        position: absolute;
+      .doc-panel {
+        background: #F7F4EF;
+        border: 1px solid #CCCCCC;
+        padding: 24px;
         font-size: 13px;
-        font-weight: 700;
-        color: #cccccc;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        line-height: 1.6;
+        line-height: 1.5;
+        color: #333;
       }
 
-      #ch05-nine {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        font-size: 300px;
-        font-weight: 900;
-        color: #000000;
-        letter-spacing: -0.05em;
-        line-height: 1;
-        opacity: 0;
+      .grule { position: absolute; left: 0; width: 1920px; height: 1px; background: #0A0A0A; }
+      #g-rule-top { top: 8px; }
+      #g-rule-bottom { bottom: 40px; }
+      #g-archive {
+        position: absolute; bottom: 14px; left: 40px;
+        font-size: 11px; color: #666; letter-spacing: .04em; text-transform: uppercase;
       }
-      #ch05-years {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        font-size: 90px;
-        font-weight: 900;
-        color: #000000;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        opacity: 0;
+      #g-chapter {
+        position: absolute; top: 16px; left: 40px;
+        font-size: 11px; color: #666; letter-spacing: .15em;
+        font-family: 'Courier New', monospace;
       }
-      #ch05-underline {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 6px;
-        background: #CC0000;
-        opacity: 1;
-      }
-      #ch05-caption {
-        position: absolute;
-        bottom: 60px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 20px;
-        color: #666666;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        opacity: 0;
-        text-align: center;
-        white-space: nowrap;
-      }
-      #ch05-a1 { position: absolute; font-size: 14px; top: 60px;    left: 80px;   font-weight: 900; color: #000000; text-transform: uppercase; letter-spacing: -0.02em; opacity: 0; }
-      #ch05-a2 { position: absolute; font-size: 22px; top: 160px;   right: 100px; font-weight: 900; color: #000000; text-transform: uppercase; letter-spacing: -0.02em; opacity: 0; }
-      #ch05-a3 { position: absolute; font-size: 10px; bottom: 200px; left: 120px; font-weight: 900; color: #000000; text-transform: uppercase; letter-spacing: -0.02em; opacity: 0; }
-      #ch05-a4 { position: absolute; font-size: 30px; bottom: 100px; right: 80px; font-weight: 900; color: #000000; text-transform: uppercase; letter-spacing: -0.02em; opacity: 0; }
-      #ch05-a5 { position: absolute; font-size: 16px; top: 280px;   left: 60px;   font-weight: 900; color: #000000; text-transform: uppercase; letter-spacing: -0.02em; opacity: 0; }
-      #ch05-a6 { position: absolute; font-size: 12px; top: 80px;    right: 300px; font-weight: 900; color: #000000; text-transform: uppercase; letter-spacing: -0.02em; opacity: 0; }
-      #ch05-a7 { position: absolute; font-size: 20px; bottom: 220px; left: 320px; font-weight: 900; color: #000000; text-transform: uppercase; letter-spacing: -0.02em; opacity: 0; }
-      #ch05-a8 { position: absolute; font-size: 11px; top: 380px;   right: 60px;  font-weight: 900; color: #000000; text-transform: uppercase; letter-spacing: -0.02em; opacity: 0; }
-
-      /* ========== CHAPTER 06 ========== */
-      #ch06-attn-wall {
-        position: absolute;
-        inset: 0;
-        overflow: hidden;
-        opacity: 0;
-      }
-      .wall-attn {
-        position: absolute;
-        font-weight: 900;
-        color: #000000;
-        text-transform: uppercase;
-        letter-spacing: -0.03em;
-        opacity: 0;
+      .g-page {
+        position: absolute; bottom: 12px; right: 40px;
+        font-size: 22px; font-weight: 700; color: #0A0A0A; letter-spacing: .05em;
       }
 
-      #ch06-center-attn {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        font-size: 120px;
-        font-weight: 900;
-        color: #000000;
-        text-transform: uppercase;
-        letter-spacing: -0.04em;
-        opacity: 0;
-        white-space: nowrap;
+      .scene { position: absolute; inset: 0; }
+      .lbl {
+        font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: #666;
+        font-family: 'Courier New', monospace;
       }
+      .stamp {
+        font-size: 16px; letter-spacing: .25em; text-transform: uppercase;
+        color: #C8001E; font-weight: 700; border: 2px solid #C8001E;
+        padding: 6px 14px; display: inline-block; transform: rotate(-6deg);
+      }
+      .yhl { background: #FFFF99; padding: 0 3px; }
 
-      #ch06-final {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        text-align: center;
-        opacity: 0;
-        z-index: 600;
+      /* ---------- CH01 ---------- */
+      #ch01 .docref {
+        position: absolute; top: 60px; left: 80px;
+        font-size: 13px; letter-spacing: .12em; color: #333; text-transform: uppercase;
+        border-left: 3px solid #C8001E; padding-left: 14px; line-height: 1.6;
+        font-family: 'Courier New', monospace;
       }
-      #ch06-final .line1,
-      #ch06-final .line2 {
-        font-size: 72px;
-        font-weight: 700;
-        color: #ffffff;
-        letter-spacing: -0.02em;
-        line-height: 1.1;
+      #ch01-headline { position: absolute; top: 150px; left: 80px; width: 1500px; }
+      #ch01-headline .w {
+        display: inline-block; font-size: 96px; font-weight: 700;
+        letter-spacing: -0.03em; line-height: 1.02; margin-right: 22px; color: #0A0A0A;
       }
-      #ch06-final .line3 {
-        font-size: 40px;
-        font-weight: 400;
-        color: #ffffff;
-        letter-spacing: 0.04em;
-        margin-top: 32px;
-        opacity: 0;
+      #ch01-kicker {
+        position: absolute; top: 430px; left: 80px;
+        font-size: 24px; color: #333; letter-spacing: .02em; font-style: italic;
+      }
+      .frag { position: absolute; width: 540px; }
+      .frag h3 { font-size: 20px; font-weight: 700; line-height: 1.2; margin-bottom: 10px; color: #0A0A0A; }
+      .frag p { font-size: 12.5px; color: #555; line-height: 1.55; }
+      #frag-a { left: 80px; top: 560px; }
+      #frag-b { left: 690px; top: 560px; }
+      #frag-c { left: 1300px; top: 560px; }
+      #ch01-circle { position: absolute; left: 690px; top: 545px; width: 360px; height: 120px; }
+      #ch01-sources {
+        position: absolute; bottom: 60px; right: 40px;
+        font-size: 12px; color: #666; letter-spacing: .03em; text-align: right;
+      }
+      #ch01-stamp { position: absolute; top: 70px; right: 90px; }
+
+      /* ---------- CH02 ---------- */
+      #ch02-masthead {
+        position: absolute; top: 46px; left: 80px; width: 1760px;
+        border-bottom: 3px solid #0A0A0A; padding-bottom: 12px;
+        font-size: 34px; font-weight: 700; letter-spacing: .03em;
+      }
+      #ch02-masthead span { font-size: 14px; color: #666; letter-spacing: .2em; float: right; margin-top: 18px; }
+      .ev-card { position: absolute; background: #FFFFFF; border: 1px solid #CCCCCC; padding: 22px; }
+      .ev-card .src { font-size: 11px; color: #C8001E; margin-top: 14px; letter-spacing: .08em; text-transform: uppercase; }
+      #ev1 { left: 80px; top: 170px; width: 620px; }
+      #ev1 .photo { width: 100%; height: 130px; margin-bottom: 16px; }
+      #ev1 .q { font-size: 26px; font-weight: 700; line-height: 1.25; }
+      #ev2 { right: 80px; top: 170px; width: 540px; background: #F7F4EF; }
+      #ev2 .t { font-size: 16px; line-height: 1.5; color: #333; }
+      #ev2 .t b { color: #0A0A0A; }
+      #ev3 { left: 80px; top: 560px; width: 600px; background: #F7F4EF; }
+      #ev3 .ttl { font-size: 24px; font-weight: 700; line-height: 1.25; }
+      #ev4 { left: 720px; top: 470px; width: 480px; background: #C8001E; color: #fff; border-color: #C8001E; }
+      #ev4 .q { font-size: 28px; font-weight: 700; line-height: 1.25; }
+      #ev4 .src { color: #ffd; }
+      #ev5 {
+        right: 80px; top: 560px; width: 540px; background: #F7F4EF;
+        clip-path: polygon(0 0, 100% 0, 100% 92%, 96% 100%, 88% 94%, 80% 100%, 70% 95%, 60% 100%, 48% 95%, 38% 100%, 26% 96%, 14% 100%, 5% 95%, 0 100%);
+      }
+      #ev5 .ttl { font-size: 24px; font-weight: 700; line-height: 1.25; padding-bottom: 26px; }
+      .rthread { position: absolute; height: 1px; background: #C8001E; transform-origin: left center; }
+
+      /* ---------- CH03 ---------- */
+      #ch03-bg { position: absolute; inset: 0; opacity: .4; }
+      #ch03-portrait {
+        position: absolute; left: 80px; top: 120px; width: 1040px; height: 820px;
+        border: 1px solid #999;
+        background-image:
+          radial-gradient(circle, #6a6a6a 1px, transparent 1px),
+          repeating-linear-gradient(45deg, rgba(255,255,255,0.04) 0 2px, transparent 2px 8px);
+        background-size: 6px 6px, auto;
+        background-color: #2c2c2c;
+      }
+      #ch03-portrait .meta {
+        position: absolute; left: 24px; bottom: 24px; color: #fff;
+        font-size: 13px; letter-spacing: .12em; font-family: 'Courier New', monospace; line-height: 1.8;
+      }
+      #ch03-portrait .filelabel {
+        position: absolute; left: 24px; top: 24px; color: #fff;
+        font-size: 11px; letter-spacing: .2em; opacity: .8;
+        font-family: 'Courier New', monospace;
+      }
+      #ch03-timeline { position: absolute; right: 80px; top: 120px; width: 640px; }
+      #ch03-timeline .tl-title { font-size: 14px; letter-spacing: .2em; color: #666; text-transform: uppercase; margin-bottom: 22px; }
+      .tl-row {
+        display: flex; gap: 20px; font-size: 21px; padding: 9px 0;
+        border-bottom: 1px solid #E5E5E5; line-height: 1.2;
+      }
+      .tl-row .t { font-family: 'Courier New', monospace; color: #C8001E; width: 78px; }
+      .tl-row .e { color: #0A0A0A; }
+      .tl-row.hl .e { position: relative; }
+      .tl-row.hl .e::after {
+        content: ''; position: absolute; left: 0; bottom: -3px; width: 100%; height: 2px; background: #C8001E;
+      }
+      #ch03-caption { position: absolute; left: 80px; bottom: 70px; font-size: 26px; font-style: italic; color: #333; }
+      #ch03-stamp { position: absolute; right: 80px; bottom: 130px; }
+      #ch03-mult { position: absolute; right: 90px; bottom: 90px; font-size: 22px; color: #C8001E; font-style: italic; letter-spacing: .05em; }
+
+      /* ---------- CH04 ---------- */
+      #ch04-header { position: absolute; top: 50px; left: 80px; font-size: 16px; letter-spacing: .2em; color: #666; text-transform: uppercase; }
+      #ch04-sub { position: absolute; top: 86px; left: 80px; width: 1500px; font-size: 32px; font-weight: 700; line-height: 1.2; }
+      .finding { position: absolute; top: 230px; width: 540px; border-top: 4px solid #0A0A0A; padding-top: 18px; }
+      .finding .num { font-size: 22px; font-weight: 700; letter-spacing: .1em; margin-bottom: 14px; }
+      .finding .body { font-size: 24px; line-height: 1.35; color: #0A0A0A; }
+      .finding .rule { height: 1px; background: #CCC; margin: 18px 0; }
+      .finding .src { font-size: 13px; color: #666; letter-spacing: .04em; text-transform: uppercase; }
+      #find1 { left: 80px; }
+      #find2 { left: 690px; }
+      #find3 { left: 1300px; }
+      #ch04-rule { position: absolute; left: 80px; top: 720px; width: 1760px; height: 1px; background: #0A0A0A; transform-origin: left; }
+      #ch04-close { position: absolute; left: 80px; top: 760px; font-size: 34px; font-weight: 700; line-height: 1.2; width: 1500px; }
+
+      /* ---------- CH05 ---------- */
+      .clip-art { position: absolute; width: 580px; background: #FFFFFF; border: 1px solid #CCC; padding: 20px; }
+      .clip-art h4 { font-size: 22px; font-weight: 700; line-height: 1.2; margin-bottom: 12px; }
+      .clip-art p { font-size: 12px; color: #666; line-height: 1.5; }
+      #ca1 { left: 70px;  top: 110px; }
+      #ca2 { left: 670px; top: 110px; }
+      #ca3 { left: 1270px;top: 110px; }
+      #ca4 { left: 70px;  top: 430px; }
+      #ca5 { left: 670px; top: 430px; }
+      #ca6 { left: 1270px;top: 430px; }
+      #ca7 { left: 370px; top: 750px; width: 1180px; }
+      #ch05-foot { position: absolute; left: 80px; bottom: 60px; font-size: 24px; font-style: italic; color: #333; }
+
+      /* ---------- CH06 ---------- */
+      #ch06-header { position: absolute; top: 50px; left: 80px; font-size: 16px; letter-spacing: .2em; color: #666; text-transform: uppercase; }
+      #ch06-central { position: absolute; left: 50%; top: 180px; transform: translateX(-50%); text-align: center; }
+      #ch06-central .big { font-size: 280px; font-weight: 700; line-height: .85; color: #0A0A0A; }
+      #ch06-central .yr { font-size: 48px; font-weight: 700; letter-spacing: .3em; color: #0A0A0A; }
+      #ch06-central .cap { font-size: 22px; color: #555; margin-top: 18px; }
+      #ch06-diag { position: absolute; left: 50%; top: 180px; transform: translateX(-50%); }
+      .c6frag { position: absolute; width: 420px; font-size: 16px; line-height: 1.5; }
+      #c6-left { left: 80px; top: 320px; }
+      #c6-left table { width: 100%; border-collapse: collapse; }
+      #c6-left td { border-bottom: 1px solid #CCC; padding: 8px 4px; font-family: 'Courier New', monospace; }
+      #c6-left td.r { text-align: right; color: #C8001E; }
+      #c6-right { right: 80px; top: 320px; font-style: italic; font-size: 22px; color: #333; }
+      #c6-bl { left: 80px; top: 720px; font-weight: 700; font-size: 24px; }
+      #c6-br { right: 80px; top: 740px; font-size: 14px; color: #666; }
+      #ch06-stamp { position: absolute; left: 50%; bottom: 110px; transform: translateX(-50%); }
+
+      /* ---------- CH07 ---------- */
+      #ch07-cap { position: absolute; left: 50%; top: 46%; transform: translateX(-50%); text-align: center; font-size: 30px; color: #333; width: 1200px; }
+      #ch07-cap2 { position: absolute; left: 50%; top: 54%; transform: translateX(-50%); text-align: center; font-size: 48px; font-weight: 700; color: #0A0A0A; }
+      .float-att { position: absolute; font-weight: 700; color: #0A0A0A; }
+
+      /* ---------- FINAL ---------- */
+      #finalbg { position: absolute; inset: 0; background: #000; z-index: 800; }
+      .wall-att { position: absolute; color: #FFFFFF; font-weight: 700; z-index: 810; }
+      #final-line1 {
+        position: absolute; left: 50%; top: 42%; transform: translate(-50%,-50%);
+        text-align: center; color: #FFFFFF; font-size: 72px; font-weight: 300;
+        letter-spacing: .05em; line-height: 1.25; z-index: 900;
+      }
+      #final-line2 {
+        position: absolute; left: 50%; top: 62%; transform: translate(-50%,-50%);
+        text-align: center; color: #FFFFFF; font-size: 36px; font-weight: 300;
+        letter-spacing: .2em; z-index: 900;
       }
     </style>
   </head>
   <body>
-    <div
-      id="root"
-      data-composition-id="root"
-      data-start="0"
-      data-duration="65"
-      data-width="1920"
-      data-height="720"
-    >
-      <!-- White background -->
-      <div class="scene-bg"></div>
+    <div id="root" data-composition-id="root" data-start="0" data-duration="90" data-width="1920" data-height="1080">
+    <!-- ===================== GLOBAL PERSISTENT LAYER ===================== -->
+    <div id="g-rule-top" class="grule clip" data-start="0" data-duration="83" data-track-index="0"></div>
+    <div id="g-rule-bottom" class="grule clip" data-start="0" data-duration="83" data-track-index="1"></div>
+    <div id="g-archive" class="clip" data-start="0" data-duration="83" data-track-index="2">INVESTIGATION FILE / YOUR PHONE STOLE HOW MUCH OF YOUR LIFE?</div>
+    <div id="g-chapter" class="clip" data-start="0" data-duration="12" data-track-index="3">CH.01</div>
 
-      <!-- Fade-to-black overlay -->
-      <div id="fade-overlay" class="clip" data-start="54" data-duration="11" data-track-index="500"></div>
+    <!-- ===================== CHAPTER 01 ===================== -->
+    <div id="ch01" class="scene">
+      <div class="g-page clip" data-start="0" data-duration="12" data-track-index="4">01</div>
+      <div class="docref clip" data-start="0.2" data-duration="11.8" data-track-index="5">FILE REF: ATT-2024-001<br/>INVESTIGATION SERIES<br/>ISSUE 01</div>
+      <div id="ch01-stamp" class="clip" data-start="0.5" data-duration="11.5" data-track-index="6"><span class="stamp">CONFIDENTIAL RESEARCH FILE</span></div>
 
-      <!-- ===================== CHAPTER 01 (0–8s) ===================== -->
-      <!-- Each flash word on its own unique track -->
-      <div id="f-screen-time"    class="clip ch01-flash" data-start="0" data-duration="8" data-track-index="1">SCREEN TIME</div>
-      <div id="f-digital-age"    class="clip ch01-flash" data-start="0" data-duration="8" data-track-index="2">DIGITAL AGE</div>
-      <div id="f-social-media"   class="clip ch01-flash" data-start="0" data-duration="8" data-track-index="3">SOCIAL MEDIA</div>
-      <div id="f-attn-crisis"    class="clip ch01-flash" data-start="0" data-duration="8" data-track-index="4">ATTENTION CRISIS</div>
-      <div id="f-mental-fatigue" class="clip ch01-flash" data-start="0" data-duration="8" data-track-index="5">MENTAL FATIGUE</div>
+      <div id="ch01-headline">
+        <span class="w clip" data-start="0.6" data-duration="11.4" data-track-index="7">We</span>
+        <span class="w clip" data-start="0.8" data-duration="11.2" data-track-index="8">Need</span>
+        <span class="w clip" data-start="1.0" data-duration="11.0" data-track-index="9">To</span>
+        <span class="w clip" data-start="1.2" data-duration="10.8" data-track-index="10">Talk</span>
+        <span class="w clip" data-start="1.4" data-duration="10.6" data-track-index="11">About</span>
+        <span class="w clip" data-start="1.6" data-duration="10.4" data-track-index="12">Your</span>
+        <span class="w clip" data-start="1.8" data-duration="10.2" data-track-index="13">Phone</span>
+      </div>
+      <div id="ch01-kicker" class="clip" data-start="2.4" data-duration="9.6" data-track-index="14">A Special Investigation into the Modern Attention Economy</div>
 
-      <div id="ch01-headline" class="clip" data-start="3" data-duration="5" data-track-index="6">
-        <div class="main-title">YOUR PHONE<br>STOLE HOW MUCH<br>OF YOUR LIFE?</div>
-        <div class="sub-red">An Editorial Motion Graphics Story</div>
+      <div id="frag-a" class="frag doc-panel newsprint clip" data-start="3.2" data-duration="8.8" data-track-index="15">
+        <h3>SCREEN TIME REACHES CRISIS LEVELS</h3>
+        <p>Across every demographic, daily device usage has climbed to figures once thought impossible. Analysts describe a quiet restructuring of how human beings allocate their waking hours, with consequences only now coming into focus.</p>
+      </div>
+      <div id="frag-b" class="frag doc-panel newsprint clip" data-start="3.5" data-duration="8.5" data-track-index="16">
+        <h3>RESEARCHERS ALARMED BY ATTENTION COLLAPSE</h3>
+        <p>A growing body of peer-reviewed work suggests sustained focus is eroding faster than at any prior point on record. Laboratories report measurable declines across age groups, prompting urgent calls for further study.</p>
+      </div>
+      <div id="frag-c" class="frag doc-panel newsprint clip" data-start="3.8" data-duration="8.2" data-track-index="17">
+        <h3>THE TRILLION-DOLLAR ATTENTION MARKET</h3>
+        <p>Behind the screens lies an economy few consumers ever see. Every glance is bought, sold, and optimized in real time, forming one of the largest and least understood markets in modern commerce.</p>
+      </div>
+      <svg id="ch01-circle" class="clip" data-start="5.5" data-duration="6.5" data-track-index="18" viewBox="0 0 360 120">
+        <ellipse cx="180" cy="60" rx="170" ry="48" fill="none" stroke="#C8001E" stroke-width="3"/>
+      </svg>
+      <div id="ch01-sources" class="clip" data-start="6.0" data-duration="6.0" data-track-index="19">Sources: Columbia Journalism Review · Pew Research · MIT Media Lab</div>
+    </div>
+
+    <!-- ===================== CHAPTER 02 ===================== -->
+    <div id="ch02" class="scene">
+      <div class="g-page clip" data-start="12" data-duration="14" data-track-index="20">02</div>
+      <div id="ch02-masthead" class="clip" data-start="12.1" data-duration="13.9" data-track-index="21">THE ATTENTION ECONOMY<span>EVIDENCE FILE</span></div>
+
+      <div id="ev1" class="ev-card clip" data-start="12.6" data-duration="13.4" data-track-index="22">
+        <div class="photo halftone"></div>
+        <div class="q">STUDY: "The average person checks their phone 96–131 times daily"</div>
+        <div class="src">Asurion Research, 2024</div>
+      </div>
+      <div id="ev2" class="ev-card clip" data-start="12.9" data-duration="13.1" data-track-index="23">
+        <div class="lbl">INTERVIEW TRANSCRIPT · EXCERPT</div>
+        <div class="t" style="margin-top:12px;"><b>Q:</b> When do you notice yourself reaching for your phone?<br/><br/><b>A:</b> Without even thinking about it. It just happens.</div>
+      </div>
+      <div id="ev3" class="ev-card clip" data-start="13.2" data-duration="12.8" data-track-index="24">
+        <div class="lbl">RESEARCH PAPER · FRAGMENT</div>
+        <div class="ttl" style="margin-top:10px;">"The Collapse of <span class="yhl">Attention</span>" — Diminishing Attention Spans in the Digital Era</div>
+        <div class="src">Harvard Medical School, 2023</div>
+      </div>
+      <div id="ev4" class="ev-card clip" data-start="13.5" data-duration="12.5" data-track-index="25">
+        <div class="q">"Americans spend an average of 7 hrs/day on screens"</div>
+        <div class="src">Nielsen Total Audience Report</div>
+      </div>
+      <div id="ev5" class="ev-card clip" data-start="13.8" data-duration="12.2" data-track-index="26">
+        <div class="lbl">ARTICLE CLIPPING</div>
+        <div class="ttl" style="margin-top:10px;">"How Silicon Valley Engineered Addiction"</div>
       </div>
 
-      <div id="ch01-attn-tag" class="clip" data-start="5" data-duration="3" data-track-index="7">ATTENTION</div>
+      <div class="rthread clip" data-start="15.5" data-duration="10.5" data-track-index="27" style="left:700px; top:260px; width:140px;"></div>
+      <div class="rthread clip" data-start="15.7" data-duration="10.3" data-track-index="28" style="left:680px; top:620px; width:240px; transform:rotate(-12deg);"></div>
+      <div class="rthread clip" data-start="15.9" data-duration="10.1" data-track-index="29" style="left:1200px; top:520px; width:200px; transform:rotate(8deg);"></div>
 
-      <!-- ===================== CHAPTER 02 (8–18s) ===================== -->
-      <div id="ch02-heading-label" class="clip" data-start="8" data-duration="10" data-track-index="10"></div>
+      <div id="ch02-archive" class="clip lbl" data-start="14.5" data-duration="11.5" data-track-index="30" style="position:absolute; bottom:60px; right:40px;">EVIDENCE FILE 02 / CLASSIFIED</div>
+    </div>
 
-      <div id="ch02-counter" class="clip" data-start="8" data-duration="6" data-track-index="11">
-        <div class="big-num" id="ch02-num">100</div>
-        <div class="caption" id="ch02-cap">Average daily phone checks</div>
+    <!-- ===================== CHAPTER 03 ===================== -->
+    <div id="ch03" class="scene">
+      <div class="g-page clip" data-start="26" data-duration="14" data-track-index="31">03</div>
+      <div id="ch03-bg" class="newsprint clip" data-start="26" data-duration="14" data-track-index="32"></div>
+      <div id="ch03-portrait" class="clip" data-start="26.2" data-duration="13.8" data-track-index="33">
+        <div class="filelabel">ATTENTION PATTERN FILE / SUBJECT 001</div>
+        <div class="meta">SUBJECT: ANONYMOUS<br/>AGE: 28<br/>OCCUPATION: DESIGNER</div>
+      </div>
+      <div id="ch03-timeline">
+        <div class="tl-title clip" data-start="26.4" data-duration="13.6" data-track-index="34">DAILY ATTENTION LOG</div>
+        <div class="tl-row clip" data-start="26.8" data-duration="13.2" data-track-index="35"><span class="t">07:23</span><span class="e">Alarm. Phone unlocked.</span></div>
+        <div class="tl-row clip" data-start="27.2" data-duration="12.8" data-track-index="36"><span class="t">07:24</span><span class="e">Instagram. 4 minutes.</span></div>
+        <div class="tl-row clip" data-start="27.6" data-duration="12.4" data-track-index="37"><span class="t">08:12</span><span class="e">Email. 11 minutes.</span></div>
+        <div class="tl-row clip" data-start="28.0" data-duration="12.0" data-track-index="38"><span class="t">10:47</span><span class="e">News feed. 23 minutes.</span></div>
+        <div class="tl-row hl clip" data-start="28.4" data-duration="11.6" data-track-index="39"><span class="t">12:03</span><span class="e">YouTube. 47 minutes.</span></div>
+        <div class="tl-row clip" data-start="28.8" data-duration="11.2" data-track-index="40"><span class="t">14:22</span><span class="e">TikTok. 31 minutes.</span></div>
+        <div class="tl-row clip" data-start="29.2" data-duration="10.8" data-track-index="41"><span class="t">17:55</span><span class="e">Messages. 18 minutes.</span></div>
+        <div class="tl-row clip" data-start="29.6" data-duration="10.4" data-track-index="42"><span class="t">22:41</span><span class="e">"Just 5 more minutes."</span></div>
+        <div class="tl-row clip" data-start="30.0" data-duration="10.0" data-track-index="43"><span class="t">23:58</span><span class="e">Phone unlocked: 127th time today.</span></div>
+      </div>
+      <div id="ch03-caption" class="clip" data-start="31.0" data-duration="9.0" data-track-index="44">"Five minutes became two hours. Every time."</div>
+      <div id="ch03-stamp" class="clip" data-start="32.0" data-duration="8.0" data-track-index="45"><span class="stamp">DAILY AVERAGE</span></div>
+      <div id="ch03-mult" class="clip" data-start="32.6" data-duration="7.4" data-track-index="46">× 365 days</div>
+    </div>
+
+    <!-- ===================== CHAPTER 04 ===================== -->
+    <div id="ch04" class="scene">
+      <div class="g-page clip" data-start="40" data-duration="14" data-track-index="47">04</div>
+      <div id="ch04-header" class="clip" data-start="40.1" data-duration="13.9" data-track-index="48">ATTENTION RESEARCH QUARTERLY / VOL. 12 / ISSUE 3 / 2024</div>
+      <div id="ch04-sub" class="clip" data-start="40.3" data-duration="13.7" data-track-index="49">"Measuring the Fragmentation of Human Attention in the Smartphone Era"</div>
+
+      <div id="find1" class="finding clip" data-start="40.6" data-duration="13.4" data-track-index="50">
+        <div class="num">FINDING 01</div>
+        <div class="body">The average adult now has an attention span of 8.25 seconds. Down from 12 seconds in 2000.</div>
+        <div class="rule"></div>
+        <div class="src">Source: Microsoft Canada, 2023 · <span class="yhl">attention</span></div>
+      </div>
+      <div id="find2" class="finding clip" data-start="44.0" data-duration="10.0" data-track-index="51">
+        <div class="num">FINDING 02</div>
+        <div class="body">Social media platforms employ 1,400+ design tactics to capture and hold user attention.</div>
+        <div class="rule"></div>
+        <div class="src">Source: Center for Humane Technology · <span class="yhl">attention</span></div>
+      </div>
+      <div id="find3" class="finding clip" data-start="48.0" data-duration="6.0" data-track-index="52">
+        <div class="num">FINDING 03</div>
+        <div class="body">The global attention economy is estimated at $4.2 trillion. Your attention is the product.</div>
+        <div class="rule"></div>
+        <div class="src">Source: Attention Economy Institute · <span class="yhl">attention</span></div>
       </div>
 
-      <div id="ch02-grid-wrap" class="clip" data-start="14" data-duration="4" data-track-index="12">
-        <div id="ch02-grid"></div>
+      <div id="ch04-rule" class="clip" data-start="50.5" data-duration="3.5" data-track-index="53"></div>
+      <div id="ch04-close" class="clip" data-start="51.0" data-duration="3.0" data-track-index="54">"The data is clear. The question is what we do with it."</div>
+    </div>
+
+    <!-- ===================== CHAPTER 05 ===================== -->
+    <div id="ch05" class="scene">
+      <div class="g-page clip" data-start="54" data-duration="10" data-track-index="55">05</div>
+      <div id="ca1" class="clip-art clip" data-start="54.2" data-duration="9.8" data-track-index="56"><h4>THE <span class="att yhl">ATTENTION</span> ECONOMY IS WORTH MORE THAN OIL</h4><p>Markets once measured in barrels are now measured in minutes. Analysts argue the most valuable resource of the century is the human gaze itself.</p></div>
+      <div id="ca2" class="clip-art clip" data-start="54.5" data-duration="9.5" data-track-index="57"><h4>HOW BRANDS BID FOR YOUR <span class="att yhl">ATTENTION</span></h4><p>Real-time auctions decide what you see milliseconds before a page loads. The highest bidder wins a fraction of your focus.</p></div>
+      <div id="ca3" class="clip-art clip" data-start="54.8" data-duration="9.2" data-track-index="58"><h4><span class="att yhl">ATTENTION</span> DEFICIT: A MODERN EPIDEMIC</h4><p>Clinicians report a sharp rise in difficulty sustaining concentration, with implications spanning education, work, and public health.</p></div>
+      <div id="ca4" class="clip-art clip" data-start="55.1" data-duration="8.9" data-track-index="59"><h4>YOUR <span class="att yhl">ATTENTION</span> IS BEING AUCTIONED RIGHT NOW</h4><p>Even as you read this sentence, systems are valuing and reselling your engagement to the highest available buyer.</p></div>
+      <div id="ca5" class="clip-art clip" data-start="55.4" data-duration="8.6" data-track-index="60"><h4>THE <span class="att yhl">ATTENTION</span> MARKET NEVER SLEEPS</h4><p>Unlike traditional exchanges, this marketplace runs continuously, around the clock, across every device and every time zone.</p></div>
+      <div id="ca6" class="clip-art clip" data-start="55.7" data-duration="8.3" data-track-index="61"><h4>RESEARCHERS TRACK <span class="att yhl">ATTENTION</span> COLLAPSE IN GEN Z</h4><p>Longitudinal studies follow a generation raised on infinite scroll, documenting changes in focus that have no historical precedent.</p></div>
+      <div id="ca7" class="clip-art clip" data-start="56.0" data-duration="8.0" data-track-index="62"><h4><span class="att yhl">ATTENTION</span>: THE CURRENCY OF THE DIGITAL AGE</h4><p>What money was to the industrial era, attention is to the digital one — scarce, tradable, and relentlessly pursued by everyone who can profit from it.</p></div>
+      <div id="ch05-foot" class="clip" data-start="60.5" data-duration="3.5" data-track-index="63">"The word appears 10,000 times per day in media. You just didn't notice."</div>
+    </div>
+
+    <!-- ===================== CHAPTER 06 ===================== -->
+    <div id="ch06" class="scene">
+      <div class="g-page clip" data-start="64" data-duration="12" data-track-index="64">06</div>
+      <div id="ch06-header" class="clip" data-start="64.1" data-duration="11.9" data-track-index="65">ATTENTION LOSS: LIFETIME CALCULATION / CONFIDENTIAL</div>
+      <div id="ch06-central" class="clip" data-start="64.4" data-duration="11.6" data-track-index="66">
+        <div class="big">9</div>
+        <div class="yr">YEARS</div>
+        <div class="cap">Average lifetime spent on screens.</div>
       </div>
+      <svg id="ch06-diag" class="clip" data-start="71.0" data-duration="5.0" data-track-index="67" width="560" height="540" viewBox="0 0 560 540">
+        <line x1="60" y1="500" x2="500" y2="40" stroke="#C8001E" stroke-width="2"/>
+        <ellipse cx="280" cy="170" rx="240" ry="120" fill="none" stroke="#C8001E" stroke-width="2.5"/>
+      </svg>
 
-      <div id="ch02-grid-caption" class="clip" data-start="15" data-duration="3" data-track-index="13">Every touch felt harmless.</div>
-
-      <div id="ch02-a1" class="clip" data-start="15"   data-duration="3"   data-track-index="14">ATTENTION</div>
-      <div id="ch02-a2" class="clip" data-start="15.3" data-duration="2.7" data-track-index="15">ATTENTION</div>
-      <div id="ch02-a3" class="clip" data-start="15.6" data-duration="2.4" data-track-index="16">ATTENTION</div>
-
-      <!-- ===================== CHAPTER 03 (18–30s) ===================== -->
-      <div id="ch03-portrait" class="clip" data-start="18" data-duration="12" data-track-index="20"></div>
-
-      <div id="ch03-l-work"          class="clip ch03-label" data-start="19.5" data-duration="10.5" data-track-index="21">WORK</div>
-      <div id="ch03-l-entertainment" class="clip ch03-label" data-start="20.2" data-duration="9.8"  data-track-index="22">ENTERTAINMENT</div>
-      <div id="ch03-l-shopping"      class="clip ch03-label" data-start="20.9" data-duration="9.1"  data-track-index="23">SHOPPING</div>
-      <div id="ch03-l-social"        class="clip ch03-label" data-start="21.6" data-duration="8.4"  data-track-index="24">SOCIAL</div>
-
-      <div id="ch03-annotation" class="clip" data-start="22.5" data-duration="7.5" data-track-index="25">
-        <div class="ann-circle">2 HRS<br>37 MIN</div>
+      <div id="c6-left" class="c6frag clip" data-start="65.5" data-duration="10.5" data-track-index="68">
+        <div class="lbl" style="margin-bottom:8px;">PROJECTED LOSS</div>
+        <table>
+          <tr><td>Age 20</td><td class="r">2.1 yr lost</td></tr>
+          <tr><td>Age 40</td><td class="r">4.8 yr lost</td></tr>
+          <tr><td>Age 60</td><td class="r">9.2 yr lost</td></tr>
+        </table>
       </div>
+      <div id="c6-right" class="c6frag clip" data-start="66.0" data-duration="10.0" data-track-index="69">"We designed it to be this way."<br/><span style="font-size:14px; font-style:normal; color:#666;">— Former Senior Engineer, Meta</span></div>
+      <div id="c6-bl" class="c6frag clip" data-start="66.5" data-duration="9.5" data-track-index="70">"What Would You Do With 9 Extra Years?"</div>
+      <div id="c6-br" class="c6frag clip" data-start="67.0" data-duration="9.0" data-track-index="71">Peer-reviewed: Journal of Applied Psychology, 2024</div>
+      <div id="ch06-stamp" class="clip" data-start="72.0" data-duration="4.0" data-track-index="72"><span class="stamp">FINDING VERIFIED</span></div>
+    </div>
 
-      <div id="ch03-time-label" class="clip" data-start="23.5" data-duration="6.5" data-track-index="26">9AM → 11PM</div>
+    <!-- ===================== CHAPTER 07 ===================== -->
+    <div id="ch07" class="scene">
+      <div class="float-att clip" data-start="79.0" data-duration="4.0" data-track-index="73" style="left:240px; top:200px; font-size:40px;">ATTENTION</div>
+      <div class="float-att clip" data-start="79.0" data-duration="4.0" data-track-index="74" style="left:1100px; top:300px; font-size:120px;">ATTENTION</div>
+      <div class="float-att clip" data-start="79.0" data-duration="4.0" data-track-index="75" style="left:600px; top:640px; font-size:80px;">ATTENTION</div>
+      <div class="float-att clip" data-start="79.0" data-duration="4.0" data-track-index="76" style="left:1400px; top:760px; font-size:40px;">ATTENTION</div>
+      <div id="ch07-cap" class="clip" data-start="76.5" data-duration="3.5" data-track-index="77">"Strip away the data. The research. The reports."</div>
+      <div id="ch07-cap2" class="clip" data-start="80.0" data-duration="3.0" data-track-index="78">"What's left?"</div>
+    </div>
 
-      <div id="ch03-caption" class="clip" data-start="24" data-duration="6" data-track-index="27">Five minutes became two hours.</div>
-
-      <div id="ch03-a1" class="clip ch03-attn" data-start="20"   data-duration="10" data-track-index="28">ATTENTION</div>
-      <div id="ch03-a2" class="clip ch03-attn" data-start="21"   data-duration="9"  data-track-index="29">ATTENTION</div>
-      <div id="ch03-a3" class="clip ch03-attn" data-start="22"   data-duration="8"  data-track-index="30">ATTENTION</div>
-      <div id="ch03-a4" class="clip ch03-attn" data-start="23"   data-duration="7"  data-track-index="31">ATTENTION</div>
-
-      <!-- ===================== CHAPTER 04 (30–42s) ===================== -->
-      <div id="ch04-report-title" class="clip" data-start="30" data-duration="12" data-track-index="40"></div>
-
-      <div id="ch04-donut-wrap" class="clip" data-start="30" data-duration="7" data-track-index="41">
-        <svg id="ch04-donut-svg" width="340" height="340" viewBox="0 0 340 340">
-          <circle cx="170" cy="170" r="130" fill="none" stroke="#eeeeee" stroke-width="50"/>
-          <!-- Entertainment 48% = 392.07 -->
-          <circle id="donut-seg1" cx="170" cy="170" r="130" fill="none" stroke="#000000" stroke-width="50"
-            stroke-dasharray="0 816.81" stroke-dashoffset="0" transform="rotate(-90 170 170)"/>
-          <!-- Social Media 23% = 187.87 — offset by seg1 -->
-          <circle id="donut-seg2" cx="170" cy="170" r="130" fill="none" stroke="#333333" stroke-width="50"
-            stroke-dasharray="0 816.81" stroke-dashoffset="-392.07" transform="rotate(-90 170 170)"/>
-          <!-- Shopping 16% = 130.69 -->
-          <circle id="donut-seg3" cx="170" cy="170" r="130" fill="none" stroke="#666666" stroke-width="50"
-            stroke-dasharray="0 816.81" stroke-dashoffset="-579.94" transform="rotate(-90 170 170)"/>
-          <!-- Others 13% = 106.18 -->
-          <circle id="donut-seg4" cx="170" cy="170" r="130" fill="none" stroke="#999999" stroke-width="50"
-            stroke-dasharray="0 816.81" stroke-dashoffset="-710.63" transform="rotate(-90 170 170)"/>
-        </svg>
-        <div id="ch04-sl1" class="ch04-seg-label">48%<br>ENTERTAINMENT</div>
-        <div id="ch04-sl2" class="ch04-seg-label">23%<br>SOCIAL MEDIA</div>
-        <div id="ch04-sl3" class="ch04-seg-label">16%<br>SHOPPING</div>
-        <div id="ch04-sl4" class="ch04-seg-label">13%<br>OTHERS</div>
-      </div>
-
-      <div id="ch04-bars-wrap" class="clip" data-start="37" data-duration="5" data-track-index="42">
-        <div class="bar-row" id="bar1">
-          <div class="bar-label-left">ENTERTAINMENT</div>
-          <div class="bar-track"><div class="bar-fill" id="bf1"></div><div class="bar-pct">48%</div></div>
-        </div>
-        <div class="bar-row" id="bar2">
-          <div class="bar-label-left">SOCIAL MEDIA</div>
-          <div class="bar-track"><div class="bar-fill" id="bf2"></div><div class="bar-pct">23%</div></div>
-        </div>
-        <div class="bar-row" id="bar3">
-          <div class="bar-label-left">SHOPPING</div>
-          <div class="bar-track"><div class="bar-fill" id="bf3"></div><div class="bar-pct">16%</div></div>
-        </div>
-        <div class="bar-row" id="bar4">
-          <div class="bar-label-left">OTHERS</div>
-          <div class="bar-track"><div class="bar-fill" id="bf4"></div><div class="bar-pct">13%</div></div>
-        </div>
-      </div>
-
-      <div id="ch04-caption" class="clip" data-start="30" data-duration="12" data-track-index="43">Where your attention goes</div>
-
-      <div id="ch04-a1" class="clip" data-start="31"   data-duration="11"   data-track-index="44">ATTENTION</div>
-      <div id="ch04-a2" class="clip" data-start="31.5" data-duration="10.5" data-track-index="45">ATTENTION</div>
-      <div id="ch04-a3" class="clip" data-start="32"   data-duration="10"   data-track-index="46">ATTENTION</div>
-      <div id="ch04-a4" class="clip" data-start="32.5" data-duration="9.5"  data-track-index="47">ATTENTION</div>
-      <div id="ch04-a5" class="clip" data-start="33"   data-duration="9"    data-track-index="48">ATTENTION</div>
-
-      <!-- ===================== CHAPTER 05 (42–54s) ===================== -->
-      <div id="ch05-bg-frags" class="clip" data-start="42" data-duration="12" data-track-index="50">
-        <div class="frag" style="top:40px;  left:60px">DAILY REPORT · TECHNOLOGY</div>
-        <div class="frag" style="top:80px;  right:80px">SCREEN ECONOMY ·· DIGITAL CRISIS</div>
-        <div class="frag" style="top:200px; left:40px; font-size:11px">QUARTERLY ANALYSIS ·· BEHAVIORAL DATA</div>
-        <div class="frag" style="bottom:120px; left:60px">COGNITIVE LOAD ·· SOCIETY &amp; TECH</div>
-        <div class="frag" style="bottom:60px; right:100px">EDITORIAL BOARD ·· OPINION</div>
-        <div class="frag" style="top:340px; right:60px; font-size:11px">RESEARCH REPORT ·· 2024</div>
-      </div>
-
-      <div id="ch05-nine"      class="clip" data-start="42" data-duration="12" data-track-index="51">9</div>
-      <div id="ch05-years"     class="clip" data-start="44" data-duration="10" data-track-index="52">YEARS</div>
-      <div id="ch05-underline" class="clip" data-start="44.5" data-duration="9.5" data-track-index="53"></div>
-      <div id="ch05-caption"   class="clip" data-start="46" data-duration="8" data-track-index="54">Average lifetime spent on screens.</div>
-
-      <div id="ch05-a1" class="clip" data-start="43"   data-duration="11"   data-track-index="55">ATTENTION</div>
-      <div id="ch05-a2" class="clip" data-start="43.5" data-duration="10.5" data-track-index="56">ATTENTION</div>
-      <div id="ch05-a3" class="clip" data-start="44"   data-duration="10"   data-track-index="57">ATTENTION</div>
-      <div id="ch05-a4" class="clip" data-start="44.5" data-duration="9.5"  data-track-index="58">ATTENTION</div>
-      <div id="ch05-a5" class="clip" data-start="45"   data-duration="9"    data-track-index="59">ATTENTION</div>
-      <div id="ch05-a6" class="clip" data-start="45.5" data-duration="8.5"  data-track-index="60">ATTENTION</div>
-      <div id="ch05-a7" class="clip" data-start="46"   data-duration="8"    data-track-index="61">ATTENTION</div>
-      <div id="ch05-a8" class="clip" data-start="46.5" data-duration="7.5"  data-track-index="62">ATTENTION</div>
-
-      <!-- ===================== CHAPTER 06 (54–65s) ===================== -->
-      <div id="ch06-attn-wall"    class="clip" data-start="54" data-duration="11" data-track-index="100" data-layout-allow-overflow="true"></div>
-      <div id="ch06-center-attn"  class="clip" data-start="57" data-duration="8"  data-track-index="101">ATTENTION</div>
-      <div id="ch06-final"        class="clip" data-start="60" data-duration="5"  data-track-index="600">
-        <div class="line1">Your attention</div>
-        <div class="line2">is your life.</div>
-        <div class="line3">What will you spend it on?</div>
-      </div>
-
-    </div><!-- /#root -->
+    <!-- ===================== FINAL CHAPTER ===================== -->
+    <div id="final" class="scene">
+      <div id="finalbg" class="clip" data-start="83" data-duration="7" data-track-index="79"></div>
+      <div id="wall-host"></div>
+      <div id="final-line1" class="clip" data-start="88" data-duration="2" data-track-index="80">Your attention<br/>is your life.</div>
+      <div id="final-line2" class="clip" data-start="89.5" data-duration="0.5" data-track-index="81">What will you spend it on?</div>
+    </div>
 
     <script>
-      // ─── Build grid squares ──────────────────────────────────────────────────
-      (function buildGrid() {
-        const grid = document.getElementById('ch02-grid');
-        for (let i = 0; i < 130; i++) {
-          const sq = document.createElement('div');
-          sq.className = 'sq';
-          sq.id = 'sq' + i;
-          grid.appendChild(sq);
-        }
-      })();
-
-      // ─── Build wall of ATTENTION ─────────────────────────────────────────────
+      /* ---------- build deterministic ATTENTION wall (60+ spans) ---------- */
       (function buildWall() {
-        const wall = document.getElementById('ch06-attn-wall');
-        const data = [
-          [20,  40,  28], [20, 260, 48], [20, 600, 22], [20, 820, 64], [20, 1100, 30], [20, 1380, 44], [20, 1680, 20],
-          [100, 60,  40], [100, 380, 20], [100, 580, 56], [100, 900, 32], [100, 1200, 48], [100, 1560, 24],
-          [200, 40,  64], [200, 340, 28], [200, 640, 42], [200, 920, 20], [200, 1140, 60], [200, 1500, 34],
-          [310, 80,  36], [310, 380, 54], [310, 720, 24], [310, 960, 44], [310, 1240, 28], [310, 1540, 50],
-          [420, 60,  50], [420, 340, 30], [420, 600, 64], [420, 1000, 38], [420, 1360, 22],
-          [530, 80,  24], [530, 340, 60], [530, 700, 36], [530, 1040, 52], [530, 1440, 28],
-          [620, 60,  40], [620, 340, 28], [620, 640, 56], [620, 1040, 36], [620, 1440, 44],
-        ];
-        data.forEach(function(item, i) {
-          var el = document.createElement('div');
-          el.className = 'wall-attn';
-          el.id = 'wa' + i;
-          el.style.top = item[0] + 'px';
-          el.style.left = item[1] + 'px';
-          el.style.fontSize = item[2] + 'px';
-          el.textContent = 'ATTENTION';
-          wall.appendChild(el);
-        });
+        var host = document.getElementById('wall-host');
+        var cols = 10, rows = 8;
+        var sizes = [14, 20, 28, 34, 42, 52, 60, 72];
+        var idx = 0;
+        for (var r = 0; r < rows; r++) {
+          for (var c = 0; c < cols; c++) {
+            var span = document.createElement('span');
+            span.className = 'wall-att clip att-w';
+            span.textContent = 'ATTENTION';
+            var fs = sizes[(r * 7 + c * 3) % sizes.length];
+            span.style.fontSize = fs + 'px';
+            var w = fs * 5.6; // approx rendered width of "ATTENTION"
+            var x = 30 + c * 178 + (r % 2) * 50 + (idx * 17) % 36;
+            if (x + w > 1900) x = Math.max(20, 1900 - w);
+            var y = 50 + r * 122 + (idx * 13) % 26;
+            span.style.left = x + 'px';
+            span.style.top = y + 'px';
+            span.dataset.tier = (r * cols + c);
+            // timing metadata so lint sees valid clip attributes
+            span.setAttribute('data-start', '83.4');
+            span.setAttribute('data-duration', '6.6');
+            span.setAttribute('data-track-index', '23');
+            host.appendChild(span);
+            idx++;
+          }
+        }
       })();
 
-      // ─── Timeline ────────────────────────────────────────────────────────────
       window.__timelines = window.__timelines || {};
-      const tl = gsap.timeline({ paused: true });
+      var tl = gsap.timeline({ paused: true });
+      window.__timelines.root = tl;
 
-      // ── CH01 FLASH WORDS ──
-      var flashes = ['#f-screen-time','#f-digital-age','#f-social-media','#f-attn-crisis','#f-mental-fatigue'];
-      flashes.forEach(function(id, i) {
-        tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: 0.08 }, 0.1 + i * 0.18);
-        tl.to(id, { opacity: 0, duration: 0.08 }, 0.22 + i * 0.18);
-        tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: 0.1 }, 0.5 + i * 0.14);
-        tl.to(id, { opacity: 0, duration: 0.08 }, 0.65 + i * 0.14);
-        tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: 0.15 }, 1.0 + i * 0.1);
+      gsap.defaults({ ease: 'power2.out' });
+
+      /* ----- global layer ----- */
+      tl.fromTo(['#g-rule-top', '#g-rule-bottom'], { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0);
+      tl.fromTo('#g-archive', { opacity: 0 }, { opacity: 1, duration: 0.6 }, 0.2);
+      tl.to(['#g-rule-top', '#g-rule-bottom', '#g-archive'], { opacity: 0, duration: 0.5 }, 82.5);
+
+      document.querySelectorAll('.g-page, #g-chapter').forEach(function (el) {
+        var s = parseFloat(el.getAttribute('data-start'));
+        var d = parseFloat(el.getAttribute('data-duration'));
+        tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.4 }, s);
+        tl.to(el, { opacity: 0, duration: 0.4 }, s + d - 0.5);
       });
-      // all freeze then exit
-      flashes.forEach(function(id) {
-        tl.set(id, { opacity: 1 }, 2.0);
-        tl.to(id, { opacity: 0, duration: 0.4 }, 2.8);
-        tl.set(id, { opacity: 0 }, 8.0);
+
+      /* ===== CH01 ===== */
+      tl.fromTo('#ch01 .docref', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6 }, 0.2);
+      tl.fromTo('#ch01-stamp', { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.6 }, 0.5);
+      tl.fromTo('#ch01-headline .w', { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.2 }, 0.6);
+      tl.fromTo('#ch01-kicker', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6 }, 2.4);
+      tl.fromTo('#frag-a', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7 }, 3.2);
+      tl.fromTo('#frag-b', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7 }, 3.5);
+      tl.fromTo('#frag-c', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7 }, 3.8);
+      tl.fromTo('#ch01-circle', { opacity: 0, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 0.6, transformOrigin: 'left center' }, 5.5);
+      tl.fromTo('#ch01-sources', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6 }, 6.0);
+      tl.to('#ch01', { opacity: 0, scale: 0.92, transformOrigin: '50% 40%', duration: 0.8 }, 11.3);
+
+      /* ===== CH02 ===== */
+      tl.fromTo('#ch02-masthead', { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.6 }, 12.1);
+      ['#ev1', '#ev2', '#ev3', '#ev4', '#ev5'].forEach(function (s, i) {
+        tl.fromTo(s, { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.6 }, 12.6 + i * 0.3);
       });
+      tl.fromTo('.rthread', { opacity: 0, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 0.5, stagger: 0.2 }, 15.5);
+      tl.fromTo('#ch02-archive', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6 }, 14.5);
+      tl.to('#ch02', { opacity: 0, y: 4, duration: 0.7 }, 25.3);
 
-      // Headline reveal
-      tl.fromTo('#ch01-headline', { opacity: 0, xPercent: -50, yPercent: -50, y: 40 }, { opacity: 1, xPercent: -50, yPercent: -50, y: 0, duration: 0.6, ease: 'power3.out' }, 3.0);
-      tl.to('#ch01-headline', { opacity: 0, xPercent: -50, yPercent: -50, duration: 0.4, ease: 'power2.in' }, 7.6);
-      tl.set('#ch01-headline', { opacity: 0 }, 8.0);
+      /* ===== CH03 ===== */
+      tl.fromTo('#ch03-bg', { opacity: 0 }, { opacity: 0.4, duration: 0.8 }, 26);
+      tl.fromTo('#ch03-portrait', { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.8 }, 26.2);
+      tl.fromTo('#ch03-timeline .tl-title', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5 }, 26.4);
+      tl.fromTo('#ch03-timeline .tl-row', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.45, stagger: 0.4 }, 26.8);
+      tl.fromTo('#ch03-caption', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6 }, 31.0);
+      tl.fromTo('#ch03-stamp', { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.6 }, 32.0);
+      tl.fromTo('#ch03-mult', { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5 }, 32.6);
+      tl.to('#ch03', { opacity: 0, y: 4, duration: 0.7 }, 39.3);
 
-      // ATTENTION corner tag
-      tl.fromTo('#ch01-attn-tag', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 5.2);
-      tl.to('#ch01-attn-tag', { opacity: 0, duration: 0.3 }, 7.7);
-      tl.set('#ch01-attn-tag', { opacity: 0 }, 8.0);
+      /* ===== CH04 ===== */
+      tl.fromTo('#ch04-header', { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5 }, 40.1);
+      tl.fromTo('#ch04-sub', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6 }, 40.3);
+      [['#find1', 40.6], ['#find2', 44.0], ['#find3', 48.0]].forEach(function (f) {
+        var sel = f[0], t = f[1];
+        tl.fromTo(sel, { opacity: 0 }, { opacity: 1, duration: 0.01 }, t);
+        tl.fromTo(sel + ' .num', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4 }, t);
+        tl.fromTo(sel + ' .body', { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5 }, t + 0.3);
+        tl.fromTo([sel + ' .rule', sel + ' .src'], { opacity: 0 }, { opacity: 1, duration: 0.4 }, t + 0.6);
+      });
+      tl.fromTo('#ch04-rule', { opacity: 0, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 0.6 }, 50.5);
+      tl.fromTo('#ch04-close', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6 }, 51.0);
+      tl.to('#ch04', { opacity: 0, y: 4, duration: 0.7 }, 53.3);
 
-      // ── CH02 HEADING LABEL ──
-      tl.fromTo('#ch02-heading-label', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 8.2);
-      tl.to('#ch02-heading-label', { opacity: 0, duration: 0.3 }, 17.7);
-      tl.set('#ch02-heading-label', { opacity: 0 }, 18.0);
+      /* ===== CH05 ===== */
+      ['#ca1', '#ca2', '#ca3', '#ca4', '#ca5', '#ca6', '#ca7'].forEach(function (s, i) {
+        tl.fromTo(s, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5 }, 54.2 + i * 0.3);
+      });
+      tl.to('#ch05 .att', { backgroundColor: '#C8001E', color: '#fff', duration: 0.35, stagger: 0.12, repeat: 1, yoyo: true }, 58.8);
+      tl.fromTo('#ch05-foot', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6 }, 60.5);
+      tl.to('#ch05', { opacity: 0, y: 4, duration: 0.7 }, 63.3);
 
-      // ── CH02 COUNTER ──
-      // Use xPercent/yPercent to avoid transform conflict
-      tl.fromTo('#ch02-counter',
-        { opacity: 0, xPercent: -50, yPercent: -50, scale: 0.85 },
-        { opacity: 1, xPercent: -50, yPercent: -50, scale: 1, duration: 0.5, ease: 'back.out(1.4)' },
-        8.3);
+      /* ===== CH06 ===== */
+      tl.fromTo('#ch06-header', { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5 }, 64.1);
+      tl.fromTo('#ch06-central', { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.8 }, 64.4);
+      ['#c6-left', '#c6-right', '#c6-bl', '#c6-br'].forEach(function (s, i) {
+        tl.fromTo(s, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6 }, 65.5 + i * 0.5);
+      });
+      tl.fromTo('#ch06-diag', { opacity: 0 }, { opacity: 1, duration: 0.7 }, 71.0);
+      tl.fromTo('#ch06-stamp', { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.6 }, 72.0);
+      tl.to('#ch06', { opacity: 0, scale: 0.97, duration: 0.7, transformOrigin: '50% 40%' }, 75.3);
 
-      var counterEl = document.getElementById('ch02-num');
-      var counterObj = { val: 100 };
-      tl.to(counterObj, {
-        val: 131,
-        duration: 3.5,
-        ease: 'power1.out',
-        onUpdate: function() {
-          counterEl.textContent = Math.round(counterObj.val);
-        }
-      }, 8.5);
-      tl.to('#ch02-counter', { opacity: 0, y: -30, xPercent: -50, yPercent: -50, duration: 0.4, ease: 'power2.in' }, 13.6);
-      tl.set('#ch02-counter', { opacity: 0 }, 14.0);
+      /* ===== CH07 collapse ===== */
+      tl.fromTo('#ch07-cap', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6 }, 76.5);
+      tl.to('#ch07-cap', { opacity: 0, duration: 0.5 }, 79.5);
+      tl.fromTo('#ch07 .float-att', { opacity: 0 }, { opacity: 0.15, duration: 0.8, stagger: 0.15 }, 79.0);
+      tl.fromTo('#ch07-cap2', { opacity: 0 }, { opacity: 1, duration: 0.5 }, 80.0);
+      tl.to(['#ch07 .float-att', '#ch07-cap2'], { opacity: 0, scale: 0.95, duration: 0.8, transformOrigin: '50% 50%' }, 82.0);
 
-      // ── CH02 GRID ──
-      tl.fromTo('#ch02-grid-wrap',
-        { opacity: 0, xPercent: -50, yPercent: -50 },
-        { opacity: 1, xPercent: -50, yPercent: -50, duration: 0.3 },
-        14.0);
-      for (var i = 0; i < 130; i++) {
-        tl.fromTo('#sq' + i, { opacity: 0 }, { opacity: 1, duration: 0.05 }, 14.0 + i * 0.015);
+      /* ===== FINAL ===== */
+      tl.fromTo('#finalbg', { opacity: 0 }, { opacity: 1, duration: 0.5 }, 83.0);
+      var walls = Array.prototype.slice.call(document.querySelectorAll('.att-w'));
+      walls.forEach(function (el) {
+        var tier = parseInt(el.dataset.tier, 10);
+        var appear = 83.4 + (tier / 80) * 3.4;
+        var op = 0.35 + ((tier * 7) % 10) / 18;
+        tl.fromTo(el, { opacity: 0 }, { opacity: op, duration: 0.3 }, appear);
+      });
+      var central = walls[44];
+      if (central) {
+        central.style.left = '50%';
+        central.style.top = '46%';
+        central.style.transform = 'translate(-50%,-50%)';
+        central.style.fontSize = '120px';
+        var others = walls.filter(function (w) { return w !== central; });
+        tl.to(others, { opacity: 0, duration: 0.8 }, 87.2);
+        tl.to(central, { opacity: 1, duration: 0.4 }, 87.2);
+        tl.to(central, { opacity: 0, duration: 0.8 }, 87.6);
       }
-      tl.to('#ch02-grid-wrap', { opacity: 0, xPercent: -50, yPercent: -50, duration: 0.4 }, 17.6);
-      tl.set('#ch02-grid-wrap', { opacity: 0 }, 18.0);
-
-      // Grid caption
-      tl.fromTo('#ch02-grid-caption', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 15.2);
-      tl.to('#ch02-grid-caption', { opacity: 0, duration: 0.3 }, 17.7);
-
-      // ATTENTION labels on grid
-      tl.fromTo('#ch02-a1', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 15.2);
-      tl.set('#ch02-a1', { opacity: 0 }, 18.0);
-      tl.fromTo('#ch02-a2', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 15.55);
-      tl.set('#ch02-a2', { opacity: 0 }, 18.0);
-      tl.fromTo('#ch02-a3', { opacity: 0 }, { opacity: 1, duration: 0.3 }, 15.9);
-      tl.set('#ch02-a3', { opacity: 0 }, 18.0);
-
-      // ── CH03 PORTRAIT ──
-      tl.fromTo('#ch03-portrait',
-        { opacity: 0, xPercent: -50, yPercent: -50, scale: 0.5 },
-        { opacity: 1, xPercent: -50, yPercent: -50, scale: 1, duration: 0.7, ease: 'power3.out' },
-        18.2);
-      tl.to('#ch03-portrait', { opacity: 0, xPercent: -50, yPercent: -50, duration: 0.4 }, 29.6);
-
-      // Labels
-      ['#ch03-l-work','#ch03-l-entertainment','#ch03-l-shopping','#ch03-l-social'].forEach(function(id, i) {
-        tl.fromTo(id, { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.35, ease: 'power2.out' }, 19.5 + i * 0.7);
-        tl.to(id, { opacity: 0, duration: 0.3 }, 29.5);
-        tl.set(id, { opacity: 0 }, 30.0);
-      });
-
-      // Annotation
-      tl.fromTo('#ch03-annotation',
-        { opacity: 0, xPercent: -50, scale: 0.4 },
-        { opacity: 1, xPercent: -50, scale: 1, duration: 0.5, ease: 'back.out(1.7)' },
-        22.5);
-      tl.to('#ch03-annotation', { opacity: 0, xPercent: -50, duration: 0.3 }, 29.5);
-      tl.set('#ch03-annotation', { opacity: 0 }, 30.0);
-
-      // Time label cycles
-      tl.fromTo('#ch03-time-label', { opacity: 0 }, { opacity: 1, duration: 0.2 }, 23.5);
-      tl.to('#ch03-time-label', { opacity: 0, duration: 0.15 }, 24.2);
-      tl.fromTo('#ch03-time-label', { opacity: 0 }, { opacity: 1, duration: 0.2 }, 24.5);
-      tl.to('#ch03-time-label', { opacity: 0, duration: 0.15 }, 25.2);
-      tl.fromTo('#ch03-time-label', { opacity: 0 }, { opacity: 1, duration: 0.2 }, 25.5);
-      tl.to('#ch03-time-label', { opacity: 0, duration: 0.3 }, 29.5);
-      tl.set('#ch03-time-label', { opacity: 0 }, 30.0);
-
-      tl.fromTo('#ch03-caption', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 24.0);
-      tl.to('#ch03-caption', { opacity: 0, duration: 0.3 }, 29.6);
-      tl.set('#ch03-caption', { opacity: 0 }, 30.0);
-
-      ['#ch03-a1','#ch03-a2','#ch03-a3','#ch03-a4'].forEach(function(id, i) {
-        tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: 0.3 }, 20.0 + i * 0.6);
-        tl.to(id, { opacity: 0, duration: 0.3 }, 29.5);
-        tl.set(id, { opacity: 0 }, 30.0);
-      });
-
-      // ── CH04 REPORT TITLE ──
-      tl.fromTo('#ch04-report-title', { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 30.2);
-      tl.to('#ch04-report-title', { opacity: 0, duration: 0.4 }, 41.6);
-
-      // ── CH04 DONUT ──
-      tl.fromTo('#ch04-donut-wrap',
-        { opacity: 0, xPercent: -50, yPercent: -50 },
-        { opacity: 1, xPercent: -50, yPercent: -50, duration: 0.3 },
-        30.5);
-
-      tl.fromTo('#donut-seg1',
-        { attr: { 'stroke-dasharray': '0 816.81' } },
-        { attr: { 'stroke-dasharray': '392.07 816.81' }, duration: 0.8, ease: 'power2.out' },
-        30.8);
-      tl.fromTo('#donut-seg2',
-        { attr: { 'stroke-dasharray': '0 816.81' } },
-        { attr: { 'stroke-dasharray': '187.87 816.81' }, duration: 0.6, ease: 'power2.out' },
-        31.7);
-      tl.fromTo('#donut-seg3',
-        { attr: { 'stroke-dasharray': '0 816.81' } },
-        { attr: { 'stroke-dasharray': '130.69 816.81' }, duration: 0.5, ease: 'power2.out' },
-        32.4);
-      tl.fromTo('#donut-seg4',
-        { attr: { 'stroke-dasharray': '0 816.81' } },
-        { attr: { 'stroke-dasharray': '106.18 816.81' }, duration: 0.4, ease: 'power2.out' },
-        33.0);
-
-      ['#ch04-sl1','#ch04-sl2','#ch04-sl3','#ch04-sl4'].forEach(function(id, i) {
-        tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: 0.35 }, 31.0 + i * 0.5);
-      });
-      tl.to('#ch04-donut-wrap', { opacity: 0, xPercent: -50, yPercent: -50, duration: 0.5, ease: 'power2.in' }, 36.5);
-      tl.set('#ch04-donut-wrap', { opacity: 0 }, 37.0);
-
-      // ── CH04 BARS ──
-      tl.fromTo('#ch04-bars-wrap',
-        { opacity: 0, xPercent: -50, yPercent: -50 },
-        { opacity: 1, xPercent: -50, yPercent: -50, duration: 0.4 },
-        37.2);
-      tl.to('#bf1', { width: '48%', duration: 0.6, ease: 'power2.out' }, 37.4);
-      tl.to('#bf2', { width: '23%', duration: 0.5, ease: 'power2.out' }, 37.7);
-      tl.to('#bf3', { width: '16%', duration: 0.4, ease: 'power2.out' }, 38.0);
-      tl.to('#bf4', { width: '13%', duration: 0.4, ease: 'power2.out' }, 38.3);
-      tl.to('#ch04-bars-wrap', { opacity: 0, xPercent: -50, yPercent: -50, duration: 0.5, ease: 'power2.in' }, 41.5);
-      tl.set('#ch04-bars-wrap', { opacity: 0 }, 42.0);
-
-      // ── CH04 CAPTION ──
-      tl.fromTo('#ch04-caption', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 31.0);
-      tl.to('#ch04-caption', { opacity: 0, duration: 0.3 }, 41.6);
-      tl.set('#ch04-caption', { opacity: 0 }, 42.0);
-
-      // ── CH04 ATTENTION LABELS ──
-      var ch04attnStyle = { position: 'absolute', fontSize: '11px', fontWeight: '700', color: '#CC0000', letterSpacing: '0.18em', textTransform: 'uppercase' };
-      var ch04aData = [
-        ['#ch04-a1', { top: '100px', left: '80px' }],
-        ['#ch04-a2', { top: '100px', right: '80px' }],
-        ['#ch04-a3', { bottom: '120px', left: '80px' }],
-        ['#ch04-a4', { bottom: '120px', right: '80px' }],
-        ['#ch04-a5', { top: '50%', left: '60px' }],
-      ];
-      ch04aData.forEach(function(item, i) {
-        var id = item[0];
-        var el = document.querySelector(id);
-        Object.keys(ch04attnStyle).forEach(function(k) { el.style[k] = ch04attnStyle[k]; });
-        Object.keys(item[1]).forEach(function(k) { el.style[k] = item[1][k]; });
-        tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: 0.3 }, 31.0 + i * 0.5);
-        tl.to(id, { opacity: 0, duration: 0.3 }, 41.5);
-        tl.set(id, { opacity: 0 }, 42.0);
-      });
-
-      // ── CH05 BACKGROUND ──
-      tl.fromTo('#ch05-bg-frags', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 42.2);
-      tl.to('#ch05-bg-frags', { opacity: 0, duration: 0.4 }, 53.6);
-      tl.set('#ch05-bg-frags', { opacity: 0 }, 54.0);
-
-      // ── CH05 NINE ──
-      tl.fromTo('#ch05-nine',
-        { opacity: 0, xPercent: -50, yPercent: -50, scale: 0.3 },
-        { opacity: 1, xPercent: -50, yPercent: -50, scale: 1, duration: 0.7, ease: 'power4.out' },
-        42.3);
-      tl.to('#ch05-nine', { opacity: 0, xPercent: -50, yPercent: -50, duration: 0.4 }, 53.6);
-
-      // ── CH05 YEARS ──
-      tl.fromTo('#ch05-years',
-        { opacity: 0, xPercent: -50, y: 80 },
-        { opacity: 1, xPercent: -50, y: 80, duration: 0.5, ease: 'power3.out' },
-        44.0);
-      tl.to('#ch05-years', { opacity: 0, xPercent: -50, y: 80, duration: 0.4 }, 53.6);
-
-      // ── CH05 UNDERLINE ──
-      tl.fromTo('#ch05-underline',
-        { xPercent: -50, y: 200, width: 0, opacity: 1 },
-        { xPercent: -50, y: 200, width: 560, duration: 0.6, ease: 'power2.out' },
-        44.5);
-      tl.to('#ch05-underline', { opacity: 0, xPercent: -50, y: 200, duration: 0.3 }, 53.6);
-
-      tl.fromTo('#ch05-caption', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 46.0);
-      tl.to('#ch05-caption', { opacity: 0, duration: 0.3 }, 53.6);
-      tl.set('#ch05-caption', { opacity: 0 }, 54.0);
-
-      // ── CH05 ATTENTION x8 ──
-      var ch05aPos = [
-        { top: '60px',    left: '80px',   fontSize: '14px' },
-        { top: '160px',   right: '100px', fontSize: '22px' },
-        { bottom: '200px',left: '120px',  fontSize: '10px' },
-        { bottom: '100px',right: '80px',  fontSize: '30px' },
-        { top: '280px',   left: '60px',   fontSize: '16px' },
-        { top: '80px',    right: '300px', fontSize: '12px' },
-        { bottom: '220px',left: '320px',  fontSize: '20px' },
-        { top: '380px',   right: '60px',  fontSize: '11px' },
-      ];
-      ch05aPos.forEach(function(pos, i) {
-        var el = document.getElementById('ch05-a' + (i+1));
-        Object.keys(pos).forEach(function(k) { el.style[k] = pos[k]; });
-        tl.fromTo('#ch05-a' + (i+1), { opacity: 0 }, { opacity: 1, duration: 0.4 }, 43.0 + i * 0.35);
-        tl.to('#ch05-a' + (i+1), { opacity: 0, duration: 0.3 }, 53.5);
-        tl.set('#ch05-a' + (i+1), { opacity: 0 }, 54.0);
-      });
-
-      // ── CH06 ATTENTION WALL ──
-      tl.fromTo('#ch06-attn-wall', { opacity: 0 }, { opacity: 1, duration: 0.5 }, 54.0);
-
-      var wallEls = document.querySelectorAll('.wall-attn');
-      wallEls.forEach(function(el, i) {
-        tl.fromTo(el, { opacity: 0 }, { opacity: 0.12 + (i % 5) * 0.1, duration: 0.3 + (i % 3) * 0.1 }, 54.1 + i * 0.06);
-      });
-      tl.to('.wall-attn', { opacity: 1, duration: 0.8, ease: 'power2.in' }, 56.5);
-
-      // ── CH06 CENTER ATTENTION ──
-      tl.fromTo('#ch06-center-attn',
-        { opacity: 0, xPercent: -50, yPercent: -50, scale: 0.5 },
-        { opacity: 1, xPercent: -50, yPercent: -50, scale: 1, duration: 0.7, ease: 'power3.out' },
-        57.0);
-      tl.to('#ch06-center-attn', { xPercent: -50, yPercent: -50, scale: 8, opacity: 0, duration: 1.0, ease: 'power2.in' }, 58.2);
-      tl.set('#ch06-center-attn', { opacity: 0 }, 65.0);
-
-      // ── FADE TO BLACK ──
-      tl.to('#ch06-attn-wall', { opacity: 0, duration: 0.6 }, 58.5);
-      tl.set('#ch06-attn-wall', { opacity: 0 }, 65.0);
-      tl.to('#fade-overlay', { opacity: 1, duration: 0.8, ease: 'power2.inOut' }, 58.8);
-
-      // ── FINAL TEXT ──
-      tl.fromTo('#ch06-final',
-        { opacity: 0, xPercent: -50, yPercent: -50 },
-        { opacity: 1, xPercent: -50, yPercent: -50, duration: 0.6 },
-        60.0);
-      tl.fromTo('#ch06-final .line3', { opacity: 0 }, { opacity: 1, duration: 0.6 }, 62.0);
-
-      window.__timelines['root'] = tl;
+      tl.fromTo('#final-line1', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.8 }, 88.0);
+      tl.fromTo('#final-line2', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.8 }, 89.5);
+      tl.to({}, { duration: 0.1 }, 90.0);
     </script>
+      </div>
   </body>
 </html>
