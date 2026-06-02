@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="hyperframes-composition" content="true">
-<meta name="composition-id" content="forma-v3">
+<meta name="composition-id" content="forma-v4">
 <meta name="composition-duration" content="60">
 <meta name="composition-width" content="1920">
 <meta name="composition-height" content="1080">
@@ -12,35 +12,37 @@
 body{width:1920px;height:1080px;overflow:hidden;background:#0C0C0C;font-family:'Bebas Neue',sans-serif}
 #root{position:absolute;inset:0;overflow:hidden}
 #stage{position:absolute;inset:0}
-
-#scan{position:absolute;left:0;top:0;width:1920px;height:3px;background:rgba(198,255,0,.55);opacity:0;z-index:999;pointer-events:none}
-
+#grid-tex{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:40px 40px;z-index:1}
 .flood{position:absolute;inset:0;pointer-events:none}
 #fl-acid{z-index:50;background:#C6FF00;clip-path:polygon(0 0,0 0,0 100%,0 100%)}
 #fl-white{z-index:50;background:#F2F2EE;clip-path:polygon(0 0,0 0,0 100%,0 100%)}
 #fl-black{z-index:50;background:#0C0C0C;clip-path:polygon(0 0,0 0,0 100%,0 100%)}
-/* Brand overlay on top of all floods — fix #1: no empty color flash */
 #fl-brand{z-index:52;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:280px;letter-spacing:-.02em;opacity:0;color:#0C0C0C}
-
-#grid-tex{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:40px 40px;z-index:1}
-
 .clip{position:absolute;inset:0;opacity:0;pointer-events:none}
 
-/* S01 */
+/* ── S01 BRAND DETECTION ── */
 #s01{z-index:10}
 #s01-bg{position:absolute;inset:0;background:#0C0C0C}
-.ll{position:absolute;font-family:'Bebas Neue',sans-serif;font-size:320px;line-height:1;color:#F2F2EE;letter-spacing:-.02em}
-#ll-f{left:80px;top:280px}
-#ll-o{left:278px;top:280px;color:#C6FF00}
-#ll-r{left:476px;top:280px}
-#ll-m{left:658px;top:280px}
-#ll-a{left:900px;top:280px}
-#s01-sub{position:absolute;bottom:120px;left:80px;font-family:'Space Grotesk',sans-serif;font-size:18px;letter-spacing:.35em;color:rgba(242,242,238,.5);text-transform:uppercase}
-#s01-year{position:absolute;bottom:120px;right:80px;font-family:'Space Grotesk',sans-serif;font-size:18px;letter-spacing:.25em;color:rgba(242,242,238,.5)}
-#s01-rule{position:absolute;bottom:160px;left:80px;width:0;height:1px;background:#C6FF00}
-#s01-mask{position:absolute;inset:0;background:#C6FF00;transform:scaleX(0);transform-origin:left center;z-index:20}
+#s01-scanline{position:absolute;left:0;width:1920px;height:2px;background:linear-gradient(90deg,transparent,rgba(198,255,0,.8) 20%,rgba(198,255,0,1) 50%,rgba(198,255,0,.8) 80%,transparent);opacity:0;z-index:20;top:0}
+#s01-scanline::after{content:'';position:absolute;left:0;top:-20px;width:100%;height:40px;background:linear-gradient(180deg,transparent,rgba(198,255,0,.07),transparent)}
+#s01-init{position:absolute;top:60px;left:80px;font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.4em;color:rgba(198,255,0,.55);text-transform:uppercase;opacity:0}
+#s01-signal{position:absolute;top:90px;left:80px;font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.4em;color:rgba(198,255,0,.35);text-transform:uppercase;opacity:0}
+#s01-detected{position:absolute;top:260px;left:80px;font-family:'Space Grotesk',sans-serif;font-size:22px;letter-spacing:.55em;color:#C6FF00;text-transform:uppercase;opacity:0}
+#s01-det-bar{position:absolute;top:256px;left:80px;height:2px;background:#C6FF00;width:0;opacity:.4}
+.s1l{position:absolute;font-family:'Bebas Neue',sans-serif;font-size:320px;line-height:1;color:#F2F2EE;letter-spacing:-.02em;top:310px;opacity:0}
+#s1-f{left:80px}#s1-o{left:286px;color:#C6FF00}#s1-r{left:492px}#s1-m{left:680px}#s1-a{left:928px}
+#s01-kw-label{position:absolute;top:740px;left:80px;font-family:'Space Grotesk',sans-serif;font-size:12px;letter-spacing:.5em;color:rgba(198,255,0,.4);text-transform:uppercase;opacity:0}
+.s1-kw{position:absolute;top:780px;font-family:'Bebas Neue',sans-serif;font-size:72px;letter-spacing:.06em;opacity:0}
+#kw1{left:80px;color:#C6FF00}
+#kw2{left:380px;color:rgba(242,242,238,.7)}
+#kw3{left:640px;color:rgba(242,242,238,.5)}
+#kw4{left:870px;color:rgba(242,242,238,.35)}
+#s01-progress-bg{position:absolute;bottom:160px;left:80px;width:600px;height:1px;background:rgba(198,255,0,.15)}
+#s01-progress{position:absolute;bottom:160px;left:80px;width:0;height:1px;background:#C6FF00}
+#s01-prog-label{position:absolute;bottom:140px;left:80px;font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:.4em;color:rgba(198,255,0,.5);opacity:0}
+#s01-counter{position:absolute;bottom:60px;right:80px;font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.3em;color:rgba(198,255,0,.35);opacity:0}
 
-/* S02 */
+/* ── S02 COLOR SYSTEM ── */
 #s02{z-index:10}
 #s02-bg{position:absolute;inset:0;background:#0C0C0C}
 .col-block{position:absolute;top:0;height:1080px;clip-path:polygon(0 0,0 0,0 100%,0 100%)}
@@ -59,13 +61,32 @@ body{width:1920px;height:1080px;overflow:hidden;background:#0C0C0C;font-family:'
 #cd-pri{top:330px;left:60px;color:#0C0C0C}
 #cd-sec{top:330px;left:700px;color:#0C0C0C}
 #cd-acc{top:330px;left:1340px;color:#C6FF00}
-#s02-title{position:absolute;bottom:60px;right:80px;font-family:'Space Grotesk',sans-serif;font-size:14px;letter-spacing:.4em;color:rgba(242,242,238,.35);text-transform:uppercase}
+#s02-title{position:absolute;bottom:60px;right:80px;font-family:'Space Grotesk',sans-serif;font-size:14px;letter-spacing:.4em;color:rgba(198,255,0,.35);text-transform:uppercase}
 #s02-divv1{position:absolute;top:0;left:640px;width:2px;height:0;background:rgba(0,0,0,.15)}
 #s02-divv2{position:absolute;top:0;left:1280px;width:2px;height:0;background:#C6FF00;opacity:.4}
 
-/* S03 — fix #2: brand words */
+/* ── S03 GRID + USER MATRIX ── */
 #s03{z-index:10}
-#s03-bg{position:absolute;inset:0;background:#F2F2EE}
+#s03-bg{position:absolute;inset:0;background:#0C0C0C}
+.gv,.gh{stroke:#C6FF00;stroke-width:1;opacity:0}
+.gi-dot-bg{fill:rgba(198,255,0,.0);opacity:0}
+.gi-dot-hi{fill:#C6FF00;opacity:0}
+.col-num{fill:rgba(198,255,0,.4);font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:.15em;opacity:0}
+#s03-hl{opacity:0}
+.gd-label{position:absolute;font-family:'Space Grotesk',sans-serif;font-size:12px;letter-spacing:.2em;color:rgba(198,255,0,.6);text-transform:uppercase;opacity:0;line-height:1.5}
+.gd-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:#C6FF00;letter-spacing:.04em}
+#gdl1{left:285px;top:95px}
+#gdl2{left:445px;top:365px}
+#gdl3{left:765px;top:500px}
+#gdl4{left:1085px;top:230px}
+#gdl5{left:1405px;top:635px}
+#gdl6{left:1565px;top:95px}
+#s03-title{position:absolute;bottom:48px;left:80px;font-family:'Bebas Neue',sans-serif;font-size:64px;color:#C6FF00;opacity:0}
+#s03-subtitle{position:absolute;bottom:52px;right:80px;font-family:'Space Grotesk',sans-serif;font-size:14px;letter-spacing:.3em;color:rgba(198,255,0,.45);opacity:0}
+
+/* ── S04 TYPOGRAPHY ── */
+#s04{z-index:10}
+#s04-bg{position:absolute;inset:0;background:#F2F2EE}
 .tw{position:absolute;font-family:'Bebas Neue',sans-serif;color:#0C0C0C;line-height:1;transform-origin:left center}
 #tw1{font-size:240px;top:60px;left:80px;letter-spacing:-.01em}
 #tw2{font-size:160px;top:310px;left:80px;letter-spacing:.04em;-webkit-text-stroke:2px #C6FF00;color:transparent}
@@ -75,31 +96,17 @@ body{width:1920px;height:1080px;overflow:hidden;background:#0C0C0C;font-family:'
 .t-rule{position:absolute;height:2px;background:#0C0C0C;width:0}
 #tr1{top:305px;left:80px}
 #tr2{top:465px;left:80px}
-#s03-counter{position:absolute;top:60px;right:80px;font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.3em;color:rgba(12,12,12,.4);opacity:0}
-#s03-mask{position:absolute;inset:0;background:#0C0C0C;clip-path:polygon(0 0,0 0,0 100%,0 100%);z-index:20}
+#s04-counter{position:absolute;top:60px;right:80px;font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.3em;color:rgba(12,12,12,.4);opacity:0}
+#s04-mask{position:absolute;inset:0;background:#0C0C0C;clip-path:polygon(0 0,0 0,0 100%,0 100%);z-index:20}
 
-/* S04 — fix #3: grid nodes at exact intersections */
-#s04{z-index:10}
-#s04-bg{position:absolute;inset:0;background:#0C0C0C}
-.gv,.gh{stroke:#C6FF00;stroke-width:1;opacity:0}
-.gi-dot-bg{fill:rgba(198,255,0,.0);opacity:0}
-.gi-dot-hi{fill:#C6FF00;opacity:0}
-.gi-dot{fill:#C6FF00;opacity:0}
-.col-num{fill:rgba(198,255,0,.4);font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:.15em;opacity:0}
-#s04-title{position:absolute;bottom:48px;left:80px;font-family:'Bebas Neue',sans-serif;font-size:64px;color:#C6FF00;opacity:0}
-#s04-subtitle{position:absolute;bottom:52px;right:80px;font-family:'Space Grotesk',sans-serif;font-size:14px;letter-spacing:.3em;color:rgba(198,255,0,.45);opacity:0}
-
-/* S05 — fix #4: charts with real animations (CSS only; GSAP handles animation) */
+/* ── S05 DATA VIZ ── */
 #s05{z-index:10}
 #s05-bg{position:absolute;inset:0;background:#0C0C0C}
 #lc-path{fill:none;stroke:#C6FF00;stroke-width:3;stroke-dasharray:800;stroke-dashoffset:800}
 #lc-fill{opacity:0}
 #lc-bg{fill:none;stroke:rgba(198,255,0,.12);stroke-width:1;opacity:0}
 .bar{opacity:0}
-#ba1{fill:#C6FF00}
-#ba2{fill:rgba(198,255,0,.7)}
-#ba3{fill:rgba(198,255,0,.45)}
-#ba4{fill:rgba(198,255,0,.25)}
+#ba1{fill:#C6FF00}#ba2{fill:rgba(198,255,0,.7)}#ba3{fill:rgba(198,255,0,.45)}#ba4{fill:rgba(198,255,0,.25)}
 #ring-bg{fill:none;stroke:rgba(198,255,0,.1);stroke-width:28}
 #ring-fg{fill:none;stroke:#C6FF00;stroke-width:28;stroke-dasharray:565;stroke-dashoffset:565;stroke-linecap:round;opacity:0}
 #ring-pct{fill:#C6FF00;font-family:'Bebas Neue',sans-serif;font-size:52px;text-anchor:middle;dominant-baseline:central;opacity:0}
@@ -108,129 +115,162 @@ body{width:1920px;height:1080px;overflow:hidden;background:#0C0C0C;font-family:'
 .nd-label{fill:#F2F2EE;font-family:'Space Grotesk',sans-serif;font-size:13px;text-anchor:middle;opacity:0}
 #s05-label{position:absolute;bottom:48px;right:80px;font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.35em;color:rgba(198,255,0,.4);text-transform:uppercase;opacity:0}
 
-/* S06 */
+/* ── S06 TARGET AUDIENCE MATRIX ── */
 #s06{z-index:10}
-#s06-bg{position:absolute;inset:0;background:#F2F2EE}
-.mock-card{position:absolute;border-radius:4px;overflow:hidden;opacity:0}
-.mock-inner{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;letter-spacing:.04em}
-#s06-title{position:absolute;top:60px;left:80px;font-family:'Bebas Neue',sans-serif;font-size:72px;color:#0C0C0C;letter-spacing:-.01em;opacity:0}
-#s06-sub{position:absolute;top:152px;left:80px;font-family:'Space Grotesk',sans-serif;font-size:15px;letter-spacing:.25em;color:rgba(12,12,12,.45);text-transform:uppercase;opacity:0}
+#s06-bg{position:absolute;inset:0;background:#0C0C0C}
+#s06-headline{position:absolute;top:0;left:0;right:0;height:120px;display:flex;align-items:center;padding:0 80px;background:#0C0C0C;z-index:2}
+#s06-hl-text{font-family:'Bebas Neue',sans-serif;font-size:80px;color:#F2F2EE;letter-spacing:-.01em;opacity:0}
+#s06-hl-tag{font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.4em;color:rgba(198,255,0,.5);text-transform:uppercase;margin-left:40px;align-self:flex-end;margin-bottom:22px;opacity:0}
+/* 4 cols × 3 rows — each cell 480×320px, grid starts at y=120 */
+.pc{position:absolute;overflow:hidden;opacity:0}
+/* dark persona cards */
+.pc-dark{background:#111}
+.pc-acid{background:#C6FF00}
+.pc-white{background:#F2F2EE}
+.pc-mid{background:#1a1a1a;border:1px solid rgba(198,255,0,.18)}
+/* decorative bg letter */
+.pc-deco{position:absolute;font-family:'Bebas Neue',sans-serif;font-size:260px;line-height:1;right:-10px;bottom:-30px;opacity:.07;pointer-events:none}
+.pc-content{position:absolute;inset:0;padding:32px 36px;display:flex;flex-direction:column;justify-content:flex-end}
+.pc-tag{font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:.35em;text-transform:uppercase;margin-bottom:10px;opacity:.55}
+.pc-name{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:.02em;line-height:1.05}
+/* stat cells */
+.pc-stat-num{font-family:'Bebas Neue',sans-serif;font-size:88px;line-height:1}
+.pc-stat-sub{font-family:'Space Grotesk',sans-serif;font-size:12px;letter-spacing:.28em;text-transform:uppercase;margin-top:6px}
+/* halftone avatar */
+.pc-hlt{width:72px;height:72px;border-radius:50%;margin-bottom:16px;background-image:radial-gradient(circle,currentColor 1.5px,transparent 1.5px);background-size:7px 7px;opacity:.45}
+/* ── Row 0 cells (y=120, h=320) ── */
+/* R0C0: CREATIVE DIRECTOR dark */
+#pc00{left:0;top:120px;width:480px;height:320px}
+/* R0C1: stat ACID */
+#pc01{left:480px;top:120px;width:480px;height:320px}
+/* R0C2: BRAND DESIGNER mid */
+#pc02{left:960px;top:120px;width:480px;height:320px}
+/* R0C3: stat WHITE */
+#pc03{left:1440px;top:120px;width:480px;height:320px}
+/* ── Row 1 cells (y=440, h=320) ── */
+#pc10{left:0;top:440px;width:480px;height:320px}
+#pc11{left:480px;top:440px;width:480px;height:320px}
+#pc12{left:960px;top:440px;width:480px;height:320px}
+#pc13{left:1440px;top:440px;width:480px;height:320px}
+/* ── Row 2 cells (y=760, h=320) ── */
+#pc20{left:0;top:760px;width:480px;height:320px}
+#pc21{left:480px;top:760px;width:480px;height:320px}
+#pc22{left:960px;top:760px;width:480px;height:320px}
+#pc23{left:1440px;top:760px;width:480px;height:320px}
 
-/* S07 — fix #5: 4th row Contact */
+/* ── S07 CONVERGENCE ── */
 #s07{z-index:10}
 #s07-bg{position:absolute;inset:0;background:#0C0C0C}
-#s07-hero{position:absolute;top:0;left:0;width:1200px;height:1080px;background:#C6FF00;clip-path:polygon(0 0,0 0,0 100%,0 100%)}
-#s07-hero-text{position:absolute;top:220px;left:80px;font-family:'Bebas Neue',sans-serif;font-size:160px;color:#0C0C0C;line-height:.9;opacity:0}
-#s07-hero-sub{position:absolute;top:680px;left:80px;font-family:'Space Grotesk',sans-serif;font-size:20px;letter-spacing:.2em;color:rgba(12,12,12,.6);opacity:0}
-.ap-label{position:absolute;font-family:'Space Grotesk',sans-serif;letter-spacing:.2em;text-transform:uppercase}
-#apl1{top:160px;left:1260px;font-size:13px;color:rgba(242,242,238,.5);opacity:0}
-#apl2{top:260px;left:1260px;font-size:22px;color:#C6FF00;opacity:0}
-#apl3{top:360px;left:1260px;font-size:13px;color:rgba(242,242,238,.5);opacity:0}
-#apl4{top:440px;left:1260px;font-size:16px;color:#F2F2EE;opacity:0}
-#apl5{top:540px;left:1260px;font-size:13px;color:rgba(242,242,238,.5);opacity:0}
-#apl6{top:620px;left:1260px;font-size:16px;color:#F2F2EE;opacity:0}
-#apl7{top:720px;left:1260px;font-size:13px;color:rgba(242,242,238,.5);opacity:0}
-#apl8{top:800px;left:1260px;font-size:18px;color:#C6FF00;opacity:0;letter-spacing:.15em}
-#ap-rule{position:absolute;top:0;left:1240px;width:1px;height:0;background:rgba(198,255,0,.3);opacity:0}
+.frag{position:absolute;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;letter-spacing:.04em;opacity:0}
+#s07-forma{position:absolute;top:490px;left:960px;font-family:'Bebas Neue',sans-serif;font-size:180px;color:#C6FF00;letter-spacing:-.02em;opacity:0}
+#s07-tagline{position:absolute;top:650px;left:960px;font-family:'Space Grotesk',sans-serif;font-size:16px;letter-spacing:.4em;color:rgba(198,255,0,.6);opacity:0;white-space:nowrap}
 
-/* S08 */
+/* ── S08 FINAL LOCKUP ── */
 #s08{z-index:10}
-#s08-bg{position:absolute;inset:0;background:#0C0C0C}
-.mc{position:absolute;opacity:0;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:.06em}
-
-/* S09 */
-#s09{z-index:10}
-#s09-bg{position:absolute;inset:0;background:#0C0C0C}
-.cf{position:absolute;font-family:'Bebas Neue',sans-serif;opacity:0}
-#s09-logo{position:absolute;top:490px;left:960px;font-family:'Bebas Neue',sans-serif;font-size:180px;color:#C6FF00;letter-spacing:-.02em;opacity:0}
-#s09-tagline{position:absolute;top:650px;left:960px;font-family:'Space Grotesk',sans-serif;font-size:16px;letter-spacing:.4em;color:rgba(198,255,0,.6);opacity:0;white-space:nowrap}
-
-/* S10 — fix #6: forma.studio CTA */
-#s10{z-index:10}
-#s10-bg{position:absolute;inset:0;background:#C6FF00}
-#s10-main{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
-#s10-logo{font-family:'Bebas Neue',sans-serif;font-size:240px;color:#0C0C0C;letter-spacing:-.02em;line-height:1}
-#s10-tagline{font-family:'Space Grotesk',sans-serif;font-size:18px;letter-spacing:.5em;color:rgba(12,12,12,.5);text-transform:uppercase;margin-top:12px}
-#s10-url{position:absolute;bottom:72px;left:50%;transform:translateX(-50%);font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:.18em;color:#0C0C0C;opacity:.55;white-space:nowrap}
-#s10-rule{position:absolute;bottom:130px;left:80px;right:80px;height:1px;background:rgba(12,12,12,.15)}
-#s10-ul{position:absolute;bottom:68px;left:80px;font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.22em;color:rgba(12,12,12,.32)}
-#s10-year{position:absolute;bottom:68px;right:80px;font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.22em;color:rgba(12,12,12,.32)}
+#s08-bg{position:absolute;inset:0;background:#C6FF00}
+#s08-main{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+#s08-logo{font-family:'Bebas Neue',sans-serif;font-size:240px;color:#0C0C0C;letter-spacing:-.02em;line-height:1}
+#s08-tagline{font-family:'Space Grotesk',sans-serif;font-size:18px;letter-spacing:.5em;color:rgba(12,12,12,.5);text-transform:uppercase;margin-top:12px}
+#s08-rule{position:absolute;bottom:130px;left:80px;right:80px;height:1px;background:rgba(12,12,12,.15)}
+#s08-url{position:absolute;bottom:72px;left:50%;transform:translateX(-50%);font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:.18em;color:#0C0C0C;opacity:.55;white-space:nowrap}
+#s08-ul{position:absolute;bottom:68px;left:80px;font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.22em;color:rgba(12,12,12,.32)}
+#s08-year{position:absolute;bottom:68px;right:80px;font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.22em;color:rgba(12,12,12,.32)}
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="forma-v3" data-width="1920" data-height="1080" data-start="0" data-duration="60" style="overflow:hidden">
+<div id="root" data-composition-id="forma-v4" data-width="1920" data-height="1080" data-start="0" data-duration="60" style="overflow:hidden">
 <div id="stage" data-layout-allow-overflow="true">
 
 <div id="grid-tex"></div>
-<div id="scan"></div>
 <div class="flood" id="fl-acid"></div>
 <div class="flood" id="fl-white"></div>
 <div class="flood" id="fl-black"></div>
 <div class="flood" id="fl-brand">FORMA</div>
 
 <!-- ===== AUDIO ===== -->
-<audio id="a-bgm"  class="clip" data-start="0"    data-duration="60"   data-track-index="10" data-volume="0.38" src="audio/bgm.wav"></audio>
-<audio id="a-imp1" class="clip" data-start="0.05"  data-duration="0.6"  data-track-index="11" data-volume="0.75" src="audio/sfx-impact.wav"></audio>
-<audio id="a-imp2" class="clip" data-start="0.10"  data-duration="0.6"  data-track-index="12" data-volume="0.65" src="audio/sfx-impact.wav"></audio>
-<audio id="a-imp3" class="clip" data-start="0.15"  data-duration="0.6"  data-track-index="13" data-volume="0.60" src="audio/sfx-impact.wav"></audio>
-<audio id="a-imp4" class="clip" data-start="0.20"  data-duration="0.6"  data-track-index="14" data-volume="0.55" src="audio/sfx-impact.wav"></audio>
-<audio id="a-imp5" class="clip" data-start="0.25"  data-duration="0.6"  data-track-index="15" data-volume="0.50" src="audio/sfx-impact.wav"></audio>
-<audio id="a-sw1"  class="clip" data-start="2.78"  data-duration="0.35" data-track-index="16" data-volume="0.7"  src="audio/sfx-acid-sweep.wav"></audio>
-<audio id="a-wh1"  class="clip" data-start="3.05"  data-duration="0.35" data-track-index="11" data-volume="0.55" src="audio/sfx-whoosh.wav"></audio>
-<audio id="a-wh2"  class="clip" data-start="3.18"  data-duration="0.35" data-track-index="12" data-volume="0.5"  src="audio/sfx-whoosh.wav"></audio>
-<audio id="a-wh3"  class="clip" data-start="3.31"  data-duration="0.35" data-track-index="13" data-volume="0.45" src="audio/sfx-whoosh.wav"></audio>
-<audio id="a-ty1"  class="clip" data-start="7.08"  data-duration="0.12" data-track-index="11" data-volume="0.55" src="audio/sfx-type.wav"></audio>
-<audio id="a-ty2"  class="clip" data-start="7.35"  data-duration="0.12" data-track-index="12" data-volume="0.52" src="audio/sfx-type.wav"></audio>
-<audio id="a-ty3"  class="clip" data-start="7.60"  data-duration="0.12" data-track-index="11" data-volume="0.48" src="audio/sfx-type.wav"></audio>
-<audio id="a-ty4"  class="clip" data-start="7.85"  data-duration="0.12" data-track-index="12" data-volume="0.42" src="audio/sfx-type.wav"></audio>
-<audio id="a-sw2"  class="clip" data-start="11.74" data-duration="0.35" data-track-index="11" data-volume="0.65" src="audio/sfx-acid-sweep.wav"></audio>
-<audio id="a-tk1"  class="clip" data-start="12.12" data-duration="0.06" data-track-index="11" data-volume="0.35" src="audio/sfx-tick.wav"></audio>
-<audio id="a-tk2"  class="clip" data-start="12.18" data-duration="0.06" data-track-index="12" data-volume="0.35" src="audio/sfx-tick.wav"></audio>
-<audio id="a-tk3"  class="clip" data-start="12.24" data-duration="0.06" data-track-index="11" data-volume="0.33" src="audio/sfx-tick.wav"></audio>
-<audio id="a-tk4"  class="clip" data-start="12.30" data-duration="0.06" data-track-index="12" data-volume="0.33" src="audio/sfx-tick.wav"></audio>
-<audio id="a-tk5"  class="clip" data-start="12.36" data-duration="0.06" data-track-index="11" data-volume="0.31" src="audio/sfx-tick.wav"></audio>
-<audio id="a-tk6"  class="clip" data-start="12.42" data-duration="0.06" data-track-index="12" data-volume="0.31" src="audio/sfx-tick.wav"></audio>
-<audio id="a-tk7"  class="clip" data-start="12.48" data-duration="0.06" data-track-index="11" data-volume="0.29" src="audio/sfx-tick.wav"></audio>
-<audio id="a-tk8"  class="clip" data-start="12.54" data-duration="0.06" data-track-index="12" data-volume="0.29" src="audio/sfx-tick.wav"></audio>
-<audio id="a-tk9"  class="clip" data-start="12.60" data-duration="0.06" data-track-index="11" data-volume="0.27" src="audio/sfx-tick.wav"></audio>
-<audio id="a-tk10" class="clip" data-start="12.66" data-duration="0.06" data-track-index="12" data-volume="0.27" src="audio/sfx-tick.wav"></audio>
-<audio id="a-tk11" class="clip" data-start="12.72" data-duration="0.06" data-track-index="11" data-volume="0.25" src="audio/sfx-tick.wav"></audio>
-<audio id="a-tk12" class="clip" data-start="18.3"  data-duration="0.06" data-track-index="12" data-volume="0.4"  src="audio/sfx-tick.wav"></audio>
-<audio id="a-tk13" class="clip" data-start="19.3"  data-duration="0.06" data-track-index="11" data-volume="0.42" src="audio/sfx-tick.wav"></audio>
-<audio id="a-tk14" class="clip" data-start="19.45" data-duration="0.06" data-track-index="12" data-volume="0.39" src="audio/sfx-tick.wav"></audio>
-<audio id="a-tk15" class="clip" data-start="19.60" data-duration="0.06" data-track-index="11" data-volume="0.36" src="audio/sfx-tick.wav"></audio>
-<audio id="a-tk16" class="clip" data-start="19.75" data-duration="0.06" data-track-index="12" data-volume="0.33" src="audio/sfx-tick.wav"></audio>
-<audio id="a-tk17" class="clip" data-start="21.0"  data-duration="0.06" data-track-index="11" data-volume="0.3"  src="audio/sfx-tick.wav"></audio>
-<audio id="a-wh4"  class="clip" data-start="23.74" data-duration="0.35" data-track-index="12" data-volume="0.6"  src="audio/sfx-whoosh.wav"></audio>
-<audio id="a-sw3"  class="clip" data-start="31.76" data-duration="0.35" data-track-index="11" data-volume="0.65" src="audio/sfx-acid-sweep.wav"></audio>
-<audio id="a-wh5"  class="clip" data-start="32.05" data-duration="0.35" data-track-index="16" data-volume="0.58" src="audio/sfx-whoosh.wav"></audio>
-<audio id="a-mat"  class="clip" data-start="40"    data-duration="8"    data-track-index="11" data-volume="0.72" src="audio/sfx-matrix.wav"></audio>
-<audio id="a-col"  class="clip" data-start="48"    data-duration="7"    data-track-index="11" data-volume="0.85" src="audio/sfx-collapse.wav"></audio>
-<audio id="a-sw4"  class="clip" data-start="54.74" data-duration="0.35" data-track-index="12" data-volume="0.6"  src="audio/sfx-acid-sweep.wav"></audio>
+<audio id="a-bgm"   class="clip" data-start="0"     data-duration="60"   data-track-index="10" data-volume="0.38" src="audio/bgm.wav"></audio>
+<audio id="a-imp1"  class="clip" data-start="0.05"  data-duration="0.6"  data-track-index="11" data-volume="0.75" src="audio/sfx-impact.wav"></audio>
+<audio id="a-imp2"  class="clip" data-start="0.10"  data-duration="0.6"  data-track-index="12" data-volume="0.65" src="audio/sfx-impact.wav"></audio>
+<audio id="a-imp3"  class="clip" data-start="0.15"  data-duration="0.6"  data-track-index="13" data-volume="0.60" src="audio/sfx-impact.wav"></audio>
+<audio id="a-imp4"  class="clip" data-start="0.20"  data-duration="0.6"  data-track-index="14" data-volume="0.55" src="audio/sfx-impact.wav"></audio>
+<audio id="a-imp5"  class="clip" data-start="0.25"  data-duration="0.6"  data-track-index="15" data-volume="0.50" src="audio/sfx-impact.wav"></audio>
+<audio id="a-scan"  class="clip" data-start="0.4"   data-duration="0.35" data-track-index="16" data-volume="0.55" src="audio/sfx-whoosh.wav"></audio>
+<audio id="a-ty-b1" class="clip" data-start="2.5"   data-duration="0.12" data-track-index="11" data-volume="0.5"  src="audio/sfx-type.wav"></audio>
+<audio id="a-ty-b2" class="clip" data-start="2.65"  data-duration="0.12" data-track-index="12" data-volume="0.48" src="audio/sfx-type.wav"></audio>
+<audio id="a-ty-f1" class="clip" data-start="3.0"   data-duration="0.12" data-track-index="11" data-volume="0.55" src="audio/sfx-type.wav"></audio>
+<audio id="a-ty-f2" class="clip" data-start="3.12"  data-duration="0.12" data-track-index="12" data-volume="0.52" src="audio/sfx-type.wav"></audio>
+<audio id="a-ty-f3" class="clip" data-start="3.24"  data-duration="0.12" data-track-index="11" data-volume="0.49" src="audio/sfx-type.wav"></audio>
+<audio id="a-ty-f4" class="clip" data-start="3.36"  data-duration="0.12" data-track-index="12" data-volume="0.46" src="audio/sfx-type.wav"></audio>
+<audio id="a-ty-f5" class="clip" data-start="3.48"  data-duration="0.12" data-track-index="11" data-volume="0.43" src="audio/sfx-type.wav"></audio>
+<audio id="a-kw1"   class="clip" data-start="4.5"   data-duration="0.12" data-track-index="12" data-volume="0.5"  src="audio/sfx-type.wav"></audio>
+<audio id="a-kw2"   class="clip" data-start="5.0"   data-duration="0.12" data-track-index="11" data-volume="0.5"  src="audio/sfx-type.wav"></audio>
+<audio id="a-kw3"   class="clip" data-start="5.5"   data-duration="0.12" data-track-index="12" data-volume="0.5"  src="audio/sfx-type.wav"></audio>
+<audio id="a-kw4"   class="clip" data-start="6.0"   data-duration="0.12" data-track-index="11" data-volume="0.5"  src="audio/sfx-type.wav"></audio>
+<audio id="a-sw1"   class="clip" data-start="9.74"  data-duration="0.35" data-track-index="16" data-volume="0.7"  src="audio/sfx-acid-sweep.wav"></audio>
+<audio id="a-wh1"   class="clip" data-start="10.05" data-duration="0.35" data-track-index="11" data-volume="0.55" src="audio/sfx-whoosh.wav"></audio>
+<audio id="a-wh2"   class="clip" data-start="10.18" data-duration="0.35" data-track-index="12" data-volume="0.5"  src="audio/sfx-whoosh.wav"></audio>
+<audio id="a-tk1"   class="clip" data-start="17.3"  data-duration="0.06" data-track-index="11" data-volume="0.4"  src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk2"   class="clip" data-start="17.4"  data-duration="0.06" data-track-index="12" data-volume="0.38" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk3"   class="clip" data-start="17.5"  data-duration="0.06" data-track-index="11" data-volume="0.36" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk4"   class="clip" data-start="17.6"  data-duration="0.06" data-track-index="12" data-volume="0.34" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk5"   class="clip" data-start="17.7"  data-duration="0.06" data-track-index="11" data-volume="0.32" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk6"   class="clip" data-start="17.8"  data-duration="0.06" data-track-index="12" data-volume="0.30" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk7"   class="clip" data-start="20.5"  data-duration="0.06" data-track-index="11" data-volume="0.35" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk8"   class="clip" data-start="21.0"  data-duration="0.06" data-track-index="12" data-volume="0.33" src="audio/sfx-tick.wav"></audio>
+<audio id="a-wh3"   class="clip" data-start="24.74" data-duration="0.35" data-track-index="11" data-volume="0.6"  src="audio/sfx-whoosh.wav"></audio>
+<audio id="a-ty1"   class="clip" data-start="25.20" data-duration="0.12" data-track-index="16" data-volume="0.55" src="audio/sfx-type.wav"></audio>
+<audio id="a-ty2"   class="clip" data-start="25.45" data-duration="0.12" data-track-index="16" data-volume="0.52" src="audio/sfx-type.wav"></audio>
+<audio id="a-ty3"   class="clip" data-start="25.70" data-duration="0.12" data-track-index="16" data-volume="0.48" src="audio/sfx-type.wav"></audio>
+<audio id="a-ty4"   class="clip" data-start="25.95" data-duration="0.12" data-track-index="16" data-volume="0.44" src="audio/sfx-type.wav"></audio>
+<audio id="a-sw2"   class="clip" data-start="32.76" data-duration="0.35" data-track-index="11" data-volume="0.65" src="audio/sfx-acid-sweep.wav"></audio>
+<audio id="a-wh4"   class="clip" data-start="33.05" data-duration="0.35" data-track-index="12" data-volume="0.58" src="audio/sfx-whoosh.wav"></audio>
+<audio id="a-tk9"   class="clip" data-start="33.3"  data-duration="0.06" data-track-index="11" data-volume="0.4"  src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk10"  class="clip" data-start="33.45" data-duration="0.06" data-track-index="12" data-volume="0.38" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk11"  class="clip" data-start="33.60" data-duration="0.06" data-track-index="11" data-volume="0.36" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk12"  class="clip" data-start="33.75" data-duration="0.06" data-track-index="12" data-volume="0.34" src="audio/sfx-tick.wav"></audio>
+<audio id="a-wh5"   class="clip" data-start="37.74" data-duration="0.35" data-track-index="12" data-volume="0.6"  src="audio/sfx-whoosh.wav"></audio>
+<audio id="a-mat"   class="clip" data-start="38"    data-duration="8"    data-track-index="11" data-volume="0.72" src="audio/sfx-matrix.wav"></audio>
+<audio id="a-mtk1"  class="clip" data-start="38.3"  data-duration="0.06" data-track-index="12" data-volume="0.35" src="audio/sfx-tick.wav"></audio>
+<audio id="a-mtk2"  class="clip" data-start="38.6"  data-duration="0.06" data-track-index="13" data-volume="0.35" src="audio/sfx-tick.wav"></audio>
+<audio id="a-mtk3"  class="clip" data-start="38.9"  data-duration="0.06" data-track-index="12" data-volume="0.33" src="audio/sfx-tick.wav"></audio>
+<audio id="a-mtk4"  class="clip" data-start="39.2"  data-duration="0.06" data-track-index="13" data-volume="0.33" src="audio/sfx-tick.wav"></audio>
+<audio id="a-mtk5"  class="clip" data-start="39.5"  data-duration="0.06" data-track-index="12" data-volume="0.31" src="audio/sfx-tick.wav"></audio>
+<audio id="a-mtk6"  class="clip" data-start="39.8"  data-duration="0.06" data-track-index="13" data-volume="0.31" src="audio/sfx-tick.wav"></audio>
+<audio id="a-col"   class="clip" data-start="50"    data-duration="7"    data-track-index="11" data-volume="0.85" src="audio/sfx-collapse.wav"></audio>
+<audio id="a-sw3"   class="clip" data-start="56.74" data-duration="0.35" data-track-index="12" data-volume="0.6"  src="audio/sfx-acid-sweep.wav"></audio>
 <!-- ===== END AUDIO ===== -->
 
-<!-- S01 Opening Impact (0-3s) -->
-<div class="clip" id="s01" data-start="0" data-duration="3" data-track-index="0">
+<!-- S01 Brand Detection (0-10s) -->
+<div class="clip" id="s01" data-start="0" data-duration="10" data-track-index="0">
   <div id="s01-bg"></div>
-  <div class="ll" id="ll-f">F</div>
-  <div class="ll" id="ll-o">O</div>
-  <div class="ll" id="ll-r">R</div>
-  <div class="ll" id="ll-m">M</div>
-  <div class="ll" id="ll-a">A</div>
-  <div id="s01-sub">Brand Identity System — 2026</div>
-  <div id="s01-year">FORMA</div>
-  <div id="s01-rule"></div>
-  <div id="s01-mask"></div>
+  <div id="s01-scanline"></div>
+  <div id="s01-init">SYSTEM INITIALIZING · BRAND ANALYSIS MODULE</div>
+  <div id="s01-signal">SIGNAL ACQUIRED · FORMA IDENTITY SYSTEM</div>
+  <div id="s01-det-bar"></div>
+  <div id="s01-detected">BRAND DETECTED</div>
+  <div class="s1l" id="s1-f">F</div>
+  <div class="s1l" id="s1-o">O</div>
+  <div class="s1l" id="s1-r">R</div>
+  <div class="s1l" id="s1-m">M</div>
+  <div class="s1l" id="s1-a">A</div>
+  <div id="s01-kw-label">ANALYZING BRAND DNA /</div>
+  <div class="s1-kw" id="kw1">IDENTITY</div>
+  <div class="s1-kw" id="kw2">MOTION</div>
+  <div class="s1-kw" id="kw3">SYSTEM</div>
+  <div class="s1-kw" id="kw4">PRECISION</div>
+  <div id="s01-progress-bg"></div>
+  <div id="s01-progress"></div>
+  <div id="s01-prog-label">ANALYSIS COMPLETE · ALL PARAMETERS VERIFIED</div>
+  <div id="s01-counter">001 / BRAND DETECTION</div>
 </div>
 
-<!-- S02 Color Package (3-7s) -->
-<div class="clip" id="s02" data-start="3" data-duration="4" data-track-index="0">
+<!-- S02 Color System (10-17s) -->
+<div class="clip" id="s02" data-start="10" data-duration="7" data-track-index="0">
   <div id="s02-bg"></div>
   <div class="col-block" id="cb-pri"></div>
   <div class="col-block" id="cb-sec"></div>
   <div class="col-block" id="cb-acc"></div>
-  <div id="s02-divv1"></div>
-  <div id="s02-divv2"></div>
+  <div id="s02-divv1"></div><div id="s02-divv2"></div>
   <div class="col-label" id="cl-pri">PRIMARY</div>
   <div class="col-label" id="cl-sec">SECONDARY</div>
   <div class="col-label" id="cl-acc">ACCENT</div>
@@ -243,25 +283,10 @@ body{width:1920px;height:1080px;overflow:hidden;background:#0C0C0C;font-family:'
   <div id="s02-title">COLOR SYSTEM — FORMA 2026</div>
 </div>
 
-<!-- S03 Typography System (7-12s) — fix #2: brand words -->
-<div class="clip" id="s03" data-start="7" data-duration="5" data-track-index="0">
+<!-- S03 Grid System + User Matrix (17-25s) -->
+<div class="clip" id="s03" data-start="17" data-duration="8" data-track-index="0">
   <div id="s03-bg"></div>
-  <div class="tw" id="tw1">FORMA</div>
-  <div class="tw" id="tw2">IDENTITY</div>
-  <div class="tw" id="tw3">MOTION</div>
-  <div class="tw" id="tw4">PRECISION · SYSTEMS · BRAND</div>
-  <div class="tw" id="tw5">FORMA</div>
-  <div class="t-rule" id="tr1"></div>
-  <div class="t-rule" id="tr2"></div>
-  <div id="s03-counter">03 / TYPOGRAPHY</div>
-  <div id="s03-mask"></div>
-</div>
-
-<!-- S04 Grid System (12-18s) — fix #3: all nodes at exact grid intersections -->
-<div class="clip" id="s04" data-start="12" data-duration="6" data-track-index="0">
-  <div id="s04-bg"></div>
   <svg width="1920" height="1080" style="position:absolute;inset:0" data-layout-allow-overflow="true">
-    <!-- Vertical lines (gv1-gv11) -->
     <line class="gv" id="gv1"  x1="160"  y1="0" x2="160"  y2="1080"/>
     <line class="gv" id="gv2"  x1="320"  y1="0" x2="320"  y2="1080"/>
     <line class="gv" id="gv3"  x1="480"  y1="0" x2="480"  y2="1080"/>
@@ -273,7 +298,6 @@ body{width:1920px;height:1080px;overflow:hidden;background:#0C0C0C;font-family:'
     <line class="gv" id="gv9"  x1="1440" y1="0" x2="1440" y2="1080"/>
     <line class="gv" id="gv10" x1="1600" y1="0" x2="1600" y2="1080"/>
     <line class="gv" id="gv11" x1="1760" y1="0" x2="1760" y2="1080"/>
-    <!-- Horizontal lines (gh1-gh7) -->
     <line class="gh" id="gh1" x1="0" y1="135" x2="1920" y2="135"/>
     <line class="gh" id="gh2" x1="0" y1="270" x2="1920" y2="270"/>
     <line class="gh" id="gh3" x1="0" y1="405" x2="1920" y2="405"/>
@@ -281,7 +305,7 @@ body{width:1920px;height:1080px;overflow:hidden;background:#0C0C0C;font-family:'
     <line class="gh" id="gh5" x1="0" y1="675" x2="1920" y2="675"/>
     <line class="gh" id="gh6" x1="0" y1="810" x2="1920" y2="810"/>
     <line class="gh" id="gh7" x1="0" y1="945" x2="1920" y2="945"/>
-    <!-- All 77 intersection background dots (r=2.5, low opacity) — every col × row -->
+    <!-- all 77 intersection dots -->
     <circle class="gi-dot-bg" cx="160"  cy="135" r="2.5"/><circle class="gi-dot-bg" cx="320"  cy="135" r="2.5"/><circle class="gi-dot-bg" cx="480"  cy="135" r="2.5"/><circle class="gi-dot-bg" cx="640"  cy="135" r="2.5"/><circle class="gi-dot-bg" cx="800"  cy="135" r="2.5"/><circle class="gi-dot-bg" cx="960"  cy="135" r="2.5"/><circle class="gi-dot-bg" cx="1120" cy="135" r="2.5"/><circle class="gi-dot-bg" cx="1280" cy="135" r="2.5"/><circle class="gi-dot-bg" cx="1440" cy="135" r="2.5"/><circle class="gi-dot-bg" cx="1600" cy="135" r="2.5"/><circle class="gi-dot-bg" cx="1760" cy="135" r="2.5"/>
     <circle class="gi-dot-bg" cx="160"  cy="270" r="2.5"/><circle class="gi-dot-bg" cx="320"  cy="270" r="2.5"/><circle class="gi-dot-bg" cx="480"  cy="270" r="2.5"/><circle class="gi-dot-bg" cx="640"  cy="270" r="2.5"/><circle class="gi-dot-bg" cx="800"  cy="270" r="2.5"/><circle class="gi-dot-bg" cx="960"  cy="270" r="2.5"/><circle class="gi-dot-bg" cx="1120" cy="270" r="2.5"/><circle class="gi-dot-bg" cx="1280" cy="270" r="2.5"/><circle class="gi-dot-bg" cx="1440" cy="270" r="2.5"/><circle class="gi-dot-bg" cx="1600" cy="270" r="2.5"/><circle class="gi-dot-bg" cx="1760" cy="270" r="2.5"/>
     <circle class="gi-dot-bg" cx="160"  cy="405" r="2.5"/><circle class="gi-dot-bg" cx="320"  cy="405" r="2.5"/><circle class="gi-dot-bg" cx="480"  cy="405" r="2.5"/><circle class="gi-dot-bg" cx="640"  cy="405" r="2.5"/><circle class="gi-dot-bg" cx="800"  cy="405" r="2.5"/><circle class="gi-dot-bg" cx="960"  cy="405" r="2.5"/><circle class="gi-dot-bg" cx="1120" cy="405" r="2.5"/><circle class="gi-dot-bg" cx="1280" cy="405" r="2.5"/><circle class="gi-dot-bg" cx="1440" cy="405" r="2.5"/><circle class="gi-dot-bg" cx="1600" cy="405" r="2.5"/><circle class="gi-dot-bg" cx="1760" cy="405" r="2.5"/>
@@ -289,46 +313,51 @@ body{width:1920px;height:1080px;overflow:hidden;background:#0C0C0C;font-family:'
     <circle class="gi-dot-bg" cx="160"  cy="675" r="2.5"/><circle class="gi-dot-bg" cx="320"  cy="675" r="2.5"/><circle class="gi-dot-bg" cx="480"  cy="675" r="2.5"/><circle class="gi-dot-bg" cx="640"  cy="675" r="2.5"/><circle class="gi-dot-bg" cx="800"  cy="675" r="2.5"/><circle class="gi-dot-bg" cx="960"  cy="675" r="2.5"/><circle class="gi-dot-bg" cx="1120" cy="675" r="2.5"/><circle class="gi-dot-bg" cx="1280" cy="675" r="2.5"/><circle class="gi-dot-bg" cx="1440" cy="675" r="2.5"/><circle class="gi-dot-bg" cx="1600" cy="675" r="2.5"/><circle class="gi-dot-bg" cx="1760" cy="675" r="2.5"/>
     <circle class="gi-dot-bg" cx="160"  cy="810" r="2.5"/><circle class="gi-dot-bg" cx="320"  cy="810" r="2.5"/><circle class="gi-dot-bg" cx="480"  cy="810" r="2.5"/><circle class="gi-dot-bg" cx="640"  cy="810" r="2.5"/><circle class="gi-dot-bg" cx="800"  cy="810" r="2.5"/><circle class="gi-dot-bg" cx="960"  cy="810" r="2.5"/><circle class="gi-dot-bg" cx="1120" cy="810" r="2.5"/><circle class="gi-dot-bg" cx="1280" cy="810" r="2.5"/><circle class="gi-dot-bg" cx="1440" cy="810" r="2.5"/><circle class="gi-dot-bg" cx="1600" cy="810" r="2.5"/><circle class="gi-dot-bg" cx="1760" cy="810" r="2.5"/>
     <circle class="gi-dot-bg" cx="160"  cy="945" r="2.5"/><circle class="gi-dot-bg" cx="320"  cy="945" r="2.5"/><circle class="gi-dot-bg" cx="480"  cy="945" r="2.5"/><circle class="gi-dot-bg" cx="640"  cy="945" r="2.5"/><circle class="gi-dot-bg" cx="800"  cy="945" r="2.5"/><circle class="gi-dot-bg" cx="960"  cy="945" r="2.5"/><circle class="gi-dot-bg" cx="1120" cy="945" r="2.5"/><circle class="gi-dot-bg" cx="1280" cy="945" r="2.5"/><circle class="gi-dot-bg" cx="1440" cy="945" r="2.5"/><circle class="gi-dot-bg" cx="1600" cy="945" r="2.5"/><circle class="gi-dot-bg" cx="1760" cy="945" r="2.5"/>
-    <!-- Highlighted col-6 (x=960) all 7 rows — medium brightness dots -->
-    <circle class="gi-dot-hi" id="gh-c6r1" cx="960" cy="135" r="4"/>
-    <circle class="gi-dot-hi" id="gh-c6r2" cx="960" cy="270" r="4"/>
-    <circle class="gi-dot-hi" id="gh-c6r3" cx="960" cy="405" r="4"/>
-    <circle class="gi-dot-hi" id="gh-c6r4" cx="960" cy="540" r="5"/>
-    <circle class="gi-dot-hi" id="gh-c6r5" cx="960" cy="675" r="4"/>
-    <circle class="gi-dot-hi" id="gh-c6r6" cx="960" cy="810" r="4"/>
-    <circle class="gi-dot-hi" id="gh-c6r7" cx="960" cy="945" r="4"/>
-    <!-- Highlighted row-4 (y=540) all 11 cols — medium brightness dots -->
-    <circle class="gi-dot-hi" id="gh-r4c1"  cx="160"  cy="540" r="4"/>
-    <circle class="gi-dot-hi" id="gh-r4c2"  cx="320"  cy="540" r="4"/>
-    <circle class="gi-dot-hi" id="gh-r4c3"  cx="480"  cy="540" r="4"/>
-    <circle class="gi-dot-hi" id="gh-r4c4"  cx="640"  cy="540" r="4"/>
-    <circle class="gi-dot-hi" id="gh-r4c5"  cx="800"  cy="540" r="4"/>
-    <circle class="gi-dot-hi" id="gh-r4c7"  cx="1120" cy="540" r="4"/>
-    <circle class="gi-dot-hi" id="gh-r4c8"  cx="1280" cy="540" r="4"/>
-    <circle class="gi-dot-hi" id="gh-r4c9"  cx="1440" cy="540" r="4"/>
-    <circle class="gi-dot-hi" id="gh-r4c10" cx="1600" cy="540" r="4"/>
-    <circle class="gi-dot-hi" id="gh-r4c11" cx="1760" cy="540" r="4"/>
-    <!-- Column numbers -->
-    <text class="col-num" id="cn1"  x="160"  y="55" text-anchor="middle">01</text>
-    <text class="col-num" id="cn2"  x="320"  y="55" text-anchor="middle">02</text>
-    <text class="col-num" id="cn3"  x="480"  y="55" text-anchor="middle">03</text>
-    <text class="col-num" id="cn4"  x="640"  y="55" text-anchor="middle">04</text>
-    <text class="col-num" id="cn5"  x="800"  y="55" text-anchor="middle">05</text>
-    <text class="col-num" id="cn6"  x="960"  y="55" text-anchor="middle" fill="rgba(198,255,0,.8)" font-size="13">06</text>
-    <text class="col-num" id="cn7"  x="1120" y="55" text-anchor="middle">07</text>
-    <text class="col-num" id="cn8"  x="1280" y="55" text-anchor="middle">08</text>
-    <text class="col-num" id="cn9"  x="1440" y="55" text-anchor="middle">09</text>
-    <text class="col-num" id="cn10" x="1600" y="55" text-anchor="middle">10</text>
-    <text class="col-num" id="cn11" x="1760" y="55" text-anchor="middle">11</text>
-    <!-- Grid highlight band at row 4 -->
-    <rect id="s04-hl" x="0" y="525" width="1920" height="30" fill="rgba(198,255,0,.06)" opacity="0"/>
+    <!-- col-6 highlights -->
+    <circle class="gi-dot-hi" cx="960" cy="135" r="4"/><circle class="gi-dot-hi" cx="960" cy="270" r="4"/><circle class="gi-dot-hi" cx="960" cy="405" r="4"/><circle class="gi-dot-hi" cx="960" cy="540" r="5"/><circle class="gi-dot-hi" cx="960" cy="675" r="4"/><circle class="gi-dot-hi" cx="960" cy="810" r="4"/><circle class="gi-dot-hi" cx="960" cy="945" r="4"/>
+    <!-- row-4 highlights -->
+    <circle class="gi-dot-hi" cx="160" cy="540" r="4"/><circle class="gi-dot-hi" cx="320" cy="540" r="4"/><circle class="gi-dot-hi" cx="480" cy="540" r="4"/><circle class="gi-dot-hi" cx="640" cy="540" r="4"/><circle class="gi-dot-hi" cx="800" cy="540" r="4"/><circle class="gi-dot-hi" cx="1120" cy="540" r="4"/><circle class="gi-dot-hi" cx="1280" cy="540" r="4"/><circle class="gi-dot-hi" cx="1440" cy="540" r="4"/><circle class="gi-dot-hi" cx="1600" cy="540" r="4"/><circle class="gi-dot-hi" cx="1760" cy="540" r="4"/>
+    <!-- column numbers -->
+    <text class="col-num" x="160"  y="55" text-anchor="middle">01</text>
+    <text class="col-num" x="320"  y="55" text-anchor="middle">02</text>
+    <text class="col-num" x="480"  y="55" text-anchor="middle">03</text>
+    <text class="col-num" x="640"  y="55" text-anchor="middle">04</text>
+    <text class="col-num" x="800"  y="55" text-anchor="middle">05</text>
+    <text class="col-num" x="960"  y="55" text-anchor="middle" fill="rgba(198,255,0,.8)" font-size="13">06</text>
+    <text class="col-num" x="1120" y="55" text-anchor="middle">07</text>
+    <text class="col-num" x="1280" y="55" text-anchor="middle">08</text>
+    <text class="col-num" x="1440" y="55" text-anchor="middle">09</text>
+    <text class="col-num" x="1600" y="55" text-anchor="middle">10</text>
+    <text class="col-num" x="1760" y="55" text-anchor="middle">11</text>
+    <rect id="s03-hl" x="0" y="525" width="1920" height="30" fill="rgba(198,255,0,.06)"/>
   </svg>
-  <div id="s04-title">12-COLUMN GRID SYSTEM</div>
-  <div id="s04-subtitle">LAYOUT / STRUCTURE / PRECISION</div>
+  <!-- user persona data labels at grid intersections -->
+  <div class="gd-label" id="gdl1">USER PROFILE<br><span class="gd-val">AGE 24–35</span></div>
+  <div class="gd-label" id="gdl2">ROLE<br><span class="gd-val">DESIGNER</span></div>
+  <div class="gd-label" id="gdl3">CONTEXT<br><span class="gd-val">CREATOR</span></div>
+  <div class="gd-label" id="gdl4">SECTOR<br><span class="gd-val">AGENCY</span></div>
+  <div class="gd-label" id="gdl5">SCALE<br><span class="gd-val">STARTUP</span></div>
+  <div class="gd-label" id="gdl6">REACH<br><span class="gd-val">GLOBAL</span></div>
+  <div id="s03-title">12-COLUMN GRID SYSTEM</div>
+  <div id="s03-subtitle">LAYOUT / STRUCTURE / PRECISION</div>
 </div>
 
-<!-- S05 Infographic Package (18-24s) — fix #4: ring counter animation in JS -->
-<div class="clip" id="s05" data-start="18" data-duration="6" data-track-index="0">
+<!-- S04 Typography System (25-33s) -->
+<div class="clip" id="s04" data-start="25" data-duration="8" data-track-index="0">
+  <div id="s04-bg"></div>
+  <div class="tw" id="tw1">FORMA</div>
+  <div class="tw" id="tw2">IDENTITY</div>
+  <div class="tw" id="tw3">MOTION</div>
+  <div class="tw" id="tw4">PRECISION · SYSTEMS · BRAND</div>
+  <div class="tw" id="tw5">FORMA</div>
+  <div class="t-rule" id="tr1"></div>
+  <div class="t-rule" id="tr2"></div>
+  <div id="s04-counter">04 / TYPOGRAPHY</div>
+  <div id="s04-mask"></div>
+</div>
+
+<!-- S05 Data Visualization (33-38s) -->
+<div class="clip" id="s05" data-start="33" data-duration="5" data-track-index="0">
   <div id="s05-bg"></div>
   <svg width="1920" height="1080" style="position:absolute;inset:0" data-layout-allow-overflow="true">
     <text id="ct-line" x="80" y="80" fill="#F2F2EE" font-family="Bebas Neue" font-size="28" letter-spacing="4" opacity="0">GROWTH METRICS</text>
@@ -336,7 +365,7 @@ body{width:1920px;height:1080px;overflow:hidden;background:#0C0C0C;font-family:'
     <polyline id="lc-path" points="80,320 240,300 400,280 560,260 720,220 880,195" fill="none" stroke="#C6FF00" stroke-width="3" stroke-dasharray="800" stroke-dashoffset="800"/>
     <polygon id="lc-fill" points="80,320 240,300 400,280 560,260 720,220 880,195 880,380 80,380" fill="#C6FF00" opacity="0"/>
     <line x1="80" y1="380" x2="880" y2="380" stroke="rgba(198,255,0,.2)" stroke-width="1"/>
-    <line x1="80" y1="320" x2="80" y2="380" stroke="rgba(198,255,0,.2)" stroke-width="1"/>
+    <line x1="80" y1="320" x2="80"  y2="380" stroke="rgba(198,255,0,.2)" stroke-width="1"/>
     <text id="cl-a" x="80"  y="400" fill="rgba(242,242,238,.4)" font-family="Space Grotesk" font-size="11" letter-spacing="2" opacity="0">Q1</text>
     <text id="cl-b" x="400" y="400" fill="rgba(242,242,238,.4)" font-family="Space Grotesk" font-size="11" letter-spacing="2" opacity="0">Q2</text>
     <text id="cl-c" x="720" y="400" fill="rgba(242,242,238,.4)" font-family="Space Grotesk" font-size="11" letter-spacing="2" opacity="0">Q3</text>
@@ -349,7 +378,7 @@ body{width:1920px;height:1080px;overflow:hidden;background:#0C0C0C;font-family:'
     <text id="ct-ring" x="80" y="520" fill="#F2F2EE" font-family="Bebas Neue" font-size="28" letter-spacing="4" opacity="0">COMPLETION</text>
     <circle id="ring-bg" cx="250" cy="720" r="90"/>
     <circle id="ring-fg" cx="250" cy="720" r="90" transform="rotate(-90 250 720)"/>
-    <text id="ring-pct" x="250" y="720" fill="#C6FF00" font-family="Bebas Neue" font-size="52" text-anchor="middle" dominant-baseline="central">0%</text>
+    <text id="ring-pct" x="250" y="720">0%</text>
     <text id="ct-node" x="700" y="520" fill="#F2F2EE" font-family="Bebas Neue" font-size="28" letter-spacing="4" opacity="0">SYSTEM NODES</text>
     <line class="nd-line" id="nl1" x1="900" y1="700" x2="1100" y2="620"/>
     <line class="nd-line" id="nl2" x1="900" y1="700" x2="1100" y2="780"/>
@@ -369,85 +398,137 @@ body{width:1920px;height:1080px;overflow:hidden;background:#0C0C0C;font-family:'
   <div id="s05-label">05 / DATA VISUALIZATION</div>
 </div>
 
-<!-- S06 Product Mockup (24-32s) -->
-<div class="clip" id="s06" data-start="24" data-duration="8" data-track-index="0">
+<!-- S06 Target Audience Matrix (38-50s) -->
+<div class="clip" id="s06" data-start="38" data-duration="12" data-track-index="0">
   <div id="s06-bg"></div>
-  <div id="s06-title">PRODUCT MOCKUPS</div>
-  <div id="s06-sub">Application Surfaces</div>
-  <div class="mock-card" id="mc1" style="left:80px;top:200px;width:560px;height:270px;background:#0C0C0C"><div class="mock-inner" style="font-size:72px;color:#C6FF00">FORMA</div></div>
-  <div class="mock-card" id="mc2" style="left:660px;top:200px;width:560px;height:270px;background:#C6FF00"><div class="mock-inner" style="font-size:36px;color:#0C0C0C">BRAND SYSTEM</div></div>
-  <div class="mock-card" id="mc3" style="left:1240px;top:200px;width:600px;height:270px;background:#1a1a1a;border:1px solid rgba(198,255,0,.2)"><div class="mock-inner" style="font-size:24px;color:#C6FF00;letter-spacing:.2em">DIGITAL</div></div>
-  <div class="mock-card" id="mc4" style="left:80px;top:490px;width:270px;height:270px;background:#C6FF00"><div class="mock-inner" style="font-size:48px;color:#0C0C0C">F</div></div>
-  <div class="mock-card" id="mc5" style="left:370px;top:490px;width:560px;height:270px;background:#111;border:1px solid #C6FF00"><div class="mock-inner" style="font-size:28px;color:#F2F2EE;letter-spacing:.15em">MOTION DESIGN</div></div>
-  <div class="mock-card" id="mc6" style="left:950px;top:490px;width:380px;height:270px;background:#C6FF00"><div class="mock-inner" style="font-size:48px;color:#0C0C0C">2026</div></div>
-  <div class="mock-card" id="mc7" style="left:1350px;top:490px;width:490px;height:270px;background:#0C0C0C;border:1px solid rgba(198,255,0,.15)"><div class="mock-inner" style="font-size:22px;color:rgba(198,255,0,.7);letter-spacing:.2em">IDENTITY</div></div>
-  <div class="mock-card" id="mc8" style="left:80px;top:780px;width:830px;height:220px;background:#C6FF00"><div class="mock-inner" style="font-size:56px;color:#0C0C0C;letter-spacing:-.01em">FORMA STUDIO</div></div>
-  <div class="mock-card" id="mc9" style="left:930px;top:780px;width:910px;height:220px;background:#1a1a1a"><div class="mock-inner" style="font-size:32px;color:#F2F2EE;letter-spacing:.1em">BRAND x MOTION</div></div>
-</div>
-
-<!-- S07 Application System (32-40s) — fix #5: 4th row Contact -->
-<div class="clip" id="s07" data-start="32" data-duration="8" data-track-index="0">
-  <div id="s07-bg"></div>
-  <div id="s07-hero"></div>
-  <div id="s07-hero-text">FORMA<br>STUDIO</div>
-  <div id="s07-hero-sub">Brand · Motion · Identity</div>
-  <div id="ap-rule"></div>
-  <div class="ap-label" id="apl1">FOUNDED</div>
-  <div class="ap-label" id="apl2">2026</div>
-  <div class="ap-label" id="apl3">DISCIPLINE</div>
-  <div class="ap-label" id="apl4">MOTION DESIGN</div>
-  <div class="ap-label" id="apl5">SCOPE</div>
-  <div class="ap-label" id="apl6">BRAND IDENTITY</div>
-  <div class="ap-label" id="apl7">CONTACT</div>
-  <div class="ap-label" id="apl8">forma.studio</div>
-</div>
-
-<!-- S08 Matrix Transition (40-48s) -->
-<div class="clip" id="s08" data-start="40" data-duration="8" data-track-index="0">
-  <div id="s08-bg"></div>
-  <div class="mc" id="mc-0-0" style="left:0;top:0;width:384px;height:360px;background:#C6FF00;color:#0C0C0C">FORMA</div>
-  <div class="mc" id="mc-1-0" style="left:384px;top:0;width:384px;height:360px;background:#0C0C0C;color:#C6FF00">GRID</div>
-  <div class="mc" id="mc-2-0" style="left:768px;top:0;width:384px;height:360px;background:#C6FF00;color:#0C0C0C">TYPE</div>
-  <div class="mc" id="mc-3-0" style="left:1152px;top:0;width:384px;height:360px;background:#F2F2EE;color:#0C0C0C">DATA</div>
-  <div class="mc" id="mc-4-0" style="left:1536px;top:0;width:384px;height:360px;background:#0C0C0C;color:#C6FF00">MOTION</div>
-  <div class="mc" id="mc-0-1" style="left:0;top:360px;width:384px;height:360px;background:#0C0C0C;color:#C6FF00">COLOR</div>
-  <div class="mc" id="mc-1-1" style="left:384px;top:360px;width:384px;height:360px;background:#C6FF00;color:#0C0C0C">LAYOUT</div>
-  <div class="mc" id="mc-2-1" style="left:768px;top:360px;width:384px;height:360px;background:#F2F2EE;color:#0C0C0C">BRAND</div>
-  <div class="mc" id="mc-3-1" style="left:1152px;top:360px;width:384px;height:360px;background:#C6FF00;color:#0C0C0C">SYSTEM</div>
-  <div class="mc" id="mc-4-1" style="left:1536px;top:360px;width:384px;height:360px;background:#0C0C0C;color:#C6FF00">FORMA</div>
-  <div class="mc" id="mc-0-2" style="left:0;top:720px;width:384px;height:360px;background:#C6FF00;color:#0C0C0C">SHAPE</div>
-  <div class="mc" id="mc-1-2" style="left:384px;top:720px;width:384px;height:360px;background:#0C0C0C;color:#F2F2EE">OUTPUT</div>
-  <div class="mc" id="mc-2-2" style="left:768px;top:720px;width:384px;height:360px;background:#F2F2EE;color:#0C0C0C">DESIGN</div>
-  <div class="mc" id="mc-3-2" style="left:1152px;top:720px;width:384px;height:360px;background:#0C0C0C;color:#C6FF00">SCALE</div>
-  <div class="mc" id="mc-4-2" style="left:1536px;top:720px;width:384px;height:360px;background:#C6FF00;color:#0C0C0C">IDENTITY</div>
-</div>
-
-<!-- S09 System Collapse (48-55s) -->
-<div class="clip" id="s09" data-start="48" data-duration="7" data-track-index="0">
-  <div id="s09-bg"></div>
-  <div class="cf" id="cf1" style="left:80px;top:80px;font-size:120px;color:#C6FF00">FORMA</div>
-  <div class="cf" id="cf2" style="right:80px;top:80px;font-size:80px;color:#F2F2EE;text-align:right">SYSTEM</div>
-  <div class="cf" id="cf3" style="left:80px;bottom:80px;font-size:100px;color:rgba(198,255,0,.6)">GRID</div>
-  <div class="cf" id="cf4" style="right:80px;bottom:80px;font-size:90px;color:#F2F2EE;text-align:right">MOTION</div>
-  <div class="cf" id="cf5" style="left:660px;top:80px;font-size:60px;color:rgba(198,255,0,.4)">TYPE</div>
-  <div class="cf" id="cf6" style="left:80px;top:460px;font-size:70px;color:rgba(242,242,238,.3)">COLOR</div>
-  <div class="cf" id="cf7" style="right:80px;top:460px;font-size:70px;color:rgba(198,255,0,.3);text-align:right">DATA</div>
-  <div class="cf" id="cf8" style="left:760px;bottom:80px;font-size:60px;color:rgba(242,242,238,.3)">BRAND</div>
-  <div id="s09-logo">FORMA</div>
-  <div id="s09-tagline">BRAND IDENTITY SYSTEM · 2026</div>
-</div>
-
-<!-- S10 Final Frame (55-60s) — fix #6: forma.studio CTA -->
-<div class="clip" id="s10" data-start="55" data-duration="5" data-track-index="0">
-  <div id="s10-bg"></div>
-  <div id="s10-main">
-    <div id="s10-logo">FORMA</div>
-    <div id="s10-tagline">Brand Identity System</div>
+  <div id="s06-headline">
+    <div id="s06-hl-text">TARGET AUDIENCE</div>
+    <div id="s06-hl-tag">Brand Ecosystem Analysis</div>
   </div>
-  <div id="s10-rule"></div>
-  <div id="s10-url">forma.studio</div>
-  <div id="s10-ul">FORMA STUDIO © 2026</div>
-  <div id="s10-year">BRAND · MOTION · IDENTITY</div>
+  <!-- Row 0 -->
+  <div class="pc pc-mid" id="pc00">
+    <div class="pc-deco" style="color:#C6FF00">C</div>
+    <div class="pc-content">
+      <div class="pc-hlt" style="color:#C6FF00"></div>
+      <div class="pc-tag" style="color:rgba(198,255,0,.5)">AUDIENCE 01</div>
+      <div class="pc-name" style="color:#F2F2EE">CREATIVE<br>DIRECTORS</div>
+    </div>
+  </div>
+  <div class="pc pc-acid" id="pc01">
+    <div class="pc-content" style="justify-content:center">
+      <div class="pc-stat-num" style="color:#0C0C0C">28–42</div>
+      <div class="pc-stat-sub" style="color:rgba(12,12,12,.6)">AGE RANGE</div>
+    </div>
+  </div>
+  <div class="pc pc-mid" id="pc02">
+    <div class="pc-deco" style="color:#C6FF00">D</div>
+    <div class="pc-content">
+      <div class="pc-hlt" style="color:#C6FF00"></div>
+      <div class="pc-tag" style="color:rgba(198,255,0,.5)">AUDIENCE 02</div>
+      <div class="pc-name" style="color:#F2F2EE">BRAND<br>DESIGNERS</div>
+    </div>
+  </div>
+  <div class="pc" id="pc03" style="background:#F2F2EE">
+    <div class="pc-content" style="justify-content:center">
+      <div class="pc-stat-num" style="color:#0C0C0C">300K+</div>
+      <div class="pc-stat-sub" style="color:rgba(12,12,12,.5)">MARKET SIZE</div>
+    </div>
+  </div>
+  <!-- Row 1 -->
+  <div class="pc pc-acid" id="pc10">
+    <div class="pc-content" style="justify-content:center">
+      <div class="pc-stat-num" style="color:#0C0C0C;font-size:72px">SCALE ↑</div>
+      <div class="pc-stat-sub" style="color:rgba(12,12,12,.55)">GROWTH STAGE</div>
+    </div>
+  </div>
+  <div class="pc pc-mid" id="pc11">
+    <div class="pc-deco" style="color:#C6FF00">S</div>
+    <div class="pc-content">
+      <div class="pc-hlt" style="color:#C6FF00"></div>
+      <div class="pc-tag" style="color:rgba(198,255,0,.5)">AUDIENCE 03</div>
+      <div class="pc-name" style="color:#F2F2EE">STARTUP<br>FOUNDERS</div>
+    </div>
+  </div>
+  <div class="pc" id="pc12" style="background:#F2F2EE">
+    <div class="pc-content" style="justify-content:center">
+      <div class="pc-stat-num" style="color:#0C0C0C;font-size:72px">SERIES<br>A–C</div>
+      <div class="pc-stat-sub" style="color:rgba(12,12,12,.5)">FUNDING STAGE</div>
+    </div>
+  </div>
+  <div class="pc pc-mid" id="pc13">
+    <div class="pc-deco" style="color:#C6FF00">T</div>
+    <div class="pc-content">
+      <div class="pc-hlt" style="color:#C6FF00"></div>
+      <div class="pc-tag" style="color:rgba(198,255,0,.5)">AUDIENCE 04</div>
+      <div class="pc-name" style="color:#F2F2EE">TECH<br>LEADS</div>
+    </div>
+  </div>
+  <!-- Row 2 -->
+  <div class="pc pc-mid" id="pc20">
+    <div class="pc-deco" style="color:#C6FF00">M</div>
+    <div class="pc-content">
+      <div class="pc-hlt" style="color:#C6FF00"></div>
+      <div class="pc-tag" style="color:rgba(198,255,0,.5)">AUDIENCE 05</div>
+      <div class="pc-name" style="color:#F2F2EE">MOTION<br>ARTISTS</div>
+    </div>
+  </div>
+  <div class="pc pc-acid" id="pc21">
+    <div class="pc-content" style="justify-content:center">
+      <div class="pc-stat-num" style="color:#0C0C0C;font-size:64px">FORMA<br>FIT ✓</div>
+      <div class="pc-stat-sub" style="color:rgba(12,12,12,.55)">BRAND ALIGNMENT</div>
+    </div>
+  </div>
+  <div class="pc pc-mid" id="pc22">
+    <div class="pc-deco" style="color:#C6FF00">B</div>
+    <div class="pc-content">
+      <div class="pc-hlt" style="color:#C6FF00"></div>
+      <div class="pc-tag" style="color:rgba(198,255,0,.5)">AUDIENCE 06</div>
+      <div class="pc-name" style="color:#F2F2EE">BRAND<br>STUDIOS</div>
+    </div>
+  </div>
+  <div class="pc" id="pc23" style="background:#F2F2EE">
+    <div class="pc-content" style="justify-content:center">
+      <div class="pc-stat-num" style="color:#0C0C0C;font-size:72px">ISO<br>9001</div>
+      <div class="pc-stat-sub" style="color:rgba(12,12,12,.5)">QUALITY STD</div>
+    </div>
+  </div>
+</div>
+
+<!-- S07 Module Convergence (50-57s) -->
+<div class="clip" id="s07" data-start="50" data-duration="7" data-track-index="0">
+  <div id="s07-bg"></div>
+  <!-- 16 fragments representing all brand system elements, scattered -->
+  <div class="frag" id="fr0"  style="left:0;top:0;width:280px;height:200px;background:#C6FF00;color:#0C0C0C;font-size:48px">FORMA</div>
+  <div class="frag" id="fr1"  style="left:320px;top:0;width:200px;height:200px;background:#0C0C0C;color:#C6FF00;font-size:48px;border:1px solid #C6FF00">COLOR</div>
+  <div class="frag" id="fr2"  style="left:620px;top:0;width:260px;height:200px;background:#F2F2EE;color:#0C0C0C;font-size:48px">GRID</div>
+  <div class="frag" id="fr3"  style="left:980px;top:0;width:240px;height:200px;background:#C6FF00;color:#0C0C0C;font-size:48px">TYPE</div>
+  <div class="frag" id="fr4"  style="left:1320px;top:0;width:260px;height:200px;background:#111;color:#C6FF00;font-size:48px;border:1px solid #C6FF00">DATA</div>
+  <div class="frag" id="fr5"  style="left:1680px;top:0;width:240px;height:200px;background:#C6FF00;color:#0C0C0C;font-size:36px">MOTION</div>
+  <div class="frag" id="fr6"  style="left:0;top:440px;width:220px;height:200px;background:#F2F2EE;color:#0C0C0C;font-size:36px">BRAND</div>
+  <div class="frag" id="fr7"  style="left:280px;top:400px;width:240px;height:240px;background:#C6FF00;color:#0C0C0C;font-size:36px">LAYOUT</div>
+  <div class="frag" id="fr8"  style="left:1420px;top:400px;width:260px;height:240px;background:#0C0C0C;color:#C6FF00;font-size:36px;border:1px solid #C6FF00">SYSTEM</div>
+  <div class="frag" id="fr9"  style="left:1700px;top:440px;width:220px;height:200px;background:#C6FF00;color:#0C0C0C;font-size:36px">SCALE</div>
+  <div class="frag" id="fr10" style="left:0;top:880px;width:260px;height:200px;background:#C6FF00;color:#0C0C0C;font-size:36px">SHAPE</div>
+  <div class="frag" id="fr11" style="left:340px;top:880px;width:240px;height:200px;background:#111;color:#F2F2EE;font-size:36px;border:1px solid #C6FF00">OUTPUT</div>
+  <div class="frag" id="fr12" style="left:700px;top:880px;width:260px;height:200px;background:#F2F2EE;color:#0C0C0C;font-size:36px">DESIGN</div>
+  <div class="frag" id="fr13" style="left:1100px;top:880px;width:240px;height:200px;background:#C6FF00;color:#0C0C0C;font-size:36px">AUDIT</div>
+  <div class="frag" id="fr14" style="left:1440px;top:880px;width:260px;height:200px;background:#0C0C0C;color:#C6FF00;font-size:36px;border:1px solid rgba(198,255,0,.4)">DEPLOY</div>
+  <div class="frag" id="fr15" style="left:1700px;top:880px;width:220px;height:200px;background:#F2F2EE;color:#0C0C0C;font-size:36px">FORMA</div>
+  <div id="s07-forma">FORMA</div>
+  <div id="s07-tagline">BRAND IDENTITY SYSTEM · 2026</div>
+</div>
+
+<!-- S08 Final Frame (57-60s) -->
+<div class="clip" id="s08" data-start="57" data-duration="3" data-track-index="0">
+  <div id="s08-bg"></div>
+  <div id="s08-main">
+    <div id="s08-logo">FORMA</div>
+    <div id="s08-tagline">Brand Identity System</div>
+  </div>
+  <div id="s08-rule"></div>
+  <div id="s08-url">forma.studio</div>
+  <div id="s08-ul">FORMA STUDIO © 2026</div>
+  <div id="s08-year">BRAND · MOTION · IDENTITY</div>
 </div>
 
 </div>
@@ -459,13 +540,7 @@ body{width:1920px;height:1080px;overflow:hidden;background:#0C0C0C;font-family:'
 var gsap = window.gsap;
 var tl = gsap.timeline({ paused:true });
 
-/* helpers */
-function scanDrop(t, dur) {
-  dur = dur || .45;
-  tl.set("#scan", { y:0, opacity:1 }, t);
-  tl.to("#scan", { y:1084, duration:dur, ease:"power1.in" }, t);
-  tl.set("#scan", { opacity:0 }, t+dur+.01);
-}
+/* ─── helpers ─── */
 function diagonalIn(id, t, dur) {
   dur = dur || .22;
   tl.fromTo(id,
@@ -477,246 +552,244 @@ function diagonalOut(id, t, dur) {
   tl.to(id, { clipPath:"polygon(40% 0,100% 0,100% 100%,70% 100%)", duration:dur*.55, ease:"power2.in" }, t);
   tl.to(id, { clipPath:"polygon(100% 0,100% 0,100% 100%,100% 100%)", duration:dur*.45, ease:"power2.in" }, t+dur*.55);
 }
-/* fix #1: brand flash on every flood — no empty color transition */
 function brandFlash(t, lightBg, dur) {
   dur = dur || .5;
   tl.set("#fl-brand", { color: lightBg ? "#0C0C0C" : "#C6FF00", opacity:0 }, t - .01);
   tl.to("#fl-brand", { opacity:.9, duration:.1, ease:"power4.in" }, t);
   tl.to("#fl-brand", { opacity:0, duration:.2, ease:"power2.out" }, t + dur - .2);
 }
+function scanDrop(t, dur) {
+  dur = dur || .45;
+  tl.set("#s01-scanline", { y:0, opacity:1 }, t);
+  tl.to("#s01-scanline", { y:1084, duration:dur, ease:"power1.in" }, t);
+  tl.set("#s01-scanline", { opacity:0 }, t+dur+.01);
+}
 
-/* S01 (0-3s) */
+/* ─── S01 BRAND DETECTION (0-10s) ─── */
 tl.set("#s01", { opacity:1 }, 0);
-tl.set(["#ll-f","#ll-o","#ll-r","#ll-m","#ll-a"], { opacity:0, y:80 }, 0);
-tl.set(["#s01-sub","#s01-year"], { opacity:0 }, 0);
-tl.set("#s01-rule", { width:0 }, 0);
-tl.set("#s01-mask", { scaleX:0, transformOrigin:"left center" }, 0);
-tl.to("#ll-f", { opacity:1, y:0, duration:.18, ease:"power4.out" }, 0.05);
-tl.to("#ll-o", { opacity:1, y:0, duration:.18, ease:"power4.out" }, 0.10);
-tl.to("#ll-r", { opacity:1, y:0, duration:.18, ease:"power4.out" }, 0.15);
-tl.to("#ll-m", { opacity:1, y:0, duration:.18, ease:"power4.out" }, 0.20);
-tl.to("#ll-a", { opacity:1, y:0, duration:.18, ease:"power4.out" }, 0.25);
-tl.to("#s01-rule", { width:400, duration:.35, ease:"power3.out" }, 0.35);
-tl.to(["#s01-sub","#s01-year"], { opacity:1, duration:.25 }, 0.45);
-scanDrop(0.6);
-tl.to("#s01-mask", { scaleX:1, duration:.18, ease:"power4.in" }, 2.78);
-brandFlash(2.78, true, .2); // acid-colored mask → FORMA briefly visible
-tl.set(["#ll-f","#ll-o","#ll-r","#ll-m","#ll-a","#s01-sub","#s01-year","#s01-rule"], { opacity:0 }, 3.0);
-tl.set("#s01", { opacity:0 }, 3.0);
+tl.set(["#s01-init","#s01-signal","#s01-detected","#s01-det-bar",
+        "#s1-f","#s1-o","#s1-r","#s1-m","#s1-a",
+        "#s01-kw-label","#kw1","#kw2","#kw3","#kw4",
+        "#s01-progress","#s01-prog-label","#s01-counter"], { opacity:0 }, 0);
 
-/* S02 (3-7s) */
-tl.set("#s02", { opacity:1 }, 3.0);
-tl.set(["#cb-pri","#cb-sec","#cb-acc"], { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" }, 3.0);
-tl.set(["#cl-pri","#cl-sec","#cl-acc","#ch-pri","#ch-sec","#ch-acc","#cd-pri","#cd-sec","#cd-acc"], { opacity:0 }, 3.0);
-tl.set(["#s02-divv1","#s02-divv2"], { height:0 }, 3.0);
-diagonalIn("#cb-pri", 3.05, .22);
-diagonalIn("#cb-sec", 3.18, .22);
-diagonalIn("#cb-acc", 3.31, .22);
-tl.to("#s02-divv1", { height:1080, duration:.25, ease:"power2.out" }, 3.12);
-tl.to("#s02-divv2", { height:1080, duration:.25, ease:"power2.out" }, 3.25);
-tl.to(["#cl-pri","#cl-sec","#cl-acc"], { opacity:1, stagger:.08, duration:.2 }, 3.55);
-tl.to(["#ch-pri","#ch-sec","#ch-acc"], { opacity:1, stagger:.06, duration:.18 }, 3.75);
-tl.to(["#cd-pri","#cd-sec","#cd-acc"], { opacity:1, stagger:.06, duration:.18 }, 3.95);
-scanDrop(4.2);
-diagonalOut("#cb-pri", 6.65, .22);
-diagonalOut("#cb-sec", 6.72, .22);
-diagonalOut("#cb-acc", 6.79, .22);
-tl.set("#s02", { opacity:0 }, 7.0);
+/* scan line */
+tl.set("#s01-scanline", { y:0, opacity:1 }, 0.3);
+tl.to("#s01-scanline", { y:1082, duration:1.5, ease:"power1.inOut" }, 0.3);
+tl.set("#s01-scanline", { opacity:0 }, 1.85);
 
-/* S03 (7-12s) — fix #2: brand-forward words */
-tl.set("#s03", { opacity:1 }, 7.0);
-tl.set(["#tw1","#tw2","#tw3","#tw4","#tw5"], { opacity:0, x:-40 }, 7.0);
-tl.set(["#tr1","#tr2"], { width:0 }, 7.0);
-tl.set("#s03-mask", { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" }, 7.0);
-tl.to("#tw1", { opacity:1, x:0, duration:.25, ease:"power3.out" }, 7.08);
-tl.to("#tr1", { width:1760, duration:.3, ease:"power2.out" }, 7.25);
-tl.to("#tw2", { opacity:1, x:0, duration:.25, ease:"power3.out" }, 7.35);
-tl.to("#tr2", { width:1760, duration:.3, ease:"power2.out" }, 7.52);
-tl.to("#tw3", { opacity:1, x:0, duration:.25, ease:"power3.out" }, 7.60);
-tl.to("#tw4", { opacity:1, x:0, duration:.35, ease:"power2.out" }, 7.85);
-tl.to("#tw5", { opacity:1, x:0, duration:.4, ease:"power2.out" }, 7.95);
-// Subtle tracking breath on FORMA
-tl.to("#tw1", { letterSpacing:"0.06em", duration:.45, ease:"power2.out" }, 8.26);
-tl.to("#tw1", { letterSpacing:"-0.01em", duration:.3, ease:"power2.in" }, 8.72);
-tl.to("#s03-counter", { opacity:1, duration:.2 }, 7.5);
-scanDrop(8.8);
-tl.to("#s03-mask", { clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)", duration:.22, ease:"power4.in" }, 11.74);
-brandFlash(11.74, false, .25); // dark mask → FORMA in acid green
-tl.set("#s03", { opacity:0 }, 12.0);
+/* system init text */
+tl.to("#s01-init", { opacity:1, duration:.2 }, 0.35);
+tl.to("#s01-signal", { opacity:1, duration:.2 }, 0.8);
 
-/* S04 (12-18s) — fix #3: all 77 background dots + highlighted col/row */
-tl.set("#s04", { opacity:1 }, 12.0);
-tl.set([".gv",".gh",".gi-dot-bg",".gi-dot-hi",".col-num","#s04-title","#s04-subtitle","#s04-hl"], { opacity:0 }, 12.0);
-// Grid lines
-var gvIds = ["#gv1","#gv2","#gv3","#gv4","#gv5","#gv6","#gv7","#gv8","#gv9","#gv10","#gv11"];
-gvIds.forEach(function(id,i){ tl.to(id, { opacity:.3, duration:.12 }, 12.12 + i*0.06); });
-var ghIds = ["#gh1","#gh2","#gh3","#gh4","#gh5","#gh6","#gh7"];
-ghIds.forEach(function(id,i){ tl.to(id, { opacity:.18, duration:.12 }, 12.25 + i*0.08); });
-// All background dots appear together
-tl.to(".gi-dot-bg", { opacity:.12, duration:.2 }, 12.85);
-// Highlight band row 4
-tl.to("#s04-hl", { opacity:1, duration:.3 }, 13.0);
-// Col-6 and row-4 highlighted dots
-tl.to(".gi-dot-hi", { opacity:.5, stagger:.03, duration:.12 }, 13.1);
-// Column numbers
-tl.to(".col-num", { opacity:1, stagger:.03, duration:.08 }, 13.5);
-tl.to("#s04-title", { opacity:1, duration:.3 }, 13.8);
-tl.to("#s04-subtitle", { opacity:1, duration:.3 }, 14.05);
-scanDrop(14.5);
-scanDrop(16.5);
+/* BRAND DETECTED */
+tl.to("#s01-det-bar", { width:400, duration:.35, ease:"power3.out" }, 2.0);
+tl.to("#s01-detected", { opacity:1, duration:.25 }, 2.2);
+
+/* FORMA letters stagger in */
+tl.to("#s1-f", { opacity:1, y:0, duration:.15, ease:"power4.out" }, 3.0);
+tl.to("#s1-o", { opacity:1, y:0, duration:.15, ease:"power4.out" }, 3.12);
+tl.to("#s1-r", { opacity:1, y:0, duration:.15, ease:"power4.out" }, 3.24);
+tl.to("#s1-m", { opacity:1, y:0, duration:.15, ease:"power4.out" }, 3.36);
+tl.to("#s1-a", { opacity:1, y:0, duration:.15, ease:"power4.out" }, 3.48);
+tl.set(["#s1-f","#s1-o","#s1-r","#s1-m","#s1-a"], { y:80 }, 0);
+
+/* keyword analysis */
+tl.to("#s01-kw-label", { opacity:1, duration:.2 }, 4.2);
+tl.fromTo("#kw1", { opacity:0, x:-20 }, { opacity:1, x:0, duration:.2, ease:"power3.out" }, 4.5);
+tl.fromTo("#kw2", { opacity:0, x:-20 }, { opacity:1, x:0, duration:.2, ease:"power3.out" }, 5.0);
+tl.fromTo("#kw3", { opacity:0, x:-20 }, { opacity:1, x:0, duration:.2, ease:"power3.out" }, 5.5);
+tl.fromTo("#kw4", { opacity:0, x:-20 }, { opacity:1, x:0, duration:.2, ease:"power3.out" }, 6.0);
+/* previous keywords dim as new ones appear */
+tl.to("#kw1", { color:"rgba(198,255,0,.5)", duration:.15 }, 5.0);
+tl.to("#kw1", { color:"rgba(242,242,238,.35)", duration:.15 }, 5.5);
+tl.to("#kw2", { color:"rgba(242,242,238,.45)", duration:.15 }, 5.5);
+tl.to("#kw1", { color:"rgba(242,242,238,.25)", duration:.15 }, 6.0);
+tl.to("#kw2", { color:"rgba(242,242,238,.3)", duration:.15 }, 6.0);
+tl.to("#kw3", { color:"rgba(242,242,238,.4)", duration:.15 }, 6.0);
+
+/* progress bar */
+tl.to("#s01-progress", { width:600, opacity:1, duration:1.0, ease:"power2.inOut" }, 6.5);
+tl.to("#s01-prog-label", { opacity:1, duration:.3 }, 7.2);
+tl.to("#s01-counter", { opacity:1, duration:.3 }, 7.5);
+
+/* transition out */
 tl.fromTo("#fl-black",
   { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" },
-  { clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)", duration:.2, ease:"power4.in" }, 17.76);
-brandFlash(17.76, false, .23);
-tl.set("#s04", { opacity:0 }, 18.0);
-tl.set("#fl-black", { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" }, 18.01);
+  { clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)", duration:.22, ease:"power4.in" }, 9.74);
+brandFlash(9.74, false, .25);
+tl.set("#s01", { opacity:0 }, 10.0);
+tl.set("#fl-black", { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" }, 10.01);
 
-/* S05 (18-24s) — fix #4: ring counter counts up 0→78% */
-tl.set("#s05", { opacity:1 }, 18.0);
-tl.set(["#lc-path","#lc-fill","#lc-bg","#ct-line","#ct-bar","#ct-ring","#ct-node","#cl-a","#cl-b","#cl-c",".bar","#ring-fg","#ring-pct",".nd-line",".nd-circle",".nd-label","#s05-label"], { opacity:0 }, 18.0);
-tl.to("#ct-line", { opacity:1, duration:.2 }, 18.1);
-tl.to("#lc-bg", { opacity:1, duration:.2 }, 18.2);
-tl.to("#lc-path", { strokeDashoffset:0, opacity:1, duration:.65, ease:"power2.out" }, 18.3);
-tl.to("#lc-fill", { opacity:.12, duration:.4 }, 18.75);
-tl.to(["#cl-a","#cl-b","#cl-c"], { opacity:1, stagger:.05, duration:.15 }, 18.95);
-tl.to("#ct-bar", { opacity:1, duration:.2 }, 19.1);
-tl.set(".bar", { opacity:1 }, 19.3);
-tl.to("#ba1", { attr:{ y:540, height:280 }, duration:.38, ease:"power3.out" }, 19.3);
-tl.to("#ba2", { attr:{ y:620, height:200 }, duration:.38, ease:"power3.out" }, 19.45);
-tl.to("#ba3", { attr:{ y:680, height:140 }, duration:.38, ease:"power3.out" }, 19.60);
-tl.to("#ba4", { attr:{ y:740, height:80  }, duration:.38, ease:"power3.out" }, 19.75);
-tl.to("#ct-ring", { opacity:1, duration:.2 }, 20.0);
-tl.to("#ring-fg", { strokeDashoffset:124, opacity:1, duration:.8, ease:"power2.out" }, 20.2);
-// Ring counter: counts from 0 to 78 via GSAP onUpdate (deterministic)
-tl.set("#ring-pct", { opacity:1 }, 20.2);
+/* ─── S02 COLOR SYSTEM (10-17s) ─── */
+tl.set("#s02", { opacity:1 }, 10.0);
+tl.set(["#cb-pri","#cb-sec","#cb-acc"], { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" }, 10.0);
+tl.set(["#cl-pri","#cl-sec","#cl-acc","#ch-pri","#ch-sec","#ch-acc","#cd-pri","#cd-sec","#cd-acc"], { opacity:0 }, 10.0);
+tl.set(["#s02-divv1","#s02-divv2"], { height:0 }, 10.0);
+diagonalIn("#cb-pri", 10.05, .22);
+diagonalIn("#cb-sec", 10.18, .22);
+diagonalIn("#cb-acc", 10.31, .22);
+tl.to("#s02-divv1", { height:1080, duration:.25, ease:"power2.out" }, 10.12);
+tl.to("#s02-divv2", { height:1080, duration:.25, ease:"power2.out" }, 10.25);
+tl.to(["#cl-pri","#cl-sec","#cl-acc"], { opacity:1, stagger:.08, duration:.2 }, 10.55);
+tl.to(["#ch-pri","#ch-sec","#ch-acc"], { opacity:1, stagger:.06, duration:.18 }, 10.75);
+tl.to(["#cd-pri","#cd-sec","#cd-acc"], { opacity:1, stagger:.06, duration:.18 }, 10.95);
+diagonalOut("#cb-pri", 16.55, .22);
+diagonalOut("#cb-sec", 16.62, .22);
+diagonalOut("#cb-acc", 16.69, .22);
+tl.set("#s02", { opacity:0 }, 17.0);
+
+/* ─── S03 GRID + USER MATRIX (17-25s) ─── */
+tl.set("#s03", { opacity:1 }, 17.0);
+tl.set([".gv",".gh",".gi-dot-bg",".gi-dot-hi",".col-num","#s03-hl",
+        "#s03-title","#s03-subtitle","#gdl1","#gdl2","#gdl3","#gdl4","#gdl5","#gdl6"], { opacity:0 }, 17.0);
+var gvIds = ["#gv1","#gv2","#gv3","#gv4","#gv5","#gv6","#gv7","#gv8","#gv9","#gv10","#gv11"];
+gvIds.forEach(function(id,i){ tl.to(id, { opacity:.3, duration:.12 }, 17.12 + i*0.06); });
+var ghIds = ["#gh1","#gh2","#gh3","#gh4","#gh5","#gh6","#gh7"];
+ghIds.forEach(function(id,i){ tl.to(id, { opacity:.18, duration:.12 }, 17.25 + i*0.08); });
+tl.to(".gi-dot-bg", { opacity:.12, duration:.2 }, 17.85);
+tl.to("#s03-hl", { opacity:1, duration:.3 }, 18.0);
+tl.to(".gi-dot-hi", { opacity:.5, stagger:.03, duration:.12 }, 18.1);
+tl.to(".col-num", { opacity:1, stagger:.03, duration:.08 }, 18.5);
+tl.to("#s03-title", { opacity:1, duration:.3 }, 18.8);
+tl.to("#s03-subtitle", { opacity:1, duration:.3 }, 19.05);
+/* user data labels appear in the grid */
+tl.fromTo("#gdl1", { opacity:0, y:8 }, { opacity:1, y:0, duration:.25, ease:"power3.out" }, 20.0);
+tl.fromTo("#gdl2", { opacity:0, y:8 }, { opacity:1, y:0, duration:.25, ease:"power3.out" }, 20.4);
+tl.fromTo("#gdl3", { opacity:0, y:8 }, { opacity:1, y:0, duration:.25, ease:"power3.out" }, 20.8);
+tl.fromTo("#gdl4", { opacity:0, y:8 }, { opacity:1, y:0, duration:.25, ease:"power3.out" }, 21.2);
+tl.fromTo("#gdl5", { opacity:0, y:8 }, { opacity:1, y:0, duration:.25, ease:"power3.out" }, 21.6);
+tl.fromTo("#gdl6", { opacity:0, y:8 }, { opacity:1, y:0, duration:.25, ease:"power3.out" }, 22.0);
+tl.fromTo("#fl-white",
+  { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" },
+  { clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)", duration:.22, ease:"power4.in" }, 24.74);
+brandFlash(24.74, true, .25);
+tl.set("#s03", { opacity:0 }, 25.0);
+tl.set("#fl-white", { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" }, 25.01);
+
+/* ─── S04 TYPOGRAPHY (25-33s) ─── */
+tl.set("#s04", { opacity:1 }, 25.0);
+tl.set(["#tw1","#tw2","#tw3","#tw4","#tw5"], { opacity:0, x:-40 }, 25.0);
+tl.set(["#tr1","#tr2"], { width:0 }, 25.0);
+tl.set("#s04-mask", { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" }, 25.0);
+tl.to("#tw1", { opacity:1, x:0, duration:.25, ease:"power3.out" }, 25.20);
+tl.to("#tr1", { width:1760, duration:.3, ease:"power2.out" }, 25.37);
+tl.to("#tw2", { opacity:1, x:0, duration:.25, ease:"power3.out" }, 25.45);
+tl.to("#tr2", { width:1760, duration:.3, ease:"power2.out" }, 25.62);
+tl.to("#tw3", { opacity:1, x:0, duration:.25, ease:"power3.out" }, 25.70);
+tl.to("#tw4", { opacity:1, x:0, duration:.35, ease:"power2.out" }, 25.95);
+tl.to("#tw5", { opacity:1, x:0, duration:.4,  ease:"power2.out" }, 26.05);
+tl.to("#tw1", { letterSpacing:"0.06em", duration:.45, ease:"power2.out" }, 26.26);
+tl.to("#tw1", { letterSpacing:"-0.01em", duration:.3,  ease:"power2.in" }, 26.72);
+tl.to("#s04-counter", { opacity:1, duration:.2 }, 25.5);
+tl.to("#s04-mask", { clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)", duration:.22, ease:"power4.in" }, 32.74);
+brandFlash(32.74, false, .25);
+tl.set("#s04", { opacity:0 }, 33.0);
+
+/* ─── S05 DATA VISUALIZATION (33-38s) ─── */
+tl.set("#s05", { opacity:1 }, 33.0);
+tl.set(["#lc-path","#lc-fill","#lc-bg","#ct-line","#ct-bar","#ct-ring","#ct-node",
+        "#cl-a","#cl-b","#cl-c",".bar","#ring-fg","#ring-pct",
+        ".nd-line",".nd-circle",".nd-label","#s05-label"], { opacity:0 }, 33.0);
+tl.to("#ct-line", { opacity:1, duration:.2 }, 33.1);
+tl.to("#lc-bg",   { opacity:1, duration:.2 }, 33.2);
+tl.to("#lc-path", { strokeDashoffset:0, opacity:1, duration:.55, ease:"power2.out" }, 33.3);
+tl.to("#lc-fill", { opacity:.12, duration:.35 }, 33.7);
+tl.to(["#cl-a","#cl-b","#cl-c"], { opacity:1, stagger:.05, duration:.15 }, 33.85);
+tl.to("#ct-bar", { opacity:1, duration:.2 }, 34.0);
+tl.set(".bar", { opacity:1 }, 34.2);
+tl.to("#ba1", { attr:{ y:540, height:280 }, duration:.35, ease:"power3.out" }, 34.2);
+tl.to("#ba2", { attr:{ y:620, height:200 }, duration:.35, ease:"power3.out" }, 34.35);
+tl.to("#ba3", { attr:{ y:680, height:140 }, duration:.35, ease:"power3.out" }, 34.50);
+tl.to("#ba4", { attr:{ y:740, height:80  }, duration:.35, ease:"power3.out" }, 34.65);
+tl.to("#ct-ring", { opacity:1, duration:.2 }, 34.9);
+tl.to("#ring-fg",  { strokeDashoffset:124, opacity:1, duration:.75, ease:"power2.out" }, 35.1);
+tl.set("#ring-pct", { opacity:1 }, 35.1);
 var _rc = { v:0 };
-tl.to(_rc, { v:78, duration:.8, ease:"power2.out",
+tl.to(_rc, { v:78, duration:.75, ease:"power2.out",
   onUpdate: function() {
     var el = document.getElementById("ring-pct");
     if (el) el.textContent = Math.round(_rc.v) + "%";
   }
-}, 20.2);
-tl.to("#ct-node", { opacity:1, duration:.2 }, 20.9);
-tl.to(".nd-line", { strokeDashoffset:0, opacity:1, stagger:.08, duration:.3 }, 21.0);
-tl.to(".nd-circle", { opacity:1, stagger:.07, duration:.15 }, 21.5);
-tl.to(".nd-label", { opacity:1, stagger:.07, duration:.15 }, 21.7);
-tl.to("#s05-label", { opacity:1, duration:.3 }, 22.0);
-scanDrop(22.5);
-tl.fromTo("#fl-white",
-  { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" },
-  { clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)", duration:.22, ease:"power4.in" }, 23.74);
-brandFlash(23.74, true, .25);
-tl.set("#s05", { opacity:0 }, 24.0);
-tl.set("#fl-white", { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" }, 24.01);
-
-/* S06 (24-32s) */
-tl.set("#s06", { opacity:1 }, 24.0);
-tl.set(["#s06-title","#s06-sub",".mock-card"], { opacity:0 }, 24.0);
-tl.to("#s06-title", { opacity:1, duration:.3, ease:"power3.out" }, 24.1);
-tl.to("#s06-sub", { opacity:1, duration:.25 }, 24.35);
-["#mc1","#mc2","#mc3","#mc4","#mc5","#mc6","#mc7","#mc8","#mc9"].forEach(function(id,i){
-  tl.fromTo(id, { opacity:0, y:30 }, { opacity:1, y:0, duration:.28, ease:"power3.out" }, 24.5 + i*0.09);
-});
-scanDrop(27.0);
+}, 35.1);
+tl.to("#ct-node",   { opacity:1, duration:.2 }, 35.8);
+tl.to(".nd-line",   { strokeDashoffset:0, opacity:1, stagger:.07, duration:.28 }, 35.9);
+tl.to(".nd-circle", { opacity:1, stagger:.06, duration:.14 }, 36.3);
+tl.to(".nd-label",  { opacity:1, stagger:.06, duration:.14 }, 36.5);
+tl.to("#s05-label", { opacity:1, duration:.3 }, 36.8);
 tl.fromTo("#fl-acid",
   { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" },
-  { clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)", duration:.2, ease:"power4.in" }, 31.76);
-brandFlash(31.76, true, .23);
-tl.set("#s06", { opacity:0 }, 32.0);
-tl.set("#fl-acid", { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" }, 32.01);
+  { clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)", duration:.2, ease:"power4.in" }, 37.74);
+brandFlash(37.74, true, .25);
+tl.set("#s05", { opacity:0 }, 38.0);
+tl.set("#fl-acid", { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" }, 38.01);
 
-/* S07 (32-40s) — fix #5: 4 rows of info + Contact */
-tl.set("#s07", { opacity:1 }, 32.0);
-tl.set(["#s07-hero-text","#s07-hero-sub","#apl1","#apl2","#apl3","#apl4","#apl5","#apl6","#apl7","#apl8"], { opacity:0 }, 32.0);
-tl.set("#ap-rule", { height:0, opacity:0 }, 32.0);
-tl.set("#s07-hero", { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" }, 32.0);
-diagonalIn("#s07-hero", 32.05, .28);
-tl.to("#s07-hero-text", { opacity:1, duration:.3 }, 32.4);
-tl.to("#s07-hero-sub", { opacity:1, duration:.3 }, 32.7);
-tl.to("#ap-rule", { height:1080, opacity:1, duration:.35, ease:"power3.out" }, 32.5);
-tl.to("#apl1", { opacity:1, duration:.2 }, 32.85);
-tl.to("#apl2", { opacity:1, duration:.25, ease:"power3.out" }, 33.05);
-tl.to("#apl3", { opacity:1, duration:.2 }, 33.35);
-tl.to("#apl4", { opacity:1, duration:.2 }, 33.55);
-tl.to("#apl5", { opacity:1, duration:.2 }, 33.85);
-tl.to("#apl6", { opacity:1, duration:.2 }, 34.05);
-tl.to("#apl7", { opacity:1, duration:.2 }, 34.35);
-tl.to("#apl8", { opacity:1, duration:.25, ease:"power3.out" }, 34.55);
-scanDrop(35.5);
-scanDrop(38.0);
-diagonalOut("#s07-hero", 39.65, .25);
-tl.set("#s07", { opacity:0 }, 40.0);
+/* ─── S06 TARGET AUDIENCE MATRIX (38-50s) ─── */
+tl.set("#s06", { opacity:1 }, 38.0);
+tl.set(["#s06-hl-text","#s06-hl-tag",
+        "#pc00","#pc01","#pc02","#pc03",
+        "#pc10","#pc11","#pc12","#pc13",
+        "#pc20","#pc21","#pc22","#pc23"], { opacity:0 }, 38.0);
 
-/* S08 (40-48s) */
-tl.set("#s08", { opacity:1 }, 40.0);
-tl.set(".mc", { opacity:0 }, 40.0);
-var matrixIds = [
-  "#mc-0-0","#mc-1-0","#mc-2-0","#mc-3-0","#mc-4-0",
-  "#mc-0-1","#mc-1-1","#mc-2-1","#mc-3-1","#mc-4-1",
-  "#mc-0-2","#mc-1-2","#mc-2-2","#mc-3-2","#mc-4-2"
-];
-matrixIds.forEach(function(id,i){ tl.to(id, { opacity:1, duration:.06 }, 40.1 + i*0.08); });
-matrixIds.forEach(function(id,i){
-  var t = 41.5 + (i % 5)*0.12;
-  tl.to(id, { opacity:0, duration:.04 }, t);
-  tl.to(id, { opacity:1, duration:.04 }, t+.08);
+/* headline */
+tl.fromTo("#s06-hl-text", { opacity:0, x:-30 }, { opacity:1, x:0, duration:.35, ease:"power3.out" }, 38.1);
+tl.to("#s06-hl-tag", { opacity:1, duration:.3 }, 38.45);
+
+/* cards stagger in — row by row */
+var pcRow0 = ["#pc00","#pc01","#pc02","#pc03"];
+var pcRow1 = ["#pc10","#pc11","#pc12","#pc13"];
+var pcRow2 = ["#pc20","#pc21","#pc22","#pc23"];
+pcRow0.forEach(function(id,i){ tl.fromTo(id, { opacity:0, y:20 }, { opacity:1, y:0, duration:.3, ease:"power3.out" }, 38.7 + i*0.15); });
+pcRow1.forEach(function(id,i){ tl.fromTo(id, { opacity:0, y:20 }, { opacity:1, y:0, duration:.3, ease:"power3.out" }, 39.4 + i*0.15); });
+pcRow2.forEach(function(id,i){ tl.fromTo(id, { opacity:0, y:20 }, { opacity:1, y:0, duration:.3, ease:"power3.out" }, 40.1 + i*0.15); });
+
+/* hold + subtle pulse on persona cards at 44s */
+["#pc00","#pc02","#pc11","#pc13","#pc20","#pc22"].forEach(function(id,i){
+  tl.to(id, { scale:1.02, duration:.25, ease:"power2.out" }, 44.0 + i*0.15);
+  tl.to(id, { scale:1.0,  duration:.2,  ease:"power2.in"  }, 44.25 + i*0.15);
 });
-[2,7,11,0,13,4,9,1,14,6].forEach(function(idx,i){
-  var id = matrixIds[idx];
-  var t = 43.0 + i*0.1;
-  tl.to(id, { opacity:0, duration:.05 }, t);
-  tl.to(id, { opacity:1, duration:.05 }, t+.1);
-});
-scanDrop(44.0);
-matrixIds.forEach(function(id,i){
-  tl.to(id, { opacity:0, duration:.04, ease:"power4.in" }, 46.5 + i*0.05);
-});
+
 tl.fromTo("#fl-black",
   { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" },
-  { clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)", duration:.25, ease:"power4.in" }, 47.7);
-brandFlash(47.7, false, .29);
-tl.set("#s08", { opacity:0 }, 48.0);
-tl.set("#fl-black", { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" }, 48.01);
+  { clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)", duration:.25, ease:"power4.in" }, 49.7);
+brandFlash(49.7, false, .29);
+tl.set("#s06", { opacity:0 }, 50.0);
+tl.set("#fl-black", { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" }, 50.01);
 
-/* S09 (48-55s) */
-tl.set("#s09", { opacity:1 }, 48.0);
-tl.set([".cf","#s09-logo","#s09-tagline"], { opacity:0 }, 48.0);
-tl.to("#cf1", { opacity:1, duration:.15 }, 48.1);
-tl.to("#cf2", { opacity:1, duration:.15 }, 48.2);
-tl.to("#cf3", { opacity:1, duration:.15 }, 48.3);
-tl.to("#cf4", { opacity:1, duration:.15 }, 48.4);
-tl.to("#cf5", { opacity:1, duration:.15 }, 48.5);
-tl.to("#cf6", { opacity:1, duration:.15 }, 48.6);
-tl.to("#cf7", { opacity:1, duration:.15 }, 48.7);
-tl.to("#cf8", { opacity:1, duration:.15 }, 48.8);
-scanDrop(49.2);
-tl.to("#cf1", { x:880, y:460, scale:.05, opacity:0, duration:1.1, ease:"power2.in" }, 49.8);
-tl.to("#cf2", { x:-880, y:460, scale:.05, opacity:0, duration:1.1, ease:"power2.in" }, 49.9);
-tl.to("#cf3", { x:880, y:-380, scale:.05, opacity:0, duration:1.1, ease:"power2.in" }, 50.0);
-tl.to("#cf4", { x:-880, y:-380, scale:.05, opacity:0, duration:1.1, ease:"power2.in" }, 50.1);
-tl.to("#cf5", { y:420, scale:.05, opacity:0, duration:1.0, ease:"power2.in" }, 50.0);
-tl.to("#cf6", { x:820, scale:.05, opacity:0, duration:1.0, ease:"power2.in" }, 50.1);
-tl.to("#cf7", { x:-820, scale:.05, opacity:0, duration:1.0, ease:"power2.in" }, 50.1);
-tl.to("#cf8", { y:-340, scale:.05, opacity:0, duration:1.0, ease:"power2.in" }, 50.0);
-tl.set("#s09-logo", { xPercent:-50, yPercent:-50 }, 48.0);
-tl.set("#s09-tagline", { xPercent:-50 }, 48.0);
-tl.fromTo("#s09-logo",
-  { opacity:0, scale:.08, xPercent:-50, yPercent:-50 },
-  { opacity:1, scale:1, xPercent:-50, yPercent:-50, duration:.55, ease:"back.out(1.4)" }, 51.0);
-tl.to("#s09-tagline", { opacity:1, duration:.4 }, 51.65);
-scanDrop(53.0);
+/* ─── S07 CONVERGENCE (50-57s) ─── */
+tl.set("#s07", { opacity:1 }, 50.0);
+tl.set([".frag","#s07-forma","#s07-tagline"], { opacity:0 }, 50.0);
+tl.set("#s07-forma", { xPercent:-50, yPercent:-50 }, 50.0);
+tl.set("#s07-tagline", { xPercent:-50 }, 50.0);
+
+/* fragments appear quickly */
+var fragIds = ["#fr0","#fr1","#fr2","#fr3","#fr4","#fr5",
+               "#fr6","#fr7","#fr8","#fr9",
+               "#fr10","#fr11","#fr12","#fr13","#fr14","#fr15"];
+fragIds.forEach(function(id,i){ tl.to(id, { opacity:1, duration:.08 }, 50.1 + i*0.05); });
+
+/* brief hold, then all converge to center */
+fragIds.forEach(function(id,i){
+  tl.to(id, { x:960, y:540, scale:.04, opacity:0, duration:1.2, ease:"power2.in" }, 51.4 + i*0.04);
+});
+
+/* FORMA expands from center after convergence */
+tl.fromTo("#s07-forma",
+  { opacity:0, scale:.06, xPercent:-50, yPercent:-50 },
+  { opacity:1, scale:1, xPercent:-50, yPercent:-50, duration:.6, ease:"back.out(1.4)" }, 53.0);
+tl.to("#s07-tagline", { opacity:1, duration:.4 }, 53.7);
+
 tl.fromTo("#fl-acid",
   { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" },
-  { clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)", duration:.22, ease:"power4.in" }, 54.74);
-brandFlash(54.74, true, .25);
-tl.set("#s09", { opacity:0 }, 55.0);
-tl.set("#fl-acid", { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" }, 55.01);
+  { clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)", duration:.22, ease:"power4.in" }, 56.74);
+brandFlash(56.74, true, .25);
+tl.set("#s07", { opacity:0 }, 57.0);
+tl.set("#fl-acid", { clipPath:"polygon(0 0,0 0,0 100%,0 100%)" }, 57.01);
 
-/* S10 (55-60s) — fix #6: forma.studio static CTA */
-tl.set("#s10", { opacity:1 }, 55.0);
+/* ─── S08 FINAL LOCKUP (57-60s) ─── */
+tl.set("#s08", { opacity:1 }, 57.0);
 
 window.__timelines = window.__timelines || {};
-window.__timelines["forma-v3"] = tl;
+window.__timelines["forma-v4"] = tl;
 })();
 </script>
 </body>
