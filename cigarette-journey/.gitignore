@@ -1,4 +1,6 @@
 node_modules/
 frames/
+frames_fih/
 test_*.png
+preview_*.png
 gsap.min.js
