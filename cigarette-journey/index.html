@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THE JOURNEY OF A CIGARETTE BUTT</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=IBM+Plex+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a08;
+      --paper: #f0ebe0;
+      --ink: #1a1a14;
+      --red: #c8001e;
+      --red-hot: #ff2a00;
+      --amber: #d4760a;
+      --heat1: #ff6b00;
+      --heat2: #ff3300;
+      --heat3: #cc0000;
+      --rule: #2a2a20;
+      --faint: rgba(26,26,20,0.12);
+      --stamp: rgba(200,0,30,0.85);
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--black);
+      overflow: hidden;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    #stage {
+      position: relative;
+      width: 1280px; height: 720px;
+      margin: 0 auto;
+      overflow: hidden;
+      background: var(--black);
+    }
+
+    /* ─── SHARED UTILS ─────────────────────────────────── */
+    .layer {
+      position: absolute; inset: 0;
+      opacity: 0; pointer-events: none;
+    }
+    .mono { font-family: 'IBM Plex Mono', monospace; }
+    .serif { font-family: 'Playfair Display', serif; }
+    .sans { font-family: 'IBM Plex Sans', sans-serif; }
+
+    /* ─── CHAPTER 01 — EVIDENCE ────────────────────────── */
+    #ch01 { background: var(--paper); }
+
+    .archive-bg {
+      position: absolute; inset: 0;
+      background: var(--paper);
+    }
+
+    /* Aged paper texture lines */
+    .paper-lines {
+      position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(
+        0deg, transparent, transparent 27px,
+        rgba(180,170,140,0.35) 27px, rgba(180,170,140,0.35) 28px
+      );
+    }
+
+    .archive-header {
+      position: absolute; top: 52px; left: 80px; right: 80px;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      border-top: 3px solid var(--ink); border-bottom: 1px solid var(--ink);
+      padding: 8px 0;
+    }
+    .arch-label {
+      font-size: 10px; letter-spacing: 0.25em; color: var(--ink);
+      font-weight: 600; text-transform: uppercase;
+    }
+    .arch-date { font-size: 10px; letter-spacing: 0.15em; color: var(--ink); opacity: 0.6; }
+
+    .case-number {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      font-family: 'IBM Plex Mono'; font-size: 11px;
+      letter-spacing: 0.4em; color: var(--ink); opacity: 0.5;
+      text-transform: uppercase;
+    }
+
+    /* Scattered documents */
+    .doc-card {
+      position: absolute;
+      background: white; border: 1px solid rgba(0,0,0,0.15);
+      box-shadow: 2px 3px 12px rgba(0,0,0,0.18);
+      padding: 16px;
+      opacity: 0;
+    }
+    .doc-card .doc-title {
+      font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--ink); border-bottom: 1px solid var(--faint); padding-bottom: 6px; margin-bottom: 8px;
+    }
+    .doc-card .doc-body {
+      font-size: 8px; line-height: 1.7; color: rgba(26,26,20,0.6);
+    }
+
+    .doc1 { width: 200px; top: 148px; left: 140px; transform: rotate(-3.5deg); }
+    .doc2 { width: 180px; top: 200px; left: 360px; transform: rotate(2deg); }
+    .doc3 { width: 190px; top: 120px; right: 200px; transform: rotate(-1.5deg); }
+    .doc4 { width: 210px; bottom: 160px; left: 220px; transform: rotate(1.8deg); }
+    .doc5 { width: 175px; bottom: 140px; right: 160px; transform: rotate(-2.8deg); }
+
+    /* Red stamp overlays */
+    .stamp {
+      position: absolute; border: 3px solid var(--red);
+      color: var(--red); font-size: 9px; letter-spacing: 0.3em; font-weight: 700;
+      padding: 4px 10px; text-transform: uppercase;
+      opacity: 0; transform: rotate(-8deg);
+    }
+    .stamp1 { top: 180px; left: 180px; }
+    .stamp2 { top: 240px; left: 400px; transform: rotate(5deg); }
+
+    /* Evidence photo */
+    .evidence-photo {
+      position: absolute; bottom: 148px; right: 240px;
+      width: 160px; height: 112px;
+      background: var(--ink);
+      opacity: 0;
+      box-shadow: 3px 4px 16px rgba(0,0,0,0.35);
+    }
+    .evidence-photo::after {
+      content: ''; position: absolute; inset: 6px;
+      background: radial-gradient(ellipse at 45% 60%, #3a2a20 0%, #1a1008 60%, #0a0a08 100%);
+    }
+    /* Cigarette silhouette in photo */
+    .cig-silhouette {
+      position: absolute; z-index: 2;
+      bottom: 28px; left: 50%; transform: translateX(-50%);
+      width: 64px; height: 8px;
+      background: linear-gradient(90deg, #4a3828 0%, #6a4828 40%, #c8a060 55%, #f0b840 65%, #ff6600 75%, #cc3300 100%);
+      border-radius: 2px;
+    }
+    .cig-ember {
+      position: absolute; right: -3px; top: 50%; transform: translateY(-50%);
+      width: 6px; height: 6px; border-radius: 50%;
+      background: radial-gradient(circle, #ffaa00, #ff4400 60%, transparent 100%);
+      box-shadow: 0 0 8px 3px rgba(255,80,0,0.6);
+    }
+
+    /* EVIDENCE 001 large text */
+    .evidence-title {
+      position: absolute; bottom: 80px; left: 80px;
+      opacity: 0;
+    }
+    .ev-chapter {
+      font-size: 9px; letter-spacing: 0.4em; color: var(--red);
+      text-transform: uppercase; margin-bottom: 6px;
+    }
+    .ev-title {
+      font-size: 48px; font-weight: 700; line-height: 1;
+      color: var(--ink); letter-spacing: -0.01em;
+    }
+    .ev-sub {
+      font-size: 10px; letter-spacing: 0.25em; color: rgba(26,26,20,0.5);
+      margin-top: 8px;
+    }
+
+    /* Red divider bar */
+    .red-bar {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 3px; background: var(--red);
+      transform-origin: left; scaleX: 0; opacity: 0;
+    }
+
+    /* ─── CHAPTER 02 — THE DROP ────────────────────────── */
+    #ch02 { background: var(--paper); }
+
+    .drop-header {
+      position: absolute; top: 52px; left: 80px; right: 80px;
+      border-top: 3px solid var(--ink); border-bottom: 1px solid var(--ink);
+      padding: 8px 0; display: flex; justify-content: space-between;
+      opacity: 0;
+    }
+
+    /* Falling cigarette butt */
+    .falling-cig {
+      position: absolute;
+      left: 50%; transform: translateX(-50%);
+      top: -60px;
+      opacity: 0;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .fc-body {
+      width: 18px; height: 72px;
+      background: linear-gradient(180deg, #e8d8b0 0%, #c8a870 30%, #8a6040 60%, #2a1a10 100%);
+      border-radius: 3px 3px 2px 2px;
+      position: relative;
+    }
+    .fc-filter {
+      width: 20px; height: 20px;
+      background: linear-gradient(180deg, #d4a060 0%, #b08040 100%);
+      border-radius: 2px;
+    }
+    .fc-ash {
+      width: 14px; height: 8px;
+      background: linear-gradient(180deg, #a0a0a0 0%, #808080 100%);
+      border-radius: 1px;
+    }
+    .fc-ember2 {
+      width: 16px; height: 6px;
+      background: radial-gradient(ellipse, #ffaa00, #ff4400 70%);
+      border-radius: 2px;
+      box-shadow: 0 0 12px 4px rgba(255,80,0,0.5);
+    }
+
+    /* Flipping background pages */
+    .page-flip {
+      position: absolute; left: 80px; right: 80px;
+      top: 100px; height: 520px;
+      overflow: hidden;
+    }
+    .flip-page {
+      position: absolute; inset: 0;
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      padding: 32px;
+      opacity: 0;
+      transform-origin: top center;
+    }
+    .fp-headline { font-size: 32px; font-weight: 900; color: var(--ink); line-height: 1.1; margin-bottom: 12px; }
+    .fp-body { font-size: 11px; line-height: 1.8; color: rgba(26,26,20,0.55); columns: 2; gap: 24px; }
+    .fp-rule { border: none; border-top: 1px solid var(--faint); margin: 12px 0; }
+    .fp-meta { font-size: 9px; letter-spacing: 0.2em; color: rgba(26,26,20,0.4); text-transform: uppercase; }
+    .fp-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 16px; }
+    .fp-cell { border: 1px solid var(--faint); padding: 12px; }
+    .fp-cell-num { font-size: 24px; font-weight: 700; color: var(--ink); }
+    .fp-cell-lab { font-size: 8px; letter-spacing: 0.2em; color: rgba(26,26,20,0.5); text-transform: uppercase; }
+
+    /* Chapter 02 title */
+    .drop-title {
+      position: absolute; right: 80px; bottom: 80px;
+      text-align: right; opacity: 0;
+    }
+    .dt-ch { font-size: 9px; letter-spacing: 0.4em; color: var(--red); text-transform: uppercase; }
+    .dt-t { font-size: 52px; font-weight: 900; color: var(--ink); line-height: 0.95; }
+
+    /* ─── CHAPTER 03 — HEAT ────────────────────────────── */
+    #ch03 { background: var(--paper); }
+
+    .heat-canvas {
+      position: absolute; inset: 0;
+    }
+    .heat-grid {
+      position: absolute; inset: 80px;
+      display: grid; grid-template-columns: repeat(20, 1fr); grid-template-rows: repeat(11, 1fr);
+      gap: 0;
+    }
+    .heat-cell {
+      border: 0.5px solid rgba(180,160,120,0.2);
+      background: transparent;
+      transition: background 0.3s;
+    }
+
+    /* Temperature readout */
+    .temp-display {
+      position: absolute; left: 80px; bottom: 80px;
+      opacity: 0;
+    }
+    .temp-num {
+      font-size: 96px; font-weight: 700; line-height: 1;
+      color: var(--ink); letter-spacing: -0.02em;
+      position: relative; display: inline-block;
+    }
+    .temp-unit { font-size: 28px; font-weight: 400; color: rgba(26,26,20,0.5); vertical-align: super; }
+    .temp-label { font-size: 9px; letter-spacing: 0.35em; color: rgba(26,26,20,0.5); text-transform: uppercase; margin-top: 4px; }
+
+    /* Research annotation */
+    .heat-annotation {
+      position: absolute; right: 80px; top: 80px;
+      width: 280px; opacity: 0;
+    }
+    .ha-box { border: 1px solid rgba(200,0,30,0.4); padding: 16px; }
+    .ha-title { font-size: 9px; letter-spacing: 0.3em; color: var(--red); text-transform: uppercase; margin-bottom: 8px; }
+    .ha-row { display: flex; justify-content: space-between; align-items: center;
+      padding: 6px 0; border-bottom: 1px solid var(--faint); }
+    .ha-row:last-child { border-bottom: none; }
+    .ha-val { font-size: 18px; font-weight: 700; color: var(--ink); }
+    .ha-lab { font-size: 8px; letter-spacing: 0.2em; color: rgba(26,26,20,0.5); }
+
+    /* Heat wave SVG */
+    .heat-wave-svg {
+      position: absolute; inset: 0;
+      opacity: 0;
+    }
+
+    /* ─── CHAPTER 04 — SPREAD ──────────────────────────── */
+    #ch04 { background: var(--paper); }
+
+    .spread-canvas { position: absolute; inset: 0; }
+
+    /* Newspaper spread layout */
+    .spread-header {
+      position: absolute; top: 52px; left: 80px; right: 80px;
+      border-top: 4px solid var(--ink); border-bottom: 2px solid var(--ink);
+      padding: 6px 0; display: flex; justify-content: space-between;
+      align-items: center; opacity: 0;
+    }
+    .sh-name { font-size: 28px; font-weight: 900; color: var(--ink); letter-spacing: -0.01em; }
+    .sh-meta { font-size: 9px; letter-spacing: 0.2em; color: rgba(26,26,20,0.5); }
+
+    .spread-words {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .sw-word {
+      position: absolute;
+      font-family: 'Playfair Display'; font-weight: 900; font-style: italic;
+      color: var(--ink); text-transform: uppercase;
+      opacity: 0; transform-origin: center;
+    }
+    .sw-w1 { font-size: 120px; top: 160px; left: 80px; }
+    .sw-w2 { font-size: 88px; top: 310px; right: 80px; color: var(--red); }
+    .sw-w3 { font-size: 72px; bottom: 140px; left: 200px; }
+
+    /* Burn holes */
+    .burn-hole {
+      position: absolute; border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,0,30,0.8) 0%, rgba(100,20,0,0.6) 40%, transparent 70%);
+      opacity: 0;
+    }
+    .bh1 { width: 80px; height: 80px; top: 220px; left: 320px; }
+    .bh2 { width: 50px; height: 50px; top: 380px; right: 300px; }
+    .bh3 { width: 120px; height: 120px; bottom: 160px; right: 200px; }
+
+    /* Heat line */
+    .spread-line {
+      position: absolute;
+      background: var(--red); height: 2px;
+      left: 80px; right: 80px; opacity: 0;
+      transform-origin: left;
+    }
+
+    /* ─── CHAPTER 05 — BUILDING ────────────────────────── */
+    #ch05 { background: var(--paper); }
+
+    .building-canvas { position: absolute; inset: 0; }
+    .floor-plan-container {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px; height: 520px;
+      opacity: 0;
+    }
+    .fp-svg { width: 100%; height: 100%; }
+
+    .floor-label {
+      position: absolute; font-size: 9px; letter-spacing: 0.25em;
+      color: rgba(26,26,20,0.5); text-transform: uppercase;
+    }
+    .fl-topleft { top: 52px; left: 80px; }
+    .fl-topright { top: 52px; right: 80px; text-align: right; }
+
+    /* ─── CHAPTER 06 — PEOPLE ──────────────────────────── */
+    #ch06 { background: var(--paper); }
+
+    .people-canvas { position: absolute; inset: 0; }
+    .people-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+    .evac-header {
+      position: absolute; top: 52px; left: 80px; right: 80px;
+      border-top: 3px solid var(--red);
+      padding-top: 8px; display: flex; justify-content: space-between;
+      opacity: 0;
+    }
+    .eh-label { font-size: 9px; letter-spacing: 0.35em; color: var(--red); text-transform: uppercase; font-weight: 600; }
+
+    /* ─── CHAPTER 07 — COST ────────────────────────────── */
+    #ch07 { background: var(--paper); }
+
+    .cost-canvas { position: absolute; inset: 0; }
+
+    .cost-chain {
+      position: absolute; left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center; opacity: 0;
+      width: 600px;
+    }
+    .cc-item {
+      opacity: 0;
+      margin: 16px 0;
+    }
+    .cc-num {
+      font-size: 72px; font-weight: 900; color: var(--ink); line-height: 1;
+      display: block;
+    }
+    .cc-unit { font-size: 14px; letter-spacing: 0.3em; color: rgba(26,26,20,0.5); text-transform: uppercase; display: block; margin-top: 4px; }
+    .cc-arrow { font-size: 28px; color: var(--red); display: block; margin: 8px 0; opacity: 0; }
+    .cc-item-red .cc-num { color: var(--red); }
+
+    /* Flying archive pieces */
+    .archive-fly {
+      position: absolute; font-size: 9px; letter-spacing: 0.2em;
+      color: rgba(26,26,20,0.4); text-transform: uppercase;
+      white-space: nowrap; opacity: 0;
+    }
+
+    /* ─── CHAPTER 08 — COLLAPSE ────────────────────────── */
+    #ch08 { background: var(--paper); }
+
+    .collapse-canvas { position: absolute; inset: 0; }
+
+    /* Burning newspaper pieces */
+    .burn-piece {
+      position: absolute;
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      opacity: 0;
+      overflow: hidden;
+    }
+    .bp1 { width: 280px; height: 180px; top: 80px; left: 80px; transform: rotate(-2deg); }
+    .bp2 { width: 240px; height: 200px; top: 120px; right: 100px; transform: rotate(3deg); }
+    .bp3 { width: 320px; height: 160px; bottom: 120px; left: 160px; transform: rotate(-1.5deg); }
+    .bp4 { width: 200px; height: 240px; bottom: 100px; right: 80px; transform: rotate(2.5deg); }
+
+    .burn-piece-text { font-size: 8px; line-height: 1.8; color: rgba(26,26,20,0.4); padding: 12px; }
+    .burn-piece-hed { font-size: 18px; font-weight: 700; color: var(--ink); padding: 12px 12px 0; }
+
+    /* Burn overlay */
+    .burn-overlay {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center, transparent 0%, rgba(200,0,30,0.0) 30%, rgba(200,0,30,0.0) 100%);
+      opacity: 0; mix-blend-mode: multiply;
+    }
+
+    /* Single cig final */
+    .final-cig {
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
+      opacity: 0;
+    }
+    .final-cig-inner {
+      display: flex; flex-direction: column; align-items: center;
+      transform: rotate(25deg);
+    }
+    .fci-body {
+      width: 24px; height: 96px;
+      background: linear-gradient(180deg, #e0d0a0 0%, #c0a060 30%, #805020 60%, #201008 100%);
+      border-radius: 4px 4px 3px 3px;
+    }
+    .fci-filter {
+      width: 26px; height: 28px;
+      background: linear-gradient(180deg, #c09050 0%, #906030 100%);
+      border-radius: 3px;
+    }
+    .fci-ash {
+      width: 20px; height: 12px;
+      background: linear-gradient(180deg, #b0b0b0 0%, #808080 100%);
+      border-radius: 2px;
+    }
+
+    /* ─── CHAPTER 09 — ENDING ──────────────────────────── */
+    #ch09 { background: var(--black); }
+
+    .ending-canvas {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column;
+    }
+
+    .ending-period {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--paper);
+      opacity: 0; transform: scale(0.5);
+    }
+
+    .ending-line1 {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center; opacity: 0;
+      width: 800px; margin-top: -60px;
+    }
+    .el1-text {
+      font-family: 'Playfair Display'; font-style: italic; font-weight: 700;
+      font-size: 52px; color: var(--paper); line-height: 1.2;
+    }
+
+    .ending-line2 {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center; opacity: 0;
+      width: 800px; margin-top: 80px;
+    }
+    .el2-text {
+      font-family: 'IBM Plex Mono'; font-size: 16px;
+      color: rgba(240,235,224,0.6); letter-spacing: 0.1em;
+      line-height: 1.8;
+    }
+
+    .ending-rule {
+      position: absolute; top: 50%; left: 50%;
+      width: 0; height: 1px; background: rgba(240,235,224,0.2);
+      transform: translate(-50%, 20px);
+    }
+
+    /* ─── PROGRESS BAR ─────────────────────────────────── */
+    #progress-bar {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 2px; background: rgba(200,0,30,0.15);
+    }
+    #progress-fill {
+      height: 100%; width: 0%;
+      background: var(--red);
+      transition: width 0.1s linear;
+    }
+
+    /* ─── CHAPTER LABEL ────────────────────────────────── */
+    #chapter-label {
+      position: absolute; top: 16px; right: 80px;
+      font-size: 9px; letter-spacing: 0.4em; color: rgba(240,235,224,0.4);
+      text-transform: uppercase; opacity: 0;
+    }
+
+    /* ─── CONTROLS ─────────────────────────────────────── */
+    #controls {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 12px; z-index: 100;
+    }
+    .ctrl-btn {
+      background: rgba(240,235,224,0.1); border: 1px solid rgba(240,235,224,0.2);
+      color: rgba(240,235,224,0.7); font-family: 'IBM Plex Mono'; font-size: 10px;
+      letter-spacing: 0.2em; padding: 8px 20px; cursor: pointer;
+      text-transform: uppercase; transition: all 0.2s;
+    }
+    .ctrl-btn:hover { background: rgba(240,235,224,0.15); color: var(--paper); }
+
+    /* Stage scale for viewport fit */
+    #stage-wrapper {
+      width: 100vw; height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      background: #050505;
+    }
+  </style>
+</head>
+<body>
+<div id="stage-wrapper">
+  <div id="stage">
+
+    <!-- ── CH01: EVIDENCE ─────────────────────────────── -->
+    <div id="ch01" class="layer">
+      <div class="archive-bg"></div>
+      <div class="paper-lines"></div>
+
+      <div class="archive-header">
+        <div>
+          <div class="arch-label">Fire Investigation Archive</div>
+          <div class="arch-date" style="margin-top:2px;">CLASSIFIED MATERIALS — CASE FILE DIVISION</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="arch-label">INCIDENT DOCUMENTATION</div>
+          <div class="arch-date" style="margin-top:2px;">REF: FIA-2024-042</div>
+        </div>
+      </div>
+
+      <!-- Scattered Documents -->
+      <div class="doc-card doc1">
+        <div class="doc-title">Incident Report — Property Loss Assessment</div>
+        <div class="doc-body">Structural damage confirmed across multiple floors. Estimated property loss exceeds preliminary assessment. Fire origin traced to residential balcony, 4th floor.</div>
+        <div style="font-size:8px; color:var(--red); margin-top:8px; letter-spacing:0.2em;">LOSS CONFIRMED</div>
+      </div>
+
+      <div class="doc-card doc2">
+        <div class="doc-title">Emergency Response Log</div>
+        <div class="doc-body">Units dispatched: 0347hrs. Arrival: 0352hrs. Evacuation initiated: 0354hrs. All residents accounted for by 0421hrs. Building secured.</div>
+        <div style="font-size:8px; color:rgba(26,26,20,0.4); margin-top:8px; letter-spacing:0.2em;">EVACUATION COMPLETE</div>
+      </div>
+
+      <div class="doc-card doc3">
+        <div class="doc-title">News Clipping — FIRE Breaks Out</div>
+        <div class="doc-body">Residents describe chaotic evacuation as flames engulf residential tower. Investigators point to discarded smoking materials as probable cause.</div>
+        <div style="font-size:11px; font-weight:700; color:var(--ink); margin-top:8px;">FIRE</div>
+      </div>
+
+      <div class="doc-card doc4">
+        <div class="doc-title">Injury Report Summary</div>
+        <div class="doc-body">Minor injuries reported: 3 residents. Smoke inhalation: 7 cases. Structural injury: 0 fatalities. Medical teams on standby.</div>
+        <div style="font-size:8px; color:var(--red); margin-top:8px; letter-spacing:0.2em;">INJURY — SEE ATTACHED</div>
+      </div>
+
+      <div class="doc-card doc5">
+        <div class="doc-title">Photograph Index — Evidence Chain</div>
+        <div class="doc-body">28 photographs catalogued. Scene photographs taken before clearance. Chain of custody maintained. Evidence bag sealed.</div>
+      </div>
+
+      <div class="stamp stamp1">FIRE</div>
+      <div class="stamp stamp2" style="transform:rotate(5deg); border-color:var(--ink); color:var(--ink); font-size:8px;">PROPERTY LOSS</div>
+
+      <!-- Evidence Photo with Cigarette -->
+      <div class="evidence-photo">
+        <div class="cig-silhouette">
+          <div class="cig-ember"></div>
+        </div>
+      </div>
+
+      <!-- Title -->
+      <div class="evidence-title">
+        <div class="ev-chapter">Chapter 01</div>
+        <div class="ev-title">EVIDENCE<br>001</div>
+        <div class="ev-sub">ONE OBJECT — THE ORIGIN OF EVERYTHING</div>
+      </div>
+
+      <div class="red-bar"></div>
+    </div>
+
+    <!-- ── CH02: THE DROP ──────────────────────────────── -->
+    <div id="ch02" class="layer">
+      <div class="archive-bg"></div>
+      <div class="paper-lines"></div>
+
+      <div class="drop-header">
+        <div class="arch-label">The Drop — Causal Chain Analysis</div>
+        <div class="arch-date">CHAPTER 02 / FIA-2024-042</div>
+      </div>
+
+      <!-- Page flip stack -->
+      <div class="page-flip">
+        <div class="flip-page fp-news">
+          <div class="fp-meta">THE MORNING RECORD — SPECIAL EDITION</div>
+          <hr class="fp-rule">
+          <div class="fp-headline">FIRE CLAIMS<br>RESIDENTIAL BLOCK</div>
+          <div class="fp-body">
+            Investigators confirmed yesterday that the blaze, which displaced dozens of families, originated from a single discarded cigarette butt on the fourth-floor balcony. The material, left unattended, made contact with combustible refuse and ignited within minutes of being dropped.
+            Officials have called for stricter enforcement of fire safety regulations in residential buildings throughout the district.
+          </div>
+          <div class="fp-grid">
+            <div class="fp-cell"><div class="fp-cell-num">73</div><div class="fp-cell-lab">Families Displaced</div></div>
+            <div class="fp-cell"><div class="fp-cell-num">4th</div><div class="fp-cell-lab">Floor — Origin</div></div>
+            <div class="fp-cell"><div class="fp-cell-num">1</div><div class="fp-cell-lab">Cigarette Butt</div></div>
+          </div>
+        </div>
+
+        <div class="flip-page fp-report">
+          <div class="fp-meta">STRUCTURAL ASSESSMENT — BUILDING AUTHORITY</div>
+          <hr class="fp-rule">
+          <div class="fp-headline">DAMAGE<br>ASSESSMENT<br>REPORT</div>
+          <div class="fp-body">
+            Preliminary structural survey confirms fire damage spanning floors 4 through 11. Load-bearing elements remain intact. Facade damage significant. Full remediation timeline estimated at 18 months. Insurance liability under investigation pending cause determination.
+          </div>
+        </div>
+
+        <div class="flip-page fp-blueprint" style="background:#f5f0e0;">
+          <div class="fp-meta">ARCHITECTURAL DRAWINGS — FLOOR 04</div>
+          <hr class="fp-rule">
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(2,1fr); gap:8px; height:360px; margin-top:16px;">
+            <div style="border:1px solid rgba(26,26,20,0.2); grid-column:1/3; position:relative;">
+              <div style="position:absolute; inset:0; background:repeating-linear-gradient(90deg, rgba(26,26,20,0.05) 0px, rgba(26,26,20,0.05) 1px, transparent 1px, transparent 20px), repeating-linear-gradient(0deg, rgba(26,26,20,0.05) 0px, rgba(26,26,20,0.05) 1px, transparent 1px, transparent 20px);"></div>
+              <div style="position:absolute; top:8px; left:8px; font-size:7px; letter-spacing:0.2em; color:rgba(26,26,20,0.5);">UNIT 04A — PLAN VIEW</div>
+              <div style="position:absolute; top:24px; left:24px; right:24px; bottom:24px; border:1px solid rgba(26,26,20,0.3);">
+                <div style="position:absolute; top:30%; left:10%; width:30%; height:40%; border:1px solid rgba(26,26,20,0.3);"></div>
+                <div style="position:absolute; top:10%; right:10%; width:35%; height:60%; border:1px solid rgba(26,26,20,0.3);"></div>
+              </div>
+            </div>
+            <div style="border:1px solid rgba(26,26,20,0.2); padding:8px;">
+              <div style="font-size:7px; color:rgba(26,26,20,0.5); letter-spacing:0.2em;">NOTES</div>
+            </div>
+            <div style="border:1px solid rgba(26,26,20,0.2); grid-column:1/4;">
+              <div style="padding:8px; font-size:7px; letter-spacing:0.15em; color:rgba(26,26,20,0.4);">SCALE 1:100 — NORTH ARROW ↑ — REVISION B — DATE: SEE COVER</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Falling cigarette -->
+      <div class="falling-cig">
+        <div class="fc-ash"></div>
+        <div class="fc-ember2"></div>
+        <div class="fc-body"></div>
+        <div class="fc-filter"></div>
+      </div>
+
+      <!-- Chapter title -->
+      <div class="drop-title">
+        <div class="dt-ch">Chapter 02</div>
+        <div class="dt-t">THE<br>DROP</div>
+      </div>
+    </div>
+
+    <!-- ── CH03: HEAT ───────────────────────────────────── -->
+    <div id="ch03" class="layer">
+      <div class="archive-bg"></div>
+      <div class="paper-lines"></div>
+
+      <div class="heat-canvas">
+        <div class="heat-grid" id="heatGrid">
+          <!-- cells filled by JS -->
+        </div>
+
+        <!-- Heat wave SVG -->
+        <svg class="heat-wave-svg" id="heatWaveSvg" viewBox="0 0 1280 720">
+          <defs>
+            <radialGradient id="hg1" cx="50%" cy="70%" r="50%">
+              <stop offset="0%" stop-color="#ff3300" stop-opacity="0.5"/>
+              <stop offset="40%" stop-color="#ff8800" stop-opacity="0.2"/>
+              <stop offset="100%" stop-color="#ffcc00" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="hg2" cx="50%" cy="70%" r="40%">
+              <stop offset="0%" stop-color="#cc0000" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="transparent" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <ellipse id="heatEllipse1" cx="640" cy="580" rx="0" ry="0" fill="url(#hg1)"/>
+          <ellipse id="heatEllipse2" cx="640" cy="580" rx="0" ry="0" fill="url(#hg2)"/>
+          <!-- contour rings -->
+          <g id="heatRings" opacity="0.3">
+            <ellipse cx="640" cy="580" rx="80" ry="40" fill="none" stroke="#ff6600" stroke-width="0.5" opacity="0"/>
+            <ellipse cx="640" cy="580" rx="160" ry="80" fill="none" stroke="#ff4400" stroke-width="0.5" opacity="0"/>
+            <ellipse cx="640" cy="580" rx="240" ry="120" fill="none" stroke="#cc2200" stroke-width="0.5" opacity="0"/>
+            <ellipse cx="640" cy="580" rx="320" ry="160" fill="none" stroke="#aa0000" stroke-width="0.5" opacity="0"/>
+          </g>
+        </svg>
+
+        <!-- Temperature display -->
+        <div class="temp-display" id="tempDisplay">
+          <div class="temp-num" id="tempNum">200<span class="temp-unit">°C</span></div>
+          <div class="temp-label">Surface Temperature — Paper Ignition Point</div>
+        </div>
+
+        <!-- Heat annotation box -->
+        <div class="heat-annotation" id="heatAnnotation">
+          <div class="ha-box">
+            <div class="ha-title">Thermal Analysis — CASE 042</div>
+            <div class="ha-row">
+              <span class="ha-lab">Ignition Temp.</span>
+              <span class="ha-val" style="color:var(--heat1);">200°C</span>
+            </div>
+            <div class="ha-row">
+              <span class="ha-lab">Spread Rate</span>
+              <span class="ha-val" style="color:var(--heat2);">300°C</span>
+            </div>
+            <div class="ha-row">
+              <span class="ha-lab">Peak Core Temp.</span>
+              <span class="ha-val" style="color:var(--heat3);">400°C</span>
+            </div>
+            <div class="ha-row">
+              <span class="ha-lab">Time to Spread</span>
+              <span class="ha-val">4 min</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chapter label -->
+        <div style="position:absolute; left:80px; top:52px; opacity:0;" id="ch03header">
+          <div style="font-size:9px; letter-spacing:0.4em; color:var(--red); text-transform:uppercase;">Chapter 03 — Heat</div>
+          <div style="font-size:9px; letter-spacing:0.2em; color:rgba(26,26,20,0.4); margin-top:4px;">Thermal Behavior Study — FIA-2024-042</div>
+        </div>
+
+        <!-- Cigarette butt on paper -->
+        <div style="position:absolute; left:50%; bottom:130px; transform:translateX(-50%); display:flex; align-items:center; gap:0; opacity:0;" id="cigOnPaper">
+          <div style="width:48px; height:12px; background:linear-gradient(90deg,#e0d0a0,#c0a060,#805020,#201008); border-radius:3px;"></div>
+          <div style="width:4px; height:10px; background:linear-gradient(0deg,#b0b0b0,#909090); border-radius:1px;"></div>
+          <div style="width:8px; height:10px; background:radial-gradient(ellipse at center, #ffaa00, #ff4400 70%); border-radius:2px; box-shadow:0 0 10px 4px rgba(255,60,0,0.5);"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CH04: SPREAD ─────────────────────────────────── -->
+    <div id="ch04" class="layer">
+      <div class="archive-bg"></div>
+      <div class="paper-lines"></div>
+
+      <!-- Newspaper header -->
+      <div class="spread-header" id="spreadHeader">
+        <div class="sh-name">THE FIRE RECORD</div>
+        <div class="sh-meta">
+          <div>SPECIAL EDITION</div>
+          <div style="margin-top:2px;">PROPERTY DIVISION</div>
+        </div>
+        <div class="sh-meta" style="text-align:right;">
+          <div>CASE 042</div>
+          <div style="margin-top:2px;">ALL EDITIONS</div>
+        </div>
+      </div>
+
+      <!-- SPREAD words -->
+      <div class="spread-words">
+        <div class="sw-word sw-w1" id="sw1">SPREAD</div>
+        <div class="sw-word sw-w2" id="sw2">SPREAD</div>
+        <div class="sw-word sw-w3" id="sw3">SPREAD</div>
+      </div>
+
+      <!-- Burn holes -->
+      <div class="burn-hole bh1" id="bh1"></div>
+      <div class="burn-hole bh2" id="bh2"></div>
+      <div class="burn-hole bh3" id="bh3"></div>
+
+      <!-- Spreading lines (like fire tracing paths) -->
+      <div class="spread-line" id="sl1" style="top:200px;"></div>
+      <div class="spread-line" id="sl2" style="top:380px; left:160px; right:160px;"></div>
+      <div class="spread-line" id="sl3" style="top:520px; left:240px;"></div>
+    </div>
+
+    <!-- ── CH05: BUILDING ───────────────────────────────── -->
+    <div id="ch05" class="layer">
+      <div class="archive-bg"></div>
+      <div class="paper-lines"></div>
+
+      <div class="floor-label fl-topleft" id="ch05label" style="opacity:0;">
+        <div style="font-size:9px; letter-spacing:0.35em; color:var(--red); text-transform:uppercase;">Chapter 05 — Building</div>
+        <div style="font-size:9px; letter-spacing:0.2em; color:rgba(26,26,20,0.4); margin-top:4px;">Fire Propagation Map — Floor Plan Analysis</div>
+      </div>
+      <div class="floor-label fl-topright" id="ch05labelR" style="opacity:0; top:52px; right:80px; position:absolute;">
+        <div style="font-size:9px; letter-spacing:0.2em; color:rgba(26,26,20,0.4);">BUILDING A — FLOORS 1–12</div>
+        <div style="font-size:9px; letter-spacing:0.2em; color:rgba(26,26,20,0.4); margin-top:2px;">SCALE 1:200</div>
+      </div>
+
+      <div class="floor-plan-container" id="floorPlanContainer">
+        <svg class="fp-svg" viewBox="0 0 800 520" fill="none" xmlns="http://www.w3.org/2000/svg" id="buildingSvg">
+          <!-- Building outline -->
+          <rect x="100" y="20" width="600" height="480" stroke="#1a1a14" stroke-width="1.5" opacity="0" id="bldg-outline"/>
+          <!-- Floor dividers -->
+          <g id="floor-dividers" opacity="0">
+            <line x1="100" y1="60" x2="700" y2="60" stroke="#1a1a14" stroke-width="0.5"/>
+            <line x1="100" y1="100" x2="700" y2="100" stroke="#1a1a14" stroke-width="0.5"/>
+            <line x1="100" y1="140" x2="700" y2="140" stroke="#1a1a14" stroke-width="0.5"/>
+            <line x1="100" y1="180" x2="700" y2="180" stroke="#1a1a14" stroke-width="0.5"/>
+            <line x1="100" y1="220" x2="700" y2="220" stroke="#1a1a14" stroke-width="0.5"/>
+            <line x1="100" y1="260" x2="700" y2="260" stroke="#1a1a14" stroke-width="0.5"/>
+            <line x1="100" y1="300" x2="700" y2="300" stroke="#1a1a14" stroke-width="0.5"/>
+            <line x1="100" y1="340" x2="700" y2="340" stroke="#1a1a14" stroke-width="0.5"/>
+            <line x1="100" y1="380" x2="700" y2="380" stroke="#1a1a14" stroke-width="0.5"/>
+            <line x1="100" y1="420" x2="700" y2="420" stroke="#1a1a14" stroke-width="0.5"/>
+            <line x1="100" y1="460" x2="700" y2="460" stroke="#1a1a14" stroke-width="0.5"/>
+          </g>
+          <!-- Room divisions -->
+          <g id="room-dividers" opacity="0">
+            <line x1="300" y1="20" x2="300" y2="500" stroke="#1a1a14" stroke-width="0.5"/>
+            <line x1="500" y1="20" x2="500" y2="500" stroke="#1a1a14" stroke-width="0.5"/>
+            <line x1="200" y1="220" x2="200" y2="500" stroke="#1a1a14" stroke-width="0.5"/>
+            <line x1="600" y1="20" x2="600" y2="220" stroke="#1a1a14" stroke-width="0.5"/>
+          </g>
+          <!-- Floor labels -->
+          <g id="floor-labels" opacity="0">
+            <text x="88" y="38" font-size="6" fill="rgba(26,26,20,0.4)" text-anchor="end" font-family="IBM Plex Mono">12F</text>
+            <text x="88" y="78" font-size="6" fill="rgba(26,26,20,0.4)" text-anchor="end" font-family="IBM Plex Mono">11F</text>
+            <text x="88" y="118" font-size="6" fill="rgba(26,26,20,0.4)" text-anchor="end" font-family="IBM Plex Mono">10F</text>
+            <text x="88" y="158" font-size="6" fill="rgba(26,26,20,0.4)" text-anchor="end" font-family="IBM Plex Mono">09F</text>
+            <text x="88" y="198" font-size="6" fill="rgba(26,26,20,0.4)" text-anchor="end" font-family="IBM Plex Mono">08F</text>
+            <text x="88" y="238" font-size="6" fill="rgba(26,26,20,0.4)" text-anchor="end" font-family="IBM Plex Mono">07F</text>
+            <text x="88" y="278" font-size="6" fill="rgba(26,26,20,0.4)" text-anchor="end" font-family="IBM Plex Mono">06F</text>
+            <text x="88" y="318" font-size="6" fill="rgba(26,26,20,0.4)" text-anchor="end" font-family="IBM Plex Mono">05F</text>
+            <text x="88" y="358" font-size="6" fill="rgba(26,26,20,0.4)" text-anchor="end" font-family="IBM Plex Mono">04F ←</text>
+            <text x="88" y="398" font-size="6" fill="rgba(26,26,20,0.4)" text-anchor="end" font-family="IBM Plex Mono">03F</text>
+            <text x="88" y="438" font-size="6" fill="rgba(26,26,20,0.4)" text-anchor="end" font-family="IBM Plex Mono">02F</text>
+            <text x="88" y="478" font-size="6" fill="rgba(26,26,20,0.4)" text-anchor="end" font-family="IBM Plex Mono">01F</text>
+          </g>
+          <!-- Fire spread paths — drawn progressively -->
+          <g id="fire-paths">
+            <!-- Origin: 4th floor balcony (y≈340-380 zone) -->
+            <circle id="fp-origin" cx="580" cy="360" r="6" fill="var(--red)" opacity="0"/>
+            <text id="fp-origin-label" x="596" y="364" font-size="6" fill="var(--red)" font-family="IBM Plex Mono" opacity="0">ORIGIN</text>
+            <!-- Spread path upward -->
+            <path id="fp-up" d="M580,360 L580,340 L560,320 L540,300 L540,260 L520,240 L520,200 L500,180 L480,160 L480,120 L500,100 L520,80 L540,60"
+              stroke="var(--red)" stroke-width="1.5" stroke-dasharray="4 3" opacity="0"/>
+            <!-- Spread horizontal 4th floor -->
+            <path id="fp-horiz" d="M580,360 L500,360 L300,360 L200,360 L100,360"
+              stroke="var(--heat1)" stroke-width="1.5" stroke-dasharray="4 3" opacity="0"/>
+            <!-- Spread down -->
+            <path id="fp-down" d="M580,360 L580,380 L560,400 L540,420 L500,440 L400,460 L300,460 L200,460"
+              stroke="var(--amber)" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>
+            <!-- Heat zones -->
+            <rect id="fp-zone1" x="100" y="340" width="600" height="40" fill="var(--red)" opacity="0"/>
+            <rect id="fp-zone2" x="100" y="300" width="600" height="40" fill="var(--heat1)" opacity="0"/>
+            <rect id="fp-zone3" x="100" y="260" width="600" height="40" fill="var(--amber)" opacity="0"/>
+            <rect id="fp-zone4" x="100" y="220" width="600" height="40" fill="#e8b040" opacity="0"/>
+          </g>
+          <!-- Stairwell indicators -->
+          <g id="stairs" opacity="0">
+            <rect x="460" y="20" width="40" height="480" fill="rgba(26,26,20,0.05)" stroke="rgba(26,26,20,0.2)" stroke-width="0.5"/>
+            <text x="480" y="270" font-size="5" fill="rgba(26,26,20,0.3)" text-anchor="middle" font-family="IBM Plex Mono">STAIR</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ── CH06: PEOPLE ─────────────────────────────────── -->
+    <div id="ch06" class="layer">
+      <div class="archive-bg"></div>
+      <div class="paper-lines"></div>
+
+      <div class="evac-header" id="evacHeader">
+        <div class="eh-label">Emergency Evacuation Routes</div>
+        <div style="font-size:9px; letter-spacing:0.2em; color:rgba(26,26,20,0.4);">CASE 042 — CHAPTER 06</div>
+      </div>
+
+      <svg class="people-svg" viewBox="0 0 1280 720" id="peopleSvg">
+        <!-- Floor plan simplified -->
+        <g id="evac-building" opacity="0">
+          <rect x="160" y="120" width="960" height="500" stroke="#1a1a14" stroke-width="1" fill="none"/>
+          <!-- Interior walls -->
+          <line x1="480" y1="120" x2="480" y2="620" stroke="#1a1a14" stroke-width="0.5"/>
+          <line x1="800" y1="120" x2="800" y2="620" stroke="#1a1a14" stroke-width="0.5"/>
+          <line x1="160" y1="370" x2="1120" y2="370" stroke="#1a1a14" stroke-width="0.5"/>
+          <!-- Doors -->
+          <path d="M480,620 L440,620" stroke="#1a1a14" stroke-width="2"/>
+          <path d="M800,620 L840,620" stroke="#1a1a14" stroke-width="2"/>
+          <path d="M640,120 L640,80" stroke="#1a1a14" stroke-width="2"/>
+          <!-- EXIT labels -->
+          <rect x="420" y="610" width="40" height="16" fill="var(--red)"/>
+          <text x="440" y="622" font-size="6" fill="white" text-anchor="middle" font-family="IBM Plex Mono" font-weight="600">EXIT</text>
+          <rect x="820" y="610" width="40" height="16" fill="var(--red)"/>
+          <text x="840" y="622" font-size="6" fill="white" text-anchor="middle" font-family="IBM Plex Mono" font-weight="600">EXIT</text>
+        </g>
+
+        <!-- Evacuation route arrows -->
+        <g id="evac-routes" opacity="0">
+          <!-- Zone 1 routes -->
+          <path d="M300,250 L300,380 L300,560 L440,620" stroke="var(--red)" stroke-width="1.5" stroke-dasharray="6 3" fill="none" marker-end="url(#arrowRed)"/>
+          <path d="M640,250 L640,380 L640,560 L840,560 L840,620" stroke="var(--red)" stroke-width="1.5" stroke-dasharray="6 3" fill="none" marker-end="url(#arrowRed)"/>
+          <path d="M960,250 L960,380 L960,560 L840,620" stroke="var(--amber)" stroke-width="1.5" stroke-dasharray="6 3" fill="none" marker-end="url(#arrowAmber)"/>
+          <defs>
+            <marker id="arrowRed" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="var(--red)"/>
+            </marker>
+            <marker id="arrowAmber" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="var(--amber)"/>
+            </marker>
+          </defs>
+        </g>
+
+        <!-- Person icons (editorial style - geometric) -->
+        <g id="person-icons" opacity="0">
+          <!-- 12 person icons distributed -->
+          <g class="person-icon" transform="translate(260,200)"><circle cx="8" cy="5" r="4" fill="none" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="9" x2="8" y2="20" stroke="#1a1a14" stroke-width="1"/><line x1="2" y1="14" x2="14" y2="14" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="3" y2="28" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="13" y2="28" stroke="#1a1a14" stroke-width="1"/></g>
+          <g class="person-icon" transform="translate(290,200)"><circle cx="8" cy="5" r="4" fill="none" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="9" x2="8" y2="20" stroke="#1a1a14" stroke-width="1"/><line x1="2" y1="14" x2="14" y2="14" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="3" y2="28" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="13" y2="28" stroke="#1a1a14" stroke-width="1"/></g>
+          <g class="person-icon" transform="translate(320,200)"><circle cx="8" cy="5" r="4" fill="none" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="9" x2="8" y2="20" stroke="#1a1a14" stroke-width="1"/><line x1="2" y1="14" x2="14" y2="14" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="3" y2="28" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="13" y2="28" stroke="#1a1a14" stroke-width="1"/></g>
+          <g class="person-icon" transform="translate(600,200)"><circle cx="8" cy="5" r="4" fill="none" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="9" x2="8" y2="20" stroke="#1a1a14" stroke-width="1"/><line x1="2" y1="14" x2="14" y2="14" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="3" y2="28" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="13" y2="28" stroke="#1a1a14" stroke-width="1"/></g>
+          <g class="person-icon" transform="translate(630,200)"><circle cx="8" cy="5" r="4" fill="none" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="9" x2="8" y2="20" stroke="#1a1a14" stroke-width="1"/><line x1="2" y1="14" x2="14" y2="14" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="3" y2="28" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="13" y2="28" stroke="#1a1a14" stroke-width="1"/></g>
+          <g class="person-icon" transform="translate(660,200)"><circle cx="8" cy="5" r="4" fill="none" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="9" x2="8" y2="20" stroke="#1a1a14" stroke-width="1"/><line x1="2" y1="14" x2="14" y2="14" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="3" y2="28" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="13" y2="28" stroke="#1a1a14" stroke-width="1"/></g>
+          <g class="person-icon" transform="translate(920,200)"><circle cx="8" cy="5" r="4" fill="none" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="9" x2="8" y2="20" stroke="#1a1a14" stroke-width="1"/><line x1="2" y1="14" x2="14" y2="14" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="3" y2="28" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="13" y2="28" stroke="#1a1a14" stroke-width="1"/></g>
+          <g class="person-icon" transform="translate(950,200)"><circle cx="8" cy="5" r="4" fill="none" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="9" x2="8" y2="20" stroke="#1a1a14" stroke-width="1"/><line x1="2" y1="14" x2="14" y2="14" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="3" y2="28" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="13" y2="28" stroke="#1a1a14" stroke-width="1"/></g>
+          <g class="person-icon" transform="translate(980,200)"><circle cx="8" cy="5" r="4" fill="none" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="9" x2="8" y2="20" stroke="#1a1a14" stroke-width="1"/><line x1="2" y1="14" x2="14" y2="14" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="3" y2="28" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="13" y2="28" stroke="#1a1a14" stroke-width="1"/></g>
+          <g class="person-icon" transform="translate(260,440)"><circle cx="8" cy="5" r="4" fill="none" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="9" x2="8" y2="20" stroke="#1a1a14" stroke-width="1"/><line x1="2" y1="14" x2="14" y2="14" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="3" y2="28" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="13" y2="28" stroke="#1a1a14" stroke-width="1"/></g>
+          <g class="person-icon" transform="translate(900,440)"><circle cx="8" cy="5" r="4" fill="none" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="9" x2="8" y2="20" stroke="#1a1a14" stroke-width="1"/><line x1="2" y1="14" x2="14" y2="14" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="3" y2="28" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="13" y2="28" stroke="#1a1a14" stroke-width="1"/></g>
+          <g class="person-icon" transform="translate(930,440)"><circle cx="8" cy="5" r="4" fill="none" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="9" x2="8" y2="20" stroke="#1a1a14" stroke-width="1"/><line x1="2" y1="14" x2="14" y2="14" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="3" y2="28" stroke="#1a1a14" stroke-width="1"/><line x1="8" y1="20" x2="13" y2="28" stroke="#1a1a14" stroke-width="1"/></g>
+        </g>
+
+        <!-- Chapter label -->
+        <g id="ch06label" opacity="0">
+          <text x="160" y="96" font-size="9" letter-spacing="3" fill="var(--red)" font-family="IBM Plex Mono" text-transform="uppercase">CHAPTER 06 — PEOPLE</text>
+          <text x="160" y="112" font-size="9" letter-spacing="2" fill="rgba(26,26,20,0.4)" font-family="IBM Plex Mono">EVACUATION LAYOUT — EDITORIAL</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- ── CH07: COST ───────────────────────────────────── -->
+    <div id="ch07" class="layer">
+      <div class="archive-bg"></div>
+      <div class="paper-lines"></div>
+
+      <!-- Flying archive items -->
+      <div class="archive-fly" id="af1" style="top:80px; left:120px;">CASE FILE 042 — FIRE INVESTIGATION REPORT</div>
+      <div class="archive-fly" id="af2" style="top:108px; right:120px; text-align:right;">PROPERTY DAMAGE — EXTENSIVE</div>
+      <div class="archive-fly" id="af3" style="bottom:80px; left:120px;">INSURANCE CLAIM FILED — PENDING REVIEW</div>
+      <div class="archive-fly" id="af4" style="bottom:108px; right:120px; text-align:right;">73 FAMILIES — DISPLACED</div>
+      <div class="archive-fly" id="af5" style="top:50%; left:80px; transform:translateY(-50%); font-size:8px;">INCIDENT DATE / INVESTIGATION ONGOING</div>
+      <div class="archive-fly" id="af6" style="top:50%; right:80px; transform:translateY(-50%); font-size:8px; text-align:right;">MEMORIES / TIME / LIFE</div>
+
+      <!-- Cost chain -->
+      <div class="cost-chain" id="costChain">
+        <div class="cc-item" id="cc1">
+          <span class="cc-num">1</span>
+          <span class="cc-unit">Cigarette Butt</span>
+        </div>
+        <div class="cc-arrow" id="ca1">↓</div>
+        <div class="cc-item" id="cc2">
+          <span class="cc-num">1</span>
+          <span class="cc-unit">Fire</span>
+        </div>
+        <div class="cc-arrow" id="ca2">↓</div>
+        <div class="cc-item cc-item-red" id="cc3">
+          <span class="cc-num">73</span>
+          <span class="cc-unit">Families</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CH08: COLLAPSE ───────────────────────────────── -->
+    <div id="ch08" class="layer">
+      <div class="archive-bg" id="collapse-bg"></div>
+
+      <!-- Burning pieces of archive -->
+      <div class="burn-piece bp1">
+        <div class="burn-piece-hed">FIRE RECORD</div>
+        <div class="burn-piece-text">Case 042 — Full investigation report pending. All evidence secured. Photographs catalogued. Chain of custody...</div>
+      </div>
+      <div class="burn-piece bp2">
+        <div class="burn-piece-hed">PROPERTY</div>
+        <div class="burn-piece-text">Damage assessment ongoing. Insurance review pending. 73 families displaced. Temporary housing...</div>
+      </div>
+      <div class="burn-piece bp3">
+        <div class="burn-piece-hed">EVACUATION LOG</div>
+        <div class="burn-piece-text">0347hrs dispatch. 0352hrs arrival. All residents accounted for. No fatalities. Smoke inhalation cases treated on site. Medical...</div>
+      </div>
+      <div class="burn-piece bp4">
+        <div class="burn-piece-hed">EVIDENCE 001</div>
+        <div class="burn-piece-text">One cigarette butt. Origin confirmed. Heat trace documented. Thermal analysis complete. Case closed pending...</div>
+      </div>
+
+      <!-- Burn overlay effect -->
+      <div class="burn-overlay" id="burnOverlay"></div>
+
+      <!-- Final lone cigarette -->
+      <div class="final-cig" id="finalCig">
+        <div class="final-cig-inner">
+          <div class="fci-ash"></div>
+          <div class="fci-body"></div>
+          <div class="fci-filter"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CH09: ENDING ─────────────────────────────────── -->
+    <div id="ch09" class="layer">
+      <div class="ending-canvas">
+        <!-- Period becomes punctuation -->
+        <div class="ending-period" id="endingPeriod"></div>
+
+        <!-- Main text -->
+        <div class="ending-line1" id="endingLine1">
+          <div class="el1-text">Every fire starts<br>with something small.</div>
+        </div>
+
+        <!-- Rule -->
+        <div class="ending-rule" id="endingRule"></div>
+
+        <!-- Sub text -->
+        <div class="ending-line2" id="endingLine2">
+          <div class="el2-text">Don't let it<br>be your story.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress & Label -->
+    <div id="progress-bar"><div id="progress-fill"></div></div>
+    <div id="chapter-label">THE JOURNEY OF A CIGARETTE BUTT</div>
+
+  </div><!-- /stage -->
+</div><!-- /stage-wrapper -->
+
+<div id="controls">
+  <button class="ctrl-btn" id="btnPlay">▶ PLAY</button>
+  <button class="ctrl-btn" id="btnReset">↺ RESET</button>
+</div>
+
+<script>
+// ─── GSAP MASTER TIMELINE ──────────────────────────────────────────────────
+
+gsap.registerPlugin();
+
+const tl = gsap.timeline({ paused: true, onUpdate: updateProgress });
+
+// helpers
+const show = (el, dur=0.6, ease='power3.out') =>
+  gsap.to(el, { autoAlpha: 1, duration: dur, ease });
+const hide = (el, dur=0.4) =>
+  gsap.to(el, { autoAlpha: 0, duration: dur, ease: 'power2.in' });
+
+function updateProgress() {
+  const p = (tl.time() / tl.duration()) * 100;
+  document.getElementById('progress-fill').style.width = p + '%';
+}
+
+// ─── BUILD HEAT GRID ───────────────────────────────────────────────────────
+const heatGrid = document.getElementById('heatGrid');
+const COLS = 20, ROWS = 11;
+for (let r = 0; r < ROWS; r++) {
+  for (let c = 0; c < COLS; c++) {
+    const cell = document.createElement('div');
+    cell.className = 'heat-cell';
+    cell.dataset.r = r; cell.dataset.c = c;
+    heatGrid.appendChild(cell);
+  }
+}
+
+function animateHeatGrid(progress) {
+  // progress 0-1: spread heat from center-bottom outward
+  const cells = heatGrid.querySelectorAll('.heat-cell');
+  const cx = COLS / 2, cy = ROWS - 1;
+  cells.forEach(cell => {
+    const r = +cell.dataset.r, c = +cell.dataset.c;
+    const dist = Math.sqrt(Math.pow(c - cx, 2) + Math.pow(r - cy, 2) * 1.5);
+    const maxDist = Math.sqrt(cx * cx + cy * cy * 1.5);
+    const threshold = dist / maxDist;
+    if (progress > threshold) {
+      const intensity = Math.min(1, (progress - threshold) / 0.3);
+      if (intensity > 0.8) cell.style.background = `rgba(200,0,30,${0.15 * intensity})`;
+      else if (intensity > 0.5) cell.style.background = `rgba(255,100,0,${0.12 * intensity})`;
+      else cell.style.background = `rgba(255,180,0,${0.10 * intensity})`;
+    } else {
+      cell.style.background = 'transparent';
+    }
+  });
+}
+
+// ─── ANIMATE CHAPTER LABEL ────────────────────────────────────────────────
+const chapterLabel = document.getElementById('chapter-label');
+
+function setChLabel(text) {
+  gsap.to(chapterLabel, { autoAlpha: 0, duration: 0.2, onComplete: () => {
+    chapterLabel.textContent = text;
+    gsap.to(chapterLabel, { autoAlpha: 1, duration: 0.3 });
+  }});
+}
+
+// ─── SVG PATH ANIMATION HELPER ────────────────────────────────────────────
+function animatePath(el, dur=1.5, delay=0) {
+  if (!el) return;
+  const len = el.getTotalLength ? el.getTotalLength() : 500;
+  gsap.set(el, { strokeDasharray: len, strokeDashoffset: len, opacity: 1 });
+  gsap.to(el, { strokeDashoffset: 0, duration: dur, delay, ease: 'power2.inOut' });
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// CHAPTER 01 — EVIDENCE  (0 – 9s)
+// ══════════════════════════════════════════════════════════════════════════
+tl.addLabel('ch01', 0)
+  .call(() => setChLabel('CH.01 — EVIDENCE'))
+  .to('#ch01', { autoAlpha: 1, duration: 0 })
+  // Header
+  .to('.archive-header', { autoAlpha: 1, duration: 0.5, ease: 'power2.out' })
+  // Documents scatter in
+  .to('.doc-card', { autoAlpha: 1, y: 0, duration: 0.4, stagger: { each: 0.15, from: 'random' }, ease: 'back.out(1.2)' }, '+=0.3')
+  // Stamps appear
+  .to('.stamp', { autoAlpha: 1, duration: 0.3, stagger: 0.2, ease: 'power4.out' }, '-=0.4')
+  // Evidence photo
+  .to('.evidence-photo', { autoAlpha: 1, duration: 0.5, ease: 'power2.out' }, '+=0.3')
+  // Title
+  .to('.evidence-title', { autoAlpha: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '+=0.4')
+  // Red bar
+  .to('.red-bar', { autoAlpha: 1, scaleX: 1, duration: 0.8, ease: 'power4.out' }, '-=0.2')
+  // Hold 2s, then transition
+  .to('#chapter-label', { autoAlpha: 1, duration: 0.3 }, '+=0.2')
+  .to('#ch01', { autoAlpha: 0, duration: 0.6, ease: 'power2.in' }, '+=2.5')
+
+// ══════════════════════════════════════════════════════════════════════════
+// CHAPTER 02 — THE DROP  (9 – 18s)
+// ══════════════════════════════════════════════════════════════════════════
+  .addLabel('ch02')
+  .call(() => setChLabel('CH.02 — THE DROP'))
+  .to('#ch02', { autoAlpha: 1, duration: 0 })
+  .to('.drop-header', { autoAlpha: 1, duration: 0.4 })
+  // First page flip — news
+  .to('.fp-news', { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power3.out' }, '+=0.2')
+  // Cigarette starts falling
+  .to('.falling-cig', { autoAlpha: 1, duration: 0.3 }, '+=0.4')
+  .to('.falling-cig', { top: '35%', duration: 1.2, ease: 'power2.in' })
+  // Page flip 2
+  .to('.fp-news', { autoAlpha: 0, duration: 0.2 }, '-=0.3')
+  .to('.fp-report', { autoAlpha: 1, y: 0, duration: 0.4, ease: 'power3.out' })
+  // Cig continues
+  .to('.falling-cig', { top: '55%', duration: 0.8, ease: 'power1.inOut' })
+  // Page flip 3
+  .to('.fp-report', { autoAlpha: 0, duration: 0.2 }, '-=0.2')
+  .to('.fp-blueprint', { autoAlpha: 1, duration: 0.4, ease: 'power3.out' })
+  // Cig lands
+  .to('.falling-cig', { top: '72%', duration: 0.5, ease: 'bounce.out' })
+  // Chapter title reveals
+  .to('.drop-title', { autoAlpha: 1, x: 0, duration: 0.7, ease: 'power3.out' }, '+=0.4')
+  // Hold then exit
+  .to('#ch02', { autoAlpha: 0, duration: 0.7, ease: 'power2.in' }, '+=2.0')
+
+// ══════════════════════════════════════════════════════════════════════════
+// CHAPTER 03 — HEAT  (18 – 27s)
+// ══════════════════════════════════════════════════════════════════════════
+  .addLabel('ch03')
+  .call(() => setChLabel('CH.03 — HEAT'))
+  .to('#ch03', { autoAlpha: 1, duration: 0 })
+  .to('#ch03header', { autoAlpha: 1, duration: 0.5 }, '+=0.2')
+  .to('#cigOnPaper', { autoAlpha: 1, duration: 0.5 }, '+=0.2')
+  // Heat grid animates
+  .call(() => {
+    let prog = 0;
+    const interval = setInterval(() => {
+      prog = Math.min(1, prog + 0.025);
+      animateHeatGrid(prog);
+      if (prog >= 1) clearInterval(interval);
+    }, 80);
+  }, null, '+=0.5')
+  // Heat ellipses expand
+  .to('#heatEllipse1', { attr: { rx: 400, ry: 300 }, duration: 3.5, ease: 'power2.out' }, '+=0.5')
+  .to('#heatEllipse2', { attr: { rx: 200, ry: 150 }, duration: 3.0, ease: 'power2.out' }, '<')
+  // Heat rings
+  .to('#heatRings ellipse', { opacity: 0.4, duration: 0.4, stagger: 0.3 }, '+=0.3')
+  // Wave svg shows
+  .to('#heatWaveSvg', { autoAlpha: 1, duration: 0.6 }, '-=2')
+  // Temperature counter
+  .to('#tempDisplay', { autoAlpha: 1, duration: 0.5 }, '+=0.5')
+  .call(() => {
+    // Count up temperature
+    const nums = [200, 300, 400];
+    let i = 0;
+    const interval = setInterval(() => {
+      if (i < nums.length) {
+        document.getElementById('tempNum').innerHTML = nums[i] + '<span class="temp-unit">°C</span>';
+        i++;
+      } else clearInterval(interval);
+    }, 900);
+  })
+  // Annotation box
+  .to('#heatAnnotation', { autoAlpha: 1, x: 0, duration: 0.6, ease: 'power3.out' }, '+=0.3')
+  // Hold then exit
+  .to('#ch03', { autoAlpha: 0, duration: 0.7, ease: 'power2.in' }, '+=2.0')
+
+// ══════════════════════════════════════════════════════════════════════════
+// CHAPTER 04 — SPREAD  (27 – 35s)
+// ══════════════════════════════════════════════════════════════════════════
+  .addLabel('ch04')
+  .call(() => setChLabel('CH.04 — SPREAD'))
+  .to('#ch04', { autoAlpha: 1, duration: 0 })
+  .to('#spreadHeader', { autoAlpha: 1, duration: 0.5 }, '+=0.2')
+  // SPREAD words appear one by one
+  .to('#sw1', { autoAlpha: 1, x: 0, duration: 0.6, ease: 'power4.out' }, '+=0.3')
+  .to('#sw2', { autoAlpha: 1, x: 0, duration: 0.5, ease: 'power4.out' }, '+=0.3')
+  .to('#sw3', { autoAlpha: 1, x: 0, duration: 0.5, ease: 'power4.out' }, '+=0.3')
+  // Spread lines draw
+  .to('#sl1', { autoAlpha: 1, scaleX: 1, duration: 0.8, ease: 'power2.inOut', transformOrigin: 'left' }, '+=0.2')
+  .to('#sl2', { autoAlpha: 1, scaleX: 1, duration: 0.8, ease: 'power2.inOut', transformOrigin: 'left' }, '+=0.2')
+  .to('#sl3', { autoAlpha: 1, scaleX: 1, duration: 0.6, ease: 'power2.inOut', transformOrigin: 'left' }, '+=0.1')
+  // Burn holes appear
+  .to('#bh1', { autoAlpha: 1, scale: 1, duration: 0.4, ease: 'power4.out' }, '+=0.2')
+  .to('#bh2', { autoAlpha: 1, scale: 1, duration: 0.3, ease: 'power4.out' }, '+=0.2')
+  .to('#bh3', { autoAlpha: 1, scale: 1, duration: 0.5, ease: 'power4.out' }, '+=0.2')
+  // SPREAD words pulse
+  .to('.sw-word', { opacity: 0.3, duration: 0.2, stagger: 0.1, yoyo: true, repeat: 2 }, '+=0.3')
+  .to('#ch04', { autoAlpha: 0, duration: 0.7, ease: 'power2.in' }, '+=1.5')
+
+// ══════════════════════════════════════════════════════════════════════════
+// CHAPTER 05 — BUILDING  (35 – 44s)
+// ══════════════════════════════════════════════════════════════════════════
+  .addLabel('ch05')
+  .call(() => setChLabel('CH.05 — BUILDING'))
+  .to('#ch05', { autoAlpha: 1, duration: 0 })
+  .to('#ch05label', { autoAlpha: 1, duration: 0.4 }, '+=0.2')
+  .to('#ch05labelR', { autoAlpha: 1, duration: 0.4 }, '<')
+  // Building outline draws
+  .to('#floorPlanContainer', { autoAlpha: 1, duration: 0.5 }, '+=0.3')
+  .to('#bldg-outline', { attr: { opacity: 1 }, duration: 0.6, ease: 'power2.out' })
+  .to('#floor-dividers', { attr: { opacity: 1 }, duration: 0.5 })
+  .to('#room-dividers', { attr: { opacity: 1 }, duration: 0.4 })
+  .to('#stairs', { attr: { opacity: 1 }, duration: 0.3 })
+  .to('#floor-labels', { attr: { opacity: 1 }, duration: 0.4 })
+  // Origin point
+  .to('#fp-origin', { attr: { opacity: 1 }, scale: 1, duration: 0.4, ease: 'back.out(2)', transformOrigin: 'center' })
+  .to('#fp-origin-label', { attr: { opacity: 1 }, duration: 0.3 })
+  // Fire paths animate
+  .call(() => {
+    const paths = ['#fp-up', '#fp-horiz', '#fp-down'];
+    paths.forEach((id, i) => {
+      const el = document.querySelector(id);
+      if (el) {
+        const len = 600;
+        gsap.set(el, { strokeDasharray: len, strokeDashoffset: len, opacity: 1 });
+        gsap.to(el, { strokeDashoffset: 0, duration: 1.5, delay: i * 0.3, ease: 'power2.inOut' });
+      }
+    });
+  })
+  // Heat zone fills
+  .to('#fp-zone1', { attr: { opacity: 0.12 }, duration: 0.5 }, '+=0.3')
+  .to('#fp-zone2', { attr: { opacity: 0.08 }, duration: 0.5 }, '+=0.2')
+  .to('#fp-zone3', { attr: { opacity: 0.06 }, duration: 0.5 }, '+=0.2')
+  .to('#fp-zone4', { attr: { opacity: 0.04 }, duration: 0.5 }, '+=0.2')
+  .to('#ch05', { autoAlpha: 0, duration: 0.7, ease: 'power2.in' }, '+=1.5')
+
+// ══════════════════════════════════════════════════════════════════════════
+// CHAPTER 06 — PEOPLE  (44 – 52s)
+// ══════════════════════════════════════════════════════════════════════════
+  .addLabel('ch06')
+  .call(() => setChLabel('CH.06 — PEOPLE'))
+  .to('#ch06', { autoAlpha: 1, duration: 0 })
+  .to('#ch06label', { attr: { opacity: 1 }, duration: 0.5 }, '+=0.3')
+  .to('#evacHeader', { autoAlpha: 1, duration: 0.5 })
+  // Building floor plan
+  .to('#evac-building', { attr: { opacity: 1 }, duration: 0.7, ease: 'power2.out' }, '+=0.3')
+  // Person icons stagger in
+  .to('#person-icons', { attr: { opacity: 1 }, duration: 0.3 }, '+=0.4')
+  .to('.person-icon', { opacity: 1, duration: 0.2, stagger: { each: 0.08, from: 'random' } })
+  // Evacuation routes draw
+  .to('#evac-routes', { attr: { opacity: 1 }, duration: 0.3 }, '+=0.4')
+  // Route paths animate
+  .call(() => {
+    document.querySelectorAll('#evac-routes path').forEach((p, i) => {
+      const len = p.getTotalLength ? p.getTotalLength() : 400;
+      gsap.set(p, { strokeDasharray: len, strokeDashoffset: len });
+      gsap.to(p, { strokeDashoffset: 0, duration: 1.2, delay: i * 0.2, ease: 'power2.inOut' });
+    });
+  })
+  .to('#ch06', { autoAlpha: 0, duration: 0.7, ease: 'power2.in' }, '+=2.0')
+
+// ══════════════════════════════════════════════════════════════════════════
+// CHAPTER 07 — COST  (52 – 61s)
+// ══════════════════════════════════════════════════════════════════════════
+  .addLabel('ch07')
+  .call(() => setChLabel('CH.07 — COST'))
+  .to('#ch07', { autoAlpha: 1, duration: 0 })
+  // Archive flying in
+  .to(['#af1','#af2','#af3','#af4','#af5','#af6'], { autoAlpha: 1, duration: 0.3, stagger: { each: 0.12, from: 'random' } }, '+=0.3')
+  // Cost chain reveals
+  .to('#costChain', { autoAlpha: 1, duration: 0.3 }, '+=0.4')
+  .to('#cc1', { autoAlpha: 1, y: 0, duration: 0.6, ease: 'back.out(1.4)' })
+  .to('#ca1', { autoAlpha: 1, duration: 0.3 }, '+=0.3')
+  .to('#cc2', { autoAlpha: 1, y: 0, duration: 0.6, ease: 'back.out(1.4)' }, '+=0.2')
+  .to('#ca2', { autoAlpha: 1, duration: 0.3 }, '+=0.3')
+  // 73 FAMILIES — big reveal
+  .to('#cc3', { autoAlpha: 1, y: 0, duration: 0.8, ease: 'back.out(1.6)' }, '+=0.3')
+  // Archive fades out, number stays
+  .to(['#af1','#af2','#af3','#af4','#af5','#af6'], { autoAlpha: 0, duration: 0.5 }, '+=0.8')
+  .to('#ch07', { autoAlpha: 0, duration: 0.7, ease: 'power2.in' }, '+=1.5')
+
+// ══════════════════════════════════════════════════════════════════════════
+// CHAPTER 08 — COLLAPSE  (61 – 70s)
+// ══════════════════════════════════════════════════════════════════════════
+  .addLabel('ch08')
+  .call(() => setChLabel('CH.08 — COLLAPSE'))
+  .to('#ch08', { autoAlpha: 1, duration: 0 })
+  // Archive pieces appear
+  .to('.burn-piece', { autoAlpha: 1, duration: 0.4, stagger: { each: 0.15 }, ease: 'power2.out' }, '+=0.3')
+  // Burn overlay intensifies
+  .to('#burnOverlay', { autoAlpha: 1, background: 'radial-gradient(ellipse at center, rgba(200,0,30,0.15) 0%, rgba(100,10,0,0.3) 50%, rgba(200,0,30,0.1) 100%)', duration: 1.5 }, '+=0.5')
+  // Pieces fade/burn away
+  .to('.burn-piece', { autoAlpha: 0, y: 20, rotation: 'random(-8, 8)', duration: 0.6, stagger: { each: 0.2, from: 'random' }, ease: 'power2.in' }, '+=0.8')
+  // Background chars to black
+  .to('#collapse-bg', { background: var => '#0a0a08', duration: 1.5, ease: 'power2.inOut' }, '+=0.2')
+  .to('#burnOverlay', { autoAlpha: 0, duration: 0.8 }, '+=0.3')
+  // Single cigarette appears
+  .to('#finalCig', { autoAlpha: 1, duration: 0.8, ease: 'power3.out' }, '+=0.5')
+  // Hold
+  .to('#ch08', { autoAlpha: 0, duration: 0.8, ease: 'power2.in' }, '+=2.0')
+
+// ══════════════════════════════════════════════════════════════════════════
+// CHAPTER 09 — ENDING  (70 – 83s)
+// ══════════════════════════════════════════════════════════════════════════
+  .addLabel('ch09')
+  .call(() => setChLabel(''))
+  .to('#ch09', { autoAlpha: 1, duration: 0 })
+  // Period / small dot appears
+  .to('#endingPeriod', { autoAlpha: 1, scale: 1, duration: 0.5, ease: 'back.out(1.8)' }, '+=0.8')
+  // Expands... then becomes part of text
+  .to('#endingPeriod', { scale: 80, autoAlpha: 0, duration: 1.2, ease: 'power4.in' }, '+=1.0')
+  // Main text fades in
+  .to('#endingLine1', { autoAlpha: 1, y: 0, duration: 1.0, ease: 'power3.out' }, '+=0.3')
+  // Rule draws
+  .to('#endingRule', { width: '400px', duration: 0.8, ease: 'power2.inOut' }, '+=1.5')
+  // Sub text
+  .to('#endingLine2', { autoAlpha: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '+=0.5')
+  // Final hold
+  .to({}, { duration: 3.0 });
+
+// ─── INIT POSITIONS ────────────────────────────────────────────────────────
+gsap.set('.doc-card', { y: 20 });
+gsap.set('.drop-title', { x: 30 });
+gsap.set('.heat-annotation', { x: 30 });
+gsap.set('#tempDisplay', { y: 10 });
+gsap.set('.sw-word', { x: -30 });
+gsap.set('#sl1, #sl2, #sl3', { scaleX: 0, transformOrigin: 'left' });
+gsap.set('#bh1, #bh2, #bh3', { scale: 0 });
+gsap.set('.cc-item', { y: 20 });
+gsap.set('#endingLine1', { y: 20 });
+gsap.set('#endingLine2', { y: 20 });
+
+// Scale stage to fit viewport
+function scaleStage() {
+  const stage = document.getElementById('stage');
+  const wrapper = document.getElementById('stage-wrapper');
+  const scaleX = wrapper.clientWidth / 1280;
+  const scaleY = wrapper.clientHeight / 720;
+  const scale = Math.min(scaleX, scaleY);
+  stage.style.transform = `scale(${scale})`;
+  stage.style.transformOrigin = 'center center';
+}
+scaleStage();
+window.addEventListener('resize', scaleStage);
+
+// Controls
+document.getElementById('btnPlay').addEventListener('click', () => {
+  if (tl.paused()) {
+    tl.play();
+    document.getElementById('btnPlay').textContent = '⏸ PAUSE';
+  } else {
+    tl.pause();
+    document.getElementById('btnPlay').textContent = '▶ PLAY';
+  }
+});
+document.getElementById('btnReset').addEventListener('click', () => {
+  tl.pause().seek(0);
+  document.getElementById('btnPlay').textContent = '▶ PLAY';
+  // reset heat grid
+  document.querySelectorAll('.heat-cell').forEach(c => c.style.background = 'transparent');
+  document.getElementById('progress-fill').style.width = '0%';
+});
+</script>
+</body>
+</html>
