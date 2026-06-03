@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>CONTROL FAILURE</title>
+<script src="node_modules/gsap/dist/gsap.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   COLOR SYSTEM — 4 PHASE ESCALATION
+   Phase 1: Ivory / Warm Grey / Graphite   → ORDER
+   Phase 2: Safety Orange #E85C00          → ANOMALY
+   Phase 3: Toxic Orange  #FF3500          → INFECTION
+   Phase 4: Burning Crimson #940018        → COLLAPSE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+:root{
+  --iv:  #F3EFE4;   /* ivory */
+  --wg:  #8C8780;   /* warm grey */
+  --gr:  #18180F;   /* graphite */
+  --os:  #E85C00;   /* safety orange */
+  --ot:  #FF3500;   /* toxic orange */
+  --cr:  #940018;   /* burning crimson */
+}
+
+html,body{width:100%;height:100%;background:#0c0c0c;overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;}
+#wrap{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;}
+#stage{position:relative;width:1280px;height:720px;overflow:hidden;background:var(--iv);}
+.layer{position:absolute;inset:0;opacity:0;pointer-events:none;}
+
+/* ━━━ CH01 PERFECT SYSTEM ━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#ch01{background:var(--iv);}
+
+/* Horizontal rhythm bands */
+.band{position:absolute;left:64px;right:64px;background:var(--wg);transform-origin:left;opacity:0;}
+#band1{top:64px; height:2px;}
+#band2{top:68px; height:80px; opacity:0; background:var(--wg);}
+#band3{top:200px;height:1px;background:var(--gr);}
+#band4{top:300px;height:40px;}
+#band5{top:380px;height:1px;background:var(--gr);}
+#band6{top:460px;height:100px;}
+#band7{top:654px;height:2px;background:var(--gr);}
+
+/* Left vertical rule */
+.v-rule{position:absolute;top:64px;bottom:64px;width:1px;background:var(--gr);
+  opacity:.18;transform-origin:top;transform:scaleY(0);}
+#vr1{left:64px;}
+#vr2{left:320px;opacity:.08;}
+#vr3{right:64px;opacity:.08;}
+
+/* Main title — bleed scale Helvetica */
+#c1-title{
+  position:absolute;left:64px;bottom:80px;
+  font-size:196px;font-weight:900;letter-spacing:-.05em;
+  text-transform:uppercase;color:var(--gr);line-height:.85;
+  opacity:0;
+}
+/* Metadata right column */
+#c1-meta{
+  position:absolute;right:64px;top:80px;
+  font-size:10px;font-weight:700;letter-spacing:.35em;
+  text-transform:uppercase;color:var(--wg);
+  writing-mode:vertical-rl;line-height:1;
+  opacity:0;
+}
+/* Chapter label top-left */
+#c1-label{
+  position:absolute;left:64px;top:72px;
+  font-size:10px;font-weight:700;letter-spacing:.4em;
+  text-transform:uppercase;color:var(--wg);
+  opacity:0;
+}
+/* Sub-number */
+#c1-num{
+  position:absolute;right:64px;bottom:64px;
+  font-size:200px;font-weight:900;letter-spacing:-.05em;
+  color:rgba(24,24,15,.04);line-height:1;
+  opacity:0;
+}
+
+/* ━━━ CH02 SMALL ERROR ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#ch02{background:var(--iv);}
+
+#c2-ghost{
+  position:absolute;left:64px;bottom:80px;
+  font-size:196px;font-weight:900;letter-spacing:-.05em;
+  text-transform:uppercase;color:var(--gr);line-height:.85;opacity:.05;
+}
+/* Ghost bands */
+.g-band{position:absolute;left:64px;right:64px;background:var(--wg);opacity:.15;}
+
+#c2-dot{
+  position:absolute;width:10px;height:10px;border-radius:50%;
+  background:var(--os);
+  left:640px;top:360px;transform:translate(-50%,-50%);
+  opacity:0;
+}
+#c2-ann{
+  position:absolute;left:64px;bottom:64px;
+  font-size:10px;font-weight:700;letter-spacing:.4em;
+  text-transform:uppercase;color:var(--gr);opacity:0;line-height:2.2;
+}
+/* Coordinate lines to dot */
+#c2-hline{
+  position:absolute;left:64px;right:64px;height:1px;top:360px;
+  background:var(--os);opacity:0;transform-origin:left;transform:scaleX(0);
+}
+#c2-vline{
+  position:absolute;top:64px;bottom:64px;width:1px;left:640px;
+  background:var(--os);opacity:0;transform-origin:top;transform:scaleY(0);
+}
+
+/* ━━━ CH03 SYSTEM RESPONSE ━━━━━━━━━━━━━━━━━━━━━━━━ */
+#ch03{background:var(--iv);}
+
+#c3-word{
+  position:absolute;left:64px;bottom:80px;
+  font-size:196px;font-weight:900;letter-spacing:-.05em;
+  text-transform:uppercase;color:var(--gr);line-height:.85;
+  opacity:0;
+}
+/* Correction status text */
+#c3-status{
+  position:absolute;left:64px;top:72px;
+  font-size:10px;font-weight:700;letter-spacing:.4em;
+  text-transform:uppercase;color:var(--gr);opacity:0;
+}
+/* Drifting rule lines */
+.d-rule{position:absolute;left:0;right:0;height:1px;background:var(--os);opacity:0;}
+#dr1{top:200px;} #dr2{top:380px;} #dr3{top:560px;}
+/* Orange growing block - threat materializing */
+#c3-threat{
+  position:absolute;left:0;bottom:0;width:0;height:4px;
+  background:var(--os);
+}
+/* Error counter */
+#c3-err{
+  position:absolute;right:64px;top:72px;
+  font-size:10px;font-weight:700;letter-spacing:.35em;
+  text-transform:uppercase;color:var(--os);opacity:0;line-height:2.2;
+}
+
+/* ━━━ CH04 INFECTION ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#ch04{background:var(--iv);}
+
+/* Canvas for deterministic SAFE grid */
+#c4-canvas{position:absolute;inset:0;}
+
+/* Orange flood overlay */
+#c4-flood{
+  position:absolute;left:0;right:0;bottom:0;height:0;
+  background:var(--ot);
+}
+/* SAFE giant — background */
+#c4-giant{
+  position:absolute;
+  font-size:360px;font-weight:900;letter-spacing:-.06em;
+  text-transform:uppercase;color:rgba(24,24,15,.04);
+  left:50%;top:50%;transform:translate(-50%,-50%);
+  white-space:nowrap;opacity:0;
+}
+/* Chapter status */
+#c4-status{
+  position:absolute;left:64px;top:72px;
+  font-size:10px;font-weight:700;letter-spacing:.4em;
+  text-transform:uppercase;color:var(--os);opacity:0;
+}
+
+/* ━━━ CH05 ERASURE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#ch05{background:var(--gr);}
+
+.ew{
+  position:absolute;left:64px;
+  font-size:108px;font-weight:900;letter-spacing:-.04em;
+  text-transform:uppercase;color:var(--iv);line-height:1;
+  opacity:0;overflow:hidden;white-space:nowrap;
+}
+#ew1{top:60px;} #ew2{top:180px;} #ew3{top:300px;} #ew4{top:420px;} #ew5{top:540px;}
+
+/* Right side — erasure log */
+#c5-log{
+  position:absolute;right:64px;top:64px;
+  font-size:10px;font-weight:700;letter-spacing:.3em;
+  text-transform:uppercase;color:rgba(243,239,228,.18);
+  line-height:2.8;opacity:0;text-align:right;
+}
+/* Crimson deletion indicator */
+#c5-del{
+  position:absolute;left:0;right:0;height:2px;
+  background:var(--cr);opacity:0;
+}
+
+/* ━━━ CH06 TOTAL FAILURE ━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#ch06{background:var(--gr);}
+
+/* Color strobe fields */
+.cfield{position:absolute;inset:0;opacity:0;}
+#cf-os{background:var(--os);}
+#cf-ot{background:var(--ot);}
+#cf-cr{background:var(--cr);}
+#cf-iv{background:var(--iv);}
+
+/* Typography collision blocks */
+.tf{
+  position:absolute;font-weight:900;text-transform:uppercase;
+  letter-spacing:-.04em;line-height:.85;
+  opacity:0;
+}
+/* Block 1: MISS — massive, top-left, ivory */
+#tf1{font-size:280px;color:var(--iv);left:-20px;top:-10px;}
+/* Block 2: ING — continues, offset */
+#tf2{font-size:280px;color:var(--os);left:480px;top:230px;}
+/* Block 3: LOST — graphite on field */
+#tf3{font-size:160px;color:var(--iv);right:64px;bottom:120px;}
+/* Block 4: GONE — vertical, rotated */
+#tf4{
+  font-size:120px;color:var(--cr);
+  left:64px;top:50%;transform:translateY(-50%) rotate(-90deg);
+  transform-origin:left center;
+  letter-spacing:.02em;
+}
+/* Block 5: CONTROL — large center, crimson */
+#tf5{font-size:100px;color:var(--ot);left:64px;bottom:64px;letter-spacing:-.02em;}
+/* Block 6: background ghost text */
+#tf6{font-size:400px;color:rgba(255,255,255,.03);left:-40px;top:-60px;letter-spacing:-.06em;}
+/* Block 7: FAILURE small right */
+#tf7{font-size:48px;color:var(--wg);right:64px;top:64px;letter-spacing:.15em;font-weight:400;}
+
+/* ━━━ CH07 SILENCE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#ch07{background:var(--iv);}
+
+#s-dot{
+  position:absolute;width:10px;height:10px;border-radius:50%;
+  background:var(--os);
+  left:640px;top:300px;transform:translate(-50%,-50%);
+  opacity:0;
+}
+/* Horizontal rule under text */
+#s-rule{
+  position:absolute;left:64px;right:64px;height:1px;
+  background:var(--gr);opacity:.2;
+  top:400px;transform-origin:left;transform:scaleX(0);
+}
+#s-line1{
+  position:absolute;left:64px;top:420px;
+  font-size:96px;font-weight:900;letter-spacing:-.04em;
+  text-transform:uppercase;color:var(--gr);line-height:.9;
+  opacity:0;
+}
+#s-line2{
+  position:absolute;left:64px;bottom:80px;
+  font-size:22px;font-weight:700;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--os);
+  opacity:0;
+}
+#s-credit{
+  position:absolute;right:64px;bottom:64px;
+  font-size:10px;font-weight:700;letter-spacing:.5em;
+  text-transform:uppercase;color:rgba(24,24,15,.25);
+  opacity:0;
+}
+
+/* ━━━ PROGRESS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#prog{position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--os);z-index:999;}
+
+/* ━━━ CONTROLS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#ctrl{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:9999;}
+.btn{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);
+  color:rgba(255,255,255,.55);font-size:10px;letter-spacing:.25em;
+  padding:8px 20px;cursor:pointer;text-transform:uppercase;font-family:Arial,sans-serif;}
+.btn:hover{background:rgba(255,255,255,.14);color:#fff;}
+</style>
+</head>
+<body>
+<div id="wrap"><div id="stage">
+
+<!-- ══ CH01 PERFECT SYSTEM ══════════════════════════ -->
+<div id="ch01" class="layer">
+  <!-- Rhythm bands -->
+  <div class="band" id="band1"></div>
+  <div class="band" id="band2"></div>
+  <div class="band" id="band3"></div>
+  <div class="band" id="band4"></div>
+  <div class="band" id="band5"></div>
+  <div class="band" id="band6"></div>
+  <div class="band" id="band7"></div>
+  <!-- Vertical rules -->
+  <div class="v-rule" id="vr1"></div>
+  <div class="v-rule" id="vr2"></div>
+  <div class="v-rule" id="vr3"></div>
+  <!-- Text elements -->
+  <div id="c1-label">CONTROL FAILURE — CHAPTER 01 — PERFECT SYSTEM</div>
+  <div id="c1-title">CONTROL<br>SYSTEM</div>
+  <div id="c1-meta">STRUCTURE / ALIGNMENT / ORDER / CONTROL / PRECISION / SAFE</div>
+  <div id="c1-num">01</div>
+</div>
+
+<!-- ══ CH02 SMALL ERROR ═════════════════════════════ -->
+<div id="ch02" class="layer">
+  <div id="c2-ghost">CONTROL<br>SYSTEM</div>
+  <div class="g-band" style="top:64px;height:2px;"></div>
+  <div class="g-band" style="top:68px;height:80px;"></div>
+  <div class="g-band" style="top:460px;height:100px;"></div>
+  <div class="g-band" style="top:654px;height:2px;background:var(--gr);"></div>
+  <div id="c2-hline"></div>
+  <div id="c2-vline"></div>
+  <div id="c2-dot"></div>
+  <div id="c2-ann">ANOMALY DETECTED — CASE REF: ERROR-001<br>SYSTEM STATUS: NOMINAL<br>RESPONSE: NONE</div>
+</div>
+
+<!-- ══ CH03 SYSTEM RESPONSE ═════════════════════════ -->
+<div id="ch03" class="layer">
+  <div class="g-band" style="top:64px;height:2px;opacity:.1;"></div>
+  <div class="g-band" style="top:654px;height:2px;opacity:.1;background:var(--gr);"></div>
+  <div class="d-rule" id="dr1"></div>
+  <div class="d-rule" id="dr2"></div>
+  <div class="d-rule" id="dr3"></div>
+  <div id="c3-word">ORDER</div>
+  <div id="c3-status">SYSTEM ACTIVE — CORRECTION IN PROGRESS</div>
+  <div id="c3-err">CORRECTION FAILED<br>RETRY — 01<br>RETRY — 02<br>RETRY — FAILED</div>
+  <div id="c3-threat"></div>
+</div>
+
+<!-- ══ CH04 INFECTION ═══════════════════════════════ -->
+<div id="ch04" class="layer">
+  <div id="c4-giant">SAFE</div>
+  <canvas id="c4-canvas" width="1280" height="720"></canvas>
+  <div id="c4-flood"></div>
+  <div id="c4-status">INFECTION SPREADING — SYSTEM COMPROMISED</div>
+</div>
+
+<!-- ══ CH05 ERASURE ═════════════════════════════════ -->
+<div id="ch05" class="layer">
+  <div class="ew" id="ew1"><span id="ew1t">HOME</span></div>
+  <div class="ew" id="ew2"><span id="ew2t">PHOTO</span></div>
+  <div class="ew" id="ew3"><span id="ew3t">MEMORY</span></div>
+  <div class="ew" id="ew4"><span id="ew4t">FAMILY</span></div>
+  <div class="ew" id="ew5"><span id="ew5t">TIME</span></div>
+  <div id="c5-log">
+    OBJECT 01 · HOME · LOST<br>
+    OBJECT 02 · PHOTO · LOST<br>
+    OBJECT 03 · MEMORY · LOST<br>
+    OBJECT 04 · FAMILY · LOST<br>
+    OBJECT 05 · TIME · LOST
+  </div>
+  <div id="c5-del"></div>
+</div>
+
+<!-- ══ CH06 TOTAL FAILURE ════════════════════════════ -->
+<div id="ch06" class="layer">
+  <div class="cfield" id="cf-os"></div>
+  <div class="cfield" id="cf-ot"></div>
+  <div class="cfield" id="cf-cr"></div>
+  <div class="cfield" id="cf-iv"></div>
+  <div class="tf" id="tf1">MISS<br>ING</div>
+  <div class="tf" id="tf2">ING</div>
+  <div class="tf" id="tf3">LOST</div>
+  <div class="tf" id="tf4">GONE</div>
+  <div class="tf" id="tf5">CONTROL<br>FAILURE</div>
+  <div class="tf" id="tf6">FAIL</div>
+  <div class="tf" id="tf7">EVERY SYSTEM FAILS</div>
+</div>
+
+<!-- ══ CH07 SILENCE ══════════════════════════════════ -->
+<div id="ch07" class="layer">
+  <div id="s-dot"></div>
+  <div id="s-rule"></div>
+  <div id="s-line1">EVERY FIRE<br>STARTS SMALL.</div>
+  <div id="s-line2">DON'T IGNORE IT.</div>
+  <div id="s-credit">CONTROL FAILURE — A FILM ABOUT FIRE PREVENTION</div>
+</div>
+
+<div id="prog"></div>
+</div></div>
+
+<div id="ctrl">
+  <button class="btn" id="btnPlay">▶ PLAY</button>
+  <button class="btn" id="btnReset">↺ RESET</button>
+</div>
+
+<script>
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// SAFE GRID — Deterministic Canvas
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const c4c = document.getElementById('c4-canvas');
+const c4x = c4c.getContext('2d');
+
+const COLS = 14, ROWS = 9;
+const PAD = 56;
+const CW = (1280 - PAD*2) / COLS;
+const CH = (720 - PAD*2) / ROWS;
+
+function drawSafeGrid(t) {
+  c4x.clearRect(0, 0, 1280, 720);
+  const rel = t - 25; // seconds into ch04
+  if (rel < 0 || rel > 15) return;
+
+  const enterProg  = Math.min(1, rel / 3);          // 0→1 over first 3s
+  const holdEnd    = 5;
+  const infStart   = 3, infEnd = 13;
+  const infProg    = Math.max(0, Math.min(1, (rel - infStart) / (infEnd - infStart)));
+
+  const CX = 640, CY = 360;
+  const maxDist = Math.sqrt((640-PAD)**2 + (360-PAD)**2);
+
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const idx = r * COLS + c;
+      const cx = PAD + c * CW + CW / 2;
+      const cy = PAD + r * CH + CH / 2;
+      const dist = Math.sqrt((cx - CX)**2 + (cy - CY)**2) / maxDist;
+
+      // Staggered appearance
+      const appearThresh = idx / (COLS * ROWS) * 0.9;
+      const cellAlpha = Math.max(0, Math.min(1, (enterProg - appearThresh) * 8));
+      if (cellAlpha <= 0) continue;
+
+      // Infection level — radial from center
+      const infLevel = Math.max(0, infProg - dist * 0.7);
+
+      c4x.globalAlpha = cellAlpha;
+
+      if (infLevel > 0.85) {
+        // Fully consumed — orange fill
+        c4x.fillStyle = '#FF3500';
+        c4x.fillRect(cx - CW/2 + 1, cy - CH/2 + 1, CW - 2, CH - 2);
+      } else if (infLevel > 0.6) {
+        // Corrupting — block chars, toxic orange
+        c4x.fillStyle = '#FF3500';
+        c4x.font = `900 ${Math.floor(CH * 0.52)}px Arial`;
+        c4x.textAlign = 'center';
+        c4x.textBaseline = 'middle';
+        c4x.fillText('████', cx, cy);
+      } else if (infLevel > 0.3) {
+        // Degrading — safety orange text
+        c4x.fillStyle = '#E85C00';
+        c4x.font = `900 ${Math.floor(CH * 0.52)}px Arial`;
+        c4x.textAlign = 'center';
+        c4x.textBaseline = 'middle';
+        c4x.fillText('SAFE', cx, cy);
+      } else {
+        // Normal — graphite
+        c4x.fillStyle = `rgba(24,24,15,${0.85 * cellAlpha})`;
+        c4x.font = `900 ${Math.floor(CH * 0.52)}px Arial`;
+        c4x.textAlign = 'center';
+        c4x.textBaseline = 'middle';
+        c4x.fillText('SAFE', cx, cy);
+      }
+    }
+  }
+  c4x.globalAlpha = 1;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// WORD EROSION STATES — block char corruption
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const eroStates = {
+  ew1t: ['HOME',  'H█ME',  'H██E',  '████', ''],
+  ew2t: ['PHOTO', 'PH█TO', 'P████', '█████',''],
+  ew3t: ['MEMORY','MEM██Y','M████Y','██████',''],
+  ew4t: ['FAMILY','F█MILY','F████Y','██████',''],
+  ew5t: ['TIME',  'T█ME',  '████',  '',     ''],
+};
+function setEro(id, stage) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = eroStates[id][stage] ?? '';
+}
+function resetEro() {
+  Object.keys(eroStates).forEach(id => setEro(id, 0));
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// FLASH — no nested tweens, CSS transition only
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function hardCut(color, dur=0) {
+  // For recording: handled by GSAP color fields; no-op flash
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// GSAP MASTER TIMELINE
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const tl = window.tl = gsap.timeline({
+  paused: true,
+  onUpdate: () => {
+    document.getElementById('prog').style.width =
+      (tl.time() / tl.duration() * 100) + '%';
+    drawSafeGrid(tl.time());
+  }
+});
+
+// ══════════════════════════════════════════════════════
+// CH01: PERFECT SYSTEM  0→8s
+// ══════════════════════════════════════════════════════
+tl.addLabel('ch01', 0)
+  .to('#ch01', { autoAlpha:1, duration:0 })
+
+  // Vertical rules draw down — architecture first
+  .to('#vr1', { scaleY:1, duration:.6, ease:'power3.out' }, .1)
+  .to('#vr2', { scaleY:1, duration:.6, ease:'power3.out' }, .2)
+  .to('#vr3', { scaleY:1, duration:.6, ease:'power3.out' }, .25)
+
+  // Bands appear — Swiss rhythm from top down
+  .to('#band1', { autoAlpha:.9, scaleX:1, duration:.4, ease:'power3.out' }, .3)
+  .to('#band7', { autoAlpha:.9, scaleX:1, duration:.4, ease:'power3.out' }, .35)
+  .to('#band2', { autoAlpha:.35, scaleX:1, duration:.5, ease:'power3.out' }, .5)
+  .to('#band3', { autoAlpha:.15, scaleX:1, duration:.4, ease:'power3.out' }, .7)
+  .to('#band4', { autoAlpha:.45, scaleX:1, duration:.5, ease:'power3.out' }, .8)
+  .to('#band5', { autoAlpha:.12, scaleX:1, duration:.4, ease:'power3.out' }, .9)
+  .to('#band6', { autoAlpha:.5,  scaleX:1, duration:.5, ease:'power3.out' }, .95)
+
+  // Label — first
+  .to('#c1-label', { autoAlpha:1, duration:.4 }, .6)
+  .to('#c1-meta',  { autoAlpha:1, duration:.5 }, .8)
+  .to('#c1-num',   { autoAlpha:1, duration:.5 }, 1.0)
+
+  // CONTROL SYSTEM — the authority slam
+  .fromTo('#c1-title',
+    { y:50, autoAlpha:0 },
+    { y:0,  autoAlpha:1, duration:.6, ease:'power4.out' }, 1.0)
+
+  // Bands BREATHE — all together, Swiss synchrony
+  .to(['.band'],
+    { scaleY:.7, duration:1.8, ease:'sine.inOut', yoyo:true, repeat:2, transformOrigin:'center' }, 2.0)
+
+  // Exit — bands retract, type fades last
+  .to(['.band','#vr1','#vr2','#vr3'],
+    { autoAlpha:0, duration:.3 }, 7.3)
+  .to(['#c1-label','#c1-meta','#c1-num'],
+    { autoAlpha:0, duration:.3 }, 7.4)
+  .to('#c1-title',
+    { autoAlpha:0, y:-20, duration:.4, ease:'power2.in' }, 7.4)
+  .to('#ch01', { autoAlpha:0, duration:0 }, 7.8)
+
+// ══════════════════════════════════════════════════════
+// CH02: SMALL ERROR  8→16s
+// ══════════════════════════════════════════════════════
+  .addLabel('ch02', 8)
+  .to('#ch02', { autoAlpha:1, duration:0 }, 8)
+  .to('#c2-ann', { autoAlpha:1, duration:.4 }, 8.5)
+
+  // Coordinate lines draw to the dot — surgical
+  .to('#c2-hline', { scaleX:1, autoAlpha:.5, duration:.8, ease:'power2.inOut' }, 9.5)
+  .to('#c2-vline', { scaleY:1, autoAlpha:.5, duration:.8, ease:'power2.inOut' }, 9.6)
+
+  // The dot — small, certain, dangerous
+  .to('#c2-dot', { autoAlpha:1, duration:.15, ease:'power4.out' }, 10.5)
+
+  // Pulse — it's alive
+  .to('#c2-dot', {
+    scale:1.6, duration:.9, ease:'sine.inOut',
+    yoyo:true, repeat:5
+  }, 10.65)
+
+  // Coordinate lines fade — system ignores it
+  .to(['#c2-hline','#c2-vline'], { autoAlpha:0, duration:.5 }, 13.5)
+
+  .to('#ch02', { autoAlpha:0, duration:.4, ease:'power2.in' }, 15.6)
+
+// ══════════════════════════════════════════════════════
+// CH03: SYSTEM RESPONSE  16→25s
+// ══════════════════════════════════════════════════════
+  .addLabel('ch03', 16)
+  .to('#ch03', { autoAlpha:1, duration:0 }, 16)
+  .to('#c3-status', { autoAlpha:1, duration:.4 }, 16.3)
+
+  // ORDER appears — system tries to reassert
+  .fromTo('#c3-word',
+    { y:40, autoAlpha:0 },
+    { y:0,  autoAlpha:1, duration:.5, ease:'power4.out' }, 16.8)
+
+  // Orange rule lines — threat spreading horizontally
+  .to('#dr1', { autoAlpha:.7, scaleX:1, duration:.6, ease:'power2.inOut' }, 17.5)
+  .to('#dr2', { autoAlpha:.5, scaleX:1, duration:.7, ease:'power2.inOut' }, 18.2)
+  .to('#dr3', { autoAlpha:.4, scaleX:1, duration:.8, ease:'power2.inOut' }, 18.8)
+
+  // ORDER text shifts — losing control
+  .to('#c3-word', { x:8, duration:.1, ease:'none', yoyo:true, repeat:3 }, 19.5)
+  .to('#c3-word', { x:-5, y:3, duration:2, ease:'sine.inOut' }, 20.0)
+
+  // Error message
+  .to('#c3-err', { autoAlpha:1, duration:.4 }, 20.5)
+
+  // Status updates
+  .call(() => {
+    document.getElementById('c3-status').textContent = 'SYSTEM ACTIVE — CORRECTION FAILED';
+  }, null, 21.5)
+  .call(() => {
+    document.getElementById('c3-status').textContent = 'SYSTEM COMPROMISED — CONTAINMENT LOST';
+    document.getElementById('c3-status').style.color = 'var(--os)';
+  }, null, 22.5)
+
+  // Orange threat bar grows
+  .to('#c3-threat', { width:'100%', duration:2.5, ease:'power2.in' }, 21.0)
+
+  .to('#ch03', { autoAlpha:0, duration:.4, ease:'power2.in' }, 24.6)
+
+// ══════════════════════════════════════════════════════
+// CH04: INFECTION  25→40s
+// onUpdate handles canvas drawing automatically
+// ══════════════════════════════════════════════════════
+  .addLabel('ch04', 25)
+  .to('#ch04', { autoAlpha:1, duration:0 }, 25)
+  .to('#c4-giant', { autoAlpha:1, duration:.5 }, 25.5)
+  .to('#c4-status', { autoAlpha:1, duration:.4 }, 26.0)
+
+  // Canvas driven by onUpdate — SAFE grid grows automatically
+
+  // At peak infection, update status
+  .call(() => {
+    document.getElementById('c4-status').textContent = 'CRITICAL — ALL CELLS COMPROMISED';
+    document.getElementById('c4-status').style.color = 'var(--ot)';
+  }, null, 35)
+
+  // Orange flood rises from bottom — final takeover
+  .to('#c4-flood', { height:'100%', duration:2.5, ease:'power2.in' }, 36.5)
+  .to('#c4-giant', { autoAlpha:0, duration:.5 }, 37.5)
+  .to('#ch04', { autoAlpha:0, duration:0 }, 39.8)
+
+// ══════════════════════════════════════════════════════
+// CH05: ERASURE  40→55s  (5 words × 3s each)
+// ══════════════════════════════════════════════════════
+  .addLabel('ch05', 40)
+  .to('#ch05', { autoAlpha:1, duration:0 }, 40)
+  .to('#c5-log', { autoAlpha:1, duration:.4 }, 40.4)
+
+  // All words appear at once — they exist
+  .to('.ew', { autoAlpha:1, x:0, duration:.3, stagger:.06 }, 40.5)
+
+  // ── HOME 41→44s
+  .call(() => setEro('ew1t', 1), null, 41.2)
+  .call(() => setEro('ew1t', 2), null, 42.0)
+  .call(() => setEro('ew1t', 3), null, 42.6)
+  .call(() => setEro('ew1t', 4), null, 43.0)
+  .to('#c5-del', { autoAlpha:1, top:'122px', duration:.3 }, 43.0)
+  .to('#c5-del', { autoAlpha:0, duration:.3 }, 43.5)
+
+  // ── PHOTO 43→46s
+  .call(() => setEro('ew2t', 1), null, 43.5)
+  .call(() => setEro('ew2t', 2), null, 44.2)
+  .call(() => setEro('ew2t', 3), null, 44.8)
+  .call(() => setEro('ew2t', 4), null, 45.2)
+  .to('#c5-del', { autoAlpha:1, top:'242px', duration:.3 }, 45.2)
+  .to('#c5-del', { autoAlpha:0, duration:.3 }, 45.7)
+
+  // ── MEMORY 46→49s
+  .call(() => setEro('ew3t', 1), null, 46.0)
+  .call(() => setEro('ew3t', 2), null, 46.7)
+  .call(() => setEro('ew3t', 3), null, 47.3)
+  .call(() => setEro('ew3t', 4), null, 47.8)
+  .to('#c5-del', { autoAlpha:1, top:'362px', duration:.3 }, 47.8)
+  .to('#c5-del', { autoAlpha:0, duration:.3 }, 48.3)
+
+  // ── FAMILY 48.5→51.5s
+  .call(() => setEro('ew4t', 1), null, 48.8)
+  .call(() => setEro('ew4t', 2), null, 49.5)
+  .call(() => setEro('ew4t', 3), null, 50.0)
+  .call(() => setEro('ew4t', 4), null, 50.5)
+  .to('#c5-del', { autoAlpha:1, top:'482px', duration:.3 }, 50.5)
+  .to('#c5-del', { autoAlpha:0, duration:.3 }, 51.0)
+
+  // ── TIME 51→53s — fastest
+  .call(() => setEro('ew5t', 1), null, 51.5)
+  .call(() => setEro('ew5t', 2), null, 52.0)
+  .call(() => setEro('ew5t', 3), null, 52.4)
+  .to('#c5-del', { autoAlpha:1, top:'602px', duration:.3 }, 52.4)
+  .to('#c5-del', { autoAlpha:0, duration:.3 }, 52.9)
+
+  // Hold — all gone — emptiness
+  .to('#ch05', { autoAlpha:0, duration:.5, ease:'power2.in' }, 54.5)
+
+// ══════════════════════════════════════════════════════
+// CH06: TOTAL FAILURE  55→65s
+// ══════════════════════════════════════════════════════
+  .addLabel('ch06', 55)
+  .to('#ch06', { autoAlpha:1, duration:0 }, 55)
+
+  // Color fields STROBE — the system burning
+  // Pattern: orange → crimson → ivory → orange → dark — hard cuts
+  .to('#cf-os', { autoAlpha:1, duration:.05 }, 55.0)
+  .to('#cf-os', { autoAlpha:0, duration:.05 }, 55.2)
+  .to('#cf-cr', { autoAlpha:1, duration:.05 }, 55.3)
+  .to('#cf-cr', { autoAlpha:0, duration:.05 }, 55.5)
+  .to('#cf-iv', { autoAlpha:1, duration:.05 }, 55.6)
+  .to('#cf-iv', { autoAlpha:0, duration:.05 }, 55.8)
+  .to('#cf-ot', { autoAlpha:1, duration:.05 }, 55.9)
+  .to('#cf-ot', { autoAlpha:0, duration:.05 }, 56.1)
+  .to('#cf-cr', { autoAlpha:1, duration:.05 }, 56.2)
+  .to('#cf-cr', { autoAlpha:0, duration:.3  }, 56.4)
+
+  // Typography collision — blocks slam in
+  .fromTo('#tf6', { autoAlpha:0 }, { autoAlpha:1, duration:.2 }, 55.1)
+  .fromTo('#tf1',
+    { x:-80, autoAlpha:0 },
+    { x:0,   autoAlpha:1, duration:.3, ease:'power4.out' }, 55.5)
+  .fromTo('#tf2',
+    { x:120, autoAlpha:0 },
+    { x:0,   autoAlpha:1, duration:.3, ease:'power4.out' }, 56.0)
+
+  // Second wave — orange field comes back
+  .to('#cf-os', { autoAlpha:1, duration:.06 }, 57.0)
+  .to('#cf-os', { autoAlpha:0, duration:.06 }, 57.15)
+  .to('#cf-iv', { autoAlpha:1, duration:.06 }, 57.2)
+  .to('#cf-iv', { autoAlpha:0, duration:.06 }, 57.35)
+
+  .fromTo('#tf3',
+    { y:60, autoAlpha:0 },
+    { y:0,  autoAlpha:1, duration:.25, ease:'power4.out' }, 57.5)
+  .fromTo('#tf4',
+    { autoAlpha:0, rotate:0 },
+    { autoAlpha:1, rotate:-90, duration:.4, ease:'power3.out' }, 58.0)
+
+  // Third wave — crimson
+  .to('#cf-cr', { autoAlpha:1, duration:.06 }, 59.0)
+  .to('#cf-cr', { autoAlpha:0, duration:.06 }, 59.15)
+  .to('#cf-ot', { autoAlpha:1, duration:.06 }, 59.2)
+  .to('#cf-ot', { autoAlpha:0, duration:.06 }, 59.35)
+
+  .fromTo('#tf5',
+    { y:40, autoAlpha:0 },
+    { y:0,  autoAlpha:1, duration:.35, ease:'power4.out' }, 59.5)
+  .to('#tf7', { autoAlpha:1, duration:.3 }, 60.0)
+
+  // Everything shaking
+  .to(['.tf'],
+    { x:'random(-6,6)', y:'random(-4,4)',
+      duration:.12, ease:'none', repeat:12, yoyo:true }, 60.5)
+
+  // Rapid orange flash sequence — climax
+  .to('#cf-os', { autoAlpha:1, duration:.05 }, 62.0)
+  .to('#cf-os', { autoAlpha:0, duration:.05 }, 62.1)
+  .to('#cf-cr', { autoAlpha:1, duration:.05 }, 62.15)
+  .to('#cf-cr', { autoAlpha:0, duration:.05 }, 62.25)
+  .to('#cf-ot', { autoAlpha:1, duration:.05 }, 62.3)
+  .to('#cf-ot', { autoAlpha:0, duration:.05 }, 62.4)
+  .to('#cf-iv', { autoAlpha:1, duration:.05 }, 62.45)
+  .to('#cf-iv', { autoAlpha:0, duration:.05 }, 62.55)
+  .to('#cf-os', { autoAlpha:1, duration:.05 }, 62.6)
+  .to('#cf-os', { autoAlpha:0, duration:.15 }, 62.7)
+
+  // Words disappear — nothing remains
+  .to(['.tf'], { autoAlpha:0, duration:.2, stagger:.05, ease:'power3.in' }, 63.5)
+
+  .to('#ch06', { autoAlpha:0, duration:.3 }, 64.7)
+
+// ══════════════════════════════════════════════════════
+// CH07: SILENCE  65→72s
+// ══════════════════════════════════════════════════════
+  .addLabel('ch07', 65)
+  .to('#ch07', { autoAlpha:1, duration:0 }, 65)
+
+  // Silence. Pause. White.
+  // The dot — same one from CH02
+  .to('#s-dot', { autoAlpha:1, duration:.3, ease:'power2.out' }, 68.0)
+  .to('#s-dot', {
+    scale:1.5, duration:1.0, ease:'sine.inOut', yoyo:true, repeat:1
+  }, 68.3)
+
+  // Rule draws across
+  .to('#s-rule', { scaleX:1, duration:.8, ease:'power2.inOut' }, 69.0)
+
+  // Text — quiet, certain
+  .fromTo('#s-line1',
+    { autoAlpha:0, y:16 },
+    { autoAlpha:1, y:0, duration:.6, ease:'power3.out' }, 69.5)
+  .to('#s-line2', { autoAlpha:1, duration:.5 }, 70.8)
+  .to('#s-credit', { autoAlpha:1, duration:.5 }, 71.2)
+
+  // Final hold
+  .to({}, { duration:2 })
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// INITIAL STATES
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+gsap.set('.band',   { scaleX:0, transformOrigin:'left' });
+gsap.set('.v-rule', { scaleY:0 });
+gsap.set('#c2-hline',{ scaleX:0, transformOrigin:'left' });
+gsap.set('#c2-vline',{ scaleY:0, transformOrigin:'top' });
+gsap.set(['.d-rule'],{ scaleX:0, transformOrigin:'left' });
+gsap.set('#c3-threat',{ width:0 });
+gsap.set('.ew',     { x:-20 });
+gsap.set('.tf',     { transformOrigin:'left center' });
+gsap.set('#tf4',    { transformOrigin:'left center', rotate:0 });
+gsap.set('#s-rule', { scaleX:0, transformOrigin:'left' });
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// SCALE TO FIT VIEWPORT
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function scaleStage() {
+  const s = Math.min(window.innerWidth/1280, window.innerHeight/720);
+  const st = document.getElementById('stage');
+  st.style.transform = `scale(${s})`;
+  st.style.transformOrigin = 'center center';
+}
+scaleStage();
+window.addEventListener('resize', scaleStage);
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CONTROLS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+document.getElementById('btnPlay').addEventListener('click', () => {
+  if (tl.paused()) {
+    tl.play();
+    document.getElementById('btnPlay').textContent = '⏸ PAUSE';
+  } else {
+    tl.pause();
+    document.getElementById('btnPlay').textContent = '▶ PLAY';
+  }
+});
+document.getElementById('btnReset').addEventListener('click', () => {
+  tl.seek(0).pause();
+  document.getElementById('btnPlay').textContent = '▶ PLAY';
+  document.getElementById('prog').style.width = '0%';
+  resetEro();
+  c4x.clearRect(0,0,1280,720);
+  document.getElementById('c3-status').textContent = 'SYSTEM ACTIVE — CORRECTION IN PROGRESS';
+  document.getElementById('c3-status').style.color = '';
+  document.getElementById('c4-status').textContent = 'INFECTION SPREADING — SYSTEM COMPROMISED';
+  document.getElementById('c4-status').style.color = '';
+});
+</script>
+</body>
+</html>
