@@ -1,0 +1,4 @@
+node_modules/
+frames/
+test_*.png
+gsap.min.js
