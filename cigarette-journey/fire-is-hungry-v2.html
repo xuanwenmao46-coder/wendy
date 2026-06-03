@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>FIRE IS HUNGRY — V2</title>
+<script src="node_modules/gsap/dist/gsap.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ── PALETTE ─────────────────────────────────────────────────────────────
+   PURE WHITE  #FFFFFF
+   DEAD BLACK  #000000
+   VIOLENT RED #E8001C   ← primary weapon
+   ACID YELLOW #FFE600   ← shock accent / collision
+   BLUEPRINT   #001AFF   ← one dramatic moment only
+─────────────────────────────────────────────────────────────────────── */
+:root{
+  --W:#FFFFFF;
+  --B:#000000;
+  --R:#E8001C;
+  --Y:#FFE600;
+  --BL:#001AFF;
+}
+
+html,body{
+  width:100%;height:100%;
+  background:#111;overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif; /* Brutalist — system font */
+}
+#wrap{
+  width:100vw;height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  background:#111;
+}
+#stage{
+  position:relative;width:1280px;height:720px;
+  overflow:hidden;background:var(--W);
+}
+
+/* ── LAYER BASE ─────────────────────────────────────────────────── */
+.layer{position:absolute;inset:0;opacity:0;pointer-events:none;}
+
+/* ── FLASH OVERLAY ───────────────────────────────────────────────── */
+#flash{
+  position:absolute;inset:0;z-index:900;
+  background:var(--W);opacity:0;pointer-events:none;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   CH01 — ORDER   pure white ground, Swiss discipline
+══════════════════════════════════════════════════════════════════ */
+#ch01{background:var(--W);}
+
+/* Giant bleed type */
+#o-ORDER{
+  position:absolute;
+  font-size:220px;font-weight:900;line-height:.85;
+  letter-spacing:-.05em;text-transform:uppercase;
+  color:var(--B);
+  left:-8px;top:60px;
+  opacity:0;
+}
+/* Thin contrast companion */
+#o-SYSTEM{
+  position:absolute;
+  font-size:13px;font-weight:400;letter-spacing:.4em;
+  text-transform:uppercase;color:var(--B);
+  right:48px;top:68px;
+  opacity:0;writing-mode:vertical-rl;
+  line-height:1.6;
+}
+/* Horizontal rules — Swiss grid skeleton */
+.r{position:absolute;left:0;right:0;height:1px;background:var(--B);
+   transform-origin:left;transform:scaleX(0);}
+.r1{top:56px;} .r2{top:642px;} .r3{top:348px;opacity:.18;}
+
+/* ORDER word column — stacked small type */
+#o-stack{
+  position:absolute;left:48px;bottom:64px;
+  font-size:12px;font-weight:400;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--B);opacity:.5;
+  line-height:2.2;
+  opacity:0;
+}
+/* Red underline accent — thin */
+#o-accent{
+  position:absolute;left:0;bottom:0;width:0;height:4px;
+  background:var(--R);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   CH02 — ANOMALY
+══════════════════════════════════════════════════════════════════ */
+#ch02{background:var(--W);}
+
+/* Faint ghost of ORDER */
+#a-ghost{
+  position:absolute;font-size:220px;font-weight:900;
+  letter-spacing:-.05em;text-transform:uppercase;
+  color:var(--B);opacity:.04;
+  left:-8px;top:60px;
+}
+/* Dot */
+#a-dot{
+  position:absolute;width:10px;height:10px;border-radius:50%;
+  background:var(--R);left:640px;top:360px;
+  transform:translate(-50%,-50%);
+  opacity:0;
+}
+/* Annotation */
+#a-ann{
+  position:absolute;
+  font-size:11px;font-weight:700;letter-spacing:.35em;
+  text-transform:uppercase;color:var(--B);
+  left:48px;bottom:80px;
+  opacity:0;
+  line-height:2;
+}
+/* Tiny vertical label right */
+#a-right{
+  position:absolute;right:48px;top:50%;transform:translateY(-50%);
+  font-size:10px;font-weight:400;letter-spacing:.3em;color:rgba(0,0,0,.3);
+  text-transform:uppercase;writing-mode:vertical-rl;
+  opacity:0;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   CH03 — SPREAD   acid yellow invades
+══════════════════════════════════════════════════════════════════ */
+#ch03{background:var(--W);}
+
+/* Yellow bleed block — grows from left */
+#sp-yblock{
+  position:absolute;left:0;top:0;bottom:0;width:0;
+  background:var(--Y);
+  z-index:0;
+}
+/* Black bleed type on yellow */
+#sp-SPREAD{
+  position:absolute;z-index:2;
+  font-size:192px;font-weight:900;letter-spacing:-.05em;
+  text-transform:uppercase;color:var(--B);
+  left:-6px;top:160px;line-height:.85;
+  opacity:0;
+}
+/* Red collision word — crashes from right */
+#sp-CHAIN{
+  position:absolute;z-index:3;
+  font-size:192px;font-weight:900;letter-spacing:-.05em;
+  text-transform:uppercase;color:var(--R);
+  right:-6px;top:360px;line-height:.85;
+  opacity:0;
+}
+/* Contact counter — micro data */
+#sp-count{
+  position:absolute;z-index:4;right:48px;bottom:64px;
+  font-size:11px;font-weight:700;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--B);
+  opacity:0;line-height:2.2;
+}
+/* Dot replication cloud */
+#sp-canvas{position:absolute;inset:0;z-index:1;}
+
+/* ══════════════════════════════════════════════════════════════════
+   CH04 — CONSUMPTION   black takeover + word erasure
+══════════════════════════════════════════════════════════════════ */
+#ch04{background:var(--B);}
+
+/* Red eating bar — vertical, grows from bottom */
+#con-bar{
+  position:absolute;left:0;bottom:0;right:0;height:0;
+  background:var(--R);z-index:0;
+}
+/* Words grid — white on black */
+.cword{
+  position:absolute;z-index:2;
+  font-size:88px;font-weight:900;letter-spacing:-.03em;
+  text-transform:uppercase;color:var(--W);
+  line-height:1;
+  opacity:0;
+}
+#cw1{left:48px;top:68px;}
+#cw2{left:48px;top:186px;}
+#cw3{left:48px;top:304px;}
+#cw4{left:48px;top:422px;}
+#cw5{left:48px;top:540px;}
+
+/* The right column — destruction counter */
+#con-counter{
+  position:absolute;right:48px;top:50%;transform:translateY(-50%);
+  font-size:160px;font-weight:900;letter-spacing:-.04em;
+  color:var(--R);z-index:2;opacity:0;line-height:1;
+  text-align:right;
+}
+#con-label{
+  position:absolute;right:48px;bottom:64px;
+  font-size:11px;font-weight:700;letter-spacing:.3em;
+  text-transform:uppercase;color:rgba(255,255,255,.25);
+  z-index:2;opacity:0;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   CH05 — COLLAPSE   violent mosaic / total inversion
+══════════════════════════════════════════════════════════════════ */
+#ch05{background:var(--B);}
+
+/* Mosaic blocks — overlapping, clashing */
+.blk{position:absolute;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.blk-txt{font-weight:900;text-transform:uppercase;letter-spacing:-.03em;line-height:1;}
+
+/* Layout: think Bloomberg Businessweek — aggressive grid */
+#b0{left:0;top:0;width:640px;height:360px;background:var(--R);}
+#b0 .blk-txt{font-size:108px;color:var(--W);}
+
+#b1{left:640px;top:0;width:320px;height:180px;background:var(--Y);}
+#b1 .blk-txt{font-size:52px;color:var(--B);}
+
+#b2{left:960px;top:0;width:320px;height:360px;background:var(--W);}
+#b2 .blk-txt{font-size:52px;color:var(--B);}
+
+#b3{left:640px;top:180px;width:320px;height:180px;background:var(--B);}
+#b3 .blk-txt{font-size:52px;color:var(--W);}
+
+#b4{left:0;top:360px;width:320px;height:360px;background:var(--Y);}
+#b4 .blk-txt{font-size:72px;color:var(--B);}
+
+#b5{left:320px;top:360px;width:640px;height:180px;background:var(--B);}
+#b5 .blk-txt{font-size:88px;color:var(--R);}
+
+#b6{left:320px;top:540px;width:320px;height:180px;background:var(--R);}
+#b6 .blk-txt{font-size:36px;color:var(--Y);letter-spacing:.1em;}
+
+#b7{left:640px;top:360px;width:320px;height:360px;background:var(--W);}
+#b7 .blk-txt{font-size:40px;color:var(--B);letter-spacing:.08em;}
+
+#b8{left:960px;top:360px;width:320px;height:360px;background:var(--BL);}
+#b8 .blk-txt{font-size:80px;color:var(--W);}
+
+/* ══════════════════════════════════════════════════════════════════
+   CH06 — VOID
+══════════════════════════════════════════════════════════════════ */
+#ch06{background:var(--W);}
+#v-dot{
+  position:absolute;width:10px;height:10px;border-radius:50%;
+  background:var(--R);left:640px;top:360px;
+  transform:translate(-50%,-50%);opacity:0;
+}
+/* tiny counter bottom */
+#v-note{
+  position:absolute;bottom:48px;left:50%;transform:translateX(-50%);
+  font-size:10px;font-weight:700;letter-spacing:.4em;color:rgba(0,0,0,.2);
+  text-transform:uppercase;opacity:0;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   CH07 — REALIZATION
+══════════════════════════════════════════════════════════════════ */
+#ch07{background:var(--B);}
+
+/* Expanding red field */
+#r-field{
+  position:absolute;
+  width:10px;height:10px;border-radius:50%;
+  background:var(--R);
+  left:640px;top:360px;
+  transform:translate(-50%,-50%);
+  opacity:0;
+}
+/* Title — white on black, bleed scale */
+#r-title{
+  position:absolute;left:0;right:0;
+  top:50%;transform:translateY(-50%);
+  padding:0 48px;
+  opacity:0;
+}
+#r-t1{
+  font-size:148px;font-weight:900;letter-spacing:-.04em;
+  text-transform:uppercase;color:var(--W);line-height:.88;
+  display:block;
+}
+#r-t2{
+  font-size:148px;font-weight:900;letter-spacing:-.04em;
+  text-transform:uppercase;color:var(--R);line-height:.88;
+  display:block;
+}
+/* Don't ignore — yellow, smaller */
+#r-dont{
+  position:absolute;bottom:0;left:0;right:0;
+  height:80px;background:var(--Y);
+  display:flex;align-items:center;
+  padding:0 48px;
+  opacity:0;
+}
+#r-dont-txt{
+  font-size:40px;font-weight:900;letter-spacing:-.02em;
+  text-transform:uppercase;color:var(--B);
+}
+/* Logo / end marker */
+#r-end{
+  position:absolute;top:48px;right:48px;
+  font-size:10px;font-weight:700;letter-spacing:.5em;
+  text-transform:uppercase;color:rgba(255,255,255,.2);
+  opacity:0;
+}
+
+/* ── PROGRESS ─────────────────────────────────────────────────── */
+#prog{position:absolute;bottom:0;left:0;width:0%;height:3px;background:var(--R);z-index:999;}
+
+/* ── CONTROLS ─────────────────────────────────────────────────── */
+#ctrl{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  display:flex;gap:10px;z-index:9999;
+}
+.btn{
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);
+  color:rgba(255,255,255,.6);font-family:Arial,sans-serif;
+  font-size:10px;letter-spacing:.25em;padding:8px 20px;cursor:pointer;
+  text-transform:uppercase;
+}
+.btn:hover{background:rgba(255,255,255,.15);color:#fff;}
+</style>
+</head>
+<body>
+<div id="wrap"><div id="stage">
+
+<!-- ── FLASH FRAME ── -->
+<div id="flash"></div>
+
+<!-- ══ CH01: ORDER ══════════════════════════════════════════════ -->
+<div id="ch01" class="layer">
+  <div class="r r1" id="r1"></div>
+  <div class="r r2" id="r2"></div>
+  <div class="r r3" id="r3"></div>
+  <div id="o-ORDER">ORDER</div>
+  <div id="o-SYSTEM">SYSTEM / CONTROL / STRUCTURE / SAFE</div>
+  <div id="o-stack">
+    EVERYTHING IN PLACE<br>
+    EVERYTHING UNDER CONTROL<br>
+    NOTHING TO FEAR<br>
+    HOME / FAMILY / MEMORY
+  </div>
+  <div id="o-accent"></div>
+</div>
+
+<!-- ══ CH02: ANOMALY ════════════════════════════════════════════ -->
+<div id="ch02" class="layer">
+  <div id="a-ghost">ORDER</div>
+  <div class="r r1" style="transform:scaleX(1);opacity:.08;"></div>
+  <div class="r r2" style="transform:scaleX(1);opacity:.08;"></div>
+  <div id="a-ann">TOO SMALL TO MATTER<br>IGNORED<br>UNNOTICED</div>
+  <div id="a-right">ONE POINT / ANOMALY / ALIVE</div>
+  <div id="a-dot"></div>
+</div>
+
+<!-- ══ CH03: SPREAD ═════════════════════════════════════════════ -->
+<div id="ch03" class="layer">
+  <canvas id="sp-canvas" width="1280" height="720"></canvas>
+  <div id="sp-yblock"></div>
+  <div id="sp-SPREAD">SPREAD</div>
+  <div id="sp-CHAIN">CHAIN</div>
+  <div id="sp-count">CONTACT — 01<br>TRANSFER — 08<br>REACTION — 47<br>SPREAD — ∞</div>
+</div>
+
+<!-- ══ CH04: CONSUMPTION ════════════════════════════════════════ -->
+<div id="ch04" class="layer">
+  <div id="con-bar"></div>
+  <div class="cword" id="cw1"><span class="ct">HOME</span></div>
+  <div class="cword" id="cw2"><span class="ct">PHOTO</span></div>
+  <div class="cword" id="cw3"><span class="ct">MEMORY</span></div>
+  <div class="cword" id="cw4"><span class="ct">FAMILY</span></div>
+  <div class="cword" id="cw5"><span class="ct">BOOK</span></div>
+  <div id="con-counter">5</div>
+  <div id="con-label">OBJECTS REMAINING</div>
+</div>
+
+<!-- ══ CH05: COLLAPSE ═══════════════════════════════════════════ -->
+<div id="ch05" class="layer">
+  <div class="blk" id="b0"><div class="blk-txt">MISS<br>ING</div></div>
+  <div class="blk" id="b1"><div class="blk-txt">LOST</div></div>
+  <div class="blk" id="b2"><div class="blk-txt">RE<br>MO<br>VED</div></div>
+  <div class="blk" id="b3"><div class="blk-txt">GONE</div></div>
+  <div class="blk" id="b4"><div class="blk-txt">EMP<br>TY</div></div>
+  <div class="blk" id="b5"><div class="blk-txt">EMPTY</div></div>
+  <div class="blk" id="b6"><div class="blk-txt">LOST<br>LOST<br>LOST</div></div>
+  <div class="blk" id="b7"><div class="blk-txt" style="font-size:24px;font-weight:400;letter-spacing:.15em;line-height:2.2;">MISSING<br>LOST<br>REMOVED<br>GONE<br>EMPTY<br>MISSING<br>LOST</div></div>
+  <div class="blk" id="b8"><div class="blk-txt">??</div></div>
+</div>
+
+<!-- ══ CH06: VOID ═══════════════════════════════════════════════ -->
+<div id="ch06" class="layer">
+  <div id="v-dot"></div>
+  <div id="v-note">ONE POINT REMAINS</div>
+</div>
+
+<!-- ══ CH07: REALIZATION ════════════════════════════════════════ -->
+<div id="ch07" class="layer">
+  <div id="r-field"></div>
+  <div id="r-title">
+    <span id="r-t1">EVERY FIRE<br>STARTS</span>
+    <span id="r-t2">SMALL.</span>
+  </div>
+  <div id="r-dont"><div id="r-dont-txt">DON'T IGNORE IT.</div></div>
+  <div id="r-end">FIRE IS HUNGRY</div>
+</div>
+
+<div id="prog"></div>
+</div></div>
+
+<div id="ctrl">
+  <button class="btn" id="btnPlay">▶ PLAY</button>
+  <button class="btn" id="btnReset">↺ RESET</button>
+</div>
+
+<script>
+// ── DOT CANVAS (deterministic) ──────────────────────────────────────────
+const spCanvas = document.getElementById('sp-canvas');
+const spCtx = spCanvas.getContext('2d');
+
+function drawSpread(t) {
+  spCtx.clearRect(0,0,1280,720);
+  if (t < 18 || t > 30) return;
+  const prog = Math.min(1,(t-18)/12);
+  const n = Math.floor(prog * 320);
+  for (let i = 0; i < n; i++) {
+    const s1 = (i*7919+3571)&0x7fffffff;
+    const s2 = (i*6271+1234)&0x7fffffff;
+    const px = 640 + ((s1%1100)-550)*prog;
+    const py = 360 + ((s2%660)-330)*prog;
+    const gen = Math.min(5, Math.floor(i/64));
+    const r = 2.5 + gen*0.8;
+    const alpha = Math.max(0, (0.8-gen*0.12)*Math.min(1,(prog-i/320)*8));
+    if (alpha<=0) continue;
+    spCtx.beginPath();
+    spCtx.arc(px,py,r,0,Math.PI*2);
+    spCtx.fillStyle = `rgba(232,0,28,${alpha})`;
+    spCtx.fill();
+  }
+}
+
+// ── WORD EROSION STATE ──────────────────────────────────────────────────
+const words = ['HOME','PHOTO','MEMORY','FAMILY','BOOK'];
+const eroded = [
+  ['HOME','H_ME','H__','_',''],
+  ['PHOTO','PH_TO','PH_','P_',''],
+  ['MEMORY','MEM__Y','M____','M__',''],
+  ['FAMILY','FAM_LY','F____','F__',''],
+  ['BOOK','B__K','B__','_',''],
+];
+let erodeState = [0,0,0,0,0];
+
+function setErode(idx, state) {
+  erodeState[idx] = state;
+  const el = document.querySelector(`#cw${idx+1} .ct`);
+  if (el) el.textContent = eroded[idx][state] || '';
+}
+
+function resetWords() {
+  erodeState = [0,0,0,0,0];
+  words.forEach((_,i) => {
+    const el = document.querySelector(`#cw${i+1} .ct`);
+    if (el) el.textContent = words[i];
+  });
+}
+
+// ── FLASH HELPER ─────────────────────────────────────────────────────────
+function flash(color='#FFFFFF', dur=0.08) {
+  gsap.set('#flash', { background: color });
+  gsap.to('#flash', { autoAlpha:1, duration:0.02, ease:'none',
+    onComplete:() => gsap.to('#flash',{ autoAlpha:0, duration:dur, ease:'power2.out'}) });
+}
+
+// ── GSAP TIMELINE ────────────────────────────────────────────────────────
+const tl = window.tl = gsap.timeline({ paused:true, onUpdate:()=>{
+  document.getElementById('prog').style.width=(tl.time()/tl.duration()*100)+'%';
+  drawSpread(tl.time());
+}});
+
+// ═══════════════════════════════════════════════════════
+// CH01 — ORDER  0–10s
+// ═══════════════════════════════════════════════════════
+tl.addLabel('ch01',0)
+  .to('#ch01',{autoAlpha:1,duration:0})
+  // Rules slam in — instant authority
+  .to('#r1',{scaleX:1,duration:.3,ease:'power4.out'},0.1)
+  .to('#r2',{scaleX:1,duration:.3,ease:'power4.out'},0.2)
+  .to('#r3',{scaleX:1,duration:.5,ease:'power4.out'},0.3)
+  // ORDER crashes down from top
+  .fromTo('#o-ORDER',{y:-80,autoAlpha:0},{y:0,autoAlpha:1,duration:.5,ease:'power4.out'},0.4)
+  // System tag slides
+  .fromTo('#o-SYSTEM',{autoAlpha:0,x:16},{autoAlpha:1,x:0,duration:.5,ease:'power3.out'},0.9)
+  // Stack fades
+  .to('#o-stack',{autoAlpha:1,duration:.4},1.4)
+  // Red accent grows
+  .to('#o-accent',{width:'100%',duration:1.2,ease:'power3.inOut'},1.8)
+  // Breathe — long hold — Swiss calm
+  // ORDER gets a very subtle scale pulse — alive
+  .to('#o-ORDER',{scaleX:1.004,duration:2,ease:'sine.inOut',yoyo:true,repeat:2},3.0)
+  // Flash out — hard cut
+  .call(()=>flash('#FFFFFF',0.12),null,9.4)
+  .to('#ch01',{autoAlpha:0,duration:0},9.5)
+
+// ═══════════════════════════════════════════════════════
+// CH02 — ANOMALY  10–18s
+// ═══════════════════════════════════════════════════════
+  .addLabel('ch02',10)
+  .to('#ch02',{autoAlpha:1,duration:0},10)
+  .fromTo('#a-ann',{autoAlpha:0,y:8},{autoAlpha:1,y:0,duration:.4,ease:'power3.out'},10.4)
+  .to('#a-right',{autoAlpha:1,duration:.4},10.6)
+  // Dot — tiny, almost invisible, then reveals
+  .to('#a-dot',{autoAlpha:1,duration:.2,ease:'power4.out'},11.5)
+  // Slow pulse — it's alive
+  .to('#a-dot',{scale:1.5,duration:.7,ease:'sine.inOut',yoyo:true,repeat:5},11.7)
+  // Dot drifts slightly — unpredictable
+  .to('#a-dot',{x:12,y:-8,duration:3,ease:'sine.inOut',yoyo:true,repeat:1},13.0)
+  // Flash — alarm
+  .call(()=>flash('#E8001C',0.18),null,17.4)
+  .to('#ch02',{autoAlpha:0,duration:0},17.5)
+
+// ═══════════════════════════════════════════════════════
+// CH03 — SPREAD  18–30s
+// ═══════════════════════════════════════════════════════
+  .addLabel('ch03',18)
+  .to('#ch03',{autoAlpha:1,duration:0},18)
+  // Yellow block SLAMS in from left — acid invasion
+  .fromTo('#sp-yblock',{width:0},{width:'58%',duration:.6,ease:'power4.out'},18.1)
+  // SPREAD slams down on yellow
+  .fromTo('#sp-SPREAD',{y:-100,autoAlpha:0},{y:0,autoAlpha:1,duration:.4,ease:'power4.out'},18.7)
+  // CHAIN crashes in from right — RED vs YELLOW collision
+  .fromTo('#sp-CHAIN',{x:120,autoAlpha:0},{x:0,autoAlpha:1,duration:.4,ease:'power4.out'},19.8)
+  // Counter data appears
+  .to('#sp-count',{autoAlpha:1,duration:.3},20.5)
+  // Yellow block expands further — consuming
+  .to('#sp-yblock',{width:'80%',duration:4,ease:'power1.inOut'},21.0)
+  // CHAIN word moves left — collision intensifies
+  .to('#sp-CHAIN',{x:-40,duration:4,ease:'power1.inOut'},21.0)
+  // Flashes — contamination pulses
+  .call(()=>flash('#FFE600',0.1),null,24.0)
+  .call(()=>flash('#E8001C',0.08),null,25.5)
+  .call(()=>flash('#FFE600',0.1),null,27.0)
+  // Yellow fully takes over
+  .to('#sp-yblock',{width:'100%',duration:.8,ease:'power3.in'},28.2)
+  // Everything vanishes on yellow
+  .to(['#sp-SPREAD','#sp-CHAIN','#sp-count'],{autoAlpha:0,duration:.3},28.8)
+  .call(()=>flash('#FFE600',0.3),null,29.4)
+  .to('#ch03',{autoAlpha:0,duration:0},29.5)
+
+// ═══════════════════════════════════════════════════════
+// CH04 — CONSUMPTION  30–45s
+// ═══════════════════════════════════════════════════════
+  .addLabel('ch04',30)
+  .to('#ch04',{autoAlpha:1,duration:0},30)
+  // Counter appears
+  .to('#con-counter',{autoAlpha:1,duration:.3},30.3)
+  .to('#con-label',{autoAlpha:1,duration:.3},30.5)
+  // All words appear simultaneously
+  .to('.cword',{autoAlpha:1,duration:.3,stagger:.08},30.5)
+  // Red bar grows from bottom — eating upward
+  .to('#con-bar',{height:'100%',duration:12,ease:'power1.in'},31.0)
+  // HOME erodes — 32s
+  .call(()=>setErode(0,1),null,32.0)
+  .call(()=>setErode(0,2),null,32.8)
+  .call(()=>setErode(0,3),null,33.4)
+  .call(()=>{ setErode(0,4); document.getElementById('con-counter').textContent='4'; },null,33.9)
+  // PHOTO — 34s
+  .call(()=>setErode(1,1),null,34.2)
+  .call(()=>setErode(1,2),null,34.8)
+  .call(()=>setErode(1,3),null,35.2)
+  .call(()=>{ setErode(1,4); document.getElementById('con-counter').textContent='3'; },null,35.6)
+  // MEMORY — 36s
+  .call(()=>setErode(2,1),null,36.0)
+  .call(()=>setErode(2,2),null,36.6)
+  .call(()=>setErode(2,3),null,37.0)
+  .call(()=>{ setErode(2,4); document.getElementById('con-counter').textContent='2'; },null,37.4)
+  // FAMILY — 38s
+  .call(()=>setErode(3,1),null,38.0)
+  .call(()=>setErode(3,2),null,38.5)
+  .call(()=>setErode(3,3),null,38.9)
+  .call(()=>{ setErode(3,4); document.getElementById('con-counter').textContent='1'; },null,39.3)
+  // BOOK — last — 40s
+  .call(()=>setErode(4,1),null,40.0)
+  .call(()=>setErode(4,2),null,40.4)
+  .call(()=>setErode(4,3),null,40.7)
+  .call(()=>{ setErode(4,4); document.getElementById('con-counter').textContent='0'; },null,41.0)
+  // Counter blinks on zero
+  .to('#con-counter',{autoAlpha:0,duration:.15,yoyo:true,repeat:5},41.2)
+  // Red fully covers
+  .to('#con-bar',{height:'110%',duration:.6,ease:'power3.in'},42.0)
+  .call(()=>flash('#E8001C',0.5),null,42.8)
+  .to('#ch04',{autoAlpha:0,duration:0},43.0)
+
+// ═══════════════════════════════════════════════════════
+// CH05 — COLLAPSE  43–57s
+// ═══════════════════════════════════════════════════════
+  .addLabel('ch05',43)
+  .to('#ch05',{autoAlpha:1,duration:0},43)
+  // Blocks SLAM in — staggered violent entries
+  .fromTo('#b0',{autoAlpha:0,y:-40},{autoAlpha:1,y:0,duration:.25,ease:'power4.out'},43.1)
+  .fromTo('#b1',{autoAlpha:0,x:40},{autoAlpha:1,x:0,duration:.2,ease:'power4.out'},43.25)
+  .fromTo('#b2',{autoAlpha:0,x:40},{autoAlpha:1,x:0,duration:.2,ease:'power4.out'},43.4)
+  .fromTo('#b3',{autoAlpha:0,y:-20},{autoAlpha:1,y:0,duration:.2,ease:'power4.out'},43.55)
+  .fromTo('#b4',{autoAlpha:0,x:-40},{autoAlpha:1,x:0,duration:.25,ease:'power4.out'},43.7)
+  .fromTo('#b5',{autoAlpha:0,y:40},{autoAlpha:1,y:0,duration:.2,ease:'power4.out'},43.85)
+  .fromTo('#b6',{autoAlpha:0,y:40},{autoAlpha:1,y:0,duration:.2,ease:'power4.out'},44.0)
+  .fromTo('#b7',{autoAlpha:0,x:40},{autoAlpha:1,x:0,duration:.2,ease:'power4.out'},44.15)
+  .fromTo('#b8',{autoAlpha:0,y:40},{autoAlpha:1,y:0,duration:.2,ease:'power4.out'},44.3)
+  // Hold — let the mosaic register — uncomfortable
+  // Then blocks start disappearing — accelerating
+  .to('#b7',{autoAlpha:0,x:60,duration:.25,ease:'power3.in'},47.5)
+  .to('#b1',{autoAlpha:0,y:-40,duration:.2,ease:'power3.in'},48.0)
+  .to('#b3',{autoAlpha:0,y:-30,duration:.2,ease:'power3.in'},48.3)
+  .to('#b6',{autoAlpha:0,y:40,duration:.2,ease:'power3.in'},48.6)
+  .call(()=>flash('#E8001C',0.12),null,49.0)
+  .to('#b2',{autoAlpha:0,x:60,duration:.2,ease:'power3.in'},49.2)
+  .to('#b4',{autoAlpha:0,x:-60,duration:.2,ease:'power3.in'},49.5)
+  .call(()=>flash('#FFE600',0.1),null,50.0)
+  .to('#b5',{autoAlpha:0,y:40,duration:.2,ease:'power3.in'},50.2)
+  .to('#b8',{autoAlpha:0,y:60,duration:.25,ease:'power3.in'},50.6)
+  // b0 and b3 remain — then b0 (MISSING) last
+  .to('#b3',{autoAlpha:0,duration:.15},51.2)
+  .call(()=>flash('#E8001C',0.2),null,51.5)
+  .to('#b0',{autoAlpha:0,scale:.95,duration:.5,ease:'power3.in'},52.0)
+  // Total black
+  .call(()=>flash('#000000',1.5),null,52.6)
+  .to('#ch05',{autoAlpha:0,duration:0},53.0)
+
+// ═══════════════════════════════════════════════════════
+// CH06 — VOID  53–63s
+// ═══════════════════════════════════════════════════════
+  .addLabel('ch06',53)
+  .to('#ch06',{autoAlpha:1,duration:0},53)
+  // Silence. Long hold. White.
+  // Dot appears — same one from ch02
+  .to('#v-dot',{autoAlpha:1,duration:.3,ease:'power2.out'},58.0)
+  .to('#v-note',{autoAlpha:1,duration:.4},58.5)
+  // Dot breathes
+  .to('#v-dot',{scale:1.6,duration:.9,ease:'sine.inOut',yoyo:true,repeat:2},58.3)
+  .to('#ch06',{autoAlpha:0,duration:0},63.0)
+
+// ═══════════════════════════════════════════════════════
+// CH07 — REALIZATION  63–75s
+// ═══════════════════════════════════════════════════════
+  .addLabel('ch07',63)
+  .to('#ch07',{autoAlpha:1,duration:0},63)
+  // Dot visible — same 10px
+  .to('#r-field',{autoAlpha:1,duration:0},63.0)
+  // EXPLODES — fills screen RED
+  .to('#r-field',{
+    width:'2400px',height:'2400px',
+    borderRadius:'50%',
+    x:'-50%',y:'-50%',
+    duration:1.0,ease:'power3.in'
+  },63.1)
+  .to('#r-field',{autoAlpha:0,duration:.15},64.0)
+  // Black screen — EVERY FIRE
+  .fromTo('#r-title',{autoAlpha:0,y:24},{autoAlpha:1,y:0,duration:.6,ease:'power3.out'},64.2)
+  .to('#r-end',{autoAlpha:1,duration:.3},65.0)
+  // DON'T IGNORE IT — yellow bar slams up from bottom
+  .fromTo('#r-dont',{y:80,autoAlpha:0},{y:0,autoAlpha:1,duration:.4,ease:'power4.out'},68.5)
+  // Hold
+  .to({},{ duration:4 })
+
+// ── INIT STATES ─────────────────────────────────────────────────────────
+gsap.set(['.r'],{ scaleX:0 });
+gsap.set(['#o-ORDER','#o-SYSTEM','#o-stack'],{ autoAlpha:0 });
+gsap.set('#o-accent',{ width:0 });
+gsap.set(['#a-ann','#a-right','#a-dot'],{ autoAlpha:0 });
+gsap.set(['#sp-SPREAD','#sp-CHAIN','#sp-count'],{ autoAlpha:0 });
+gsap.set(['#sp-yblock'],{ width:0 });
+gsap.set(['.cword','#con-counter','#con-label'],{ autoAlpha:0 });
+gsap.set('#con-bar',{ height:0 });
+gsap.set('.blk',{ autoAlpha:0 });
+gsap.set(['#v-dot','#v-note'],{ autoAlpha:0 });
+gsap.set('#r-field',{ autoAlpha:0, width:'10px', height:'10px', borderRadius:'50%' });
+gsap.set(['#r-title','#r-dont','#r-end'],{ autoAlpha:0 });
+gsap.set('#r-dont',{ y:80 });
+
+// ── SCALE ────────────────────────────────────────────────────────────────
+function scale(){
+  const s=Math.min(window.innerWidth/1280,window.innerHeight/720);
+  document.getElementById('stage').style.cssText +=
+    `;transform:scale(${s});transform-origin:center center`;
+}
+scale(); window.addEventListener('resize',scale);
+
+// ── CONTROLS ─────────────────────────────────────────────────────────────
+document.getElementById('btnPlay').addEventListener('click',()=>{
+  if(tl.paused()){tl.play();document.getElementById('btnPlay').textContent='⏸ PAUSE';}
+  else{tl.pause();document.getElementById('btnPlay').textContent='▶ PLAY';}
+});
+document.getElementById('btnReset').addEventListener('click',()=>{
+  tl.seek(0).pause();
+  document.getElementById('btnPlay').textContent='▶ PLAY';
+  document.getElementById('prog').style.width='0%';
+  resetWords();
+  document.getElementById('con-counter').textContent='5';
+  spCtx.clearRect(0,0,1280,720);
+  // reset r-field
+  gsap.set('#r-field',{autoAlpha:0,width:'10px',height:'10px',borderRadius:'50%',x:0,y:0});
+});
+</script>
+</body>
+</html>
