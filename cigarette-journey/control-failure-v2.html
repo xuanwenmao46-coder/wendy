@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>CONTROL FAILURE — MAXIMUM</title>
+<script src="node_modules/gsap/dist/gsap.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:  #080808;
+  --bone: #F0EDE5;
+  --acid: #DEFF0A;
+  --volt: #0033FF;
+  --rage: #FF3300;
+  --crim: #9A0014;
+  --gold: #F5A800;
+}
+html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:Arial,Helvetica,sans-serif;}
+#wrap{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;}
+#stage{position:relative;width:1280px;height:720px;overflow:hidden;background:var(--ink);}
+.layer{position:absolute;inset:0;opacity:0;pointer-events:none;}
+
+/* Scan lines */
+#scanlines{position:absolute;inset:0;z-index:500;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent 0px,transparent 3px,rgba(0,0,0,.13) 3px,rgba(0,0,0,.13) 4px);
+  opacity:.5;}
+#grain{position:absolute;inset:0;z-index:499;pointer-events:none;opacity:.35;mix-blend-mode:overlay;}
+
+/* ── CH01 ── */
+#ch01{background:var(--ink);}
+.ag{position:absolute;background:var(--acid);opacity:0;}
+#ag1{left:0;right:0;height:1px;top:64px;}
+#ag2{left:0;right:0;height:1px;bottom:64px;}
+#ag3{left:64px;top:0;bottom:0;width:1px;}
+#ag4{right:64px;top:0;bottom:0;width:1px;}
+#ag5{left:0;right:0;height:1px;top:360px;}
+#c1-num{position:absolute;right:-50px;top:-40px;font-size:520px;font-weight:900;
+  letter-spacing:-.08em;color:rgba(222,255,10,.05);line-height:1;opacity:0;}
+#c1-shadow{position:absolute;left:56px;bottom:68px;font-size:220px;font-weight:900;
+  letter-spacing:-.06em;text-transform:uppercase;color:var(--acid);line-height:.82;opacity:0;white-space:nowrap;}
+#c1-title{position:absolute;left:48px;bottom:64px;font-size:220px;font-weight:900;
+  letter-spacing:-.06em;text-transform:uppercase;color:var(--bone);line-height:.82;opacity:0;white-space:nowrap;}
+#c1-label{position:absolute;left:80px;top:78px;font-size:9px;font-weight:700;
+  letter-spacing:.55em;text-transform:uppercase;color:var(--acid);opacity:0;}
+#c1-meta{position:absolute;right:80px;top:80px;font-size:8px;font-weight:700;
+  letter-spacing:.35em;text-transform:uppercase;color:rgba(222,255,10,.38);
+  writing-mode:vertical-rl;opacity:0;}
+
+/* ── CH02 ── */
+#ch02{background:var(--ink);}
+#c2-ghost{position:absolute;left:48px;bottom:64px;font-size:220px;font-weight:900;
+  letter-spacing:-.06em;text-transform:uppercase;color:var(--bone);line-height:.82;opacity:.04;}
+#c2-sq{position:absolute;width:48px;height:48px;left:616px;top:336px;
+  border:2px solid var(--volt);opacity:0;}
+#c2-ring{position:absolute;width:48px;height:48px;left:616px;top:336px;
+  border:1px solid var(--volt);border-radius:50%;opacity:0;}
+#c2-hline{position:absolute;left:0;right:0;height:1px;top:360px;
+  background:var(--volt);opacity:0;transform-origin:left;transform:scaleX(0);}
+#c2-vline{position:absolute;top:0;bottom:0;width:1px;left:640px;
+  background:var(--volt);opacity:0;transform-origin:top;transform:scaleY(0);}
+#c2-coords{position:absolute;left:80px;top:80px;font-size:9px;font-weight:700;
+  letter-spacing:.38em;text-transform:uppercase;color:var(--volt);line-height:2.4;opacity:0;}
+#c2-ann{position:absolute;right:80px;bottom:80px;font-size:9px;font-weight:700;
+  letter-spacing:.38em;text-transform:uppercase;color:var(--volt);
+  text-align:right;line-height:2.5;opacity:0;}
+
+/* ── CH03 ── */
+#ch03{background:var(--ink);}
+#c3-acid-bg{position:absolute;inset:0;background:var(--acid);
+  clip-path:polygon(110% 100%,110% 100%,110% 100%);opacity:0;}
+#c3-order{position:absolute;right:-25px;bottom:36px;font-size:280px;font-weight:900;
+  letter-spacing:-.07em;text-transform:uppercase;color:var(--ink);line-height:.82;opacity:0;}
+#c3-status{position:absolute;left:80px;top:78px;font-size:9px;font-weight:700;
+  letter-spacing:.5em;text-transform:uppercase;color:var(--acid);opacity:0;}
+#c3-err{position:absolute;left:80px;top:128px;font-size:9px;font-weight:700;
+  letter-spacing:.35em;text-transform:uppercase;color:var(--rage);line-height:2.5;opacity:0;}
+#c3-threat{position:absolute;left:0;bottom:0;width:0;height:5px;background:var(--rage);}
+#c3-bl1{position:absolute;left:0;right:0;height:1px;top:220px;background:var(--volt);
+  opacity:0;transform-origin:left;transform:scaleX(0);}
+#c3-bl2{position:absolute;left:0;right:0;height:1px;top:440px;background:var(--volt);
+  opacity:0;transform-origin:right;transform:scaleX(0);}
+
+/* ── CH04 ── */
+#ch04{background:var(--ink);}
+#c4-canvas{position:absolute;inset:0;}
+#c4-giant{position:absolute;font-size:300px;font-weight:900;letter-spacing:-.07em;
+  text-transform:uppercase;color:rgba(222,255,10,.04);
+  left:50%;top:50%;transform:translate(-50%,-50%);white-space:nowrap;opacity:0;}
+#c4-status{position:absolute;left:80px;top:78px;font-size:9px;font-weight:700;
+  letter-spacing:.5em;text-transform:uppercase;color:var(--acid);opacity:0;}
+
+/* ── CH05 ── */
+#ch05{background:var(--crim);}
+.ew{position:absolute;left:80px;font-size:112px;font-weight:900;letter-spacing:-.04em;
+  text-transform:uppercase;color:var(--acid);line-height:1;opacity:0;white-space:nowrap;}
+#ew1{top:48px;} #ew2{top:168px;} #ew3{top:288px;} #ew4{top:408px;} #ew5{top:528px;}
+#c5-counter{position:absolute;right:80px;top:80px;font-size:9px;font-weight:700;
+  letter-spacing:.42em;text-transform:uppercase;color:rgba(222,255,10,.22);
+  line-height:2.8;text-align:right;opacity:0;}
+#c5-slash{position:absolute;left:0;right:0;height:2px;background:var(--acid);opacity:0;}
+
+/* ── CH06 ── */
+#ch06{background:var(--ink);}
+.cfield{position:absolute;inset:0;opacity:0;}
+#cf-acid{background:var(--acid);}
+#cf-volt{background:var(--volt);}
+#cf-rage{background:var(--rage);}
+#cf-crim{background:var(--crim);}
+#cf-bone{background:var(--bone);}
+.tf{position:absolute;font-weight:900;text-transform:uppercase;
+  letter-spacing:-.05em;line-height:.82;opacity:0;}
+#tf6{font-size:500px;color:rgba(255,255,255,.022);left:-80px;top:-100px;letter-spacing:-.08em;}
+#tf1{font-size:320px;color:var(--bone);left:-40px;top:-25px;}
+#tf2{font-size:240px;color:var(--acid);right:-25px;top:110px;}
+#tf3{font-size:180px;color:var(--rage);left:80px;bottom:30px;transform:rotate(-4deg);}
+#tf4{font-size:180px;color:var(--volt);right:-15px;bottom:-15px;}
+#tf5{font-size:120px;color:var(--crim);left:50%;top:50%;
+  transform:translate(-50%,-50%) rotate(-12deg);transform-origin:center;}
+#tf7{font-size:9px;color:var(--gold);right:80px;top:80px;
+  letter-spacing:.5em;font-weight:700;line-height:2.5;text-align:right;}
+
+/* ── CH07 ── */
+#ch07{background:var(--bone);}
+#s-dot{position:absolute;width:12px;height:12px;border-radius:50%;
+  background:var(--rage);left:640px;top:280px;transform:translate(-50%,-50%);opacity:0;}
+#s-rule{position:absolute;left:80px;right:80px;height:1px;
+  background:var(--ink);opacity:.15;top:385px;transform-origin:left;transform:scaleX(0);}
+#s-line1{position:absolute;left:80px;top:400px;font-size:108px;font-weight:900;
+  letter-spacing:-.05em;text-transform:uppercase;color:var(--ink);line-height:.88;opacity:0;}
+#s-line2{position:absolute;left:80px;bottom:88px;font-size:15px;font-weight:700;
+  letter-spacing:.55em;text-transform:uppercase;color:var(--rage);opacity:0;}
+#s-credit{position:absolute;right:80px;bottom:68px;font-size:8px;font-weight:700;
+  letter-spacing:.6em;text-transform:uppercase;color:rgba(8,8,8,.18);opacity:0;}
+
+#prog{position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--acid);z-index:600;}
+#ctrl{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:9999;}
+.btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);
+  color:rgba(255,255,255,.45);font-size:9px;letter-spacing:.3em;
+  padding:8px 20px;cursor:pointer;text-transform:uppercase;font-family:Arial,sans-serif;}
+.btn:hover{background:rgba(255,255,255,.12);color:#fff;}
+</style>
+</head>
+<body>
+<div id="wrap"><div id="stage">
+
+<canvas id="grain" width="1280" height="720"></canvas>
+<div id="scanlines"></div>
+
+<!-- CH01 -->
+<div id="ch01" class="layer">
+  <div class="ag" id="ag1"></div><div class="ag" id="ag2"></div>
+  <div class="ag" id="ag3"></div><div class="ag" id="ag4"></div>
+  <div class="ag" id="ag5"></div>
+  <div id="c1-num">01</div>
+  <div id="c1-shadow">CONTROL<br>SYSTEM</div>
+  <div id="c1-title">CONTROL<br>SYSTEM</div>
+  <div id="c1-label">CONTROL FAILURE · CHAPTER 01 · PERFECT ORDER</div>
+  <div id="c1-meta">STRUCTURE · ALIGNMENT · ORDER · PRECISION · CONTROL</div>
+</div>
+
+<!-- CH02 -->
+<div id="ch02" class="layer">
+  <div id="c2-ghost">CONTROL<br>SYSTEM</div>
+  <div id="c2-hline"></div><div id="c2-vline"></div>
+  <div id="c2-sq"></div><div id="c2-ring"></div>
+  <div id="c2-coords">X: 640 · Y: 360<br>STATUS: NOMINAL<br>THREAT LEVEL: LOW</div>
+  <div id="c2-ann">ERROR REF: 001<br>ORIGIN: UNKNOWN<br>RESPONSE: NONE<br>— SYSTEM IGNORED</div>
+</div>
+
+<!-- CH03 -->
+<div id="ch03" class="layer">
+  <div id="c3-acid-bg"></div>
+  <div id="c3-order">ORDER</div>
+  <div id="c3-bl1"></div><div id="c3-bl2"></div>
+  <div id="c3-status">SYSTEM ACTIVE — CORRECTION IN PROGRESS</div>
+  <div id="c3-err">CORRECTION FAILED<br>RETRY — 01<br>RETRY — 02<br>RETRY — FAILED</div>
+  <div id="c3-threat"></div>
+</div>
+
+<!-- CH04 -->
+<div id="ch04" class="layer">
+  <div id="c4-giant">CONTAINED</div>
+  <canvas id="c4-canvas" width="1280" height="720"></canvas>
+  <div id="c4-status">INFECTION SPREADING — SYSTEM COMPROMISED</div>
+</div>
+
+<!-- CH05 -->
+<div id="ch05" class="layer">
+  <div class="ew" id="ew1"><span id="ew1t">HOME</span></div>
+  <div class="ew" id="ew2"><span id="ew2t">PHOTO</span></div>
+  <div class="ew" id="ew3"><span id="ew3t">MEMORY</span></div>
+  <div class="ew" id="ew4"><span id="ew4t">FAMILY</span></div>
+  <div class="ew" id="ew5"><span id="ew5t">TIME</span></div>
+  <div id="c5-counter">OBJECT 01 · HOME<br>OBJECT 02 · PHOTO<br>OBJECT 03 · MEMORY<br>OBJECT 04 · FAMILY<br>OBJECT 05 · TIME</div>
+  <div id="c5-slash"></div>
+</div>
+
+<!-- CH06 -->
+<div id="ch06" class="layer">
+  <div class="cfield" id="cf-acid"></div><div class="cfield" id="cf-volt"></div>
+  <div class="cfield" id="cf-rage"></div><div class="cfield" id="cf-crim"></div>
+  <div class="cfield" id="cf-bone"></div>
+  <div class="tf" id="tf6">FAIL</div>
+  <div class="tf" id="tf1">CON<br>TROL</div>
+  <div class="tf" id="tf2">FAIL<br>URE</div>
+  <div class="tf" id="tf3">LOST</div>
+  <div class="tf" id="tf4">GONE</div>
+  <div class="tf" id="tf5">MISSING</div>
+  <div class="tf" id="tf7">EVERY FIRE<br>STARTS SMALL<br>EVERY SYSTEM<br>CAN FAIL</div>
+</div>
+
+<!-- CH07 -->
+<div id="ch07" class="layer">
+  <div id="s-dot"></div><div id="s-rule"></div>
+  <div id="s-line1">EVERY FIRE<br>STARTS SMALL.</div>
+  <div id="s-line2">DON'T IGNORE IT.</div>
+  <div id="s-credit">CONTROL FAILURE — A FILM ABOUT FIRE PREVENTION</div>
+</div>
+
+<div id="prog"></div>
+</div></div>
+<div id="ctrl">
+  <button class="btn" id="btnPlay">▶ PLAY</button>
+  <button class="btn" id="btnReset">↺ RESET</button>
+</div>
+
+<script>
+// ── GRAIN (deterministic LCG) ──
+(function(){
+  const gc=document.getElementById('grain'), gx=gc.getContext('2d');
+  const img=gx.createImageData(1280,720), d=img.data;
+  let s=42;
+  function r(){s=(s*1664525+1013904223)&0xFFFFFFFF;return(s>>>0)/0xFFFFFFFF;}
+  for(let i=0;i<d.length;i+=4){const v=r()*255;d[i]=d[i+1]=d[i+2]=v;d[i+3]=26;}
+  gx.putImageData(img,0,0);
+})();
+
+// ── INFECTION CANVAS ──
+const c4c=document.getElementById('c4-canvas'), ctx=c4c.getContext('2d');
+const COLS=18, ROWS=10, PAD=48;
+const CW=(1280-PAD*2)/COLS, CHH=(720-PAD*2)/ROWS;
+
+function drawGrid(t){
+  ctx.clearRect(0,0,1280,720);
+  const rel=t-25; if(rel<0||rel>15)return;
+  const ep=Math.min(1,rel/3);
+  const ip=Math.max(0,Math.min(1,(rel-2)/11));
+  for(let r=0;r<ROWS;r++){
+    for(let c=0;c<COLS;c++){
+      const cx=PAD+c*CW+CW/2, cy=PAD+r*CHH+CHH/2;
+      const thresh=(r/ROWS*0.5+c/COLS*0.5);
+      const ca=Math.max(0,Math.min(1,(ep-thresh*0.85)*4));
+      if(ca<=0)continue;
+      const dist=Math.sqrt(Math.pow(cx-640,2)+Math.pow(cy-360,2))/680;
+      const il=Math.max(0,ip-dist*0.65);
+      const s=Math.min(CW,CHH)*0.3;
+      ctx.globalAlpha=ca;
+      if(il>0.9){
+        ctx.fillStyle='#FF3300';
+        ctx.fillRect(cx-CW/2+2,cy-CHH/2+2,CW-4,CHH-4);
+      } else if(il>0.65){
+        ctx.fillStyle='#FF3300';
+        const bs=s*1.8*(0.4+il*0.6);
+        ctx.fillRect(cx-bs/2,cy-bs/2,bs,bs);
+      } else if(il>0.35){
+        ctx.strokeStyle='#F5A800'; ctx.lineWidth=2;
+        ctx.beginPath();
+        ctx.moveTo(cx-s,cy-s);ctx.lineTo(cx+s,cy+s);
+        ctx.moveTo(cx+s,cy-s);ctx.lineTo(cx-s,cy+s);
+        ctx.stroke();
+      } else if(il>0.1){
+        ctx.strokeStyle='#F5A800'; ctx.lineWidth=1.5;
+        ctx.beginPath();
+        ctx.moveTo(cx-s,cy);ctx.lineTo(cx+s,cy);
+        ctx.moveTo(cx,cy-s);ctx.lineTo(cx,cy+s);
+        ctx.stroke();
+      } else {
+        ctx.fillStyle='#DEFF0A';
+        ctx.beginPath();ctx.arc(cx,cy,s*0.32,0,Math.PI*2);ctx.fill();
+      }
+    }
+  }
+  ctx.globalAlpha=1;
+}
+
+// ── WORD EROSION ──
+const eroStates={
+  ew1t:['HOME','H█ME','H██E','████',''],
+  ew2t:['PHOTO','PH█TO','P████','█████',''],
+  ew3t:['MEMORY','MEM██Y','M████Y','██████',''],
+  ew4t:['FAMILY','F█MILY','F████Y','██████',''],
+  ew5t:['TIME','T█ME','████','',''],
+};
+function setEro(id,stage){
+  const el=document.getElementById(id); if(!el)return;
+  el.textContent=eroStates[id][stage]??'';
+  el.style.color=stage>=1?'#FF3300':'#DEFF0A';
+}
+function resetEro(){Object.keys(eroStates).forEach(id=>setEro(id,0));}
+
+// ── MASTER TIMELINE ──
+const tl=window.tl=gsap.timeline({
+  paused:true,
+  onUpdate:()=>{
+    document.getElementById('prog').style.width=(tl.time()/tl.duration()*100)+'%';
+    drawGrid(tl.time());
+  }
+});
+
+// ══ CH01: PERFECT ORDER  0→8s ══════════════════════
+tl.addLabel('ch01',0)
+  .to('#ch01',{autoAlpha:1,duration:0})
+  .to(['#ag1','#ag2','#ag5'],{autoAlpha:.4,scaleX:1,duration:.35,stagger:.06,ease:'power4.out'},.1)
+  .to(['#ag3','#ag4'],{autoAlpha:.25,scaleY:1,duration:.45,stagger:.06,ease:'power3.out'},.15)
+  .to('#c1-num',{autoAlpha:1,duration:.5},.2)
+  .to('#c1-label',{autoAlpha:1,duration:.4},.45)
+  .to('#c1-meta', {autoAlpha:1,duration:.5},.65)
+  // shadow slams in — acid risograph offset
+  .fromTo('#c1-shadow',{y:65,autoAlpha:0},{y:0,autoAlpha:1,duration:.45,ease:'power4.out'},.85)
+  // title slams in on top — slightly after shadow
+  .fromTo('#c1-title',{y:65,autoAlpha:0},{y:0,autoAlpha:1,duration:.45,ease:'power4.out'},1.0)
+  // shadow drifts — off-register tension grows
+  .to('#c1-shadow',{x:12,y:10,duration:5.5,ease:'sine.inOut'},1.4)
+  // grid breathes
+  .to(['#ag1','#ag2','#ag5'],{autoAlpha:.9,duration:.9,ease:'sine.inOut',yoyo:true,repeat:2},2.0)
+  // EXIT — title sweeps left off-screen
+  .to(['#c1-label','#c1-meta','#c1-num','.ag'],{autoAlpha:0,duration:.25},7.1)
+  .to(['#c1-shadow','#c1-title'],{x:-120,autoAlpha:0,duration:.45,ease:'power3.in'},7.2)
+  .to('#ch01',{autoAlpha:0,duration:0},7.8)
+
+// ══ CH02: THE ANOMALY  8→16s — slash wipe entry ════
+  .addLabel('ch02',8)
+  .fromTo('#ch02',
+    {autoAlpha:1,clipPath:'polygon(120% 0%,120% 0%,120% 100%,120% 100%)'},
+    {clipPath:'polygon(-5% 0%,100% 0%,105% 100%,-5% 100%)',duration:.5,ease:'power3.inOut'},8)
+  .to('#c2-coords',{autoAlpha:1,duration:.4},8.8)
+  .to('#c2-hline',{scaleX:1,autoAlpha:.4,duration:.7,ease:'power2.inOut'},9.3)
+  .to('#c2-vline',{scaleY:1,autoAlpha:.4,duration:.7,ease:'power2.inOut'},9.4)
+  // error square
+  .to('#c2-sq',{autoAlpha:1,duration:.08},10.2)
+  // expanding ring
+  .fromTo('#c2-ring',
+    {autoAlpha:.9,width:48,height:48,left:616,top:336},
+    {autoAlpha:0,width:340,height:340,left:490,top:190,duration:2.2,ease:'power2.out'},10.3)
+  .to('#c2-ann',{autoAlpha:1,duration:.4},11.5)
+  // square pulses
+  .to('#c2-sq',{scale:1.6,duration:.9,ease:'sine.inOut',yoyo:true,repeat:3},10.3)
+  .to(['#c2-hline','#c2-vline'],{autoAlpha:0,duration:.5},14.0)
+  .to('#c2-sq',{scale:3,autoAlpha:0,duration:.5,ease:'power3.in'},14.5)
+  // EXIT — diagonal slash to left
+  .to('#ch02',{clipPath:'polygon(-110% 0%,5% 0%,-5% 100%,-110% 100%)',duration:.5,ease:'power3.in'},15.5)
+  .to('#ch02',{autoAlpha:0,duration:0},16)
+
+// ══ CH03: SYSTEM FIGHTS BACK  16→25s ══════════════
+  .addLabel('ch03',16)
+  .to('#ch03',{autoAlpha:1,duration:0},16)
+  // acid diagonal expands from bottom-right
+  .fromTo('#c3-acid-bg',
+    {autoAlpha:0,clipPath:'polygon(110% 100%,110% 100%,110% 100%)'},
+    {autoAlpha:1,clipPath:'polygon(0% 100%,110% 0%,110% 100%)',duration:.7,ease:'power3.out'},16.2)
+  .to('#c3-status',{autoAlpha:1,duration:.4},16.6)
+  // ORDER slams in from right
+  .fromTo('#c3-order',{x:130,autoAlpha:0},{x:0,autoAlpha:1,duration:.4,ease:'power4.out'},17.2)
+  // volt correction lines
+  .to('#c3-bl1',{scaleX:1,autoAlpha:.7,duration:.6,ease:'power2.inOut'},17.9)
+  .to('#c3-bl2',{scaleX:1,autoAlpha:.5,duration:.6,ease:'power2.inOut'},18.5)
+  // ORDER shakes then slides off
+  .to('#c3-order',{x:12,duration:.08,ease:'none',yoyo:true,repeat:5},19.6)
+  .to('#c3-order',{x:-8,y:5,duration:2.8,ease:'sine.inOut'},20.1)
+  .to('#c3-err',{autoAlpha:1,duration:.4},20.6)
+  .call(()=>{
+    document.getElementById('c3-status').textContent='CORRECTION FAILED — THREAT GROWING';
+    document.getElementById('c3-status').style.color='#FF3300';
+  },null,21.5)
+  .call(()=>{
+    document.getElementById('c3-status').textContent='SYSTEM COMPROMISED — CONTAINMENT LOST';
+  },null,22.5)
+  .to('#c3-threat',{width:'100%',duration:3.0,ease:'power2.in'},21.0)
+  // ORDER collapses
+  .to('#c3-order',{skewX:14,autoAlpha:0,y:70,duration:.5,ease:'power3.in'},23.8)
+  .to('#ch03',{autoAlpha:0,duration:.4,ease:'power2.in'},24.6)
+
+// ══ CH04: INFECTION  25→40s — iris open ═══════════
+  .addLabel('ch04',25)
+  .fromTo('#ch04',
+    {autoAlpha:1,clipPath:'circle(0% at 50% 50%)'},
+    {clipPath:'circle(110% at 50% 50%)',duration:.85,ease:'power2.inOut'},25)
+  .to('#c4-giant',{autoAlpha:1,duration:.5},25.9)
+  .to('#c4-status',{autoAlpha:1,duration:.4},26.4)
+  .call(()=>{
+    document.getElementById('c4-status').textContent='CRITICAL — ALL CELLS COMPROMISED';
+    document.getElementById('c4-status').style.color='#FF3300';
+  },null,35)
+  .to('#c4-giant',{color:'rgba(255,51,0,.06)',duration:1.5,ease:'none'},34)
+  .to('#c4-giant',{autoAlpha:0,duration:.5},37.5)
+  .to('#ch04',{autoAlpha:0,duration:.3},39.7)
+
+// ══ CH05: ERASURE  40→54s ════════════════════════
+  .addLabel('ch05',40)
+  .to('#ch05',{autoAlpha:1,duration:0},40)
+  .to('#c5-counter',{autoAlpha:1,duration:.4},40.4)
+  .to('.ew',{autoAlpha:1,x:0,duration:.25,stagger:.06},40.6)
+  // HOME
+  .call(()=>setEro('ew1t',1),null,41.2)
+  .call(()=>setEro('ew1t',2),null,42.0)
+  .call(()=>setEro('ew1t',3),null,42.6)
+  .call(()=>setEro('ew1t',4),null,43.0)
+  .to('#c5-slash',{autoAlpha:1,top:'112px',duration:.18},43.0)
+  .to('#c5-slash',{autoAlpha:0,duration:.18},43.35)
+  // PHOTO
+  .call(()=>setEro('ew2t',1),null,43.6)
+  .call(()=>setEro('ew2t',2),null,44.3)
+  .call(()=>setEro('ew2t',3),null,44.9)
+  .call(()=>setEro('ew2t',4),null,45.3)
+  .to('#c5-slash',{autoAlpha:1,top:'232px',duration:.18},45.3)
+  .to('#c5-slash',{autoAlpha:0,duration:.18},45.65)
+  // MEMORY
+  .call(()=>setEro('ew3t',1),null,46.1)
+  .call(()=>setEro('ew3t',2),null,46.8)
+  .call(()=>setEro('ew3t',3),null,47.4)
+  .call(()=>setEro('ew3t',4),null,47.9)
+  .to('#c5-slash',{autoAlpha:1,top:'352px',duration:.18},47.9)
+  .to('#c5-slash',{autoAlpha:0,duration:.18},48.25)
+  // FAMILY
+  .call(()=>setEro('ew4t',1),null,48.9)
+  .call(()=>setEro('ew4t',2),null,49.6)
+  .call(()=>setEro('ew4t',3),null,50.1)
+  .call(()=>setEro('ew4t',4),null,50.6)
+  .to('#c5-slash',{autoAlpha:1,top:'472px',duration:.18},50.6)
+  .to('#c5-slash',{autoAlpha:0,duration:.18},50.95)
+  // TIME
+  .call(()=>setEro('ew5t',1),null,51.6)
+  .call(()=>setEro('ew5t',2),null,52.1)
+  .call(()=>setEro('ew5t',3),null,52.5)
+  .to('#c5-slash',{autoAlpha:1,top:'592px',duration:.18},52.5)
+  .to('#c5-slash',{autoAlpha:0,duration:.18},52.85)
+  .to('#ch05',{autoAlpha:0,duration:.4,ease:'power2.in'},53.6)
+
+// ══ CH06: TOTAL COLLAPSE  54→65s ══════════════════
+  .addLabel('ch06',54)
+  .to('#ch06',{autoAlpha:1,duration:0},54)
+  // color strobe sequence
+  .to('#cf-acid',{autoAlpha:1,duration:.04},54.00).to('#cf-acid',{autoAlpha:0,duration:.04},54.16)
+  .to('#cf-volt',{autoAlpha:1,duration:.04},54.22).to('#cf-volt',{autoAlpha:0,duration:.04},54.38)
+  .to('#cf-rage',{autoAlpha:1,duration:.04},54.44).to('#cf-rage',{autoAlpha:0,duration:.04},54.60)
+  .to('#cf-bone',{autoAlpha:1,duration:.04},54.66).to('#cf-bone',{autoAlpha:0,duration:.04},54.82)
+  .to('#cf-crim',{autoAlpha:1,duration:.04},54.88).to('#cf-crim',{autoAlpha:0,duration:.18},55.04)
+  // ghost backdrop
+  .fromTo('#tf6',{autoAlpha:0},{autoAlpha:1,duration:.2},54.12)
+  // CON/TROL slam — acid flash stamps it
+  .to('#cf-acid',{autoAlpha:1,duration:.04},54.7).to('#cf-acid',{autoAlpha:0,duration:.06},54.78)
+  .fromTo('#tf1',{x:-100,autoAlpha:0},{x:0,autoAlpha:1,duration:.22,ease:'power4.out'},54.72)
+  .to('#cf-volt',{autoAlpha:1,duration:.04},55.2).to('#cf-volt',{autoAlpha:0,duration:.06},55.28)
+  .fromTo('#tf2',{x:120,autoAlpha:0},{x:0,autoAlpha:1,duration:.22,ease:'power4.out'},55.22)
+  // LOST/GONE
+  .to('#cf-rage',{autoAlpha:1,duration:.04},56.1).to('#cf-rage',{autoAlpha:0,duration:.06},56.18)
+  .fromTo('#tf3',{y:80,autoAlpha:0},{y:0,autoAlpha:1,duration:.2,ease:'power4.out'},56.12)
+  .to('#cf-crim',{autoAlpha:1,duration:.04},56.7).to('#cf-crim',{autoAlpha:0,duration:.06},56.78)
+  .fromTo('#tf4',{y:80,autoAlpha:0},{y:0,autoAlpha:1,duration:.2,ease:'power4.out'},56.72)
+  // MISSING — bounce in center
+  .to('#cf-bone',{autoAlpha:1,duration:.04},57.5).to('#cf-bone',{autoAlpha:0,duration:.08},57.58)
+  .fromTo('#tf5',{scale:.4,autoAlpha:0,transformOrigin:'center'},
+    {scale:1,autoAlpha:1,duration:.35,ease:'back.out(1.7)',transformOrigin:'center'},57.52)
+  .to('#tf7',{autoAlpha:1,duration:.4},58.3)
+  // shake
+  .to(['.tf'],{x:'random(-9,9)',y:'random(-6,6)',duration:.1,ease:'none',repeat:16,yoyo:true},58.8)
+  // rapid strobe climax
+  .to('#cf-acid',{autoAlpha:1,duration:.04},61.2).to('#cf-acid',{autoAlpha:0,duration:.04},61.3)
+  .to('#cf-volt',{autoAlpha:1,duration:.04},61.36).to('#cf-volt',{autoAlpha:0,duration:.04},61.46)
+  .to('#cf-rage',{autoAlpha:1,duration:.04},61.52).to('#cf-rage',{autoAlpha:0,duration:.04},61.62)
+  .to('#cf-bone',{autoAlpha:1,duration:.04},61.68).to('#cf-bone',{autoAlpha:0,duration:.04},61.78)
+  .to('#cf-crim',{autoAlpha:1,duration:.04},61.84).to('#cf-crim',{autoAlpha:0,duration:.04},61.94)
+  .to('#cf-acid',{autoAlpha:1,duration:.04},62.0).to('#cf-acid',{autoAlpha:0,duration:.15},62.1)
+  // words dissolve
+  .to(['.tf'],{autoAlpha:0,duration:.15,stagger:.04,ease:'power3.in'},63.0)
+  .to('#ch06',{autoAlpha:0,duration:.3},64.5)
+
+// ══ CH07: SILENCE  65→75s — iris open ════════════
+  .addLabel('ch07',65)
+  .fromTo('#ch07',
+    {autoAlpha:1,clipPath:'circle(0% at 50% 50%)'},
+    {clipPath:'circle(140% at 50% 50%)',duration:2.2,ease:'power2.inOut'},65)
+  .to('#s-dot',{autoAlpha:1,duration:.3},67.8)
+  .to('#s-dot',{scale:2,duration:1.2,ease:'sine.inOut',yoyo:true,repeat:1},68.1)
+  .to('#s-rule',{scaleX:1,duration:.8,ease:'power2.inOut'},68.8)
+  .fromTo('#s-line1',{autoAlpha:0,y:22},{autoAlpha:1,y:0,duration:.6,ease:'power3.out'},69.5)
+  .to('#s-line2',{autoAlpha:1,duration:.5},71.2)
+  .to('#s-credit',{autoAlpha:1,duration:.5},71.9)
+  .to({},{duration:3})
+
+// ── INITIAL STATES ──
+gsap.set('#ag1,#ag2,#ag5',{scaleX:0,transformOrigin:'left'});
+gsap.set('#ag3,#ag4',{scaleY:0,transformOrigin:'top'});
+gsap.set('#c2-hline',{scaleX:0,transformOrigin:'left'});
+gsap.set('#c2-vline',{scaleY:0,transformOrigin:'top'});
+gsap.set('#c3-bl1',{scaleX:0,transformOrigin:'left'});
+gsap.set('#c3-bl2',{scaleX:0,transformOrigin:'right'});
+gsap.set('#c3-threat',{width:0});
+gsap.set('.ew',{x:-25});
+gsap.set('#s-rule',{scaleX:0,transformOrigin:'left'});
+
+// ── SCALE ──
+function scaleStage(){
+  const s=Math.min(window.innerWidth/1280,window.innerHeight/720);
+  const st=document.getElementById('stage');
+  st.style.transform=`scale(${s})`;
+  st.style.transformOrigin='center center';
+}
+scaleStage(); window.addEventListener('resize',scaleStage);
+
+// ── CONTROLS ──
+document.getElementById('btnPlay').addEventListener('click',()=>{
+  if(tl.paused()){tl.play();document.getElementById('btnPlay').textContent='⏸ PAUSE';}
+  else{tl.pause();document.getElementById('btnPlay').textContent='▶ PLAY';}
+});
+document.getElementById('btnReset').addEventListener('click',()=>{
+  tl.seek(0).pause();
+  document.getElementById('btnPlay').textContent='▶ PLAY';
+  document.getElementById('prog').style.width='0%';
+  resetEro(); ctx.clearRect(0,0,1280,720);
+  document.getElementById('c3-status').textContent='SYSTEM ACTIVE — CORRECTION IN PROGRESS';
+  document.getElementById('c3-status').style.color='';
+  document.getElementById('c4-status').textContent='INFECTION SPREADING — SYSTEM COMPROMISED';
+  document.getElementById('c4-status').style.color='';
+});
+</script>
+</body>
+</html>
