@@ -132,6 +132,17 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:Ari
 #s-credit{position:absolute;right:80px;bottom:68px;font-size:8px;font-weight:700;
   letter-spacing:.6em;text-transform:uppercase;color:rgba(8,8,8,.18);opacity:0;}
 
+/* ── CH06 color-card message text ── */
+.cf-msg{position:absolute;left:80px;bottom:76px;font-size:80px;font-weight:900;
+  letter-spacing:-.04em;text-transform:uppercase;line-height:.85;pointer-events:none;}
+#cf-acid .cf-msg{color:var(--ink);}
+#cf-volt .cf-msg{color:var(--bone);}
+#cf-rage .cf-msg{color:var(--bone);}
+#cf-crim .cf-msg{color:var(--bone);}
+#cf-bone .cf-msg{color:var(--ink);}
+/* Bridge dot CH06→CH07 */
+#ch06-dot{position:absolute;width:12px;height:12px;border-radius:50%;
+  background:var(--rage);left:640px;top:360px;transform:translate(-50%,-50%);opacity:0;}
 #prog{position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--acid);z-index:600;}
 #ctrl{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:9999;}
 .btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);
@@ -197,9 +208,11 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:Ari
 
 <!-- CH06 -->
 <div id="ch06" class="layer">
-  <div class="cfield" id="cf-acid"></div><div class="cfield" id="cf-volt"></div>
-  <div class="cfield" id="cf-rage"></div><div class="cfield" id="cf-crim"></div>
-  <div class="cfield" id="cf-bone"></div>
+  <div class="cfield" id="cf-acid"><div class="cf-msg" id="cfm-acid">FIRST SIGN<br>IGNORED</div></div>
+  <div class="cfield" id="cf-volt"><div class="cf-msg" id="cfm-volt">WARNING<br>DISMISSED</div></div>
+  <div class="cfield" id="cf-rage"><div class="cf-msg" id="cfm-rage">SYSTEM<br>BYPASSED</div></div>
+  <div class="cfield" id="cf-crim"><div class="cf-msg" id="cfm-crim">CONTROL<br>LOST</div></div>
+  <div class="cfield" id="cf-bone"><div class="cf-msg" id="cfm-bone">TOO LATE<br>TO ACT</div></div>
   <div class="tf" id="tf6">FAIL</div>
   <div class="tf" id="tf1">CON<br>TROL</div>
   <div class="tf" id="tf2">FAIL<br>URE</div>
@@ -207,6 +220,7 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:Ari
   <div class="tf" id="tf4">GONE</div>
   <div class="tf" id="tf5">MISSING</div>
   <div class="tf" id="tf7">EVERY FIRE<br>STARTS SMALL<br>EVERY SYSTEM<br>CAN FAIL</div>
+  <div id="ch06-dot"></div>
 </div>
 
 <!-- CH07 -->
@@ -437,43 +451,72 @@ tl.addLabel('ch01',0)
   .to('#ch05',{autoAlpha:0,duration:.4,ease:'power2.in'},53.6)
 
 // ══ CH06: TOTAL COLLAPSE  54→65s ══════════════════
+// Each word is "stamped" onto stage by a full-screen color card with a message.
+// Second wave: rapid single-word narrative headlines before silence.
   .addLabel('ch06',54)
   .to('#ch06',{autoAlpha:1,duration:0},54)
-  // color strobe sequence
-  .to('#cf-acid',{autoAlpha:1,duration:.04},54.00).to('#cf-acid',{autoAlpha:0,duration:.04},54.16)
-  .to('#cf-volt',{autoAlpha:1,duration:.04},54.22).to('#cf-volt',{autoAlpha:0,duration:.04},54.38)
-  .to('#cf-rage',{autoAlpha:1,duration:.04},54.44).to('#cf-rage',{autoAlpha:0,duration:.04},54.60)
-  .to('#cf-bone',{autoAlpha:1,duration:.04},54.66).to('#cf-bone',{autoAlpha:0,duration:.04},54.82)
-  .to('#cf-crim',{autoAlpha:1,duration:.04},54.88).to('#cf-crim',{autoAlpha:0,duration:.18},55.04)
-  // ghost backdrop
-  .fromTo('#tf6',{autoAlpha:0},{autoAlpha:1,duration:.2},54.12)
-  // CON/TROL slam — acid flash stamps it
-  .to('#cf-acid',{autoAlpha:1,duration:.04},54.7).to('#cf-acid',{autoAlpha:0,duration:.06},54.78)
-  .fromTo('#tf1',{x:-100,autoAlpha:0},{x:0,autoAlpha:1,duration:.22,ease:'power4.out'},54.72)
-  .to('#cf-volt',{autoAlpha:1,duration:.04},55.2).to('#cf-volt',{autoAlpha:0,duration:.06},55.28)
-  .fromTo('#tf2',{x:120,autoAlpha:0},{x:0,autoAlpha:1,duration:.22,ease:'power4.out'},55.22)
-  // LOST/GONE
-  .to('#cf-rage',{autoAlpha:1,duration:.04},56.1).to('#cf-rage',{autoAlpha:0,duration:.06},56.18)
-  .fromTo('#tf3',{y:80,autoAlpha:0},{y:0,autoAlpha:1,duration:.2,ease:'power4.out'},56.12)
-  .to('#cf-crim',{autoAlpha:1,duration:.04},56.7).to('#cf-crim',{autoAlpha:0,duration:.06},56.78)
-  .fromTo('#tf4',{y:80,autoAlpha:0},{y:0,autoAlpha:1,duration:.2,ease:'power4.out'},56.72)
-  // MISSING — bounce in center
-  .to('#cf-bone',{autoAlpha:1,duration:.04},57.5).to('#cf-bone',{autoAlpha:0,duration:.08},57.58)
+  // Ghost backdrop
+  .fromTo('#tf6',{autoAlpha:0},{autoAlpha:1,duration:.25},54.05)
+
+  // ── STAMP 1: CON/TROL ── acid card "FIRST SIGN / IGNORED"
+  .to('#cf-acid',{autoAlpha:1,duration:.04},54.0)
+  .fromTo('#tf1',{x:-100,autoAlpha:0},{x:0,autoAlpha:1,duration:.22,ease:'power4.out'},54.06)
+  .to('#cf-acid',{autoAlpha:0,duration:.22},54.35)  // hold 0.35s so text is readable
+
+  // ── STAMP 2: FAIL/URE ── volt card "WARNING / DISMISSED"
+  .to('#cf-volt',{autoAlpha:1,duration:.04},55.3)
+  .fromTo('#tf2',{x:120,autoAlpha:0},{x:0,autoAlpha:1,duration:.22,ease:'power4.out'},55.36)
+  .to('#cf-volt',{autoAlpha:0,duration:.22},55.65)
+
+  // ── STAMP 3: LOST ── rage card "SYSTEM / BYPASSED"
+  .to('#cf-rage',{autoAlpha:1,duration:.04},56.3)
+  .fromTo('#tf3',{y:80,autoAlpha:0},{y:0,autoAlpha:1,duration:.2,ease:'power4.out'},56.36)
+  .to('#cf-rage',{autoAlpha:0,duration:.22},56.65)
+
+  // ── STAMP 4: GONE ── crim card "CONTROL / LOST"
+  .to('#cf-crim',{autoAlpha:1,duration:.04},57.1)
+  .fromTo('#tf4',{y:80,autoAlpha:0},{y:0,autoAlpha:1,duration:.2,ease:'power4.out'},57.16)
+  .to('#cf-crim',{autoAlpha:0,duration:.22},57.45)
+
+  // ── STAMP 5: MISSING ── bone card "TOO LATE / TO ACT" — most impactful, longer hold
+  .to('#cf-bone',{autoAlpha:1,duration:.04},57.9)
   .fromTo('#tf5',{scale:.4,autoAlpha:0,transformOrigin:'center'},
-    {scale:1,autoAlpha:1,duration:.35,ease:'back.out(1.7)',transformOrigin:'center'},57.52)
-  .to('#tf7',{autoAlpha:1,duration:.4},58.3)
-  // shake
-  .to(['.tf'],{x:'random(-9,9)',y:'random(-6,6)',duration:.1,ease:'none',repeat:16,yoyo:true},58.8)
-  // rapid strobe climax
-  .to('#cf-acid',{autoAlpha:1,duration:.04},61.2).to('#cf-acid',{autoAlpha:0,duration:.04},61.3)
-  .to('#cf-volt',{autoAlpha:1,duration:.04},61.36).to('#cf-volt',{autoAlpha:0,duration:.04},61.46)
-  .to('#cf-rage',{autoAlpha:1,duration:.04},61.52).to('#cf-rage',{autoAlpha:0,duration:.04},61.62)
-  .to('#cf-bone',{autoAlpha:1,duration:.04},61.68).to('#cf-bone',{autoAlpha:0,duration:.04},61.78)
-  .to('#cf-crim',{autoAlpha:1,duration:.04},61.84).to('#cf-crim',{autoAlpha:0,duration:.04},61.94)
-  .to('#cf-acid',{autoAlpha:1,duration:.04},62.0).to('#cf-acid',{autoAlpha:0,duration:.15},62.1)
-  // words dissolve
-  .to(['.tf'],{autoAlpha:0,duration:.15,stagger:.04,ease:'power3.in'},63.0)
-  .to('#ch06',{autoAlpha:0,duration:.3},64.5)
+    {scale:1,autoAlpha:1,duration:.35,ease:'back.out(1.7)',transformOrigin:'center'},57.96)
+  .to('#cf-bone',{autoAlpha:0,duration:.3},58.35)
+
+  // Info text settles
+  .to('#tf7',{autoAlpha:1,duration:.4},58.8)
+
+  // All words shake — the system breaking apart
+  .to(['.tf'],{x:'random(-9,9)',y:'random(-6,6)',duration:.1,ease:'none',repeat:16,yoyo:true},59.2)
+
+  // ── Second wave: rapid narrative headline cards ──
+  // Update message content to single urgent words at larger size
+  .call(()=>{
+    document.getElementById('cfm-acid').innerHTML='FIRE';
+    document.getElementById('cfm-volt').innerHTML='ALARM';
+    document.getElementById('cfm-rage').innerHTML='LOSS';
+    document.getElementById('cfm-crim').innerHTML='GONE';
+    document.getElementById('cfm-bone').innerHTML='NEVER<br>AGAIN';
+    document.querySelectorAll('.cf-msg').forEach(el=>{
+      el.style.fontSize='180px'; el.style.bottom='52px';
+    });
+  },null,61.0)
+  .to('#cf-acid',{autoAlpha:1,duration:.04},61.0).to('#cf-acid',{autoAlpha:0,duration:.14},61.2)
+  .to('#cf-volt',{autoAlpha:1,duration:.04},61.35).to('#cf-volt',{autoAlpha:0,duration:.14},61.55)
+  .to('#cf-rage',{autoAlpha:1,duration:.04},61.7).to('#cf-rage', {autoAlpha:0,duration:.14},61.9)
+  .to('#cf-crim',{autoAlpha:1,duration:.04},62.05).to('#cf-crim',{autoAlpha:0,duration:.14},62.25)
+  // Final card: NEVER / AGAIN — bone, lingers
+  .to('#cf-bone',{autoAlpha:1,duration:.04},62.4).to('#cf-bone',{autoAlpha:0,duration:.35},62.85)
+
+  // Words dissolve — screen empties
+  .to(['.tf'],{autoAlpha:0,duration:.18,stagger:.05,ease:'power3.in'},63.2)
+
+  // Bridge dot appears — same orange dot from CH02, connecting error → aftermath → CH07
+  .to('#ch06-dot',{autoAlpha:1,duration:.35},63.8)
+  .to('#ch06-dot',{scale:1.6,duration:.9,ease:'sine.inOut',yoyo:true,repeat:1},64.15)
+
+  .to('#ch06',{autoAlpha:0,duration:.4},64.6)
 
 // ══ CH07: SILENCE  65→75s — iris open ════════════
   .addLabel('ch07',65)
@@ -518,6 +561,12 @@ document.getElementById('btnReset').addEventListener('click',()=>{
   document.getElementById('btnPlay').textContent='▶ PLAY';
   document.getElementById('prog').style.width='0%';
   resetEro(); ctx.clearRect(0,0,1280,720);
+  document.getElementById('cfm-acid').innerHTML='FIRST SIGN<br>IGNORED';
+  document.getElementById('cfm-volt').innerHTML='WARNING<br>DISMISSED';
+  document.getElementById('cfm-rage').innerHTML='SYSTEM<br>BYPASSED';
+  document.getElementById('cfm-crim').innerHTML='CONTROL<br>LOST';
+  document.getElementById('cfm-bone').innerHTML='TOO LATE<br>TO ACT';
+  document.querySelectorAll('.cf-msg').forEach(el=>{el.style.fontSize='';el.style.bottom='';});
   document.getElementById('c3-status').textContent='SYSTEM ACTIVE — CORRECTION IN PROGRESS';
   document.getElementById('c3-status').style.color='';
   document.getElementById('c4-status').textContent='INFECTION SPREADING — SYSTEM COMPROMISED';
