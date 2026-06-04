@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="hyperframes-composition" content="true">
+<meta name="composition-id" content="nexus-v1">
+<meta name="composition-duration" content="60">
+<meta name="composition-width" content="1920">
+<meta name="composition-height" content="1080">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1920px;height:1080px;overflow:hidden;background:#120808;font-family:'Bebas Neue',sans-serif}
+#root{position:absolute;inset:0;overflow:hidden}
+#stage{position:absolute;inset:0}
+#grid-tex{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:40px 40px;z-index:1}
+.flood{position:absolute;inset:0;pointer-events:none}
+#fl-acid{z-index:50;background:#FF4D2E;clip-path:polygon(0 0,0 0,0 100%,0 100%)}
+#fl-white{z-index:50;background:#FFF5F2;clip-path:polygon(0 0,0 0,0 100%,0 100%)}
+#fl-black{z-index:50;background:#120808;clip-path:polygon(0 0,0 0,0 100%,0 100%)}
+#fl-brand{z-index:52;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:280px;letter-spacing:-.02em;opacity:0;color:#120808}
+
+/* ── S01 ── */
+#s01{z-index:10}
+#s01-bg{position:absolute;inset:0;background:#120808}
+#s01-scanline{position:absolute;left:0;width:1920px;height:2px;background:linear-gradient(90deg,transparent,rgba(255,77,46,.9) 20%,#FF4D2E 50%,rgba(255,77,46,.9) 80%,transparent);opacity:0;z-index:20;top:0}
+#s01-init{position:absolute;top:60px;left:80px;font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.4em;color:rgba(255,77,46,.55);text-transform:uppercase;opacity:0}
+#s01-signal{position:absolute;top:90px;left:80px;font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.4em;color:rgba(255,77,46,.35);text-transform:uppercase;opacity:0}
+#s01-detected{position:absolute;top:260px;left:80px;font-family:'Space Grotesk',sans-serif;font-size:22px;letter-spacing:.55em;color:#FF4D2E;text-transform:uppercase;opacity:0}
+#s01-det-bar{position:absolute;top:256px;left:80px;height:2px;background:#FF4D2E;width:0;opacity:.4}
+.s1l{position:absolute;font-family:'Bebas Neue',sans-serif;font-size:320px;line-height:1;color:#FFF5F2;letter-spacing:-.02em;top:310px;opacity:0}
+#s1-n{left:80px}#s1-e{left:290px;color:#FF4D2E}#s1-x{left:516px}#s1-u{left:726px}#s1-s{left:944px}
+#s01-kw-label{position:absolute;top:740px;left:80px;font-family:'Space Grotesk',sans-serif;font-size:12px;letter-spacing:.5em;color:rgba(255,77,46,.4);text-transform:uppercase;opacity:0}
+.s1-kw{position:absolute;top:780px;font-family:'Bebas Neue',sans-serif;font-size:72px;letter-spacing:.06em;opacity:0}
+#kw1{left:80px;color:#FF4D2E}
+#kw2{left:380px;color:rgba(255,245,242,.7)}
+#kw3{left:580px;color:rgba(255,245,242,.5)}
+#kw4{left:760px;color:rgba(255,245,242,.35)}
+#s01-progress-bg{position:absolute;bottom:160px;left:80px;width:600px;height:1px;background:rgba(255,77,46,.15)}
+#s01-progress{position:absolute;bottom:160px;left:80px;width:0;height:1px;background:#FF4D2E}
+#s01-prog-label{position:absolute;bottom:140px;left:80px;font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:.4em;color:rgba(255,77,46,.5);opacity:0}
+#s01-counter{position:absolute;bottom:60px;right:80px;font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.3em;color:rgba(255,77,46,.35);opacity:0}
+
+/* ── S02 ── */
+#s02{z-index:10}
+#s02-bg{position:absolute;inset:0;background:#120808}
+.col-block{position:absolute;top:0;height:1080px;clip-path:polygon(0 0,0 0,0 100%,0 100%)}
+#cb-pri{left:0;width:640px;background:#FF4D2E}
+#cb-sec{left:640px;width:640px;background:#FFF5F2}
+#cb-acc{left:1280px;width:640px;background:#120808;border-left:2px solid #FF4D2E}
+.col-label{position:absolute;font-family:'Bebas Neue',sans-serif;font-size:96px;line-height:1}
+#cl-pri{top:140px;left:60px;color:#120808}
+#cl-sec{top:140px;left:700px;color:#120808}
+#cl-acc{top:140px;left:1340px;color:#FF4D2E}
+.col-hex{position:absolute;font-family:'Space Grotesk',sans-serif;font-size:22px;letter-spacing:.15em}
+#ch-pri{top:260px;left:60px;color:#120808}
+#ch-sec{top:260px;left:700px;color:#120808}
+#ch-acc{top:260px;left:1340px;color:#FF4D2E}
+.col-desc{position:absolute;font-family:'Space Grotesk',sans-serif;font-size:15px;letter-spacing:.1em;line-height:1.8;opacity:.7}
+#cd-pri{top:330px;left:60px;color:#120808}
+#cd-sec{top:330px;left:700px;color:#120808}
+#cd-acc{top:330px;left:1340px;color:#FF4D2E}
+#s02-title{position:absolute;bottom:60px;right:80px;font-family:'Space Grotesk',sans-serif;font-size:14px;letter-spacing:.4em;color:rgba(255,77,46,.35);text-transform:uppercase}
+#s02-divv1{position:absolute;top:0;left:640px;width:2px;height:0;background:rgba(0,0,0,.15)}
+#s02-divv2{position:absolute;top:0;left:1280px;width:2px;height:0;background:#FF4D2E;opacity:.4}
+
+/* ── S03 ── */
+#s03{z-index:10}
+#s03-bg{position:absolute;inset:0;background:#120808}
+.gv,.gh{stroke:#FF4D2E;stroke-width:1;opacity:0}
+.gi-dot-bg{fill:rgba(255,77,46,.0);opacity:0}
+.gi-dot-hi{fill:#FF4D2E;opacity:0}
+.col-num{fill:rgba(255,77,46,.4);font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:.15em;opacity:0}
+#s03-hl{opacity:0}
+.gd-label{position:absolute;font-family:'Space Grotesk',sans-serif;font-size:12px;letter-spacing:.2em;color:rgba(255,77,46,.6);text-transform:uppercase;opacity:0;line-height:1.5}
+.gd-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:#FF4D2E;letter-spacing:.04em}
+#gdl1{left:285px;top:95px}
+#gdl2{left:445px;top:365px}
+#gdl3{left:765px;top:500px}
+#gdl4{left:1085px;top:230px}
+#gdl5{left:1405px;top:635px}
+#gdl6{left:1565px;top:95px}
+#s03-title{position:absolute;bottom:48px;left:80px;font-family:'Bebas Neue',sans-serif;font-size:64px;color:#FF4D2E;opacity:0}
+#s03-subtitle{position:absolute;bottom:52px;right:80px;font-family:'Space Grotesk',sans-serif;font-size:14px;letter-spacing:.3em;color:rgba(255,77,46,.45);opacity:0}
+
+/* ── S04 ── */
+#s04{z-index:10}
+#s04-bg{position:absolute;inset:0;background:#FFF5F2}
+.tw{position:absolute;font-family:'Bebas Neue',sans-serif;color:#120808;line-height:1;transform-origin:left center}
+#tw1{font-size:240px;top:60px;left:80px;letter-spacing:-.01em}
+#tw2{font-size:160px;top:310px;left:80px;letter-spacing:.04em;-webkit-text-stroke:2px #FF4D2E;color:transparent}
+#tw3{font-size:200px;top:470px;left:80px;letter-spacing:-.01em}
+#tw4{font-size:88px;top:710px;left:80px;letter-spacing:.10em;color:rgba(18,8,8,.35)}
+#tw5{font-size:300px;top:600px;right:-20px;letter-spacing:-.03em;color:rgba(18,8,8,.06);transform-origin:right center}
+.t-rule{position:absolute;height:2px;background:#120808;width:0}
+#tr1{top:305px;left:80px}
+#tr2{top:465px;left:80px}
+#s04-counter{position:absolute;top:60px;right:80px;font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.3em;color:rgba(18,8,8,.4);opacity:0}
+#s04-mask{position:absolute;inset:0;background:#120808;clip-path:polygon(0 0,0 0,0 100%,0 100%);z-index:20}
+
+/* ── S05 ── */
+#s05{z-index:10}
+#s05-bg{position:absolute;inset:0;background:#120808}
+#lc-path{fill:none;stroke:#FF4D2E;stroke-width:3;stroke-dasharray:800;stroke-dashoffset:800}
+#lc-fill{opacity:0}
+#lc-bg{fill:none;stroke:rgba(255,77,46,.12);stroke-width:1;opacity:0}
+.bar{opacity:0}
+#ba1{fill:#FF4D2E}#ba2{fill:rgba(255,77,46,.7)}#ba3{fill:rgba(255,77,46,.45)}#ba4{fill:rgba(255,77,46,.25)}
+#ring-bg{fill:none;stroke:rgba(255,77,46,.1);stroke-width:28}
+#ring-fg{fill:none;stroke:#FF4D2E;stroke-width:28;stroke-dasharray:565;stroke-dashoffset:565;stroke-linecap:round;opacity:0}
+#ring-pct{fill:#FF4D2E;font-family:'Bebas Neue',sans-serif;font-size:52px;text-anchor:middle;dominant-baseline:central;opacity:0}
+.nd-line{stroke:rgba(255,77,46,.35);stroke-width:1;stroke-dasharray:200;stroke-dashoffset:200}
+.nd-circle{fill:#120808;stroke:#FF4D2E;stroke-width:2;opacity:0}
+.nd-label{fill:#FFF5F2;font-family:'Space Grotesk',sans-serif;font-size:13px;text-anchor:middle;opacity:0}
+#s05-label{position:absolute;bottom:48px;right:80px;font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.35em;color:rgba(255,77,46,.4);text-transform:uppercase;opacity:0}
+
+/* ── S06 ── */
+#s06{z-index:10}
+#s06-bg{position:absolute;inset:0;background:#120808}
+#s06-headline{position:absolute;top:0;left:0;right:0;height:120px;display:flex;align-items:center;padding:0 80px;background:#120808;z-index:2}
+#s06-hl-text{font-family:'Bebas Neue',sans-serif;font-size:80px;color:#FFF5F2;letter-spacing:-.01em;opacity:0}
+#s06-hl-tag{font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.4em;color:rgba(255,77,46,.5);text-transform:uppercase;margin-left:40px;align-self:flex-end;margin-bottom:22px;opacity:0}
+.pc{position:absolute;overflow:hidden;opacity:0}
+.pc-dark{background:#1a0a0a}
+.pc-acid{background:#FF4D2E}
+.pc-white{background:#FFF5F2}
+.pc-mid{background:#1e0c0c;border:1px solid rgba(255,77,46,.18)}
+.pc-mid::after,.pc-dark::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.18) 3px,rgba(0,0,0,.18) 4px);pointer-events:none;z-index:4}
+.pc-deco{position:absolute;font-family:'Bebas Neue',sans-serif;font-size:260px;line-height:1;right:-10px;bottom:-30px;opacity:.06;pointer-events:none;z-index:1}
+.pc-content{position:absolute;inset:0;padding:32px 36px;display:flex;flex-direction:column;justify-content:flex-end;z-index:2}
+.pc-tag{font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:.35em;text-transform:uppercase;margin-bottom:8px;opacity:.55}
+.pc-name{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:.02em;line-height:1.05}
+.pc-silhouette{display:block;margin-bottom:14px;opacity:.85}
+.pc-stat-num{font-family:'Bebas Neue',sans-serif;font-size:88px;line-height:1}
+.pc-stat-sub{font-family:'Space Grotesk',sans-serif;font-size:12px;letter-spacing:.28em;text-transform:uppercase;margin-top:6px}
+#pc00{left:0;top:120px;width:480px;height:320px}
+#pc01{left:480px;top:120px;width:480px;height:320px}
+#pc02{left:960px;top:120px;width:480px;height:320px}
+#pc03{left:1440px;top:120px;width:480px;height:320px}
+#pc10{left:0;top:440px;width:480px;height:320px}
+#pc11{left:480px;top:440px;width:480px;height:320px}
+#pc12{left:960px;top:440px;width:480px;height:320px}
+#pc13{left:1440px;top:440px;width:480px;height:320px}
+#pc20{left:0;top:760px;width:480px;height:320px}
+#pc21{left:480px;top:760px;width:480px;height:320px}
+#pc22{left:960px;top:760px;width:480px;height:320px}
+#pc23{left:1440px;top:760px;width:480px;height:320px}
+
+/* ── S07 ── */
+#s07{z-index:10}
+#s07-bg{position:absolute;inset:0;background:#120808}
+.frag{position:absolute;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;letter-spacing:.04em;opacity:0}
+#s07-brand{position:absolute;top:490px;left:960px;font-family:'Bebas Neue',sans-serif;font-size:180px;color:#FF4D2E;letter-spacing:-.02em;opacity:0}
+#s07-tagline{position:absolute;top:650px;left:960px;font-family:'Space Grotesk',sans-serif;font-size:16px;letter-spacing:.4em;color:rgba(255,77,46,.6);opacity:0;white-space:nowrap}
+
+/* ── S08 ── */
+#s08{z-index:10}
+#s08-bg{position:absolute;inset:0;background:#FF4D2E}
+#s08-main{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+#s08-logo{font-family:'Bebas Neue',sans-serif;font-size:240px;color:#120808;letter-spacing:-.02em;line-height:1}
+#s08-tagline{font-family:'Space Grotesk',sans-serif;font-size:18px;letter-spacing:.5em;color:rgba(18,8,8,.5);text-transform:uppercase;margin-top:12px}
+#s08-rule{position:absolute;bottom:130px;left:80px;right:80px;height:1px;background:rgba(18,8,8,.15)}
+#s08-url{position:absolute;bottom:72px;left:50%;transform:translateX(-50%);font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:.18em;color:#120808;opacity:.55;white-space:nowrap}
+#s08-ul{position:absolute;bottom:68px;left:80px;font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.22em;color:rgba(18,8,8,.32)}
+#s08-year{position:absolute;bottom:68px;right:80px;font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:.22em;color:rgba(18,8,8,.32)}
+.clip{position:absolute;inset:0;opacity:0;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="nexus-v1" data-width="1920" data-height="1080" data-start="0" data-duration="60" style="overflow:hidden">
+<div id="stage" data-layout-allow-overflow="true">
+
+<div id="grid-tex"></div>
+<div class="flood" id="fl-acid"></div>
+<div class="flood" id="fl-white"></div>
+<div class="flood" id="fl-black"></div>
+<div class="flood" id="fl-brand">NEXUS</div>
+
+<!-- ===== AUDIO ===== -->
+<audio id="a-bgm"   class="clip" data-start="0"     data-duration="60"   data-track-index="10" data-volume="0.38" src="audio/bgm.wav"></audio>
+<audio id="a-imp1"  class="clip" data-start="0.05"  data-duration="0.6"  data-track-index="11" data-volume="0.75" src="audio/sfx-impact.wav"></audio>
+<audio id="a-imp2"  class="clip" data-start="0.10"  data-duration="0.6"  data-track-index="12" data-volume="0.65" src="audio/sfx-impact.wav"></audio>
+<audio id="a-imp3"  class="clip" data-start="0.15"  data-duration="0.6"  data-track-index="13" data-volume="0.60" src="audio/sfx-impact.wav"></audio>
+<audio id="a-imp4"  class="clip" data-start="0.20"  data-duration="0.6"  data-track-index="14" data-volume="0.55" src="audio/sfx-impact.wav"></audio>
+<audio id="a-imp5"  class="clip" data-start="0.25"  data-duration="0.6"  data-track-index="15" data-volume="0.50" src="audio/sfx-impact.wav"></audio>
+<audio id="a-scan"  class="clip" data-start="0.4"   data-duration="0.35" data-track-index="16" data-volume="0.55" src="audio/sfx-whoosh.wav"></audio>
+<audio id="a-ty-b1" class="clip" data-start="2.5"   data-duration="0.12" data-track-index="11" data-volume="0.5"  src="audio/sfx-type.wav"></audio>
+<audio id="a-ty-b2" class="clip" data-start="2.65"  data-duration="0.12" data-track-index="12" data-volume="0.48" src="audio/sfx-type.wav"></audio>
+<audio id="a-ty-f1" class="clip" data-start="3.0"   data-duration="0.12" data-track-index="11" data-volume="0.55" src="audio/sfx-type.wav"></audio>
+<audio id="a-ty-f2" class="clip" data-start="3.12"  data-duration="0.12" data-track-index="12" data-volume="0.52" src="audio/sfx-type.wav"></audio>
+<audio id="a-ty-f3" class="clip" data-start="3.24"  data-duration="0.12" data-track-index="11" data-volume="0.49" src="audio/sfx-type.wav"></audio>
+<audio id="a-ty-f4" class="clip" data-start="3.36"  data-duration="0.12" data-track-index="12" data-volume="0.46" src="audio/sfx-type.wav"></audio>
+<audio id="a-ty-f5" class="clip" data-start="3.48"  data-duration="0.12" data-track-index="11" data-volume="0.43" src="audio/sfx-type.wav"></audio>
+<audio id="a-kw1"   class="clip" data-start="4.5"   data-duration="0.12" data-track-index="12" data-volume="0.5"  src="audio/sfx-type.wav"></audio>
+<audio id="a-kw2"   class="clip" data-start="5.0"   data-duration="0.12" data-track-index="11" data-volume="0.5"  src="audio/sfx-type.wav"></audio>
+<audio id="a-kw3"   class="clip" data-start="5.5"   data-duration="0.12" data-track-index="12" data-volume="0.5"  src="audio/sfx-type.wav"></audio>
+<audio id="a-kw4"   class="clip" data-start="6.0"   data-duration="0.12" data-track-index="11" data-volume="0.5"  src="audio/sfx-type.wav"></audio>
+<audio id="a-sw1"   class="clip" data-start="9.74"  data-duration="0.35" data-track-index="16" data-volume="0.7"  src="audio/sfx-acid-sweep.wav"></audio>
+<audio id="a-wh1"   class="clip" data-start="10.05" data-duration="0.35" data-track-index="11" data-volume="0.55" src="audio/sfx-whoosh.wav"></audio>
+<audio id="a-wh2"   class="clip" data-start="10.18" data-duration="0.35" data-track-index="12" data-volume="0.5"  src="audio/sfx-whoosh.wav"></audio>
+<audio id="a-tk1"   class="clip" data-start="17.3"  data-duration="0.06" data-track-index="11" data-volume="0.4"  src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk2"   class="clip" data-start="17.4"  data-duration="0.06" data-track-index="12" data-volume="0.38" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk3"   class="clip" data-start="17.5"  data-duration="0.06" data-track-index="11" data-volume="0.36" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk4"   class="clip" data-start="17.6"  data-duration="0.06" data-track-index="12" data-volume="0.34" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk5"   class="clip" data-start="17.7"  data-duration="0.06" data-track-index="11" data-volume="0.32" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk6"   class="clip" data-start="17.8"  data-duration="0.06" data-track-index="12" data-volume="0.30" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk7"   class="clip" data-start="20.5"  data-duration="0.06" data-track-index="11" data-volume="0.35" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk8"   class="clip" data-start="21.0"  data-duration="0.06" data-track-index="12" data-volume="0.33" src="audio/sfx-tick.wav"></audio>
+<audio id="a-wh3"   class="clip" data-start="24.74" data-duration="0.35" data-track-index="11" data-volume="0.6"  src="audio/sfx-whoosh.wav"></audio>
+<audio id="a-ty1"   class="clip" data-start="25.20" data-duration="0.12" data-track-index="16" data-volume="0.55" src="audio/sfx-type.wav"></audio>
+<audio id="a-ty2"   class="clip" data-start="25.45" data-duration="0.12" data-track-index="16" data-volume="0.52" src="audio/sfx-type.wav"></audio>
+<audio id="a-ty3"   class="clip" data-start="25.70" data-duration="0.12" data-track-index="16" data-volume="0.48" src="audio/sfx-type.wav"></audio>
+<audio id="a-ty4"   class="clip" data-start="25.95" data-duration="0.12" data-track-index="16" data-volume="0.44" src="audio/sfx-type.wav"></audio>
+<audio id="a-sw2"   class="clip" data-start="32.76" data-duration="0.35" data-track-index="11" data-volume="0.65" src="audio/sfx-acid-sweep.wav"></audio>
+<audio id="a-wh4"   class="clip" data-start="33.05" data-duration="0.35" data-track-index="12" data-volume="0.58" src="audio/sfx-whoosh.wav"></audio>
+<audio id="a-tk9"   class="clip" data-start="33.3"  data-duration="0.06" data-track-index="11" data-volume="0.4"  src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk10"  class="clip" data-start="33.45" data-duration="0.06" data-track-index="12" data-volume="0.38" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk11"  class="clip" data-start="33.60" data-duration="0.06" data-track-index="11" data-volume="0.36" src="audio/sfx-tick.wav"></audio>
+<audio id="a-tk12"  class="clip" data-start="33.75" data-duration="0.06" data-track-index="12" data-volume="0.34" src="audio/sfx-tick.wav"></audio>
+<audio id="a-wh5"   class="clip" data-start="37.74" data-duration="0.35" data-track-index="12" data-volume="0.6"  src="audio/sfx-whoosh.wav"></audio>
+<audio id="a-mat"   class="clip" data-start="38"    data-duration="8"    data-track-index="11" data-volume="0.72" src="audio/sfx-matrix.wav"></audio>
+<audio id="a-mtk1"  class="clip" data-start="38.3"  data-duration="0.06" data-track-index="12" data-volume="0.35" src="audio/sfx-tick.wav"></audio>
+<audio id="a-mtk2"  class="clip" data-start="38.6"  data-duration="0.06" data-track-index="13" data-volume="0.35" src="audio/sfx-tick.wav"></audio>
+<audio id="a-mtk3"  class="clip" data-start="38.9"  data-duration="0.06" data-track-index="12" data-volume="0.33" src="audio/sfx-tick.wav"></audio>
+<audio id="a-mtk4"  class="clip" data-start="39.2"  data-duration="0.06" data-track-index="13" data-volume="0.33" src="audio/sfx-tick.wav"></audio>
+<audio id="a-mtk5"  class="clip" data-start="39.5"  data-duration="0.06" data-track-index="12" data-volume="0.31" src="audio/sfx-tick.wav"></audio>
+<audio id="a-mtk6"  class="clip" data-start="39.8"  data-duration="0.06" data-track-index="13" data-volume="0.31" src="audio/sfx-tick.wav"></audio>
+<audio id="a-col"   class="clip" data-start="50"    data-duration="7"    data-track-index="11" data-volume="0.85" src="audio/sfx-collapse.wav"></audio>
+<audio id="a-sw3"   class="clip" data-start="56.74" data-duration="0.35" data-track-index="12" data-volume="0.6"  src="audio/sfx-acid-sweep.wav"></audio>
+<!-- ===== END AUDIO ===== -->
+
+<!-- S01 Brand Detection (0-10s) -->
+<div class="clip" id="s01" data-start="0" data-duration="10" data-track-index="0">
+  <div id="s01-bg"></div>
+  <div id="s01-scanline"></div>
+  <div id="s01-init">SYSTEM INITIALIZING · BRAND ANALYSIS MODULE</div>
+  <div id="s01-signal">SIGNAL ACQUIRED · NEXUS CREATIVE TECHNOLOGY</div>
+  <div id="s01-det-bar"></div>
+  <div id="s01-detected">BRAND DETECTED</div>
+  <div class="s1l" id="s1-n">N</div>
+  <div class="s1l" id="s1-e">E</div>
+  <div class="s1l" id="s1-x">X</div>
+  <div class="s1l" id="s1-u">U</div>
+  <div class="s1l" id="s1-s">S</div>
+  <div id="s01-kw-label">ANALYZING BRAND DNA /</div>
+  <div class="s1-kw" id="kw1">CREATE</div>
+  <div class="s1-kw" id="kw2">BUILD</div>
+  <div class="s1-kw" id="kw3">SCALE</div>
+  <div class="s1-kw" id="kw4">LAUNCH</div>
+  <div id="s01-progress-bg"></div>
+  <div id="s01-progress"></div>
+  <div id="s01-prog-label">ANALYSIS COMPLETE · ALL PARAMETERS VERIFIED</div>
+  <div id="s01-counter">001 / BRAND DETECTION</div>
+</div>
+
+<!-- S02 Color System (10-17s) -->
+<div class="clip" id="s02" data-start="10" data-duration="7" data-track-index="0">
+  <div id="s02-bg"></div>
+  <div class="col-block" id="cb-pri"></div>
+  <div class="col-block" id="cb-sec"></div>
+  <div class="col-block" id="cb-acc"></div>
+  <div id="s02-divv1"></div><div id="s02-divv2"></div>
+  <div class="col-label" id="cl-pri">PRIMARY</div>
+  <div class="col-label" id="cl-sec">SECONDARY</div>
+  <div class="col-label" id="cl-acc">ACCENT</div>
+  <div class="col-hex" id="ch-pri">#FF4D2E</div>
+  <div class="col-hex" id="ch-sec">#FFF5F2</div>
+  <div class="col-hex" id="ch-acc">#120808</div>
+  <div class="col-desc" id="cd-pri">Coral Red<br>Energy · Drive<br>Innovation</div>
+  <div class="col-desc" id="cd-sec">Warm White<br>Clarity · Space<br>Precision</div>
+  <div class="col-desc" id="cd-acc">Deep Black<br>Authority · Depth<br>Foundation</div>
+  <div id="s02-title">COLOR SYSTEM — NEXUS 2026</div>
+</div>
+
+<!-- S03 Grid + User Matrix (17-25s) -->
+<div class="clip" id="s03" data-start="17" data-duration="8" data-track-index="0">
+  <div id="s03-bg"></div>
+  <svg width="1920" height="1080" style="position:absolute;inset:0" data-layout-allow-overflow="true">
+    <line class="gv" id="gv1"  x1="160"  y1="0" x2="160"  y2="1080"/>
+    <line class="gv" id="gv2"  x1="320"  y1="0" x2="320"  y2="1080"/>
+    <line class="gv" id="gv3"  x1="480"  y1="0" x2="480"  y2="1080"/>
+    <line class="gv" id="gv4"  x1="640"  y1="0" x2="640"  y2="1080"/>
+    <line class="gv" id="gv5"  x1="800"  y1="0" x2="800"  y2="1080"/>
+    <line class="gv" id="gv6"  x1="960"  y1="0" x2="960"  y2="1080"/>
+    <line class="gv" id="gv7"  x1="1120" y1="0" x2="1120" y2="1080"/>
+    <line class="gv" id="gv8"  x1="1280" y1="0" x2="1280" y2="1080"/>
+    <line class="gv" id="gv9"  x1="1440" y1="0" x2="1440" y2="1080"/>
+    <line class="gv" id="gv10" x1="1600" y1="0" x2="1600" y2="1080"/>
+    <line class="gv" id="gv11" x1="1760" y1="0" x2="1760" y2="1080"/>
+    <line class="gh" id="gh1" x1="0" y1="135" x2="1920" y2="135"/>
+    <line class="gh" id="gh2" x1="0" y1="270" x2="1920" y2="270"/>
+    <line class="gh" id="gh3" x1="0" y1="405" x2="1920" y2="405"/>
+    <line class="gh" id="gh4" x1="0" y1="540" x2="1920" y2="540"/>
+    <line class="gh" id="gh5" x1="0" y1="675" x2="1920" y2="675"/>
+    <line class="gh" id="gh6" x1="0" y1="810" x2="1920" y2="810"/>
+    <line class="gh" id="gh7" x1="0" y1="945" x2="1920" y2="945"/>
+    <circle class="gi-dot-bg" cx="160"  cy="135" r="2.5"/><circle class="gi-dot-bg" cx="320"  cy="135" r="2.5"/><circle class="gi-dot-bg" cx="480"  cy="135" r="2.5"/><circle class="gi-dot-bg" cx="640"  cy="135" r="2.5"/><circle class="gi-dot-bg" cx="800"  cy="135" r="2.5"/><circle class="gi-dot-bg" cx="960"  cy="135" r="2.5"/><circle class="gi-dot-bg" cx="1120" cy="135" r="2.5"/><circle class="gi-dot-bg" cx="1280" cy="135" r="2.5"/><circle class="gi-dot-bg" cx="1440" cy="135" r="2.5"/><circle class="gi-dot-bg" cx="1600" cy="135" r="2.5"/><circle class="gi-dot-bg" cx="1760" cy="135" r="2.5"/>
+    <circle class="gi-dot-bg" cx="160"  cy="270" r="2.5"/><circle class="gi-dot-bg" cx="320"  cy="270" r="2.5"/><circle class="gi-dot-bg" cx="480"  cy="270" r="2.5"/><circle class="gi-dot-bg" cx="640"  cy="270" r="2.5"/><circle class="gi-dot-bg" cx="800"  cy="270" r="2.5"/><circle class="gi-dot-bg" cx="960"  cy="270" r="2.5"/><circle class="gi-dot-bg" cx="1120" cy="270" r="2.5"/><circle class="gi-dot-bg" cx="1280" cy="270" r="2.5"/><circle class="gi-dot-bg" cx="1440" cy="270" r="2.5"/><circle class="gi-dot-bg" cx="1600" cy="270" r="2.5"/><circle class="gi-dot-bg" cx="1760" cy="270" r="2.5"/>
+    <circle class="gi-dot-bg" cx="160"  cy="405" r="2.5"/><circle class="gi-dot-bg" cx="320"  cy="405" r="2.5"/><circle class="gi-dot-bg" cx="480"  cy="405" r="2.5"/><circle class="gi-dot-bg" cx="640"  cy="405" r="2.5"/><circle class="gi-dot-bg" cx="800"  cy="405" r="2.5"/><circle class="gi-dot-bg" cx="960"  cy="405" r="2.5"/><circle class="gi-dot-bg" cx="1120" cy="405" r="2.5"/><circle class="gi-dot-bg" cx="1280" cy="405" r="2.5"/><circle class="gi-dot-bg" cx="1440" cy="405" r="2.5"/><circle class="gi-dot-bg" cx="1600" cy="405" r="2.5"/><circle class="gi-dot-bg" cx="1760" cy="405" r="2.5"/>
+    <circle class="gi-dot-bg" cx="160"  cy="540" r="2.5"/><circle class="gi-dot-bg" cx="320"  cy="540" r="2.5"/><circle class="gi-dot-bg" cx="480"  cy="540" r="2.5"/><circle class="gi-dot-bg" cx="640"  cy="540" r="2.5"/><circle class="gi-dot-bg" cx="800"  cy="540" r="2.5"/><circle class="gi-dot-bg" cx="960"  cy="540" r="2.5"/><circle class="gi-dot-bg" cx="1120" cy="540" r="2.5"/><circle class="gi-dot-bg" cx="1280" cy="540" r="2.5"/><circle class="gi-dot-bg" cx="1440" cy="540" r="2.5"/><circle class="gi-dot-bg" cx="1600" cy="540" r="2.5"/><circle class="gi-dot-bg" cx="1760" cy="540" r="2.5"/>
+    <circle class="gi-dot-bg" cx="160"  cy="675" r="2.5"/><circle class="gi-dot-bg" cx="320"  cy="675" r="2.5"/><circle class="gi-dot-bg" cx="480"  cy="675" r="2.5"/><circle class="gi-dot-bg" cx="640"  cy="675" r="2.5"/><circle class="gi-dot-bg" cx="800"  cy="675" r="2.5"/><circle class="gi-dot-bg" cx="960"  cy="675" r="2.5"/><circle class="gi-dot-bg" cx="1120" cy="675" r="2.5"/><circle class="gi-dot-bg" cx="1280" cy="675" r="2.5"/><circle class="gi-dot-bg" cx="1440" cy="675" r="2.5"/><circle class="gi-dot-bg" cx="1600" cy="675" r="2.5"/><circle class="gi-dot-bg" cx="1760" cy="675" r="2.5"/>
+    <circle class="gi-dot-bg" cx="160"  cy="810" r="2.5"/><circle class="gi-dot-bg" cx="320"  cy="810" r="2.5"/><circle class="gi-dot-bg" cx="480"  cy="810" r="2.5"/><circle class="gi-dot-bg" cx="640"  cy="810" r="2.5"/><circle class="gi-dot-bg" cx="800"  cy="810" r="2.5"/><circle class="gi-dot-bg" cx="960"  cy="810" r="2.5"/><circle class="gi-dot-bg" cx="1120" cy="810" r="2.5"/><circle class="gi-dot-bg" cx="1280" cy="810" r="2.5"/><circle class="gi-dot-bg" cx="1440" cy="810" r="2.5"/><circle class="gi-dot-bg" cx="1600" cy="810" r="2.5"/><circle class="gi-dot-bg" cx="1760" cy="810" r="2.5"/>
+    <circle class="gi-dot-bg" cx="160"  cy="945" r="2.5"/><circle class="gi-dot-bg" cx="320"  cy="945" r="2.5"/><circle class="gi-dot-bg" cx="480"  cy="945" r="2.5"/><circle class="gi-dot-bg" cx="640"  cy="945" r="2.5"/><circle class="gi-dot-bg" cx="800"  cy="945" r="2.5"/><circle class="gi-dot-bg" cx="960"  cy="945" r="2.5"/><circle class="gi-dot-bg" cx="1120" cy="945" r="2.5"/><circle class="gi-dot-bg" cx="1280" cy="945" r="2.5"/><circle class="gi-dot-bg" cx="1440" cy="945" r="2.5"/><circle class="gi-dot-bg" cx="1600" cy="945" r="2.5"/><circle class="gi-dot-bg" cx="1760" cy="945" r="2.5"/>
+    <circle class="gi-dot-hi" cx="960" cy="135" r="4"/><circle class="gi-dot-hi" cx="960" cy="270" r="4"/><circle class="gi-dot-hi" cx="960" cy="405" r="4"/><circle class="gi-dot-hi" cx="960" cy="540" r="5"/><circle class="gi-dot-hi" cx="960" cy="675" r="4"/><circle class="gi-dot-hi" cx="960" cy="810" r="4"/><circle class="gi-dot-hi" cx="960" cy="945" r="4"/>
+    <circle class="gi-dot-hi" cx="160" cy="540" r="4"/><circle class="gi-dot-hi" cx="320" cy="540" r="4"/><circle class="gi-dot-hi" cx="480" cy="540" r="4"/><circle class="gi-dot-hi" cx="640" cy="540" r="4"/><circle class="gi-dot-hi" cx="800" cy="540" r="4"/><circle class="gi-dot-hi" cx="1120" cy="540" r="4"/><circle class="gi-dot-hi" cx="1280" cy="540" r="4"/><circle class="gi-dot-hi" cx="1440" cy="540" r="4"/><circle class="gi-dot-hi" cx="1600" cy="540" r="4"/><circle class="gi-dot-hi" cx="1760" cy="540" r="4"/>
+    <text class="col-num" x="160"  y="55" text-anchor="middle">01</text>
+    <text class="col-num" x="320"  y="55" text-anchor="middle">02</text>
+    <text class="col-num" x="480"  y="55" text-anchor="middle">03</text>
+    <text class="col-num" x="640"  y="55" text-anchor="middle">04</text>
+    <text class="col-num" x="800"  y="55" text-anchor="middle">05</text>
+    <text class="col-num" x="960"  y="55" text-anchor="middle" fill="rgba(255,77,46,.8)" font-size="13">06</text>
+    <text class="col-num" x="1120" y="55" text-anchor="middle">07</text>
+    <text class="col-num" x="1280" y="55" text-anchor="middle">08</text>
+    <text class="col-num" x="1440" y="55" text-anchor="middle">09</text>
+    <text class="col-num" x="1600" y="55" text-anchor="middle">10</text>
+    <text class="col-num" x="1760" y="55" text-anchor="middle">11</text>
+    <rect id="s03-hl" x="0" y="525" width="1920" height="30" fill="rgba(255,77,46,.06)"/>
+  </svg>
+  <div class="gd-label" id="gdl1">USER PROFILE<br><span class="gd-val">AGE 25–38</span></div>
+  <div class="gd-label" id="gdl2">ROLE<br><span class="gd-val">DESIGNER</span></div>
+  <div class="gd-label" id="gdl3">CONTEXT<br><span class="gd-val">CREATOR</span></div>
+  <div class="gd-label" id="gdl4">SECTOR<br><span class="gd-val">STARTUP</span></div>
+  <div class="gd-label" id="gdl5">SCALE<br><span class="gd-val">GROWTH</span></div>
+  <div class="gd-label" id="gdl6">REACH<br><span class="gd-val">GLOBAL</span></div>
+  <div id="s03-title">12-COLUMN GRID SYSTEM</div>
+  <div id="s03-subtitle">LAYOUT / STRUCTURE / PRECISION</div>
+</div>
+
+<!-- S04 Typography (25-33s) -->
+<div class="clip" id="s04" data-start="25" data-duration="8" data-track-index="0">
+  <div id="s04-bg"></div>
+  <div class="tw" id="tw1">NEXUS</div>
+  <div class="tw" id="tw2">IDENTITY</div>
+  <div class="tw" id="tw3">MOTION</div>
+  <div class="tw" id="tw4">CREATE · BUILD · SCALE · LAUNCH</div>
+  <div class="tw" id="tw5">NEXUS</div>
+  <div class="t-rule" id="tr1"></div>
+  <div class="t-rule" id="tr2"></div>
+  <div id="s04-counter">04 / TYPOGRAPHY</div>
+  <div id="s04-mask"></div>
+</div>
+
+<!-- S05 Data Visualization (33-38s) -->
+<div class="clip" id="s05" data-start="33" data-duration="5" data-track-index="0">
+  <div id="s05-bg"></div>
+  <svg width="1920" height="1080" style="position:absolute;inset:0" data-layout-allow-overflow="true">
+    <text id="ct-line" x="80" y="80" fill="#FFF5F2" font-family="Bebas Neue" font-size="28" letter-spacing="4" opacity="0">GROWTH METRICS</text>
+    <polyline id="lc-bg" points="80,320 240,300 400,280 560,260 720,220 880,195"/>
+    <polyline id="lc-path" points="80,320 240,300 400,280 560,260 720,220 880,195" fill="none" stroke="#FF4D2E" stroke-width="3" stroke-dasharray="800" stroke-dashoffset="800"/>
+    <polygon id="lc-fill" points="80,320 240,300 400,280 560,260 720,220 880,195 880,380 80,380" fill="#FF4D2E" opacity="0"/>
+    <line x1="80" y1="380" x2="880" y2="380" stroke="rgba(255,77,46,.2)" stroke-width="1"/>
+    <line x1="80" y1="320" x2="80" y2="380" stroke="rgba(255,77,46,.2)" stroke-width="1"/>
+    <text id="cl-a" x="80"  y="400" fill="rgba(255,245,242,.4)" font-family="Space Grotesk" font-size="11" letter-spacing="2" opacity="0">Q1</text>
+    <text id="cl-b" x="400" y="400" fill="rgba(255,245,242,.4)" font-family="Space Grotesk" font-size="11" letter-spacing="2" opacity="0">Q2</text>
+    <text id="cl-c" x="720" y="400" fill="rgba(255,245,242,.4)" font-family="Space Grotesk" font-size="11" letter-spacing="2" opacity="0">Q3</text>
+    <text id="ct-bar" x="1040" y="80" fill="#FFF5F2" font-family="Bebas Neue" font-size="28" letter-spacing="4" opacity="0">CATEGORY SPLIT</text>
+    <rect class="bar" id="ba1" x="1040" y="820" width="120" height="0"/>
+    <rect class="bar" id="ba2" x="1200" y="820" width="120" height="0"/>
+    <rect class="bar" id="ba3" x="1360" y="820" width="120" height="0"/>
+    <rect class="bar" id="ba4" x="1520" y="820" width="120" height="0"/>
+    <line x1="1040" y1="820" x2="1680" y2="820" stroke="rgba(255,77,46,.2)" stroke-width="1"/>
+    <text id="ct-ring" x="80" y="520" fill="#FFF5F2" font-family="Bebas Neue" font-size="28" letter-spacing="4" opacity="0">COMPLETION</text>
+    <circle id="ring-bg" cx="250" cy="720" r="90"/>
+    <circle id="ring-fg" cx="250" cy="720" r="90" transform="rotate(-90 250 720)"/>
+    <text id="ring-pct" x="250" y="720">0%</text>
+    <text id="ct-node" x="700" y="520" fill="#FFF5F2" font-family="Bebas Neue" font-size="28" letter-spacing="4" opacity="0">SYSTEM NODES</text>
+    <line class="nd-line" id="nl1" x1="900" y1="700" x2="1100" y2="620"/>
+    <line class="nd-line" id="nl2" x1="900" y1="700" x2="1100" y2="780"/>
+    <line class="nd-line" id="nl3" x1="1100" y1="620" x2="1300" y2="580"/>
+    <line class="nd-line" id="nl4" x1="1100" y1="780" x2="1300" y2="840"/>
+    <line class="nd-line" id="nl5" x1="1100" y1="620" x2="1300" y2="700"/>
+    <circle class="nd-circle" id="nc1" cx="900" cy="700" r="18"/>
+    <circle class="nd-circle" id="nc2" cx="1100" cy="620" r="14"/>
+    <circle class="nd-circle" id="nc3" cx="1100" cy="780" r="14"/>
+    <circle class="nd-circle" id="nc4" cx="1300" cy="580" r="10"/>
+    <circle class="nd-circle" id="nc5" cx="1300" cy="700" r="10"/>
+    <circle class="nd-circle" id="nc6" cx="1300" cy="840" r="10"/>
+    <text class="nd-label" id="nlb1" x="900"  y="740">CORE</text>
+    <text class="nd-label" id="nlb2" x="1100" y="660">UI</text>
+    <text class="nd-label" id="nlb3" x="1100" y="820">DATA</text>
+  </svg>
+  <div id="s05-label">05 / DATA VISUALIZATION</div>
+</div>
+
+<!-- S06 Target Audience Matrix (38-50s) -->
+<div class="clip" id="s06" data-start="38" data-duration="12" data-track-index="0">
+  <div id="s06-bg"></div>
+  <div id="s06-headline">
+    <div id="s06-hl-text">TARGET AUDIENCE</div>
+    <div id="s06-hl-tag">Brand Ecosystem Analysis</div>
+  </div>
+  <!-- Row 0 -->
+  <div class="pc pc-mid" id="pc00">
+    <div class="pc-deco" style="color:#FF4D2E">S</div>
+    <div class="pc-content">
+      <svg class="pc-silhouette" viewBox="0 0 80 96" style="width:72px;height:86px" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="28" r="20" fill="rgba(255,77,46,.14)" stroke="#FF4D2E" stroke-width="1.5"/>
+        <rect x="28" y="24" width="8" height="3" rx="1.5" fill="#FF4D2E" opacity=".7"/>
+        <rect x="44" y="24" width="8" height="3" rx="1.5" fill="#FF4D2E" opacity=".7"/>
+        <path d="M34 38 Q40 42 46 38" fill="none" stroke="#FF4D2E" stroke-width="1.2" opacity=".55"/>
+        <path d="M6 96 Q6 64 40 60 Q74 64 74 96" fill="rgba(255,77,46,.1)" stroke="#FF4D2E" stroke-width="1.5"/>
+        <path d="M40 60 L36 76 L40 80 L44 76 Z" fill="none" stroke="#FF4D2E" stroke-width="1" opacity=".45"/>
+      </svg>
+      <div class="pc-tag" style="color:rgba(255,77,46,.5)">AUDIENCE 01</div>
+      <div class="pc-name" style="color:#FFF5F2">STARTUP<br>FOUNDERS</div>
+    </div>
+  </div>
+  <div class="pc pc-acid" id="pc01">
+    <div class="pc-content" style="justify-content:center">
+      <div class="pc-stat-num" style="color:#120808">25–40</div>
+      <div class="pc-stat-sub" style="color:rgba(18,8,8,.6)">AGE RANGE</div>
+    </div>
+  </div>
+  <div class="pc pc-mid" id="pc02">
+    <div class="pc-deco" style="color:#FF4D2E">D</div>
+    <div class="pc-content">
+      <svg class="pc-silhouette" viewBox="0 0 80 96" style="width:72px;height:86px" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="28" r="20" fill="rgba(255,77,46,.14)" stroke="#FF4D2E" stroke-width="1.5"/>
+        <rect x="28" y="24" width="8" height="3" rx="1.5" fill="#FF4D2E" opacity=".7"/>
+        <rect x="44" y="24" width="8" height="3" rx="1.5" fill="#FF4D2E" opacity=".7"/>
+        <line x1="32" y1="37" x2="48" y2="37" stroke="#FF4D2E" stroke-width="1.2" opacity=".5"/>
+        <path d="M6 96 Q6 64 40 60 Q74 64 74 96" fill="rgba(255,77,46,.1)" stroke="#FF4D2E" stroke-width="1.5"/>
+        <rect x="28" y="76" width="24" height="14" rx="1" fill="none" stroke="#FF4D2E" stroke-width="1" opacity=".5"/>
+        <line x1="22" y1="92" x2="58" y2="92" stroke="#FF4D2E" stroke-width="1" opacity=".4"/>
+      </svg>
+      <div class="pc-tag" style="color:rgba(255,77,46,.5)">AUDIENCE 02</div>
+      <div class="pc-name" style="color:#FFF5F2">PRODUCT<br>DESIGNERS</div>
+    </div>
+  </div>
+  <div class="pc pc-white" id="pc03">
+    <div class="pc-content" style="justify-content:center">
+      <div class="pc-stat-num" style="color:#120808">200K+</div>
+      <div class="pc-stat-sub" style="color:rgba(18,8,8,.5)">MARKET SIZE</div>
+    </div>
+  </div>
+  <!-- Row 1 -->
+  <div class="pc pc-acid" id="pc10">
+    <div class="pc-content" style="justify-content:center">
+      <div class="pc-stat-num" style="color:#120808;font-size:72px">SCALE ↑</div>
+      <div class="pc-stat-sub" style="color:rgba(18,8,8,.55)">GROWTH STAGE</div>
+    </div>
+  </div>
+  <div class="pc pc-mid" id="pc11">
+    <div class="pc-deco" style="color:#FF4D2E">T</div>
+    <div class="pc-content">
+      <svg class="pc-silhouette" viewBox="0 0 80 96" style="width:72px;height:86px" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="28" r="20" fill="rgba(255,77,46,.14)" stroke="#FF4D2E" stroke-width="1.5"/>
+        <rect x="29" y="24" width="7" height="2.5" rx="1.2" fill="#FF4D2E" opacity=".7"/>
+        <rect x="44" y="24" width="7" height="2.5" rx="1.2" fill="#FF4D2E" opacity=".7"/>
+        <path d="M33 37 Q40 43 47 37" fill="none" stroke="#FF4D2E" stroke-width="1.2" opacity=".55"/>
+        <path d="M6 96 Q6 64 40 60 Q74 64 74 96" fill="rgba(255,77,46,.1)" stroke="#FF4D2E" stroke-width="1.5"/>
+        <text x="24" y="84" fill="#FF4D2E" font-size="14" opacity=".5" font-family="monospace">&lt;/&gt;</text>
+      </svg>
+      <div class="pc-tag" style="color:rgba(255,77,46,.5)">AUDIENCE 03</div>
+      <div class="pc-name" style="color:#FFF5F2">TECH<br>LEADS</div>
+    </div>
+  </div>
+  <div class="pc pc-white" id="pc12">
+    <div class="pc-content" style="justify-content:center">
+      <div class="pc-stat-num" style="color:#120808;font-size:72px">SERIES<br>A–C</div>
+      <div class="pc-stat-sub" style="color:rgba(18,8,8,.5)">FUNDING STAGE</div>
+    </div>
+  </div>
+  <div class="pc pc-mid" id="pc13">
+    <div class="pc-deco" style="color:#FF4D2E">C</div>
+    <div class="pc-content">
+      <svg class="pc-silhouette" viewBox="0 0 80 96" style="width:72px;height:86px" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="28" r="20" fill="rgba(255,77,46,.14)" stroke="#FF4D2E" stroke-width="1.5"/>
+        <rect x="28" y="24" width="8" height="3" rx="1.5" fill="#FF4D2E" opacity=".7"/>
+        <rect x="44" y="24" width="8" height="3" rx="1.5" fill="#FF4D2E" opacity=".7"/>
+        <path d="M32 37 Q40 43 48 37" fill="none" stroke="#FF4D2E" stroke-width="1.2" opacity=".55"/>
+        <path d="M6 96 Q6 64 40 60 Q74 64 74 96" fill="rgba(255,77,46,.1)" stroke="#FF4D2E" stroke-width="1.5"/>
+      </svg>
+      <div class="pc-tag" style="color:rgba(255,77,46,.5)">AUDIENCE 04</div>
+      <div class="pc-name" style="color:#FFF5F2">CREATIVE<br>DIRECTORS</div>
+    </div>
+  </div>
+  <!-- Row 2 -->
+  <div class="pc pc-mid" id="pc20">
+    <div class="pc-deco" style="color:#FF4D2E">V</div>
+    <div class="pc-content">
+      <svg class="pc-silhouette" viewBox="0 0 80 96" style="width:72px;height:86px" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="28" r="20" fill="rgba(255,77,46,.14)" stroke="#FF4D2E" stroke-width="1.5"/>
+        <rect x="28" y="24" width="8" height="3" rx="1.5" fill="#FF4D2E" opacity=".7"/>
+        <rect x="44" y="24" width="8" height="3" rx="1.5" fill="#FF4D2E" opacity=".7"/>
+        <path d="M33 39 Q40 44 47 39" fill="none" stroke="#FF4D2E" stroke-width="1.2" opacity=".55"/>
+        <path d="M6 96 Q6 64 40 60 Q74 64 74 96" fill="rgba(255,77,46,.1)" stroke="#FF4D2E" stroke-width="1.5"/>
+        <polygon points="33,72 33,84 45,78" fill="none" stroke="#FF4D2E" stroke-width="1" opacity=".5"/>
+      </svg>
+      <div class="pc-tag" style="color:rgba(255,77,46,.5)">AUDIENCE 05</div>
+      <div class="pc-name" style="color:#FFF5F2">VENTURE<br>STUDIOS</div>
+    </div>
+  </div>
+  <div class="pc pc-acid" id="pc21">
+    <div class="pc-content" style="justify-content:center">
+      <div class="pc-stat-num" style="color:#120808;font-size:64px">NEXUS<br>FIT ✓</div>
+      <div class="pc-stat-sub" style="color:rgba(18,8,8,.55)">BRAND ALIGNMENT</div>
+    </div>
+  </div>
+  <div class="pc pc-mid" id="pc22">
+    <div class="pc-deco" style="color:#FF4D2E">G</div>
+    <div class="pc-content">
+      <svg class="pc-silhouette" viewBox="0 0 80 96" style="width:72px;height:86px" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="28" r="20" fill="rgba(255,77,46,.14)" stroke="#FF4D2E" stroke-width="1.5"/>
+        <rect x="28" y="24" width="8" height="3" rx="1.5" fill="#FF4D2E" opacity=".7"/>
+        <rect x="44" y="24" width="8" height="3" rx="1.5" fill="#FF4D2E" opacity=".7"/>
+        <path d="M33 38 Q40 43 47 38" fill="none" stroke="#FF4D2E" stroke-width="1.2" opacity=".55"/>
+        <path d="M6 96 Q6 64 40 60 Q74 64 74 96" fill="rgba(255,77,46,.1)" stroke="#FF4D2E" stroke-width="1.5"/>
+        <polygon points="40,68 42,74 48,74 43,78 45,84 40,80 35,84 37,78 32,74 38,74" fill="none" stroke="#FF4D2E" stroke-width="1" opacity=".45"/>
+      </svg>
+      <div class="pc-tag" style="color:rgba(255,77,46,.5)">AUDIENCE 06</div>
+      <div class="pc-name" style="color:#FFF5F2">GROWTH<br>TEAMS</div>
+    </div>
+  </div>
+  <div class="pc pc-white" id="pc23">
+    <div class="pc-content" style="justify-content:center">
+      <div class="pc-stat-num" style="color:#120808;font-size:72px">×3<br>ROI</div>
+      <div class="pc-stat-sub" style="color:rgba(18,8,8,.5)">AVG RETURN</div>
+    </div>
+  </div>
+</div>
+
+<!-- S07 Module Convergence (50-57s) -->
+<div class="clip" id="s07" data-start="50" data-duration="7" data-track-index="0">
+  <div id="s07-bg"></div>
+  <div class="frag" id="fr0"  style="left:0;top:0;width:280px;height:200px;background:#FF4D2E;color:#120808;font-size:48px">NEXUS</div>
+  <div class="frag" id="fr1"  style="left:320px;top:0;width:200px;height:200px;background:#120808;color:#FF4D2E;font-size:48px;border:1px solid #FF4D2E">COLOR</div>
+  <div class="frag" id="fr2"  style="left:620px;top:0;width:260px;height:200px;background:#FFF5F2;color:#120808;font-size:48px">GRID</div>
+  <div class="frag" id="fr3"  style="left:980px;top:0;width:240px;height:200px;background:#FF4D2E;color:#120808;font-size:48px">TYPE</div>
+  <div class="frag" id="fr4"  style="left:1320px;top:0;width:260px;height:200px;background:#1e0c0c;color:#FF4D2E;font-size:48px;border:1px solid #FF4D2E">DATA</div>
+  <div class="frag" id="fr5"  style="left:1680px;top:0;width:240px;height:200px;background:#FF4D2E;color:#120808;font-size:36px">CREATE</div>
+  <div class="frag" id="fr6"  style="left:0;top:440px;width:220px;height:200px;background:#FFF5F2;color:#120808;font-size:36px">BRAND</div>
+  <div class="frag" id="fr7"  style="left:280px;top:400px;width:240px;height:240px;background:#FF4D2E;color:#120808;font-size:36px">BUILD</div>
+  <div class="frag" id="fr8"  style="left:1420px;top:400px;width:260px;height:240px;background:#120808;color:#FF4D2E;font-size:36px;border:1px solid #FF4D2E">SYSTEM</div>
+  <div class="frag" id="fr9"  style="left:1700px;top:440px;width:220px;height:200px;background:#FF4D2E;color:#120808;font-size:36px">SCALE</div>
+  <div class="frag" id="fr10" style="left:0;top:880px;width:260px;height:200px;background:#FF4D2E;color:#120808;font-size:36px">LAUNCH</div>
+  <div class="frag" id="fr11" style="left:340px;top:880px;width:240px;height:200px;background:#1e0c0c;color:#FFF5F2;font-size:36px;border:1px solid #FF4D2E">OUTPUT</div>
+  <div class="frag" id="fr12" style="left:700px;top:880px;width:260px;height:200px;background:#FFF5F2;color:#120808;font-size:36px">DESIGN</div>
+  <div class="frag" id="fr13" style="left:1100px;top:880px;width:240px;height:200px;background:#FF4D2E;color:#120808;font-size:36px">DEPLOY</div>
+  <div class="frag" id="fr14" style="left:1440px;top:880px;width:260px;height:200px;background:#120808;color:#FF4D2E;font-size:36px;border:1px solid rgba(255,77,46,.4)">GROW</div>
+  <div class="frag" id="fr15" style="left:1700px;top:880px;width:220px;height:200px;background:#FFF5F2;color:#120808;font-size:36px">NEXUS</div>
+  <div id="s07-brand">NEXUS</div>
+  <div id="s07-tagline">CREATIVE TECHNOLOGY STUDIO · 2026</div>
+</div>
+
+<!-- S08 Final Frame (57-60s) -->
+<div class="clip" id="s08" data-start="57" data-duration="3" data-track-index="0">
+  <div id="s08-bg"></div>
+  <div id="s08-main">
+    <div id="s08-logo">NEXUS</div>
+    <div id="s08-tagline">Creative Technology Studio</div>
+  </div>
+  <div id="s08-rule"></div>
+  <div id="s08-url">nexus.studio</div>
+  <div id="s08-ul">NEXUS STUDIO © 2026</div>
+  <div id="s08-year">CREATE · BUILD · SCALE · LAUNCH</div>
+</div>
+
+</div>
+</div>
+
+<script src="node_modules/gsap/dist/gsap.min.js"></script>
+<script>
+(function(){
+var gsap = window.gsap;
+var tl = gsap.timeline({ paused:true });
+
+function diagonalIn(id,t,dur){dur=dur||.22;tl.fromTo(id,{clipPath:"polygon(0 0,0 0,0 100%,0 100%)"},{clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)",duration:dur,ease:"power3.out"},t)}
+function diagonalOut(id,t,dur){dur=dur||.2;tl.to(id,{clipPath:"polygon(40% 0,100% 0,100% 100%,70% 100%)",duration:dur*.55,ease:"power2.in"},t);tl.to(id,{clipPath:"polygon(100% 0,100% 0,100% 100%,100% 100%)",duration:dur*.45,ease:"power2.in"},t+dur*.55)}
+function brandFlash(t,lightBg,dur){dur=dur||.5;tl.set("#fl-brand",{color:lightBg?"#120808":"#FF4D2E",opacity:0},t-.01);tl.to("#fl-brand",{opacity:.9,duration:.1,ease:"power4.in"},t);tl.to("#fl-brand",{opacity:0,duration:.2,ease:"power2.out"},t+dur-.2)}
+
+/* S01 */
+tl.set("#s01",{opacity:1},0);
+tl.set(["#s01-init","#s01-signal","#s01-detected","#s01-det-bar","#s1-n","#s1-e","#s1-x","#s1-u","#s1-s","#s01-kw-label","#kw1","#kw2","#kw3","#kw4","#s01-progress","#s01-prog-label","#s01-counter"],{opacity:0},0);
+tl.set(["#s1-n","#s1-e","#s1-x","#s1-u","#s1-s"],{y:80},0);
+tl.set("#s01-scanline",{y:0,opacity:1},0.3);
+tl.to("#s01-scanline",{y:1082,duration:1.5,ease:"power1.inOut"},0.3);
+tl.set("#s01-scanline",{opacity:0},1.85);
+tl.to("#s01-init",{opacity:1,duration:.2},0.35);
+tl.to("#s01-signal",{opacity:1,duration:.2},0.8);
+tl.to("#s01-det-bar",{width:400,duration:.35,ease:"power3.out"},2.0);
+tl.to("#s01-detected",{opacity:1,duration:.25},2.2);
+tl.to("#s1-n",{opacity:1,y:0,duration:.15,ease:"power4.out"},3.0);
+tl.to("#s1-e",{opacity:1,y:0,duration:.15,ease:"power4.out"},3.12);
+tl.to("#s1-x",{opacity:1,y:0,duration:.15,ease:"power4.out"},3.24);
+tl.to("#s1-u",{opacity:1,y:0,duration:.15,ease:"power4.out"},3.36);
+tl.to("#s1-s",{opacity:1,y:0,duration:.15,ease:"power4.out"},3.48);
+tl.to("#s01-kw-label",{opacity:1,duration:.2},4.2);
+tl.fromTo("#kw1",{opacity:0,x:-20},{opacity:1,x:0,duration:.2,ease:"power3.out"},4.5);
+tl.fromTo("#kw2",{opacity:0,x:-20},{opacity:1,x:0,duration:.2,ease:"power3.out"},5.0);
+tl.fromTo("#kw3",{opacity:0,x:-20},{opacity:1,x:0,duration:.2,ease:"power3.out"},5.5);
+tl.fromTo("#kw4",{opacity:0,x:-20},{opacity:1,x:0,duration:.2,ease:"power3.out"},6.0);
+tl.to("#kw1",{color:"rgba(255,245,242,.35)",duration:.15},5.5);
+tl.to("#kw2",{color:"rgba(255,245,242,.35)",duration:.15},6.0);
+tl.to("#kw3",{color:"rgba(255,245,242,.4)",duration:.15},6.0);
+tl.to("#s01-progress",{width:600,opacity:1,duration:1.0,ease:"power2.inOut"},6.5);
+tl.to("#s01-prog-label",{opacity:1,duration:.3},7.2);
+tl.to("#s01-counter",{opacity:1,duration:.3},7.5);
+tl.fromTo("#fl-black",{clipPath:"polygon(0 0,0 0,0 100%,0 100%)"},{clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)",duration:.22,ease:"power4.in"},9.74);
+brandFlash(9.74,false,.25);
+tl.set("#s01",{opacity:0},10.0);
+tl.set("#fl-black",{clipPath:"polygon(0 0,0 0,0 100%,0 100%)"},10.01);
+
+/* S02 */
+tl.set("#s02",{opacity:1},10.0);
+tl.set(["#cb-pri","#cb-sec","#cb-acc"],{clipPath:"polygon(0 0,0 0,0 100%,0 100%)"},10.0);
+tl.set(["#cl-pri","#cl-sec","#cl-acc","#ch-pri","#ch-sec","#ch-acc","#cd-pri","#cd-sec","#cd-acc"],{opacity:0},10.0);
+tl.set(["#s02-divv1","#s02-divv2"],{height:0},10.0);
+diagonalIn("#cb-pri",10.05,.22);diagonalIn("#cb-sec",10.18,.22);diagonalIn("#cb-acc",10.31,.22);
+tl.to("#s02-divv1",{height:1080,duration:.25,ease:"power2.out"},10.12);
+tl.to("#s02-divv2",{height:1080,duration:.25,ease:"power2.out"},10.25);
+tl.to(["#cl-pri","#cl-sec","#cl-acc"],{opacity:1,stagger:.08,duration:.2},10.55);
+tl.to(["#ch-pri","#ch-sec","#ch-acc"],{opacity:1,stagger:.06,duration:.18},10.75);
+tl.to(["#cd-pri","#cd-sec","#cd-acc"],{opacity:1,stagger:.06,duration:.18},10.95);
+diagonalOut("#cb-pri",16.55,.22);diagonalOut("#cb-sec",16.62,.22);diagonalOut("#cb-acc",16.69,.22);
+tl.set("#s02",{opacity:0},17.0);
+
+/* S03 */
+tl.set("#s03",{opacity:1},17.0);
+tl.set([".gv",".gh",".gi-dot-bg",".gi-dot-hi",".col-num","#s03-hl","#s03-title","#s03-subtitle","#gdl1","#gdl2","#gdl3","#gdl4","#gdl5","#gdl6"],{opacity:0},17.0);
+var gvIds=["#gv1","#gv2","#gv3","#gv4","#gv5","#gv6","#gv7","#gv8","#gv9","#gv10","#gv11"];
+gvIds.forEach(function(id,i){tl.to(id,{opacity:.3,duration:.12},17.12+i*0.06)});
+["#gh1","#gh2","#gh3","#gh4","#gh5","#gh6","#gh7"].forEach(function(id,i){tl.to(id,{opacity:.18,duration:.12},17.25+i*0.08)});
+tl.to(".gi-dot-bg",{opacity:.12,duration:.2},17.85);
+tl.to("#s03-hl",{opacity:1,duration:.3},18.0);
+tl.to(".gi-dot-hi",{opacity:.5,stagger:.03,duration:.12},18.1);
+tl.to(".col-num",{opacity:1,stagger:.03,duration:.08},18.5);
+tl.to("#s03-title",{opacity:1,duration:.3},18.8);
+tl.to("#s03-subtitle",{opacity:1,duration:.3},19.05);
+tl.fromTo("#gdl1",{opacity:0,y:8},{opacity:1,y:0,duration:.25,ease:"power3.out"},20.0);
+tl.fromTo("#gdl2",{opacity:0,y:8},{opacity:1,y:0,duration:.25,ease:"power3.out"},20.4);
+tl.fromTo("#gdl3",{opacity:0,y:8},{opacity:1,y:0,duration:.25,ease:"power3.out"},20.8);
+tl.fromTo("#gdl4",{opacity:0,y:8},{opacity:1,y:0,duration:.25,ease:"power3.out"},21.2);
+tl.fromTo("#gdl5",{opacity:0,y:8},{opacity:1,y:0,duration:.25,ease:"power3.out"},21.6);
+tl.fromTo("#gdl6",{opacity:0,y:8},{opacity:1,y:0,duration:.25,ease:"power3.out"},22.0);
+tl.fromTo("#fl-white",{clipPath:"polygon(0 0,0 0,0 100%,0 100%)"},{clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)",duration:.22,ease:"power4.in"},24.74);
+brandFlash(24.74,true,.25);
+tl.set("#s03",{opacity:0},25.0);
+tl.set("#fl-white",{clipPath:"polygon(0 0,0 0,0 100%,0 100%)"},25.01);
+
+/* S04 */
+tl.set("#s04",{opacity:1},25.0);
+tl.set(["#tw1","#tw2","#tw3","#tw4","#tw5"],{opacity:0,x:-40},25.0);
+tl.set(["#tr1","#tr2"],{width:0},25.0);
+tl.set("#s04-mask",{clipPath:"polygon(0 0,0 0,0 100%,0 100%)"},25.0);
+tl.to("#tw1",{opacity:1,x:0,duration:.25,ease:"power3.out"},25.20);
+tl.to("#tr1",{width:1760,duration:.3,ease:"power2.out"},25.37);
+tl.to("#tw2",{opacity:1,x:0,duration:.25,ease:"power3.out"},25.45);
+tl.to("#tr2",{width:1760,duration:.3,ease:"power2.out"},25.62);
+tl.to("#tw3",{opacity:1,x:0,duration:.25,ease:"power3.out"},25.70);
+tl.to("#tw4",{opacity:1,x:0,duration:.35,ease:"power2.out"},25.95);
+tl.to("#tw5",{opacity:1,x:0,duration:.4,ease:"power2.out"},26.05);
+tl.to("#tw1",{letterSpacing:"0.06em",duration:.45,ease:"power2.out"},26.26);
+tl.to("#tw1",{letterSpacing:"-0.01em",duration:.3,ease:"power2.in"},26.72);
+tl.to("#s04-counter",{opacity:1,duration:.2},25.5);
+tl.to("#s04-mask",{clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)",duration:.22,ease:"power4.in"},32.74);
+brandFlash(32.74,false,.25);
+tl.set("#s04",{opacity:0},33.0);
+
+/* S05 */
+tl.set("#s05",{opacity:1},33.0);
+tl.set(["#lc-path","#lc-fill","#lc-bg","#ct-line","#ct-bar","#ct-ring","#ct-node","#cl-a","#cl-b","#cl-c",".bar","#ring-fg","#ring-pct",".nd-line",".nd-circle",".nd-label","#s05-label"],{opacity:0},33.0);
+tl.to("#ct-line",{opacity:1,duration:.2},33.1);
+tl.to("#lc-bg",{opacity:1,duration:.2},33.2);
+tl.to("#lc-path",{strokeDashoffset:0,opacity:1,duration:.55,ease:"power2.out"},33.3);
+tl.to("#lc-fill",{opacity:.12,duration:.35},33.7);
+tl.to(["#cl-a","#cl-b","#cl-c"],{opacity:1,stagger:.05,duration:.15},33.85);
+tl.to("#ct-bar",{opacity:1,duration:.2},34.0);
+tl.set(".bar",{opacity:1},34.2);
+tl.to("#ba1",{attr:{y:540,height:280},duration:.35,ease:"power3.out"},34.2);
+tl.to("#ba2",{attr:{y:620,height:200},duration:.35,ease:"power3.out"},34.35);
+tl.to("#ba3",{attr:{y:680,height:140},duration:.35,ease:"power3.out"},34.50);
+tl.to("#ba4",{attr:{y:740,height:80},duration:.35,ease:"power3.out"},34.65);
+tl.to("#ct-ring",{opacity:1,duration:.2},34.9);
+tl.to("#ring-fg",{strokeDashoffset:124,opacity:1,duration:.75,ease:"power2.out"},35.1);
+tl.set("#ring-pct",{opacity:1},35.1);
+var _rc={v:0};
+tl.to(_rc,{v:82,duration:.75,ease:"power2.out",onUpdate:function(){var el=document.getElementById("ring-pct");if(el)el.textContent=Math.round(_rc.v)+"%"}},35.1);
+tl.to("#ct-node",{opacity:1,duration:.2},35.8);
+tl.to(".nd-line",{strokeDashoffset:0,opacity:1,stagger:.07,duration:.28},35.9);
+tl.to(".nd-circle",{opacity:1,stagger:.06,duration:.14},36.3);
+tl.to(".nd-label",{opacity:1,stagger:.06,duration:.14},36.5);
+tl.to("#s05-label",{opacity:1,duration:.3},36.8);
+tl.fromTo("#fl-acid",{clipPath:"polygon(0 0,0 0,0 100%,0 100%)"},{clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)",duration:.2,ease:"power4.in"},37.74);
+brandFlash(37.74,true,.25);
+tl.set("#s05",{opacity:0},38.0);
+tl.set("#fl-acid",{clipPath:"polygon(0 0,0 0,0 100%,0 100%)"},38.01);
+
+/* S06 */
+tl.set("#s06",{opacity:1},38.0);
+tl.set(["#s06-hl-text","#s06-hl-tag","#pc00","#pc01","#pc02","#pc03","#pc10","#pc11","#pc12","#pc13","#pc20","#pc21","#pc22","#pc23"],{opacity:0},38.0);
+tl.fromTo("#s06-hl-text",{opacity:0,x:-30},{opacity:1,x:0,duration:.35,ease:"power3.out"},38.1);
+tl.to("#s06-hl-tag",{opacity:1,duration:.3},38.45);
+["#pc00","#pc01","#pc02","#pc03"].forEach(function(id,i){tl.fromTo(id,{opacity:0,y:20},{opacity:1,y:0,duration:.3,ease:"power3.out"},38.7+i*0.15)});
+["#pc10","#pc11","#pc12","#pc13"].forEach(function(id,i){tl.fromTo(id,{opacity:0,y:20},{opacity:1,y:0,duration:.3,ease:"power3.out"},39.4+i*0.15)});
+["#pc20","#pc21","#pc22","#pc23"].forEach(function(id,i){tl.fromTo(id,{opacity:0,y:20},{opacity:1,y:0,duration:.3,ease:"power3.out"},40.1+i*0.15)});
+["#pc00","#pc02","#pc11","#pc13","#pc20","#pc22"].forEach(function(id,i){
+  tl.to(id,{scale:1.02,duration:.25,ease:"power2.out"},44.0+i*0.15);
+  tl.to(id,{scale:1.0,duration:.2,ease:"power2.in"},44.25+i*0.15);
+});
+tl.fromTo("#fl-black",{clipPath:"polygon(0 0,0 0,0 100%,0 100%)"},{clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)",duration:.25,ease:"power4.in"},49.7);
+brandFlash(49.7,false,.29);
+tl.set("#s06",{opacity:0},50.0);
+tl.set("#fl-black",{clipPath:"polygon(0 0,0 0,0 100%,0 100%)"},50.01);
+
+/* S07 */
+tl.set("#s07",{opacity:1},50.0);
+tl.set([".frag","#s07-brand","#s07-tagline"],{opacity:0},50.0);
+tl.set("#s07-brand",{xPercent:-50,yPercent:-50},50.0);
+tl.set("#s07-tagline",{xPercent:-50},50.0);
+var fragIds=["#fr0","#fr1","#fr2","#fr3","#fr4","#fr5","#fr6","#fr7","#fr8","#fr9","#fr10","#fr11","#fr12","#fr13","#fr14","#fr15"];
+fragIds.forEach(function(id,i){tl.to(id,{opacity:1,duration:.08},50.1+i*0.05)});
+fragIds.forEach(function(id,i){tl.to(id,{x:960,y:540,scale:.04,opacity:0,duration:1.2,ease:"power2.in"},51.4+i*0.04)});
+tl.fromTo("#s07-brand",{opacity:0,scale:.06,xPercent:-50,yPercent:-50},{opacity:1,scale:1,xPercent:-50,yPercent:-50,duration:.6,ease:"back.out(1.4)"},53.0);
+tl.to("#s07-tagline",{opacity:1,duration:.4},53.7);
+tl.fromTo("#fl-acid",{clipPath:"polygon(0 0,0 0,0 100%,0 100%)"},{clipPath:"polygon(0 0,100% 0,100% 100%,0 100%)",duration:.22,ease:"power4.in"},56.74);
+brandFlash(56.74,true,.25);
+tl.set("#s07",{opacity:0},57.0);
+tl.set("#fl-acid",{clipPath:"polygon(0 0,0 0,0 100%,0 100%)"},57.01);
+
+/* S08 */
+tl.set("#s08",{opacity:1},57.0);
+
+window.__timelines=window.__timelines||{};
+window.__timelines["nexus-v1"]=tl;
+})();
+</script>
+</body>
+</html>
