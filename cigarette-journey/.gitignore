@@ -3,6 +3,7 @@ frames/
 frames_fih/
 frames_cf/
 frames_v2/
+frames_cfv2/
 test_*.png
 preview_*.png
 gsap.min.js
