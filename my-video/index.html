@@ -9,170 +9,140 @@
     html, body { width: 1920px; height: 1080px; overflow: hidden; background: #030308; }
     #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
 
-    /* ── TYPE SYSTEM ──────────────────────────────
-       MEGA    260-320px  Helvetica Neue 700  tracked
-       DISPLAY  80-120px  Georgia 400/700
-       LABEL    10-14px   Helvetica Neue 700  tracked 5-8px ALL CAPS
-       MICRO     9-10px   Helvetica Neue 400  tracked 4px ALL CAPS
-    ─────────────────────────────────────────────── */
-
-    /* ── STARS ── */
     .star { position: absolute; border-radius: 50%; background: #fff; opacity: 0; pointer-events: none; }
-
-    /* ── GLOBAL RULES ── */
     .rule-h { position: absolute; height: 0.5px; background: #C9A050; opacity: 0; }
     .rule-v { position: absolute; width: 0.5px; background: #C9A050; opacity: 0; }
 
-    /* ── ACT 0: THE LINE (0–3s) ── */
+    /* ══ PHOTO TREATMENT SYSTEM ══════════════════════
+       Each character gets a distinct cinematic grade
+    ═══════════════════════════════════════════════ */
+    .photo-base {
+      position: absolute;
+      background-size: cover;
+      background-position: center top;
+      background-repeat: no-repeat;
+    }
+    /* Harry — warm gold duotone (Gryffindor soul) */
+    .photo-harry {
+      background-image: url("assets/harry-nobg.png");
+      filter: grayscale(0.55) contrast(1.15) brightness(0.75) sepia(0.45) hue-rotate(5deg) saturate(2.2);
+    }
+    /* Snape — ice-cold blue (repressed grief) */
+    .photo-snape {
+      background-image: url("assets/snape-nobg.png");
+      filter: grayscale(0.5) contrast(1.25) brightness(0.6) sepia(0.15) hue-rotate(200deg) saturate(1.4);
+    }
+    /* Tom Riddle — cold Slytherin green */
+    .photo-tom {
+      background-image: url("assets/tomriddle-nobg.png");
+      filter: grayscale(0.35) contrast(1.3) brightness(0.8) sepia(0.2) hue-rotate(112deg) saturate(1.6);
+    }
+
+    /* ══ ACT 0: THE LINE ══ */
     #act0 { position: absolute; inset: 0; }
     #line-main { width: 0; height: 0.5px; background: #C9A050; position: absolute; top: 540px; left: 0; }
     #issue-tag {
       position: absolute; bottom: 64px; right: 120px;
       font-family: "Helvetica Neue", sans-serif;
-      font-size: 9px; letter-spacing: 6px; text-transform: uppercase;
-      color: #2A2520; opacity: 0;
+      font-size: 9px; letter-spacing: 6px; text-transform: uppercase; color: #2A2520; opacity: 0;
     }
 
-    /* ── ACT 1: THE LETTER (3–9s) ── */
+    /* ══ ACT 1: THE LETTER ══ */
     #act1 { position: absolute; inset: 0; opacity: 0; }
-
-    /* Hogwarts letter seal — top left */
-    #seal-wrap {
-      position: absolute; top: 140px; left: 160px;
-      opacity: 0;
-    }
+    #seal-wrap { position: absolute; top: 140px; left: 160px; opacity: 0; }
     .seal-label {
-      font-family: "Helvetica Neue", sans-serif;
-      font-size: 9px; letter-spacing: 7px; text-transform: uppercase;
-      color: #C9A050; font-weight: 700; margin-bottom: 10px;
+      font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px;
+      text-transform: uppercase; color: #C9A050; font-weight: 700; margin-bottom: 10px;
     }
     .seal-school {
       font-size: 9px; letter-spacing: 5px; text-transform: uppercase;
-      color: #555; font-family: "Helvetica Neue", sans-serif;
-      line-height: 2.2;
+      color: #555; font-family: "Helvetica Neue", sans-serif; line-height: 2.2;
     }
-
-    /* Wax seal SVG */
     #wax-seal { position: absolute; top: 130px; right: 260px; opacity: 0; }
-
-    /* The envelope / address block */
-    #address-block {
-      position: absolute; top: 50%; left: 160px;
-      transform: translateY(-50%);
-      opacity: 0;
-    }
+    #address-block { position: absolute; top: 50%; left: 160px; transform: translateY(-50%); opacity: 0; }
     .addr-to {
-      font-family: "Helvetica Neue", sans-serif;
-      font-size: 9px; letter-spacing: 5px; text-transform: uppercase;
-      color: #555; margin-bottom: 12px;
+      font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 5px;
+      text-transform: uppercase; color: #555; margin-bottom: 12px;
     }
     .addr-name {
-      font-size: 92px; font-weight: 700; color: #EDE8DF;
-      font-family: "Georgia", serif;
+      font-size: 92px; font-weight: 700; color: #EDE8DF; font-family: "Georgia", serif;
       letter-spacing: -1px; line-height: 0.95;
     }
     .addr-place {
-      font-family: "Helvetica Neue", sans-serif;
-      font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
-      color: #444; margin-top: 16px; line-height: 2.2;
+      font-family: "Helvetica Neue", sans-serif; font-size: 11px; letter-spacing: 4px;
+      text-transform: uppercase; color: #444; margin-top: 16px; line-height: 2.2;
     }
-
-    /* The "meme" quote */
-    #letter-meme {
-      position: absolute;
-      right: 160px; top: 50%; transform: translateY(-50%);
-      text-align: right; opacity: 0; width: 700px;
-    }
+    #act1-divider { position: absolute; left: 960px; top: 200px; width: 0.5px; height: 0; background: #2A2520; }
+    #letter-meme { position: absolute; right: 160px; top: 50%; transform: translateY(-50%); text-align: right; opacity: 0; width: 680px; }
     .meme-text {
-      font-size: 64px; font-style: italic; color: #EDE8DF;
-      font-family: "Georgia", serif; line-height: 1.2;
-      letter-spacing: -1px;
+      font-size: 64px; font-style: italic; color: #EDE8DF; font-family: "Georgia", serif;
+      line-height: 1.2; letter-spacing: -1px;
     }
     .meme-text .gold { color: #C9A050; }
     .meme-attr {
-      font-family: "Helvetica Neue", sans-serif;
-      font-size: 10px; letter-spacing: 5px; text-transform: uppercase;
-      color: #444; margin-top: 20px;
+      font-family: "Helvetica Neue", sans-serif; font-size: 10px; letter-spacing: 5px;
+      text-transform: uppercase; color: #444; margin-top: 20px;
     }
 
-    /* vertical divider line between address and meme */
-    #act1-divider {
-      position: absolute; left: 960px; top: 200px;
-      width: 0.5px; height: 0; background: #2A2520;
-    }
-
-    /* ── ACT 2: H A R R Y  P O T T E R (9–14s) ── */
+    /* ══ ACT 2: H·A·R·R·Y WITH HARRY PHOTO ══ */
     #act2 { position: absolute; inset: 0; opacity: 0; }
 
-    /* Section label */
+    /* Harry portrait — full right half, behind typography */
+    #harry-photo {
+      right: 0; top: 0; width: 820px; height: 1080px;
+      opacity: 0;
+    }
+    /* Gold color wash over photo */
+    #harry-photo-overlay {
+      position: absolute; right: 0; top: 0; width: 820px; height: 1080px;
+      background: linear-gradient(
+        90deg,
+        #030308 0%,
+        rgba(3,3,8,0.7) 20%,
+        rgba(201,160,80,0.12) 60%,
+        rgba(201,160,80,0.06) 100%
+      );
+      opacity: 0;
+    }
+
     #act2-label {
       position: absolute; top: 100px; left: 160px;
-      font-family: "Helvetica Neue", sans-serif;
-      font-size: 9px; letter-spacing: 7px; text-transform: uppercase;
-      color: #C9A050; font-weight: 700; opacity: 0;
+      font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px;
+      text-transform: uppercase; color: #C9A050; font-weight: 700; opacity: 0;
     }
     #act2-num {
       position: absolute; top: 100px; right: 160px;
-      font-family: "Helvetica Neue", sans-serif;
-      font-size: 9px; letter-spacing: 5px;
+      font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 5px;
       color: #2A2520; opacity: 0;
     }
-
-    /* Giant letters H A R R Y */
-    .letter-row {
-      position: absolute; display: flex; gap: 0;
-      left: 120px; right: 120px;
-    }
-    #row-harry { top: 160px; }
+    .letter-row { position: absolute; display: flex; gap: 0; left: 120px; right: 120px; }
+    #row-harry  { top: 160px; }
     #row-potter { top: 510px; }
-
-    .letter-unit {
-      flex: 1; display: flex; flex-direction: column; align-items: center;
-      position: relative;
-    }
+    .letter-unit { flex: 1; display: flex; flex-direction: column; align-items: center; }
     .big-letter {
       font-size: 300px; font-weight: 900; line-height: 0.9;
-      font-family: "Helvetica Neue", sans-serif;
-      color: #EDE8DF; opacity: 0; letter-spacing: -8px;
+      font-family: "Helvetica Neue", sans-serif; color: #EDE8DF; opacity: 0; letter-spacing: -8px;
     }
     .letter-anno {
-      font-family: "Helvetica Neue", sans-serif;
-      font-size: 9px; letter-spacing: 4px; text-transform: uppercase;
-      color: #444; margin-top: 8px; text-align: center;
+      font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 4px;
+      text-transform: uppercase; color: #444; margin-top: 8px; text-align: center;
       line-height: 1.8; opacity: 0;
     }
-    /* Ghost of first row while second shows */
-    .big-letter.ghost { color: #0D0B18; }
+    #letter-rule { position: absolute; top: 508px; left: 120px; right: 120px; height: 0.5px; background: #2A2520; opacity: 0; }
 
-    /* ── ACT 3: SEVEN BOOKS (14–22s) ── */
+    /* ══ ACT 3: SEVEN BOOKS ══ */
     #act3 { position: absolute; inset: 0; opacity: 0; }
-
-    #chart-header {
-      position: absolute; top: 100px; left: 160px; opacity: 0;
-    }
+    #chart-header { position: absolute; top: 100px; left: 160px; opacity: 0; }
     .ch-title {
-      font-family: "Helvetica Neue", sans-serif;
-      font-size: 9px; letter-spacing: 7px; text-transform: uppercase;
-      color: #C9A050; font-weight: 700; margin-bottom: 6px;
+      font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px;
+      text-transform: uppercase; color: #C9A050; font-weight: 700; margin-bottom: 6px;
     }
     .ch-sub {
-      font-family: "Helvetica Neue", sans-serif;
-      font-size: 9px; letter-spacing: 4px; text-transform: uppercase;
-      color: #2A2520;
+      font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 4px;
+      text-transform: uppercase; color: #2A2520;
     }
-
-    #chart-area {
-      position: absolute;
-      bottom: 140px; left: 160px; right: 160px; top: 180px;
-    }
-
-    /* Thin vertical lines (not fat bars) */
-    .book-line {
-      position: absolute; bottom: 48px;
-      width: 1px; background: #C9A050; opacity: 0;
-      transform-origin: bottom;
-    }
-    /* Heights: PS=77 CoS=87 PoA=109 GoF=219 OotP=300 HBP=209 DH=262 (max 300px) */
+    #chart-area { position: absolute; bottom: 140px; left: 160px; right: 160px; top: 180px; }
+    .book-line { position: absolute; bottom: 48px; width: 1px; background: #C9A050; opacity: 0; transform-origin: bottom; }
     #bl1 { left: 111px;  height: 77px;  background: #6B1212; }
     #bl2 { left: 334px;  height: 87px;  background: #6B1212; }
     #bl3 { left: 557px;  height: 109px; background: #6B1212; }
@@ -180,202 +150,193 @@
     #bl5 { left: 1003px; height: 300px; background: #C9A050; }
     #bl6 { left: 1226px; height: 209px; background: #6B1212; }
     #bl7 { left: 1449px; height: 262px; background: #C9A050; }
-
     .book-abbr {
-      position: absolute; bottom: 20px;
-      font-family: "Helvetica Neue", sans-serif;
+      position: absolute; bottom: 20px; font-family: "Helvetica Neue", sans-serif;
       font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
       color: #333; opacity: 0; transform: translateX(-50%);
     }
     .book-pages {
-      position: absolute;
-      font-family: "Helvetica Neue", sans-serif;
-      font-size: 9px; letter-spacing: 1px;
-      color: #555; opacity: 0; transform: translateX(-50%);
+      position: absolute; font-family: "Helvetica Neue", sans-serif;
+      font-size: 9px; letter-spacing: 1px; color: #555; opacity: 0; transform: translateX(-50%);
     }
-
-    /* Book labels positioning */
-    #abbr1 { left: 111px; } #abbr2 { left: 334px; } #abbr3 { left: 557px; }
-    #abbr4 { left: 780px; } #abbr5 { left: 1003px; } #abbr6 { left: 1226px; }
-    #abbr7 { left: 1449px; }
-
-    /* Pages labels — above each line */
-    #pg1 { bottom: 132px; left: 111px; } #pg2 { bottom: 142px; left: 334px; }
-    #pg3 { bottom: 164px; left: 557px; } #pg4 { bottom: 274px; left: 780px; }
-    #pg5 { bottom: 355px; left: 1003px; } #pg6 { bottom: 264px; left: 1226px; }
-    #pg7 { bottom: 317px; left: 1449px; }
-
-    /* Tension curve */
-    #tension-svg2 {
-      position: absolute; bottom: 48px; left: 0; right: 0;
-      width: 1600px; height: 320px; overflow: visible; opacity: 0;
-    }
-
-    /* Axis lines */
+    #abbr1{left:111px;} #abbr2{left:334px;} #abbr3{left:557px;}
+    #abbr4{left:780px;} #abbr5{left:1003px;} #abbr6{left:1226px;} #abbr7{left:1449px;}
+    #pg1{bottom:132px;left:111px;} #pg2{bottom:142px;left:334px;}
+    #pg3{bottom:164px;left:557px;} #pg4{bottom:274px;left:780px;}
+    #pg5{bottom:355px;left:1003px;} #pg6{bottom:264px;left:1226px;} #pg7{bottom:317px;left:1449px;}
+    #tension-svg2 { position: absolute; bottom: 48px; left: 0; right: 0; width: 1600px; height: 320px; overflow: visible; opacity: 0; }
     #x-axis { left: 0; bottom: 47px; width: 1600px; }
     #y-axis-left { left: 0; bottom: 48px; height: 320px; }
-
-    /* Moment annotations */
     .book-moment {
-      position: absolute; opacity: 0;
-      font-family: "Helvetica Neue", sans-serif;
+      position: absolute; opacity: 0; font-family: "Helvetica Neue", sans-serif;
       font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
       color: #C9A050; white-space: nowrap;
     }
-
-    /* Stat block */
-    #stat-block {
-      position: absolute; top: 110px; right: 160px;
-      text-align: right; opacity: 0;
-    }
+    #stat-block { position: absolute; top: 110px; right: 160px; text-align: right; opacity: 0; }
     .stat-num {
       font-size: 100px; font-weight: 900; color: #EDE8DF;
-      font-family: "Helvetica Neue", sans-serif;
-      line-height: 0.85; letter-spacing: -4px;
+      font-family: "Helvetica Neue", sans-serif; line-height: 0.85; letter-spacing: -4px;
     }
     .stat-label {
-      font-family: "Helvetica Neue", sans-serif;
-      font-size: 9px; letter-spacing: 6px; text-transform: uppercase;
-      color: #444; margin-top: 8px;
+      font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 6px;
+      text-transform: uppercase; color: #444; margin-top: 8px;
     }
 
-    /* ── ACT 4: EDITORIAL MEME CARDS (22–27s) ── */
+    /* ══ ACT 4: EDITORIAL MEME CARDS ══ */
     #act4 { position: absolute; inset: 0; opacity: 0; }
 
-    /* Card A: Platform 9¾ */
+    /* Card A: Tom Riddle editorial portrait */
     #card-a { position: absolute; inset: 0; opacity: 0; }
-    .card-tag-top {
-      position: absolute; top: 100px; left: 160px;
-      font-family: "Helvetica Neue", sans-serif;
-      font-size: 9px; letter-spacing: 7px; text-transform: uppercase;
-      color: #C9A050; font-weight: 700;
-    }
-    #platform-num {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 380px; font-weight: 900;
-      font-family: "Helvetica Neue", sans-serif;
-      color: #EDE8DF; line-height: 1; letter-spacing: -15px;
-      opacity: 0; white-space: nowrap;
-    }
-    .card-caption {
-      position: absolute; bottom: 140px; left: 160px;
-      font-family: "Georgia", serif;
-      font-size: 26px; color: #555; font-style: italic; letter-spacing: 0;
-      max-width: 700px; line-height: 1.6;
+
+    /* Tom Riddle photo — left side, tall, dramatic */
+    #tom-photo {
+      left: 0; top: 0; width: 680px; height: 1080px;
       opacity: 0;
     }
-    .card-tag-right {
-      position: absolute; bottom: 140px; right: 160px;
-      font-family: "Helvetica Neue", sans-serif;
-      font-size: 9px; letter-spacing: 7px; text-transform: uppercase;
-      color: #2A2520; opacity: 0; text-align: right;
+    /* Slytherin gradient fade from photo into dark bg */
+    #tom-photo-fade {
+      position: absolute; left: 0; top: 0; width: 900px; height: 1080px;
+      background: linear-gradient(
+        90deg,
+        rgba(3,3,8,0) 0%,
+        rgba(3,3,8,0) 50%,
+        rgba(3,3,8,0.85) 75%,
+        #030308 100%
+      );
+    }
+    /* Slytherin color tint layer */
+    #tom-photo-tint {
+      position: absolute; left: 0; top: 0; width: 680px; height: 1080px;
+      background: rgba(15, 50, 25, 0.35);
+      mix-blend-mode: color;
+    }
+
+    .card-tag-top {
+      position: absolute; top: 100px; left: 740px;
+      font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px;
+      text-transform: uppercase; color: #C9A050; font-weight: 700; opacity: 0;
+    }
+    #tom-name {
+      position: absolute; top: 200px; left: 740px; opacity: 0;
+    }
+    .tom-name-line1 {
+      font-size: 80px; font-weight: 700; color: #EDE8DF;
+      font-family: "Georgia", serif; line-height: 0.95; letter-spacing: -1px;
+    }
+    .tom-name-line2 {
+      font-size: 80px; font-weight: 700; color: #EDE8DF;
+      font-family: "Georgia", serif; line-height: 0.95; letter-spacing: -1px;
+    }
+    .tom-name-line3 {
+      font-size: 80px; font-weight: 700; color: #EDE8DF;
+      font-family: "Georgia", serif; line-height: 0.95; letter-spacing: -1px;
+    }
+    #tom-rule { position: absolute; top: 500px; left: 740px; width: 0; height: 0.5px; background: #C9A050; opacity: 0; }
+    #tom-anagram {
+      position: absolute; top: 525px; left: 740px; opacity: 0;
+    }
+    .anagram-label {
+      font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 5px;
+      text-transform: uppercase; color: #555; margin-bottom: 12px;
+    }
+    .anagram-text {
+      font-size: 40px; font-weight: 700; color: #C9A050;
+      font-family: "Helvetica Neue", sans-serif; letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+    #tom-bottom {
+      position: absolute; bottom: 140px; left: 740px; opacity: 0;
+      font-family: "Helvetica Neue", sans-serif; font-size: 9px;
+      letter-spacing: 5px; text-transform: uppercase; color: #333;
     }
 
     /* Card B: Mirror of Erised */
     #card-b { position: absolute; inset: 0; opacity: 0; }
+    .card-tag-top-b {
+      position: absolute; top: 100px; left: 160px;
+      font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px;
+      text-transform: uppercase; color: #C9A050; font-weight: 700;
+    }
     #erised-ghost {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
       font-size: 64px; font-weight: 900; font-family: "Helvetica Neue", sans-serif;
       color: #0D0B18; line-height: 1.1; letter-spacing: 8px; text-align: center;
       text-transform: uppercase; opacity: 0; width: 1600px;
     }
-    #erised-real {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center; opacity: 0;
-    }
+    #erised-real { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; opacity: 0; }
     .erised-line1 {
-      font-size: 48px; color: #EDE8DF; font-family: "Georgia", serif;
-      font-style: italic; line-height: 1.4; letter-spacing: 1px;
+      font-size: 52px; color: #EDE8DF; font-family: "Georgia", serif;
+      font-style: italic; line-height: 1.4;
     }
     .erised-gold { color: #C9A050; }
     #erised-sub {
-      font-family: "Helvetica Neue", sans-serif;
-      font-size: 9px; letter-spacing: 6px; text-transform: uppercase;
-      color: #444; margin-top: 24px;
+      font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 6px;
+      text-transform: uppercase; color: #444; margin-top: 24px;
     }
 
-    /* ── ACT 5: ALWAYS (27–35s) ── */
+    /* ══ ACT 5: ALWAYS — WITH SNAPE ══ */
     #act5 { position: absolute; inset: 0; background: #000; opacity: 0; }
+
+    /* Snape photo — right side, massive, floor-to-ceiling */
+    #snape-photo {
+      right: 0; top: 0; width: 900px; height: 1080px;
+      opacity: 0;
+    }
+    /* Fade snape into dark on the left edge */
+    #snape-photo-fade {
+      position: absolute; right: 0; top: 0; width: 1200px; height: 1080px;
+      background: linear-gradient(
+        90deg,
+        #000 0%,
+        rgba(0,0,0,0.95) 20%,
+        rgba(0,0,0,0.7) 45%,
+        rgba(0,0,0,0.2) 70%,
+        rgba(0,0,0,0) 100%
+      );
+    }
 
     #always-q {
       position: absolute; top: 390px; left: 160px;
       font-size: 36px; color: #444; font-style: italic;
-      font-family: "Georgia", serif; letter-spacing: 0.5px;
-      opacity: 0;
+      font-family: "Georgia", serif; letter-spacing: 0.5px; opacity: 0;
     }
-    #always-rule {
-      position: absolute; top: 490px; left: 160px;
-      width: 0; height: 0.5px; background: #C9A050; opacity: 0;
-    }
+    #always-rule { position: absolute; top: 490px; left: 160px; width: 0; height: 0.5px; background: #C9A050; opacity: 0; }
     #always-word {
-      position: absolute;
-      top: 50%; left: 50%; transform: translate(-50%, -42%);
-      font-size: 260px; font-weight: 900; letter-spacing: -6px;
-      font-family: "Helvetica Neue", sans-serif;
-      color: #C9A050; line-height: 1;
+      position: absolute; top: 50%; left: 160px; transform: translateY(-38%);
+      font-size: 240px; font-weight: 900; letter-spacing: -6px;
+      font-family: "Helvetica Neue", sans-serif; color: #C9A050; line-height: 1;
       text-shadow: 0 0 120px rgba(201,160,80,0.7), 0 0 280px rgba(201,160,80,0.3);
       opacity: 0;
     }
     #always-attr {
-      position: absolute; bottom: 160px; right: 160px;
-      font-family: "Helvetica Neue", sans-serif;
-      font-size: 9px; letter-spacing: 7px; text-transform: uppercase;
-      color: #2A2520; opacity: 0; text-align: right;
+      position: absolute; bottom: 160px; left: 160px;
+      font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px;
+      text-transform: uppercase; color: #2A2520; opacity: 0;
     }
 
-    /* ── ACT 6: RECONSTRUCTION (35–44s) ── */
+    /* ══ ACT 6: RECONSTRUCTION ══ */
     #act6 { position: absolute; inset: 0; opacity: 0; }
-
-    /* Hogwarts — extreme restraint, just a ghost */
-    #hogwarts-ghost {
-      position: absolute; bottom: 0; left: 50%;
-      transform: translateX(-50%); opacity: 0;
-    }
-
-    /* Center: book cover reconstructed as editorial object */
-    #final-block {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 360px; opacity: 0;
-    }
+    #hogwarts-ghost { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); opacity: 0; }
+    #final-block { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 360px; opacity: 0; }
     .fb-rule { width: 100%; height: 0.5px; background: #C9A050; margin-bottom: 32px; }
     .fb-series {
-      font-family: "Helvetica Neue", sans-serif;
-      font-size: 9px; letter-spacing: 7px; text-transform: uppercase;
-      color: #C9A050; font-weight: 700; margin-bottom: 20px;
+      font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px;
+      text-transform: uppercase; color: #C9A050; font-weight: 700; margin-bottom: 20px;
     }
-    .fb-title {
-      font-size: 72px; font-weight: 700; color: #EDE8DF;
-      font-family: "Georgia", serif; line-height: 0.95;
-      margin-bottom: 10px;
-    }
-    .fb-sub {
-      font-size: 18px; color: #EDE8DF; font-style: italic;
-      font-family: "Georgia", serif; line-height: 1.4;
-      margin-bottom: 24px; letter-spacing: 0.2px;
-    }
+    .fb-title { font-size: 72px; font-weight: 700; color: #EDE8DF; font-family: "Georgia", serif; line-height: 0.95; margin-bottom: 10px; }
+    .fb-sub { font-size: 18px; color: #EDE8DF; font-style: italic; font-family: "Georgia", serif; line-height: 1.4; margin-bottom: 24px; }
     .fb-rule2 { width: 32px; height: 0.5px; background: #C9A050; margin-bottom: 18px; }
-    .fb-author {
-      font-family: "Helvetica Neue", sans-serif;
-      font-size: 10px; letter-spacing: 6px; text-transform: uppercase; color: #555;
-    }
-
-    /* Side annotation panels */
+    .fb-author { font-family: "Helvetica Neue", sans-serif; font-size: 10px; letter-spacing: 6px; text-transform: uppercase; color: #555; }
     .side-panel { position: absolute; top: 50%; opacity: 0; font-family: "Helvetica Neue", sans-serif; }
     #side-left  { left: 160px;  transform: translateY(-50%); width: 280px; }
     #side-right { right: 160px; transform: translateY(-50%); width: 280px; text-align: right; }
     .sp-head { font-size: 9px; letter-spacing: 6px; text-transform: uppercase; color: #C9A050; font-weight: 700; margin-bottom: 20px; }
     .sp-item { font-size: 13px; color: #EDE8DF; line-height: 2.4; letter-spacing: 0.5px; }
     .sp-foot { margin-top: 24px; font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: #2A2520; }
-
     #final-badge {
       position: absolute; bottom: 52px; left: 50%; transform: translateX(-50%);
-      font-family: "Helvetica Neue", sans-serif;
-      font-size: 9px; letter-spacing: 7px; text-transform: uppercase;
-      color: #2A2520; opacity: 0; white-space: nowrap;
+      font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px;
+      text-transform: uppercase; color: #2A2520; opacity: 0; white-space: nowrap;
     }
     #final-badge span { color: #C9A050; }
   </style>
@@ -384,23 +345,23 @@
 <div id="root"
   data-composition-id="main"
   data-start="0"
-  data-duration="44"
+  data-duration="46"
   data-width="1920"
   data-height="1080"
 >
 
-  <!-- ── AUDIO ────────────────────────────────────────────── -->
-  <audio id="bgm"   src="assets/bgm.wav"         class="clip" data-start="0"    data-duration="44"  data-volume="0.68" data-track-index="90" muted></audio>
+  <!-- ── AUDIO ── -->
+  <audio id="bgm"   src="assets/bgm.wav"         class="clip" data-start="0"    data-duration="46"  data-volume="0.68" data-track-index="90" muted></audio>
   <audio id="sfx1"  src="assets/sfx_shimmer.wav" class="clip" data-start="0.8"  data-duration="2.8" data-volume="0.45" data-track-index="91" muted></audio>
   <audio id="sfx2"  src="assets/sfx_impact.wav"  class="clip" data-start="31.0" data-duration="4.5" data-volume="0.55" data-track-index="92" muted></audio>
   <audio id="sfx3a" src="assets/sfx_chime.wav"   class="clip" data-start="9.0"  data-duration="2.0" data-volume="0.35" data-track-index="93" muted></audio>
   <audio id="sfx3b" src="assets/sfx_chime.wav"   class="clip" data-start="22.0" data-duration="2.0" data-volume="0.30" data-track-index="94" muted></audio>
-  <audio id="sfx3c" src="assets/sfx_chime.wav"   class="clip" data-start="35.0" data-duration="2.0" data-volume="0.30" data-track-index="95" muted></audio>
+  <audio id="sfx3c" src="assets/sfx_chime.wav"   class="clip" data-start="37.0" data-duration="2.0" data-volume="0.30" data-track-index="95" muted></audio>
   <audio id="nar1"  src="assets/narration1.wav"  class="clip" data-start="4.2"  data-duration="5.0" data-volume="0.90" data-track-index="96" muted></audio>
   <audio id="nar2"  src="assets/narration2.wav"  class="clip" data-start="27.6" data-duration="3.0" data-volume="0.90" data-track-index="97" muted></audio>
   <audio id="nar3"  src="assets/narration3.wav"  class="clip" data-start="31.5" data-duration="2.5" data-volume="1.00" data-track-index="98" muted></audio>
 
-  <!-- ── STARS (52 positions) ── -->
+  <!-- ── STARS ── -->
   <div class="star" style="width:2px;height:2px;top:82px;left:243px"></div>
   <div class="star" style="width:1px;height:1px;top:135px;left:890px"></div>
   <div class="star" style="width:2px;height:2px;top:60px;left:1540px"></div>
@@ -455,182 +416,106 @@
   <div class="star" style="width:1px;height:1px;top:720px;left:1120px"></div>
   <div class="star" style="width:2px;height:2px;top:600px;left:1380px"></div>
 
-  <!-- ══ ACT 0: THE LINE (0–3s) ══ -->
+  <!-- ══════════════════════════════════════
+       ACT 0: THE LINE (0–3s)
+  ══════════════════════════════════════ -->
   <div id="act0">
     <div id="line-main"></div>
     <div id="issue-tag">Motion Reading No. 02 &nbsp;·&nbsp; Harry Potter</div>
   </div>
 
-  <!-- ══ ACT 1: THE LETTER · MEME 1 (3–9s) ══ -->
+  <!-- ══════════════════════════════════════
+       ACT 1: THE LETTER (3–9s)
+  ══════════════════════════════════════ -->
   <div id="act1">
-
-    <!-- Top-left: Hogwarts crest / institutional header -->
     <div id="seal-wrap">
       <div class="seal-label">Hogwarts School</div>
-      <div class="seal-school">
-        of Witchcraft and Wizardry<br>
-        Est. 990 · Hogsmeade · Scotland
-      </div>
+      <div class="seal-school">of Witchcraft and Wizardry<br>Est. 990 · Hogsmeade · Scotland</div>
     </div>
-
-    <!-- Wax seal SVG — top right -->
     <svg id="wax-seal" width="120" height="120" viewBox="0 0 120 120" data-layout-allow-overflow>
       <circle cx="60" cy="60" r="52" fill="none" stroke="#C9A050" stroke-width="0.8" opacity="0.4"/>
       <circle cx="60" cy="60" r="44" fill="none" stroke="#C9A050" stroke-width="0.5" opacity="0.25"/>
-      <text x="60" y="48" text-anchor="middle"
-        font-family="Georgia,serif" font-size="28" font-weight="700"
-        fill="#C9A050" opacity="0.7">H</text>
-      <text x="60" y="72" text-anchor="middle"
-        font-family="Helvetica Neue,sans-serif" font-size="7"
-        letter-spacing="3" fill="#C9A050" opacity="0.5"
-        text-transform="uppercase">DRACO DORMIENS</text>
-      <text x="60" y="84" text-anchor="middle"
-        font-family="Helvetica Neue,sans-serif" font-size="7"
-        letter-spacing="3" fill="#C9A050" opacity="0.5">NUNQUAM TITILLANDUS</text>
+      <text x="60" y="48" text-anchor="middle" font-family="Georgia,serif" font-size="28" font-weight="700" fill="#C9A050" opacity="0.7">H</text>
+      <text x="60" y="70" text-anchor="middle" font-family="Helvetica Neue,sans-serif" font-size="7" letter-spacing="2" fill="#C9A050" opacity="0.5">DRACO DORMIENS</text>
+      <text x="60" y="82" text-anchor="middle" font-family="Helvetica Neue,sans-serif" font-size="7" letter-spacing="1" fill="#C9A050" opacity="0.4">NUNQUAM TITILLANDUS</text>
     </svg>
-
-    <!-- Left: Address block (the meme) -->
     <div id="address-block">
       <div class="addr-to">To ·</div>
       <div class="addr-name">Mr. H.<br>Potter</div>
-      <div class="addr-place">
-        The Cupboard Under The Stairs<br>
-        4 Privet Drive · Little Whinging · Surrey
-      </div>
+      <div class="addr-place">The Cupboard Under The Stairs<br>4 Privet Drive · Surrey</div>
     </div>
-
-    <!-- Vertical divider -->
     <div id="act1-divider"></div>
-
-    <!-- Right: The "meme" quote -->
     <div id="letter-meme">
-      <div class="meme-text">
-        "You're a<br>wizard,<br><span class="gold">Harry."</span>
-      </div>
+      <div class="meme-text">"You're a<br>wizard,<br><span class="gold">Harry."</span></div>
       <div class="meme-attr">— Rubeus Hagrid &nbsp;·&nbsp; Year One</div>
     </div>
-
   </div>
 
-  <!-- ══ ACT 2: H A R R Y  P O T T E R (9–14s) ══ -->
+  <!-- ══════════════════════════════════════
+       ACT 2: H·A·R·R·Y  +  HARRY PHOTO (9–14s)
+  ══════════════════════════════════════ -->
   <div id="act2">
+    <!-- Harry portrait behind typography -->
+    <div id="harry-photo" class="photo-base photo-harry"></div>
+    <div id="harry-photo-overlay"></div>
 
     <div id="act2-label">02 &nbsp;·&nbsp; Typographic Anatomy</div>
     <div id="act2-num">J.K. Rowling &nbsp;·&nbsp; 1997–2007</div>
 
     <div class="letter-row" id="row-harry">
-      <div class="letter-unit">
-        <div class="big-letter" id="lh">H</div>
-        <div class="letter-anno" id="ah">Born to<br>two worlds</div>
-      </div>
-      <div class="letter-unit">
-        <div class="big-letter" id="la">A</div>
-        <div class="letter-anno" id="aa">Marked<br>by evil</div>
-      </div>
-      <div class="letter-unit">
-        <div class="big-letter" id="lr1">R</div>
-        <div class="letter-anno" id="ar1">Raised<br>as human</div>
-      </div>
-      <div class="letter-unit">
-        <div class="big-letter" id="lr2">R</div>
-        <div class="letter-anno" id="ar2">Returned<br>to destiny</div>
-      </div>
-      <div class="letter-unit">
-        <div class="big-letter" id="ly">Y</div>
-        <div class="letter-anno" id="ay">You are<br>the one</div>
-      </div>
+      <div class="letter-unit"><div class="big-letter" id="lh">H</div><div class="letter-anno" id="ah">Born to<br>two worlds</div></div>
+      <div class="letter-unit"><div class="big-letter" id="la">A</div><div class="letter-anno" id="aa">Marked<br>by evil</div></div>
+      <div class="letter-unit"><div class="big-letter" id="lr1">R</div><div class="letter-anno" id="ar1">Raised<br>as human</div></div>
+      <div class="letter-unit"><div class="big-letter" id="lr2">R</div><div class="letter-anno" id="ar2">Returned<br>to destiny</div></div>
+      <div class="letter-unit"><div class="big-letter" id="ly">Y</div><div class="letter-anno" id="ay">You are<br>the one</div></div>
     </div>
+
+    <div id="letter-rule"></div>
 
     <div class="letter-row" id="row-potter">
-      <div class="letter-unit">
-        <div class="big-letter" id="lp">P</div>
-      </div>
-      <div class="letter-unit">
-        <div class="big-letter" id="lo">O</div>
-      </div>
-      <div class="letter-unit">
-        <div class="big-letter" id="lt">T</div>
-      </div>
-      <div class="letter-unit">
-        <div class="big-letter" id="lt2">T</div>
-      </div>
-      <div class="letter-unit">
-        <div class="big-letter" id="le">E</div>
-      </div>
-      <div class="letter-unit">
-        <div class="big-letter" id="lrr">R</div>
-      </div>
+      <div class="letter-unit"><div class="big-letter" id="lp">P</div></div>
+      <div class="letter-unit"><div class="big-letter" id="lo">O</div></div>
+      <div class="letter-unit"><div class="big-letter" id="lt">T</div></div>
+      <div class="letter-unit"><div class="big-letter" id="lt2">T</div></div>
+      <div class="letter-unit"><div class="big-letter" id="le">E</div></div>
+      <div class="letter-unit"><div class="big-letter" id="lrr">R</div></div>
     </div>
-
-    <!-- Thin rule between rows -->
-    <div style="position:absolute;top:508px;left:120px;right:120px;height:0.5px;background:#2A2520;opacity:0;" id="letter-rule"></div>
-
   </div>
 
-  <!-- ══ ACT 3: SEVEN BOOKS (14–22s) ══ -->
+  <!-- ══════════════════════════════════════
+       ACT 3: SEVEN BOOKS (14–22s)
+  ══════════════════════════════════════ -->
   <div id="act3">
-
     <div id="chart-header">
       <div class="ch-title">The Complete Series</div>
       <div class="ch-sub">Seven Books &nbsp;·&nbsp; 4,195 Pages &nbsp;·&nbsp; Narrative Tension Arc</div>
     </div>
-
-    <!-- Stat block — top right -->
     <div id="stat-block">
       <div class="stat-num">4,195</div>
       <div class="stat-label">Total Pages</div>
     </div>
-
     <div id="chart-area">
-
-      <!-- Axis lines -->
       <div class="rule-h" id="x-axis"></div>
       <div class="rule-v" id="y-axis-left"></div>
-
-      <!-- Book vertical lines -->
-      <div class="book-line" id="bl1"></div>
-      <div class="book-line" id="bl2"></div>
-      <div class="book-line" id="bl3"></div>
-      <div class="book-line" id="bl4"></div>
-      <div class="book-line" id="bl5"></div>
-      <div class="book-line" id="bl6"></div>
+      <div class="book-line" id="bl1"></div><div class="book-line" id="bl2"></div>
+      <div class="book-line" id="bl3"></div><div class="book-line" id="bl4"></div>
+      <div class="book-line" id="bl5"></div><div class="book-line" id="bl6"></div>
       <div class="book-line" id="bl7"></div>
-
-      <!-- Abbreviation labels (below axis) -->
-      <div class="book-abbr" id="abbr1">PS</div>
-      <div class="book-abbr" id="abbr2">CoS</div>
-      <div class="book-abbr" id="abbr3">PoA</div>
-      <div class="book-abbr" id="abbr4">GoF</div>
-      <div class="book-abbr" id="abbr5">OotP</div>
-      <div class="book-abbr" id="abbr6">HBP</div>
+      <div class="book-abbr" id="abbr1">PS</div><div class="book-abbr" id="abbr2">CoS</div>
+      <div class="book-abbr" id="abbr3">PoA</div><div class="book-abbr" id="abbr4">GoF</div>
+      <div class="book-abbr" id="abbr5">OotP</div><div class="book-abbr" id="abbr6">HBP</div>
       <div class="book-abbr" id="abbr7">DH</div>
-
-      <!-- Page counts (above each line) -->
-      <div class="book-pages" id="pg1">223</div>
-      <div class="book-pages" id="pg2">251</div>
-      <div class="book-pages" id="pg3">317</div>
-      <div class="book-pages" id="pg4">636</div>
-      <div class="book-pages" id="pg5">870</div>
-      <div class="book-pages" id="pg6">607</div>
+      <div class="book-pages" id="pg1">223</div><div class="book-pages" id="pg2">251</div>
+      <div class="book-pages" id="pg3">317</div><div class="book-pages" id="pg4">636</div>
+      <div class="book-pages" id="pg5">870</div><div class="book-pages" id="pg6">607</div>
       <div class="book-pages" id="pg7">759</div>
-
-      <!-- Narrative tension curve -->
       <svg id="tension-svg2" viewBox="0 0 1600 380" preserveAspectRatio="none">
-        <!-- Horizon axis (for reference, drawn separately) -->
         <path id="tcurve"
-          d="M 111 303 C 190 285 270 260 334 243
-             C 420 215 500 185 557 169
-             C 630 148 710 110 780 81
-             C 855 50 930 28 1003 18
-             C 1070 28 1140 60 1226 131
-             C 1310 180 1380 50 1449 28"
-          fill="none"
-          stroke="#6B1212"
-          stroke-width="1"
-          stroke-dasharray="3000"
-          stroke-dashoffset="3000"
-          opacity="0.85"/>
-        <!-- Dots at key peaks -->
+          d="M 111 303 C 190 285 270 260 334 243 C 420 215 500 185 557 169
+             C 630 148 710 110 780 81 C 855 50 930 28 1003 18
+             C 1070 28 1140 60 1226 131 C 1310 180 1380 50 1449 28"
+          fill="none" stroke="#6B1212" stroke-width="1"
+          stroke-dasharray="3000" stroke-dashoffset="3000" opacity="0.85"/>
         <circle id="tc1" cx="111"  cy="303" r="3" fill="#6B1212" opacity="0"/>
         <circle id="tc2" cx="334"  cy="243" r="3" fill="#6B1212" opacity="0"/>
         <circle id="tc3" cx="557"  cy="169" r="3" fill="#6B1212" opacity="0"/>
@@ -639,94 +524,97 @@
         <circle id="tc6" cx="1226" cy="131" r="3" fill="#6B1212" opacity="0"/>
         <circle id="tc7" cx="1449" cy="28"  r="5" fill="#C9A050" opacity="0"/>
       </svg>
-
-      <!-- Key moment labels -->
       <div class="book-moment" id="bm1" style="bottom:354px;left:80px;">You're a Wizard</div>
       <div class="book-moment" id="bm3" style="bottom:224px;left:460px;">Sirius is Innocent</div>
       <div class="book-moment" id="bm4" style="bottom:136px;left:690px;">Dark Lord Returns</div>
-      <div class="book-moment" id="bm5" style="bottom:73px;left:910px;">Battle of the Dept. of Mysteries</div>
+      <div class="book-moment" id="bm5" style="bottom:73px;left:910px;">Battle · Dept. of Mysteries</div>
       <div class="book-moment" id="bm7" style="bottom:83px;left:1350px;">Battle of Hogwarts</div>
     </div>
-
   </div>
 
-  <!-- ══ ACT 4: EDITORIAL MEME CARDS (22–27s) ══ -->
+  <!-- ══════════════════════════════════════
+       ACT 4: EDITORIAL MEME CARDS (22–28s)
+  ══════════════════════════════════════ -->
   <div id="act4">
 
-    <!-- Card A: Platform 9¾ -->
+    <!-- CARD A: Tom Riddle portrait editorial -->
     <div id="card-a">
-      <div class="card-tag-top">03 &nbsp;·&nbsp; The Impossible Made Real</div>
-      <div id="platform-num">9¾</div>
-      <div class="card-caption">
-        "The train stood there, a wall of solid steam and scarlet iron.
-        The wall was solid. And then it wasn't."
+      <div id="tom-photo" class="photo-base photo-tom"></div>
+      <div id="tom-photo-fade"></div>
+      <div id="tom-photo-tint"></div>
+
+      <div class="card-tag-top" id="card-a-tag">03 &nbsp;·&nbsp; The Dark Lord</div>
+
+      <div id="tom-name">
+        <div class="tom-name-line1">Tom</div>
+        <div class="tom-name-line2">Marvolo</div>
+        <div class="tom-name-line3">Riddle</div>
       </div>
-      <div class="card-tag-right">
-        Platform 9¾ &nbsp;·&nbsp; King's Cross<br>
-        London &nbsp;·&nbsp; Every September 1st
+
+      <div id="tom-rule"></div>
+
+      <div id="tom-anagram">
+        <div class="anagram-label">An anagram of</div>
+        <div class="anagram-text">I am Lord Voldemort</div>
+      </div>
+
+      <div id="tom-bottom">
+        Slytherin &nbsp;·&nbsp; Hogwarts Class of 1945 &nbsp;·&nbsp; Half-Blood
       </div>
     </div>
 
-    <!-- Card B: Mirror of Erised -->
+    <!-- CARD B: Mirror of Erised -->
     <div id="card-b">
-      <div class="card-tag-top">04 &nbsp;·&nbsp; The Mirror of Erised</div>
-      <!-- Ghost mirror text — reversed -->
+      <div class="card-tag-top-b">04 &nbsp;·&nbsp; The Mirror of Erised</div>
       <div id="erised-ghost">
         ERISED STRA EHRU OYT<br>
         UBE CAFRU OYT ON WOHSI
       </div>
       <div id="erised-real">
         <div class="erised-line1">
-          "I show not your face<br>but your <span class="erised-gold">heart's desire."</span>
+          "I show not your face<br>
+          but your <span class="erised-gold">heart's desire."</span>
         </div>
         <div id="erised-sub">Mirror of Erised &nbsp;·&nbsp; Philosopher's Stone &nbsp;·&nbsp; Chapter 12</div>
       </div>
     </div>
-
   </div>
 
-  <!-- ══ ACT 5: ALWAYS (27–35s) ══ -->
+  <!-- ══════════════════════════════════════
+       ACT 5: ALWAYS — WITH SNAPE (28–37s)
+  ══════════════════════════════════════ -->
   <div id="act5">
+    <!-- Snape — cold, right side -->
+    <div id="snape-photo" class="photo-base photo-snape"></div>
+    <div id="snape-photo-fade"></div>
+
     <div id="always-q">"After all this time?"</div>
     <div id="always-rule"></div>
     <div id="always-word">Always.</div>
     <div id="always-attr">
-      Severus Snape &nbsp;·&nbsp; Harry Potter and the Deathly Hallows<br>
+      Severus Snape &nbsp;·&nbsp; Deathly Hallows<br>
       Chapter 33 &nbsp;·&nbsp; The Prince's Tale
     </div>
   </div>
 
-  <!-- ══ ACT 6: RECONSTRUCTION (35–44s) ══ -->
+  <!-- ══════════════════════════════════════
+       ACT 6: RECONSTRUCTION (37–46s)
+  ══════════════════════════════════════ -->
   <div id="act6">
-
-    <!-- Hogwarts ghost — extreme restraint -->
     <svg id="hogwarts-ghost" width="1920" height="400" viewBox="0 0 1920 400" fill="none">
-      <!-- Castle body -->
       <rect x="660" y="160" width="600" height="240" stroke="rgba(201,160,80,0.07)" stroke-width="1" fill="rgba(201,160,80,0.02)"/>
-      <!-- Central tower -->
       <rect x="870" y="60" width="180" height="340" stroke="rgba(201,160,80,0.09)" stroke-width="1" fill="rgba(201,160,80,0.03)"/>
-      <!-- Tower cap -->
       <polygon points="960,10 870,60 1050,60" stroke="rgba(201,160,80,0.10)" stroke-width="1" fill="rgba(201,160,80,0.04)"/>
-      <!-- Side towers -->
       <rect x="700" y="100" width="100" height="300" stroke="rgba(201,160,80,0.07)" stroke-width="1" fill="rgba(201,160,80,0.02)"/>
       <rect x="1120" y="100" width="100" height="300" stroke="rgba(201,160,80,0.07)" stroke-width="1" fill="rgba(201,160,80,0.02)"/>
       <polygon points="750,58 700,100 800,100" stroke="rgba(201,160,80,0.07)" stroke-width="1" fill="rgba(201,160,80,0.03)"/>
       <polygon points="1170,58 1120,100 1220,100" stroke="rgba(201,160,80,0.07)" stroke-width="1" fill="rgba(201,160,80,0.03)"/>
-      <!-- Far towers -->
-      <rect x="540" y="140" width="80" height="260" stroke="rgba(201,160,80,0.05)" stroke-width="1" fill="rgba(201,160,80,0.01)"/>
-      <rect x="1300" y="140" width="80" height="260" stroke="rgba(201,160,80,0.05)" stroke-width="1" fill="rgba(201,160,80,0.01)"/>
-      <!-- Windows -->
       <rect x="906" y="120" width="22" height="30" rx="11" fill="rgba(201,160,80,0.12)"/>
       <rect x="992" y="120" width="22" height="30" rx="11" fill="rgba(201,160,80,0.12)"/>
       <rect x="906" y="180" width="22" height="30" rx="11" fill="rgba(201,160,80,0.08)"/>
       <rect x="992" y="180" width="22" height="30" rx="11" fill="rgba(201,160,80,0.08)"/>
-      <rect x="720"  y="160" width="18" height="24" rx="9" fill="rgba(201,160,80,0.07)"/>
-      <rect x="1138" y="160" width="18" height="24" rx="9" fill="rgba(201,160,80,0.07)"/>
-      <!-- Ground line -->
       <line x1="0" y1="400" x2="1920" y2="400" stroke="rgba(201,160,80,0.08)" stroke-width="0.5"/>
     </svg>
-
-    <!-- Central editorial block -->
     <div id="final-block">
       <div class="fb-rule"></div>
       <div class="fb-series">Motion Reading &nbsp;·&nbsp; Series No. 02</div>
@@ -735,37 +623,19 @@
       <div class="fb-rule2"></div>
       <div class="fb-author">Literature · Fantasy · Epic</div>
     </div>
-
-    <!-- Side panels -->
     <div class="side-panel" id="side-left">
       <div class="sp-head">Visual System</div>
-      <div class="sp-item">
-        #030308 &nbsp;·&nbsp; Mystery<br>
-        #C9A050 &nbsp;·&nbsp; Magic<br>
-        #6B1212 &nbsp;·&nbsp; Sacrifice<br>
-        #EDE8DF &nbsp;·&nbsp; Legacy
-      </div>
+      <div class="sp-item">#030308 · Mystery<br>#C9A050 · Magic<br>#6B1212 · Sacrifice<br>#EDE8DF · Legacy</div>
       <div class="sp-foot">Georgia · Helvetica Neue</div>
     </div>
-
     <div class="side-panel" id="side-right">
       <div class="sp-head">The Core Truth</div>
-      <div class="sp-item">
-        Not talent.<br>
-        Not destiny.<br>
-        Love is the only<br>magic that endures.
-      </div>
+      <div class="sp-item">Not talent.<br>Not destiny.<br>Love is the only<br>magic that endures.</div>
       <div class="sp-foot">7 Books &nbsp;·&nbsp; 4,195 Pages</div>
     </div>
-
-    <!-- Final top rule -->
     <div class="rule-h" id="final-rule-top" style="top:80px;left:160px;width:0;"></div>
     <div class="rule-h" id="final-rule-bot" style="bottom:80px;left:160px;width:0;"></div>
-
-    <div id="final-badge">
-      Motion Reading &nbsp;·&nbsp; <span>Harry Potter</span> &nbsp;·&nbsp; J.K. Rowling
-    </div>
-
+    <div id="final-badge">Motion Reading &nbsp;·&nbsp; <span>Harry Potter</span> &nbsp;·&nbsp; J.K. Rowling</div>
   </div>
 
 </div>
@@ -774,179 +644,137 @@
   window.__timelines = window.__timelines || {};
   const tl = gsap.timeline({ paused: true });
 
-  /* ── STARS: gentle twinkle throughout ── */
+  /* ── Stars ── */
   document.querySelectorAll('.star').forEach((s, i) => {
-    const delay = (i * 0.055) % 2.0;
-    const op = 0.06 + (i % 9) * 0.05;
-    tl.to(s, { opacity: op, duration: 1.8 }, 0.5 + delay);
-    tl.to(s, { opacity: op * 0.25, duration: 2.5 + (i%4)*0.6,
-      repeat: 8, yoyo: true, ease: "sine.inOut" }, 2.0 + delay);
+    const d = (i * 0.055) % 2.0, op = 0.06 + (i % 9) * 0.05;
+    tl.to(s, { opacity: op, duration: 1.8 }, 0.5 + d);
+    tl.to(s, { opacity: op * 0.25, duration: 2.5 + (i%4)*0.6, repeat: 8, yoyo: true, ease: "sine.inOut" }, 2.0 + d);
   });
 
-  /* ══════════════════════
-     ACT 0: THE LINE (0–3s)
-  ══════════════════════ */
-  // Hold black for 0.8s, then single line draws left→right
+  /* ══ ACT 0: LINE ══ */
   tl.to("#line-main", { width: 1920, duration: 1.8, ease: "power1.inOut" }, 0.8);
   tl.fromTo("#issue-tag", { opacity: 0 }, { opacity: 1, duration: 0.8 }, 2.0);
 
-  /* ══════════════════════════
-     ACT 1: THE LETTER (3–9s)
-  ══════════════════════════ */
+  /* ══ ACT 1: LETTER ══ */
   tl.fromTo("#act1", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 3.0);
-
-  // Seal & school name
   tl.fromTo("#seal-wrap", { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.7 }, 3.2);
-  tl.fromTo("#wax-seal",  { opacity: 0 }, { opacity: 1, duration: 0.8 }, 3.5);
-
-  // Address block: name first
+  tl.fromTo("#wax-seal", { opacity: 0 }, { opacity: 1, duration: 0.8 }, 3.5);
   tl.fromTo("#address-block", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 3.8);
-
-  // Vertical divider grows top→down
   tl.fromTo("#act1-divider", { height: 0 }, { height: 640, duration: 0.8, ease: "power2.out" }, 4.5);
-
-  // Right: "You're a wizard, Harry." — the meme reveal
   tl.fromTo("#letter-meme", { opacity: 0, x: 30 }, { opacity: 1, x: 0, duration: 0.9, ease: "power2.out" }, 5.0);
-
-  // Act1 exits
   tl.to("#act1", { opacity: 0, duration: 0.6, ease: "power2.in" }, 8.4);
   tl.to("#act0", { opacity: 0, duration: 0.4 }, 8.6);
 
-  /* ══════════════════════════════════
-     ACT 2: H A R R Y  P O T T E R (9–14s)
-  ══════════════════════════════════ */
+  /* ══ ACT 2: HARRY PORTRAIT + TYPOGRAPHY ══ */
   tl.fromTo("#act2", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 9.0);
-  tl.fromTo("#act2-label", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 9.2);
-  tl.fromTo("#act2-num",   { opacity: 0 }, { opacity: 1, duration: 0.5 }, 9.4);
 
-  // Letters stagger in — each a precise beat
-  const harryLetters = ["#lh","#la","#lr1","#lr2","#ly"];
-  const harryAnnos   = ["#ah","#aa","#ar1","#ar2","#ay"];
-  harryLetters.forEach((id, i) => {
-    tl.fromTo(id, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 9.5 + i * 0.22);
-  });
-  tl.fromTo("#letter-rule", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 10.7);
-  // Annotations appear after all letters
-  harryAnnos.forEach((id, i) => {
-    tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: 0.4 }, 11.0 + i * 0.15);
-  });
+  /* Harry photo reveals first — breathes in from right */
+  tl.fromTo("#harry-photo",
+    { opacity: 0, x: 60 },
+    { opacity: 0.75, x: 0, duration: 1.4, ease: "power2.out" }, 9.0);
+  tl.fromTo("#harry-photo-overlay", { opacity: 0 }, { opacity: 1, duration: 1.0 }, 9.2);
 
-  // POTTER second row — dimmer, structural
+  tl.fromTo("#act2-label", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 9.4);
+  tl.fromTo("#act2-num",   { opacity: 0 }, { opacity: 1, duration: 0.5 }, 9.6);
+
+  /* Letters stagger — each beats precisely */
+  ["#lh","#la","#lr1","#lr2","#ly"].forEach((id, i) => {
+    tl.fromTo(id, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 9.7 + i * 0.22);
+  });
+  tl.fromTo("#letter-rule", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 10.9);
+  ["#ah","#aa","#ar1","#ar2","#ay"].forEach((id, i) => {
+    tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: 0.4 }, 11.2 + i * 0.14);
+  });
+  /* POTTER — dim ghost row */
   ["#lp","#lo","#lt","#lt2","#le","#lrr"].forEach((id, i) => {
-    tl.fromTo(id, { opacity: 0 }, { opacity: 0.18, duration: 0.4 }, 11.2 + i * 0.12);
+    tl.fromTo(id, { opacity: 0 }, { opacity: 0.16, duration: 0.4 }, 11.4 + i * 0.10);
   });
-
   tl.to("#act2", { opacity: 0, duration: 0.7, ease: "power2.in" }, 13.3);
 
-  /* ══════════════════════════
-     ACT 3: SEVEN BOOKS (14–22s)
-  ══════════════════════════ */
+  /* ══ ACT 3: SEVEN BOOKS ══ */
   tl.fromTo("#act3", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 14.0);
   tl.fromTo("#chart-header", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 14.2);
-  tl.fromTo("#stat-block",   { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7 }, 14.4);
-
-  // Axes appear
+  tl.fromTo("#stat-block", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7 }, 14.4);
   tl.to("#x-axis", { opacity: 1, width: 1600, duration: 0.8, ease: "power1.inOut" }, 14.8);
   tl.to("#y-axis-left", { opacity: 1, duration: 0.3 }, 14.8);
-
-  // Book lines grow from bottom, sequential
-  const blDelay = [15.4, 15.65, 15.9, 16.15, 16.4, 16.65, 16.9];
+  const blD = [15.4,15.65,15.9,16.15,16.4,16.65,16.9];
   for (let i = 1; i <= 7; i++) {
-    tl.to(`#bl${i}`, { opacity: 1, scaleY: 1, duration: 0.6, ease: "power2.out" }, blDelay[i-1]);
-    tl.fromTo(`#abbr${i}`, { opacity: 0 }, { opacity: 1, duration: 0.3 }, blDelay[i-1] + 0.4);
-    tl.fromTo(`#pg${i}`,   { opacity: 0 }, { opacity: 1, duration: 0.3 }, blDelay[i-1] + 0.5);
+    tl.to(`#bl${i}`, { opacity: 1, scaleY: 1, duration: 0.6, ease: "power2.out" }, blD[i-1]);
+    tl.fromTo(`#abbr${i}`, { opacity: 0 }, { opacity: 1, duration: 0.3 }, blD[i-1] + 0.4);
+    tl.fromTo(`#pg${i}`,   { opacity: 0 }, { opacity: 1, duration: 0.3 }, blD[i-1] + 0.5);
   }
-
-  // Tension curve draws
   tl.fromTo("#tension-svg2", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 17.5);
   tl.to("#tcurve", { strokeDashoffset: 0, duration: 2.2, ease: "power1.inOut" }, 17.6);
-
-  // Tension dots pop
   ["#tc1","#tc2","#tc3","#tc4","#tc5","#tc6","#tc7"].forEach((id, i) => {
     tl.to(id, { opacity: 1, duration: 0.2 }, 18.2 + i * 0.28);
   });
-
-  // Moment labels
   ["#bm1","#bm3","#bm4","#bm5","#bm7"].forEach((id, i) => {
     tl.fromTo(id, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4 }, 18.5 + i * 0.3);
   });
-
   tl.to("#act3", { opacity: 0, duration: 0.8, ease: "power2.in" }, 21.2);
 
-  /* ═══════════════════════════════════
-     ACT 4: EDITORIAL MEME CARDS (22–27s)
-  ═══════════════════════════════════ */
+  /* ══ ACT 4: MEME CARDS ══ */
   tl.fromTo("#act4", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 22.0);
 
-  // CARD A: Platform 9¾
+  /* Card A: Tom Riddle */
   tl.fromTo("#card-a", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 22.0);
-  tl.fromTo("#platform-num", { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1, duration: 0.9, ease: "power3.out" }, 22.2);
-  tl.fromTo(".card-tag-top", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 22.6);
-  tl.fromTo(".card-caption", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 22.9);
-  tl.fromTo(".card-tag-right", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 23.2);
+  /* Tom photo drifts in from left */
+  tl.fromTo("#tom-photo",
+    { opacity: 0, x: -40 },
+    { opacity: 0.90, x: 0, duration: 1.6, ease: "power2.out" }, 22.0);
+  tl.fromTo("#card-a-tag", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 22.5);
+  tl.fromTo("#tom-name", { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 0.8, ease: "power3.out" }, 22.7);
+  tl.fromTo("#tom-rule", { opacity: 1, width: 0 }, { width: 380, duration: 0.6, ease: "power2.out" }, 23.5);
+  tl.fromTo("#tom-anagram", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.6 }, 23.8);
+  tl.fromTo("#tom-bottom", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 24.2);
 
-  // Transition: card A → card B
-  tl.to("#card-a", { opacity: 0, duration: 0.4, ease: "power2.in" }, 24.5);
+  /* Card A → B transition */
+  tl.to("#card-a", { opacity: 0, duration: 0.5, ease: "power2.in" }, 25.3);
 
-  // CARD B: Mirror of Erised
-  tl.fromTo("#card-b", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 24.8);
-  tl.fromTo("#erised-ghost", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 25.0);
-  tl.fromTo("#erised-real",  { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 25.3);
+  /* Card B: Mirror */
+  tl.fromTo("#card-b", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 25.7);
+  tl.fromTo("#erised-ghost", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 25.9);
+  tl.fromTo("#erised-real", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, 26.3);
+  tl.to("#act4", { opacity: 0, duration: 0.6, ease: "power2.in" }, 27.4);
 
-  tl.to("#act4", { opacity: 0, duration: 0.7, ease: "power2.in" }, 26.3);
+  /* ══ ACT 5: ALWAYS + SNAPE ══ */
+  tl.fromTo("#act5", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 28.0);
 
-  /* ══════════════════════════
-     ACT 5: ALWAYS (27–35s)
-  ══════════════════════════ */
-  tl.fromTo("#act5", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 27.0);
+  /* Snape materializes slowly — like a ghost */
+  tl.fromTo("#snape-photo",
+    { opacity: 0, x: 50 },
+    { opacity: 0.80, x: 0, duration: 2.2, ease: "power1.out" }, 28.0);
 
-  // "After all this time?" — small, italic, left-anchored
-  tl.fromTo("#always-q", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, 27.4);
+  /* "After all this time?" */
+  tl.fromTo("#always-q", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, 28.8);
+  tl.fromTo("#always-rule", { opacity: 1, width: 0 }, { width: 100, duration: 0.6, ease: "power2.out" }, 30.2);
 
-  // Thin rule extends
-  tl.fromTo("#always-rule", { opacity: 1, width: 0 }, { width: 100, duration: 0.6, ease: "power2.out" }, 28.8);
-
-  // "Always." — the moment
-  tl.fromTo("#always-word", { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 1.6, ease: "power3.out" }, 30.0);
-
-  // Gold pulse
+  /* "Always." — center of the universe */
+  tl.fromTo("#always-word",
+    { opacity: 0, scale: 0.90 },
+    { opacity: 1, scale: 1, duration: 1.8, ease: "power3.out" }, 31.0);
   tl.to("#always-word", {
-    textShadow: "0 0 160px rgba(201,160,80,0.9), 0 0 320px rgba(201,160,80,0.5)",
-    duration: 1.8, ease: "power1.inOut", repeat: 1, yoyo: true
-  }, 31.0);
+    textShadow: "0 0 200px rgba(201,160,80,1.0), 0 0 400px rgba(201,160,80,0.6)",
+    duration: 2.0, ease: "power1.inOut", repeat: 1, yoyo: true
+  }, 32.0);
 
-  // Attribution — bottom right, very small
-  tl.fromTo("#always-attr", { opacity: 0 }, { opacity: 1, duration: 0.7 }, 32.5);
+  /* Snape's opacity pulses sympathetically with "Always" */
+  tl.to("#snape-photo", { opacity: 0.65, duration: 1.0, ease: "power1.in" }, 31.5);
+  tl.to("#snape-photo", { opacity: 0.90, duration: 1.5, ease: "power1.out" }, 32.5);
 
-  tl.to("#act5", { opacity: 0, duration: 0.8, ease: "power2.in" }, 34.2);
+  tl.fromTo("#always-attr", { opacity: 0 }, { opacity: 1, duration: 0.7 }, 33.5);
+  tl.to("#act5", { opacity: 0, duration: 0.9, ease: "power2.in" }, 36.1);
 
-  /* ══════════════════════════════
-     ACT 6: RECONSTRUCTION (35–44s)
-  ══════════════════════════════ */
-  tl.fromTo("#act6", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 35.0);
-
-  // Top and bottom rules draw simultaneously
-  tl.to("#final-rule-top", { opacity: 1, width: 1600, duration: 1.2, ease: "power1.inOut" }, 35.2);
-  tl.to("#final-rule-bot", { opacity: 1, width: 1600, duration: 1.2, ease: "power1.inOut" }, 35.2);
-
-  // Hogwarts ghost rises from bottom
-  tl.fromTo("#hogwarts-ghost", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 2.0, ease: "power2.out" }, 35.4);
-
-  // Central editorial block assembles
-  tl.fromTo("#final-block", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 1.2, ease: "power3.out" }, 36.0);
-
-  // Side panels
-  tl.fromTo("#side-left",  { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.9, ease: "power2.out" }, 37.2);
-  tl.fromTo("#side-right", { opacity: 0, x:  30 }, { opacity: 1, x: 0, duration: 0.9, ease: "power2.out" }, 37.5);
-
-  // Badge
-  tl.fromTo("#final-badge", { opacity: 0 }, { opacity: 1, duration: 0.7 }, 38.5);
-
-  // Final breath: subtle gold pulse on the central block
-  tl.to("#final-block", {
-    filter: "drop-shadow(0 0 30px rgba(201,160,80,0.2))",
-    duration: 2.5, ease: "power1.inOut"
-  }, 39.5);
+  /* ══ ACT 6: RECONSTRUCTION ══ */
+  tl.fromTo("#act6", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 37.0);
+  tl.to("#final-rule-top", { opacity: 1, width: 1600, duration: 1.2, ease: "power1.inOut" }, 37.2);
+  tl.to("#final-rule-bot", { opacity: 1, width: 1600, duration: 1.2, ease: "power1.inOut" }, 37.2);
+  tl.fromTo("#hogwarts-ghost", { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 2.0, ease: "power2.out" }, 37.4);
+  tl.fromTo("#final-block", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 1.2, ease: "power3.out" }, 38.0);
+  tl.fromTo("#side-left",  { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.9, ease: "power2.out" }, 39.2);
+  tl.fromTo("#side-right", { opacity: 0, x:  30 }, { opacity: 1, x: 0, duration: 0.9, ease: "power2.out" }, 39.5);
+  tl.fromTo("#final-badge", { opacity: 0 }, { opacity: 1, duration: 0.7 }, 40.5);
+  tl.to("#final-block", { filter: "drop-shadow(0 0 30px rgba(201,160,80,0.2))", duration: 2.5, ease: "power1.inOut" }, 41.5);
 
   window.__timelines["main"] = tl;
 </script>
