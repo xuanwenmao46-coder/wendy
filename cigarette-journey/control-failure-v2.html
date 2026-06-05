@@ -132,6 +132,25 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:Ari
 #s-credit{position:absolute;right:80px;bottom:68px;font-size:8px;font-weight:700;
   letter-spacing:.6em;text-transform:uppercase;color:rgba(8,8,8,.18);opacity:0;}
 
+/* ── MEME OVERLAYS ── */
+.meme{position:absolute;pointer-events:none;z-index:380;opacity:0;}
+/* white card style — meme intruding from another world */
+.mcard{background:#fff;color:#111;padding:18px 26px;line-height:1.55;
+  font-size:20px;font-weight:900;font-family:Arial,sans-serif;
+  letter-spacing:0;text-transform:none;border-left:6px solid var(--acid);}
+.mcard .mute{font-weight:400;color:#555;font-size:17px;}
+.mcard .em{font-size:22px;}
+/* classic impact meme caption — white outline on any bg */
+.mcap{font-size:64px;font-weight:900;color:#fff;text-align:center;
+  text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,
+              0 4px 0 #000,0 -4px 0 #000,4px 0 0 #000,-4px 0 0 #000;
+  letter-spacing:.01em;text-transform:uppercase;line-height:1.05;}
+/* drake panel */
+.mdrake{display:flex;flex-direction:column;gap:0;background:#fff;border-left:6px solid var(--volt);}
+.mdrake .row{display:flex;align-items:center;gap:14px;padding:14px 22px;
+  font-size:19px;font-weight:900;color:#111;border-bottom:1px solid #eee;}
+.mdrake .row:last-child{border-bottom:none;}
+.mdrake .icon{font-size:32px;flex-shrink:0;}
 /* ── PHOTO INSERTS ── */
 .photo-wrap{position:absolute;inset:0;opacity:0;pointer-events:none;overflow:hidden;z-index:300;}
 .photo-wrap img{position:absolute;width:100%;height:100%;object-fit:cover;filter:contrast(1.25) saturate(0.85);}
@@ -240,6 +259,58 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:Ari
   <div id="s-line1">EVERY FIRE<br>STARTS SMALL.</div>
   <div id="s-line2">DON'T IGNORE IT.</div>
   <div id="s-credit">CONTROL FAILURE — A FILM ABOUT FIRE PREVENTION</div>
+</div>
+
+<!-- ── MEME OVERLAYS ── -->
+
+<!-- M1: CH02 t=11.5–14s — nobody: format, top-right, white card -->
+<div id="m1" class="meme" style="right:80px;top:80px;">
+  <div class="mcard">
+    <div class="mute">nobody:</div>
+    <div class="mute">literally nobody:</div>
+    <div><span class="em">🚨</span> ERROR-001: <em>*appears*</em></div>
+    <div>system: <span class="em">👀</span></div>
+  </div>
+</div>
+
+<!-- M2: CH03 t=17.5–20s — Drake format, left side -->
+<div id="m2" class="meme" style="left:80px;top:160px;">
+  <div class="mdrake">
+    <div class="row"><span class="icon">🙅</span>responding to error</div>
+    <div class="row" style="background:#f0ffe0;"><span class="icon">✅</span>pretending it doesn't exist</div>
+  </div>
+</div>
+
+<!-- M3: CH03 t=22–24.5s — "THIS IS FINE" bottom banner -->
+<div id="m3" class="meme" style="left:0;right:0;bottom:0;">
+  <div style="background:var(--acid);padding:18px 80px;display:flex;align-items:center;gap:24px;">
+    <span style="font-size:44px;">🐕</span>
+    <span style="font-size:36px;font-weight:900;color:var(--ink);letter-spacing:-.02em;text-transform:uppercase;">THIS IS FINE.</span>
+    <span style="font-size:44px;">🔥🔥🔥</span>
+  </div>
+</div>
+
+<!-- M4: CH05 t=46–49s — escalating "me:" format, right side -->
+<div id="m4" class="meme" style="right:80px;top:50%;transform:translateY(-50%);">
+  <div class="mcard" style="border-left-color:var(--crim);">
+    <div class="mute">me: *sees first warning*</div>
+    <div class="mute">me: *ignores it*</div>
+    <div class="mute">me: *sees second warning*</div>
+    <div class="mute">me: *ignores it again*</div>
+    <div><span class="em">🔥</span> the fire:</div>
+  </div>
+</div>
+
+<!-- M5: CH06 t=59–61s — Surprised Pikachu, center stage -->
+<div id="m5" class="meme" style="left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;">
+  <div class="mcap">😱<br>SHOCKED THAT<br>IGNORING THE FIRE<br>MADE IT WORSE</div>
+</div>
+
+<!-- M6: CH07 t=71–74s — callback, bottom left, quiet -->
+<div id="m6" class="meme" style="left:80px;bottom:80px;">
+  <div style="font-size:13px;font-weight:700;color:rgba(8,8,8,.35);letter-spacing:.35em;text-transform:uppercase;line-height:2.2;">
+    🐕 &nbsp;"this is fine" dog &nbsp;—&nbsp; 2025
+  </div>
 </div>
 
 <!-- PHOTO INSERTS — reality intrusions across the abstract design -->
@@ -570,6 +641,26 @@ tl.addLabel('ch01',0)
   .to('#s-line2',{autoAlpha:1,duration:.5},71.2)
   .to('#s-credit',{autoAlpha:1,duration:.5},71.9)
   .to({},{duration:3})
+
+// ── MEME ANIMATIONS ──
+// M1: CH02 nobody: format — slides in from right
+tl.fromTo('#m1',{autoAlpha:0,x:60},{autoAlpha:1,x:0,duration:.35,ease:'power3.out'},11.5)
+  .to('#m1',{autoAlpha:0,x:40,duration:.3,ease:'power2.in'},14.0)
+// M2: CH03 Drake — slides in from left
+  .fromTo('#m2',{autoAlpha:0,x:-60},{autoAlpha:1,x:0,duration:.35,ease:'power3.out'},17.5)
+  .to('#m2',{autoAlpha:0,x:-40,duration:.3,ease:'power2.in'},20.0)
+// M3: CH03 THIS IS FINE — rises from bottom
+  .fromTo('#m3',{autoAlpha:0,y:80},{autoAlpha:1,y:0,duration:.4,ease:'power3.out'},22.0)
+  .to('#m3',{autoAlpha:0,y:80,duration:.4,ease:'power2.in'},24.5)
+// M4: CH05 escalating me: — appears right side during erasure
+  .fromTo('#m4',{autoAlpha:0,x:60},{autoAlpha:1,x:0,duration:.35,ease:'power3.out'},46.0)
+  .to('#m4',{autoAlpha:0,x:60,duration:.3,ease:'power2.in'},49.0)
+// M5: CH06 Surprised Pikachu — scales in at collapse peak
+  .fromTo('#m5',{autoAlpha:0,scale:.3,transformOrigin:'center'},{autoAlpha:1,scale:1,duration:.4,ease:'back.out(2)',transformOrigin:'center'},59.0)
+  .to('#m5',{autoAlpha:0,scale:1.5,duration:.25,ease:'power3.in',transformOrigin:'center'},61.0)
+// M6: CH07 callback — fades quietly at end
+  .to('#m6',{autoAlpha:1,duration:.8},71.0)
+  .to('#m6',{autoAlpha:0,duration:1.0},73.5)
 
 // ── INITIAL STATES ──
 gsap.set('#ag1,#ag2,#ag5',{scaleX:0,transformOrigin:'left'});
