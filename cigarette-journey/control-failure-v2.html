@@ -132,6 +132,22 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:Ari
 #s-credit{position:absolute;right:80px;bottom:68px;font-size:8px;font-weight:700;
   letter-spacing:.6em;text-transform:uppercase;color:rgba(8,8,8,.18);opacity:0;}
 
+/* ── PHOTO INSERTS ── */
+.photo-wrap{position:absolute;inset:0;opacity:0;pointer-events:none;overflow:hidden;z-index:300;}
+.photo-wrap img{position:absolute;width:100%;height:100%;object-fit:cover;filter:contrast(1.25) saturate(0.85);}
+.photo-tint{position:absolute;inset:0;mix-blend-mode:multiply;}
+.photo-cap{position:absolute;left:80px;bottom:80px;font-size:9px;font-weight:700;
+  letter-spacing:.48em;text-transform:uppercase;color:var(--bone);line-height:2.3;
+  text-shadow:0 1px 4px rgba(0,0,0,.8);}
+.photo-stat{position:absolute;right:80px;top:80px;font-size:9px;font-weight:700;
+  letter-spacing:.35em;text-transform:uppercase;color:var(--bone);text-align:right;
+  line-height:2.3;text-shadow:0 1px 4px rgba(0,0,0,.8);}
+/* Photo 1: houses — rage orange duotone */
+#photo1 .photo-tint{background:rgba(255,51,0,.38);}
+/* Photo 2: firefighter — deep crimson duotone */
+#photo2 .photo-tint{background:rgba(100,0,8,.55);}
+/* Photo 3: burning truck — near-black reduce colour */
+#photo3 .photo-tint{background:rgba(8,8,8,.30);}
 /* ── CH06 color-card message text ── */
 .cf-msg{position:absolute;left:80px;bottom:76px;font-size:80px;font-weight:900;
   letter-spacing:-.04em;text-transform:uppercase;line-height:.85;pointer-events:none;}
@@ -229,6 +245,24 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:Ari
   <div id="s-line1">EVERY FIRE<br>STARTS SMALL.</div>
   <div id="s-line2">DON'T IGNORE IT.</div>
   <div id="s-credit">CONTROL FAILURE — A FILM ABOUT FIRE PREVENTION</div>
+</div>
+
+<!-- PHOTO INSERTS — reality intrusions across the abstract design -->
+<!-- Place fire-01.jpg / fire-02.jpg / fire-03.jpg in this folder -->
+<div id="photo1" class="photo-wrap">
+  <img src="fire-01.jpg" alt=""/>
+  <div class="photo-tint"></div>
+  <div class="photo-cap">LOS ANGELES — JANUARY 2025<br>12,300+ STRUCTURES DESTROYED</div>
+  <div class="photo-stat">PALISADES FIRE<br>EATON FIRE<br>TOTAL LOSS</div>
+</div>
+<div id="photo2" class="photo-wrap">
+  <img src="fire-03.jpg" alt=""/>
+  <div class="photo-tint"></div>
+  <div class="photo-cap">HOME · PHOTO · MEMORY · FAMILY · TIME<br>— EVERYTHING GONE.</div>
+</div>
+<div id="photo3" class="photo-wrap">
+  <img src="fire-02.jpg" alt=""/>
+  <div class="photo-tint"></div>
 </div>
 
 <div id="prog"></div>
@@ -391,6 +425,13 @@ tl.addLabel('ch01',0)
   },null,22.5)
   .to('#c3-threat',{width:'100%',duration:3.0,ease:'power2.in'},21.0)
   // ORDER collapses
+  // ── PHOTO 1: houses burning — reality intrusion while system fails ──
+  // Slides up from bottom as a horizontal band, duotone orange
+  .fromTo('#photo1',
+    {autoAlpha:0,clipPath:'polygon(0% 100%,100% 100%,100% 100%,0% 100%)'},
+    {autoAlpha:1,clipPath:'polygon(0% 0%,100% 0%,100% 100%,0% 100%)',duration:.45,ease:'power3.out'},20.5)
+  .to('#photo1',{autoAlpha:0,duration:.4,ease:'power2.in'},23.0)
+
   .to('#c3-order',{skewX:14,autoAlpha:0,y:70,duration:.5,ease:'power3.in'},23.8)
   .to('#ch03',{autoAlpha:0,duration:.4,ease:'power2.in'},24.6)
 
@@ -450,6 +491,13 @@ tl.addLabel('ch01',0)
   .to('#c5-slash',{autoAlpha:0,duration:.18},52.85)
   .to('#ch05',{autoAlpha:0,duration:.4,ease:'power2.in'},53.6)
 
+  // ── PHOTO 2: firefighter — bridges ERASURE to COLLAPSE, full screen ──
+  // All words are gone; the real person running towards the fire appears
+  .fromTo('#photo2',
+    {autoAlpha:0,clipPath:'circle(0% at 50% 50%)'},
+    {autoAlpha:1,clipPath:'circle(110% at 50% 50%)',duration:.5,ease:'power2.inOut'},53.8)
+  .to('#photo2',{autoAlpha:0,duration:.5,ease:'power2.in'},56.8)
+
 // ══ CH06: TOTAL COLLAPSE  54→65s ══════════════════
 // Each word is "stamped" onto stage by a full-screen color card with a message.
 // Second wave: rapid single-word narrative headlines before silence.
@@ -507,7 +555,8 @@ tl.addLabel('ch01',0)
   .to('#cf-rage',{autoAlpha:1,duration:.04},61.7).to('#cf-rage', {autoAlpha:0,duration:.14},61.9)
   .to('#cf-crim',{autoAlpha:1,duration:.04},62.05).to('#cf-crim',{autoAlpha:0,duration:.14},62.25)
   // Final card: NEVER / AGAIN — bone, lingers
-  .to('#cf-bone',{autoAlpha:1,duration:.04},62.4).to('#cf-bone',{autoAlpha:0,duration:.35},62.85)
+  // ── PHOTO 3: burning truck — replaces NEVER AGAIN bone card ──
+  .to('#photo3',{autoAlpha:1,duration:.04},62.4).to('#photo3',{autoAlpha:0,duration:.35},63.1)
 
   // Words dissolve — screen empties
   .to(['.tf'],{autoAlpha:0,duration:.18,stagger:.05,ease:'power3.in'},63.2)

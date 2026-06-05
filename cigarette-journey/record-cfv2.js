@@ -33,6 +33,14 @@ fs.mkdirSync(FRAMES_DIR);
   );
   await new Promise(r => setTimeout(r, 2500));
 
+  // Wait for all images to load (fire photos)
+  await page.evaluate(() => Promise.all(
+    Array.from(document.querySelectorAll('img')).map(img =>
+      img.complete ? Promise.resolve() :
+      new Promise(res => { img.onload = res; img.onerror = res; })
+    )
+  ));
+
   const dur = await page.evaluate(() => window.tl ? window.tl.duration() : -1);
   console.log('Timeline duration:', dur + 's');
 
@@ -65,6 +73,21 @@ fs.mkdirSync(FRAMES_DIR);
     `"${OUT_MP4}"`
   ].join(' '), { stdio: 'inherit' });
 
-  console.log('\n✓ Done:', OUT_MP4);
+  console.log('\n✓ Video done:', OUT_MP4);
   fs.rmSync(FRAMES_DIR, { recursive: true });
+
+  // Merge audio if available
+  const AUDIO = path.join(__dirname, 'audio-cf.wav');
+  const FINAL = OUT_MP4.replace('.mp4', '-final.mp4');
+  if (fs.existsSync(AUDIO)) {
+    console.log('Merging audio…');
+    execSync([
+      'ffmpeg -y',
+      `-i "${OUT_MP4}"`,
+      `-i "${AUDIO}"`,
+      '-c:v copy -c:a aac -b:a 192k -shortest',
+      `"${FINAL}"`
+    ].join(' '), { stdio: 'inherit' });
+    console.log('✓ Final with audio:', FINAL);
+  }
 })().catch(e => { console.error(e); process.exit(1); });
