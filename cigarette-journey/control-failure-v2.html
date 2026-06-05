@@ -121,6 +121,10 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:Ari
 
 /* ── CH07 ── */
 #ch07{background:var(--bone);}
+#s-bg-num{position:absolute;right:-60px;top:-80px;font-size:680px;font-weight:900;
+  letter-spacing:-.09em;color:rgba(8,8,8,.04);line-height:1;opacity:0;}
+#s-stat{position:absolute;left:80px;top:80px;font-size:9px;font-weight:700;
+  letter-spacing:.45em;text-transform:uppercase;color:rgba(8,8,8,.28);line-height:2.8;opacity:0;}
 #s-dot{position:absolute;width:12px;height:12px;border-radius:50%;
   background:var(--rage);left:640px;top:280px;transform:translate(-50%,-50%);opacity:0;}
 #s-rule{position:absolute;left:80px;right:80px;height:1px;
@@ -255,6 +259,8 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:Ari
 
 <!-- CH07 -->
 <div id="ch07" class="layer">
+  <div id="s-bg-num">07</div>
+  <div id="s-stat">LOS ANGELES · 2025<br>12,300+ STRUCTURES LOST<br>47,000+ ACRES BURNED<br>ORIGIN: UNCONTROLLED</div>
   <div id="s-dot"></div><div id="s-rule"></div>
   <div id="s-line1">EVERY FIRE<br>STARTS SMALL.</div>
   <div id="s-line2">DON'T IGNORE IT.</div>
@@ -495,15 +501,15 @@ tl.addLabel('ch01',0)
   .to('#photo1',{autoAlpha:0,duration:.4,ease:'power2.in'},23.0)
 
   .to('#c3-order',{skewX:14,autoAlpha:0,y:70,duration:.5,ease:'power3.in'},23.8)
-  .to('#ch03',{autoAlpha:0,duration:.4,ease:'power2.in'},24.6)
+  .to('#ch03',{autoAlpha:0,duration:.3,ease:'power2.in'},24.7)
 
 // ══ CH04: INFECTION  25→40s — iris open ═══════════
   .addLabel('ch04',25)
   .fromTo('#ch04',
     {autoAlpha:1,clipPath:'circle(0% at 50% 50%)'},
-    {clipPath:'circle(110% at 50% 50%)',duration:.85,ease:'power2.inOut'},25)
-  .to('#c4-giant',{autoAlpha:1,duration:.5},25.9)
-  .to('#c4-status',{autoAlpha:1,duration:.4},26.4)
+    {clipPath:'circle(110% at 50% 50%)',duration:.7,ease:'power2.inOut'},24.8)
+  .to('#c4-giant',{autoAlpha:1,duration:.5},25.4)
+  .to('#c4-status',{autoAlpha:1,duration:.4},25.9)
   .call(()=>{
     document.getElementById('c4-status').textContent='CRITICAL — ALL CELLS COMPROMISED';
     document.getElementById('c4-status').style.color='#FF3300';
@@ -634,12 +640,16 @@ tl.addLabel('ch01',0)
   .fromTo('#ch07',
     {autoAlpha:1,clipPath:'circle(0% at 50% 50%)'},
     {clipPath:'circle(140% at 50% 50%)',duration:2.2,ease:'power2.inOut'},65)
-  .to('#s-dot',{autoAlpha:1,duration:.3},67.8)
-  .to('#s-dot',{scale:2,duration:1.2,ease:'sine.inOut',yoyo:true,repeat:1},68.1)
-  .to('#s-rule',{scaleX:1,duration:.8,ease:'power2.inOut'},68.8)
-  .fromTo('#s-line1',{autoAlpha:0,y:22},{autoAlpha:1,y:0,duration:.6,ease:'power3.out'},69.5)
-  .to('#s-line2',{autoAlpha:1,duration:.5},71.2)
-  .to('#s-credit',{autoAlpha:1,duration:.5},71.9)
+  // BG number + stats appear as iris opens — fills the empty reveal
+  .to('#s-bg-num',{autoAlpha:1,duration:.6},65.4)
+  .to('#s-stat',{autoAlpha:1,duration:.8},65.8)
+  .to('#s-dot',{autoAlpha:1,duration:.3},67.2)
+  .to('#s-dot',{scale:2,duration:1.2,ease:'sine.inOut',yoyo:true,repeat:1},67.5)
+  .to('#s-rule',{scaleX:1,duration:.8,ease:'power2.inOut'},67.9)
+  .fromTo('#s-line1',{autoAlpha:0,y:22},{autoAlpha:1,y:0,duration:.6,ease:'power3.out'},68.6)
+  .to('#s-stat',{autoAlpha:0,duration:.4},69.0)
+  .to('#s-line2',{autoAlpha:1,duration:.5},70.4)
+  .to('#s-credit',{autoAlpha:1,duration:.5},71.2)
   .to({},{duration:3})
 
 // ── MEME ANIMATIONS ──
