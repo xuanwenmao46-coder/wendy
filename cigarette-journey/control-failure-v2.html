@@ -136,25 +136,32 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:Ari
 #s-credit{position:absolute;right:80px;bottom:68px;font-size:8px;font-weight:700;
   letter-spacing:.6em;text-transform:uppercase;color:rgba(8,8,8,.18);opacity:0;}
 
-/* ── MEME OVERLAYS ── */
+/* ── MEME OVERLAYS — use film's own brutalist language ── */
 .meme{position:absolute;pointer-events:none;z-index:380;opacity:0;}
-/* white card style — meme intruding from another world */
-.mcard{background:#fff;color:#111;padding:18px 26px;line-height:1.55;
-  font-size:20px;font-weight:900;font-family:Arial,sans-serif;
-  letter-spacing:0;text-transform:none;border-left:6px solid var(--acid);}
-.mcard .mute{font-weight:400;color:#555;font-size:17px;}
-.mcard .em{font-size:22px;}
-/* classic impact meme caption — white outline on any bg */
-.mcap{font-size:64px;font-weight:900;color:#fff;text-align:center;
-  text-shadow:-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,3px 3px 0 #000,
-              0 4px 0 #000,0 -4px 0 #000,4px 0 0 #000,-4px 0 0 #000;
-  letter-spacing:.01em;text-transform:uppercase;line-height:1.05;}
-/* drake panel */
-.mdrake{display:flex;flex-direction:column;gap:0;background:#fff;border-left:6px solid var(--volt);}
-.mdrake .row{display:flex;align-items:center;gap:14px;padding:14px 22px;
-  font-size:19px;font-weight:900;color:#111;border-bottom:1px solid #eee;}
-.mdrake .row:last-child{border-bottom:none;}
-.mdrake .icon{font-size:32px;flex-shrink:0;}
+/* brutalist block — ink bg, acid accent bar */
+.mblock{background:var(--ink);padding:22px 30px;line-height:1.45;
+  font-size:18px;font-weight:900;font-family:Arial,sans-serif;
+  letter-spacing:.04em;text-transform:uppercase;border-left:6px solid var(--acid);
+  color:var(--bone);}
+.mblock .dim{color:rgba(240,237,229,.38);font-size:15px;font-weight:700;}
+.mblock .hi{color:var(--acid);}
+/* two-row contrast panel (Drake format) */
+.mtwo{display:flex;flex-direction:column;gap:0;background:var(--ink);border-left:6px solid var(--volt);}
+.mtwo .row{display:flex;align-items:center;gap:16px;padding:16px 24px;
+  font-size:18px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--bone);border-bottom:1px solid rgba(240,237,229,.08);}
+.mtwo .row:last-child{border-bottom:none;background:rgba(222,255,10,.06);}
+.mtwo .row.yes{color:var(--acid);}
+.mtwo .icon{font-size:28px;flex-shrink:0;}
+/* full-width acid banner */
+.mbanner{background:var(--acid);padding:20px 80px;display:flex;align-items:center;gap:24px;}
+.mbanner span.txt{font-size:38px;font-weight:900;color:var(--ink);
+  letter-spacing:-.02em;text-transform:uppercase;}
+/* impact-style giant text (uses film colors, no box) */
+.mgiant{font-size:72px;font-weight:900;color:var(--acid);text-align:center;
+  letter-spacing:-.03em;text-transform:uppercase;line-height:1.0;
+  text-shadow:4px 4px 0 var(--ink),-2px -2px 0 var(--ink),2px -2px 0 var(--ink),-2px 2px 0 var(--ink);}
+.mgiant .sub{font-size:24px;display:block;color:var(--bone);letter-spacing:.1em;margin-top:8px;}
 /* ── PHOTO INSERTS ── */
 .photo-wrap{position:absolute;inset:0;opacity:0;pointer-events:none;overflow:hidden;z-index:300;}
 .photo-wrap img{position:absolute;width:100%;height:100%;object-fit:cover;filter:contrast(1.25) saturate(0.85);}
@@ -269,53 +276,53 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:Ari
 
 <!-- ── MEME OVERLAYS ── -->
 
-<!-- M1: CH02 t=11.5–14s — nobody: format, top-right, white card -->
+<!-- M1: CH02 t=11.5–14s — nobody: format, top-right, brutalist ink card -->
 <div id="m1" class="meme" style="right:80px;top:80px;">
-  <div class="mcard">
-    <div class="mute">nobody:</div>
-    <div class="mute">literally nobody:</div>
-    <div><span class="em">🚨</span> ERROR-001: <em>*appears*</em></div>
-    <div>system: <span class="em">👀</span></div>
+  <div class="mblock">
+    <div class="dim">NOBODY:</div>
+    <div class="dim">LITERALLY NOBODY:</div>
+    <div><span class="hi">ERROR-001</span> *APPEARS*</div>
+    <div>SYSTEM: &nbsp;👀</div>
   </div>
 </div>
 
-<!-- M2: CH03 t=17.5–20s — Drake format, left side -->
+<!-- M2: CH03 t=17.5–20s — Drake two-panel, left side -->
 <div id="m2" class="meme" style="left:80px;top:160px;">
-  <div class="mdrake">
-    <div class="row"><span class="icon">🙅</span>responding to error</div>
-    <div class="row" style="background:#f0ffe0;"><span class="icon">✅</span>pretending it doesn't exist</div>
+  <div class="mtwo">
+    <div class="row"><span class="icon">🚫</span>RESPONDING TO ERROR</div>
+    <div class="row yes"><span class="icon">✅</span>PRETENDING IT DOESN'T EXIST</div>
   </div>
 </div>
 
-<!-- M3: CH03 t=22–24.5s — "THIS IS FINE" bottom banner -->
+<!-- M3: CH03 t=22–24.5s — "THIS IS FINE" full-width acid banner -->
 <div id="m3" class="meme" style="left:0;right:0;bottom:0;">
-  <div style="background:var(--acid);padding:18px 80px;display:flex;align-items:center;gap:24px;">
+  <div class="mbanner">
     <span style="font-size:44px;">🐕</span>
-    <span style="font-size:36px;font-weight:900;color:var(--ink);letter-spacing:-.02em;text-transform:uppercase;">THIS IS FINE.</span>
+    <span class="txt">THIS IS FINE.</span>
     <span style="font-size:44px;">🔥🔥🔥</span>
   </div>
 </div>
 
-<!-- M4: CH05 t=46–49s — escalating "me:" format, right side -->
+<!-- M4: CH05 t=46–49s — escalating "me:" format, right side, crimson card -->
 <div id="m4" class="meme" style="right:80px;top:50%;transform:translateY(-50%);">
-  <div class="mcard" style="border-left-color:var(--crim);">
-    <div class="mute">me: *sees first warning*</div>
-    <div class="mute">me: *ignores it*</div>
-    <div class="mute">me: *sees second warning*</div>
-    <div class="mute">me: *ignores it again*</div>
-    <div><span class="em">🔥</span> the fire:</div>
+  <div class="mblock" style="border-left-color:var(--rage);">
+    <div class="dim">ME: *SEES FIRST WARNING*</div>
+    <div class="dim">ME: *IGNORES IT*</div>
+    <div class="dim">ME: *SEES SECOND WARNING*</div>
+    <div class="dim">ME: *IGNORES IT AGAIN*</div>
+    <div><span class="hi">🔥 THE FIRE:</span></div>
   </div>
 </div>
 
-<!-- M5: CH06 t=59–61s — Surprised Pikachu, center stage -->
+<!-- M5: CH06 t=59–61s — giant impact text, center stage, film typography -->
 <div id="m5" class="meme" style="left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;">
-  <div class="mcap">😱<br>SHOCKED THAT<br>IGNORING THE FIRE<br>MADE IT WORSE</div>
+  <div class="mgiant">😱 SHOCKED<br><span class="sub">THAT IGNORING THE FIRE MADE IT WORSE</span></div>
 </div>
 
-<!-- M6: CH07 t=71–74s — callback, bottom left, quiet -->
+<!-- M6: CH07 t=71–74s — callback, bone on bone, barely visible -->
 <div id="m6" class="meme" style="left:80px;bottom:80px;">
-  <div style="font-size:13px;font-weight:700;color:rgba(8,8,8,.35);letter-spacing:.35em;text-transform:uppercase;line-height:2.2;">
-    🐕 &nbsp;"this is fine" dog &nbsp;—&nbsp; 2025
+  <div style="font-size:11px;font-weight:700;color:rgba(8,8,8,.28);letter-spacing:.48em;text-transform:uppercase;line-height:2.4;">
+    🐕 &nbsp; "THIS IS FINE" DOG &nbsp;—&nbsp; 2025
   </div>
 </div>
 
