@@ -5,395 +5,586 @@
     <meta name="viewport" content="width=1920, height=1080" />
     <script src="./node_modules/gsap/dist/gsap.min.js"></script>
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body {
-        margin: 0;
-        width: 1920px;
-        height: 1080px;
+        width: 1920px; height: 1080px;
         overflow: hidden;
-        background: #0d0d0d;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #F5F0E8;
+        font-family: "Georgia", "Times New Roman", serif;
       }
 
-      .bg-gradient {
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(ellipse 80% 60% at 50% 50%, #1a1008 0%, #0d0d0d 100%);
-      }
+      /* ── CANVAS ── */
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
 
-      .glow-orb {
-        position: absolute;
-        border-radius: 50%;
-        filter: blur(120px);
+      /* ── BACKGROUND LAYERS ── */
+      .bg-paper {
+        position: absolute; inset: 0;
+        background: #F5F0E8;
+      }
+      .bg-noise {
+        position: absolute; inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+        opacity: 0.6;
+      }
+      .bg-grid {
+        position: absolute; inset: 0;
+        background-image:
+          linear-gradient(rgba(30,20,10,0.045) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(30,20,10,0.045) 1px, transparent 1px);
+        background-size: 80px 80px;
         opacity: 0;
       }
 
-      .orb-1 {
-        width: 700px;
-        height: 700px;
-        background: radial-gradient(circle, #d97757 0%, transparent 70%);
-        top: -100px;
-        left: 50%;
-        transform: translateX(-50%);
-      }
+      /* ── ACT 1: COVER DECONSTRUCTION ── */
+      #act1 { position: absolute; inset: 0; }
 
-      .orb-2 {
-        width: 500px;
-        height: 500px;
-        background: radial-gradient(circle, #7c3aed 0%, transparent 70%);
-        bottom: -80px;
-        right: 200px;
-      }
-
-      .logo-container {
+      /* Book cover, sits center-left */
+      .cover-block {
         position: absolute;
-        top: 50%;
-        left: 50%;
+        top: 50%; left: 50%;
         transform: translate(-50%, -50%);
-        text-align: center;
+        width: 340px; height: 480px;
+        background: #0F1B2D;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        padding: 40px 32px;
+      }
+      .cover-eyebrow {
+        font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+        color: #C9A84C; font-family: "Helvetica Neue", sans-serif;
+        font-weight: 700; margin-bottom: 24px; opacity: 0;
+      }
+      .cover-title {
+        font-size: 52px; font-weight: 700; color: #F5F0E8;
+        line-height: 1; letter-spacing: -1px;
+        text-align: center; margin-bottom: 8px; opacity: 0;
+      }
+      .cover-subtitle {
+        font-size: 13px; color: #C9A84C; letter-spacing: 2px;
+        text-transform: uppercase; font-family: "Helvetica Neue", sans-serif;
+        text-align: center; margin-bottom: 32px; opacity: 0;
+      }
+      .cover-rule {
+        width: 40px; height: 2px; background: #C9A84C;
+        margin: 0 auto 24px; opacity: 0;
+      }
+      .cover-author {
+        font-size: 14px; color: #888; letter-spacing: 3px;
+        text-transform: uppercase; font-family: "Helvetica Neue", sans-serif;
         opacity: 0;
       }
 
-      .logo-icon {
-        width: 120px;
-        height: 120px;
-        margin: 0 auto 32px;
+      /* Floating deconstructed elements */
+      .float-el {
+        position: absolute;
+        opacity: 0;
+      }
+      #fe-atom1 { /* big circle metaphor — snowball seed */
+        width: 8px; height: 8px; border-radius: 50%;
+        background: #C9A84C;
+        top: 200px; left: 300px;
+      }
+      #fe-atom2 {
+        width: 6px; height: 6px; border-radius: 50%;
+        background: #0F1B2D;
+        top: 350px; left: 1500px;
+      }
+      #fe-atom3 {
+        width: 4px; height: 4px; border-radius: 50%;
+        background: #C9A84C;
+        top: 700px; left: 900px;
       }
 
-      .logo-name {
-        font-size: 120px;
-        font-weight: 700;
-        color: #f5f5f5;
-        letter-spacing: -4px;
-        line-height: 1;
-        text-shadow: 0 0 40px rgba(255,255,255,0.3);
+      /* Typography fragments */
+      .frag {
+        position: absolute; opacity: 0;
+        font-family: "Helvetica Neue", sans-serif;
+        font-weight: 700; color: #0F1B2D;
+        text-transform: uppercase; letter-spacing: 4px;
+      }
+      #frag-a { font-size: 200px; top: -30px; left: 60px; color: #0F1B2D; opacity: 0; }
+      #frag-t { font-size: 200px; top: -30px; left: 260px; color: #0F1B2D; opacity: 0; }
+      #frag-o { font-size: 200px; top: -30px; left: 430px; color: #0F1B2D; opacity: 0; }
+      #frag-m { font-size: 200px; top: -30px; left: 620px; color: #0F1B2D; opacity: 0; }
+      #frag-ic { font-size: 200px; top: 850px; left: 100px; color: #C9A84C; opacity: 0; }
+      #frag-ha { font-size: 200px; top: 850px; left: 500px; color: #C9A84C; opacity: 0; }
+      #frag-bi { font-size: 200px; top: 850px; left: 1000px; color: #0F1B2D; opacity: 0; }
+      #frag-ts { font-size: 200px; top: 850px; left: 1400px; color: #0F1B2D; opacity: 0; }
+
+      /* color swatches */
+      .swatch {
+        position: absolute; opacity: 0;
+      }
+      #sw-navy { width: 120px; height: 120px; background: #0F1B2D; top: 80px; right: 300px; }
+      #sw-gold { width: 80px; height: 80px; background: #C9A84C; top: 220px; right: 200px; }
+      #sw-cream { width: 60px; height: 60px; background: #F5F0E8; border: 2px solid #ccc; top: 320px; right: 340px; }
+
+      /* editorial label */
+      .label-tag {
+        position: absolute; opacity: 0;
+        font-family: "Helvetica Neue", sans-serif;
+        font-size: 10px; letter-spacing: 5px;
+        text-transform: uppercase; color: #888;
+      }
+      #lbl-1 { top: 72px; right: 296px; }
+      #lbl-2 { top: 213px; right: 196px; }
+      #lbl-3 { top: 313px; right: 337px; }
+
+      /* ── ACT 2: IDEA EXPANSION ── */
+      #act2 { position: absolute; inset: 0; opacity: 0; }
+
+      /* Keyword pills */
+      .kw {
+        position: absolute; opacity: 0;
+        font-family: "Helvetica Neue", sans-serif;
+        font-weight: 700; color: #0F1B2D;
+        letter-spacing: 2px; text-transform: uppercase;
+      }
+      #kw0 { font-size: 14px; top: 140px; left: 200px; }
+      #kw1 { font-size: 22px; top: 280px; left: 160px; }
+      #kw2 { font-size: 32px; top: 400px; left: 220px; }
+      #kw3 { font-size: 48px; top: 490px; left: 280px; }
+      #kw4 { font-size: 72px; top: 560px; left: 360px; }
+      #kw5 { font-size: 100px; top: 620px; left: 440px; }
+
+      /* growth arc */
+      .arc-line {
+        position: absolute; opacity: 0;
+        top: 0; left: 0;
       }
 
-      .logo-by {
-        font-size: 28px;
-        color: #888;
-        letter-spacing: 6px;
-        text-transform: uppercase;
+      /* percentage counter */
+      .pct-block {
+        position: absolute; opacity: 0;
+        top: 200px; right: 240px;
+        text-align: right;
+      }
+      .pct-num {
+        font-size: 240px; font-weight: 700; color: #0F1B2D;
+        font-family: "Helvetica Neue", sans-serif;
+        line-height: 1; letter-spacing: -8px;
+      }
+      .pct-sym {
+        font-size: 80px; font-weight: 700; color: #C9A84C;
+        font-family: "Helvetica Neue", sans-serif;
+        vertical-align: super;
+      }
+      .pct-caption {
+        font-size: 14px; letter-spacing: 5px; color: #888;
+        text-transform: uppercase; font-family: "Helvetica Neue", sans-serif;
         margin-top: 16px;
-        font-weight: 400;
       }
 
-      .tagline {
+      /* compound dots */
+      .dot-row { position: absolute; display: flex; gap: 0; opacity: 0; }
+      #dr1 { top: 760px; left: 180px; }
+      #dr2 { top: 800px; left: 180px; }
+      #dr3 { top: 840px; left: 180px; }
+      .dot {
+        width: 12px; height: 12px; border-radius: 50%;
+        background: #0F1B2D; margin-right: 8px;
+      }
+      .dot.gold { background: #C9A84C; }
+
+      /* vertical rule */
+      .v-rule {
+        position: absolute; opacity: 0;
+        width: 1px; background: #0F1B2D;
+        top: 120px; left: 140px; height: 0;
+      }
+
+      /* ── ACT 3: EMOTIONAL CLIMAX ── */
+      #act3 { position: absolute; inset: 0; opacity: 0; background: #0F1B2D; }
+
+      .quote-bg-text {
         position: absolute;
-        top: 50%;
-        left: 50%;
+        font-size: 420px; font-weight: 900;
+        font-family: "Helvetica Neue", sans-serif;
+        color: rgba(255,255,255,0.03);
+        top: -60px; left: -20px;
+        letter-spacing: -20px; line-height: 0.85;
+        opacity: 0;
+        pointer-events: none;
+      }
+      .quote-line1 {
+        position: absolute;
+        top: 220px; left: 180px;
+        font-size: 88px; font-weight: 400; color: #F5F0E8;
+        line-height: 1.15; letter-spacing: -2px;
+        width: 1400px; opacity: 0;
+      }
+      .quote-line2 {
+        position: absolute;
+        top: 490px; left: 180px;
+        font-size: 88px; font-weight: 700; color: #C9A84C;
+        line-height: 1.15; letter-spacing: -2px;
+        width: 1400px; opacity: 0;
+      }
+      .quote-attr {
+        position: absolute;
+        bottom: 160px; left: 180px;
+        font-family: "Helvetica Neue", sans-serif;
+        font-size: 14px; letter-spacing: 6px;
+        text-transform: uppercase; color: #555;
+        opacity: 0;
+      }
+      .quote-rule {
+        position: absolute;
+        top: 190px; left: 180px;
+        width: 0; height: 2px; background: #C9A84C;
+        opacity: 0;
+      }
+
+      /* ── ACT 4: RECONSTRUCTION ── */
+      #act4 { position: absolute; inset: 0; opacity: 0; }
+
+      /* Reformed book cover — larger, centered */
+      .final-cover {
+        position: absolute;
+        top: 50%; left: 50%;
         transform: translate(-50%, -50%);
-        text-align: center;
-        opacity: 0;
-        width: 1400px;
-      }
-
-      .tagline-text {
-        font-size: 80px;
-        font-weight: 600;
-        color: #ffffff;
-        letter-spacing: -2px;
-        line-height: 1.1;
-      }
-
-      .tagline-text .highlight {
-        color: #d97757;
-      }
-
-      .feature-container {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-        opacity: 0;
-        width: 1600px;
-      }
-
-      .feature-label {
-        font-size: 22px;
-        color: #d97757;
-        letter-spacing: 8px;
-        text-transform: uppercase;
-        font-weight: 500;
-        margin-bottom: 24px;
-      }
-
-      .feature-text {
-        font-size: 88px;
-        font-weight: 700;
-        color: #ffffff;
-        letter-spacing: -3px;
-        line-height: 1.05;
-      }
-
-      .features-grid {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        display: flex;
-        gap: 48px;
-        opacity: 0;
-        width: 1600px;
-        justify-content: center;
-      }
-
-      .feature-card {
-        background: rgba(255,255,255,0.05);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 24px;
-        padding: 48px 56px;
-        flex: 1;
-        text-align: center;
-        backdrop-filter: blur(10px);
-      }
-
-      .feature-card-icon {
-        font-size: 56px;
-        margin-bottom: 24px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      .feature-card-icon svg {
-        width: 64px;
-        height: 64px;
-      }
-
-      .feature-card-title {
-        font-size: 40px;
-        font-weight: 600;
-        color: #ffffff;
-        margin-bottom: 16px;
-        letter-spacing: -1px;
-      }
-
-      .feature-card-desc {
-        font-size: 26px;
-        color: #888;
-        line-height: 1.5;
-      }
-
-      .cta-container {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-        opacity: 0;
-        width: 1400px;
-      }
-
-      .cta-eyebrow {
-        font-size: 24px;
-        color: #d97757;
-        letter-spacing: 8px;
-        text-transform: uppercase;
-        font-weight: 500;
-        margin-bottom: 32px;
-      }
-
-      .cta-headline {
-        font-size: 96px;
-        font-weight: 700;
-        color: #ffffff;
-        letter-spacing: -4px;
-        line-height: 1;
-        margin-bottom: 40px;
-      }
-
-      .cta-sub {
-        font-size: 36px;
-        color: #888;
-        line-height: 1.5;
-      }
-
-      .divider-line {
-        position: absolute;
-        bottom: 60px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 0;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, #d97757, transparent);
-      }
-
-      .anthropic-badge {
-        position: absolute;
-        bottom: 80px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 22px;
-        color: #aaa;
-        letter-spacing: 4px;
-        text-transform: uppercase;
+        width: 360px; height: 510px;
+        background: #0F1B2D;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        padding: 48px 36px;
         opacity: 0;
       }
+      .final-eyebrow {
+        font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+        color: #C9A84C; font-family: "Helvetica Neue", sans-serif;
+        font-weight: 700; margin-bottom: 28px;
+      }
+      .final-title {
+        font-size: 56px; font-weight: 700; color: #F5F0E8;
+        line-height: 1; letter-spacing: -1px;
+        text-align: center; margin-bottom: 12px;
+      }
+      .final-subtitle {
+        font-size: 12px; color: #C9A84C; letter-spacing: 2px;
+        text-transform: uppercase; font-family: "Helvetica Neue", sans-serif;
+        text-align: center; margin-bottom: 28px;
+      }
+      .final-rule { width: 40px; height: 2px; background: #C9A84C; margin: 0 auto 20px; }
+      .final-author {
+        font-size: 13px; color: #888; letter-spacing: 3px;
+        text-transform: uppercase; font-family: "Helvetica Neue", sans-serif;
+      }
 
-      .particle {
-        position: absolute;
-        width: 4px;
-        height: 4px;
-        border-radius: 50%;
-        background: #d97757;
+      /* side text panels */
+      .side-text {
+        position: absolute; opacity: 0;
+        font-family: "Helvetica Neue", sans-serif;
+      }
+      #side-l {
+        left: 200px; top: 50%; transform: translateY(-50%);
+        width: 380px;
+      }
+      #side-r {
+        right: 200px; top: 50%; transform: translateY(-50%);
+        width: 380px; text-align: right;
+      }
+      .side-heading {
+        font-size: 11px; letter-spacing: 5px; text-transform: uppercase;
+        color: #C9A84C; font-weight: 700; margin-bottom: 20px;
+      }
+      .side-body {
+        font-size: 20px; color: #0F1B2D; line-height: 1.7;
+        letter-spacing: 0;
+      }
+      .side-tag {
+        margin-top: 28px; font-size: 11px; letter-spacing: 4px;
+        text-transform: uppercase; color: #aaa;
+      }
+
+      /* final badge */
+      #final-badge {
+        position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%);
+        font-family: "Helvetica Neue", sans-serif;
+        font-size: 10px; letter-spacing: 6px;
+        text-transform: uppercase; color: #aaa;
         opacity: 0;
       }
+      #final-badge span { color: #C9A84C; }
     </style>
   </head>
   <body>
-    <div
-      id="root"
+    <div id="root"
       data-composition-id="main"
       data-start="0"
-      data-duration="20"
+      data-duration="36"
       data-width="1920"
       data-height="1080"
     >
       <!-- Background -->
-      <div class="bg-gradient"></div>
-      <div class="glow-orb orb-1" id="orb1"></div>
-      <div class="glow-orb orb-2" id="orb2"></div>
+      <div class="bg-paper"></div>
+      <div class="bg-noise"></div>
+      <div class="bg-grid" id="bg-grid"></div>
 
-      <!-- Particles -->
-      <div class="particle" id="p1" style="top:20%;left:10%"></div>
-      <div class="particle" id="p2" style="top:70%;left:15%"></div>
-      <div class="particle" id="p3" style="top:30%;right:12%"></div>
-      <div class="particle" id="p4" style="top:80%;right:20%"></div>
-      <div class="particle" id="p5" style="top:50%;left:5%"></div>
-      <div class="particle" id="p6" style="top:15%;right:8%"></div>
+      <!-- ══ ACT 1: COVER DECONSTRUCTION (0–9s) ══ -->
+      <div id="act1" data-layout-allow-overflow>
 
-      <!-- Scene 1: Claude Logo (0-4s) -->
-      <div id="scene-logo" class="clip logo-container" data-start="0" data-duration="4" data-track-index="1">
-        <svg class="logo-icon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="40" cy="40" r="38" fill="#d97757" opacity="0.15" stroke="#d97757" stroke-width="1.5"/>
-          <path d="M27 28 C27 22 33 18 40 18 C47 18 53 22 53 28 L53 36 C53 40 50 43 46 44 L50 58 C50 60 48 62 46 62 C44 62 42 60 42 58 L40 46 L38 58 C38 60 36 62 34 62 C32 62 30 60 30 58 L34 44 C30 43 27 40 27 36 Z" fill="#d97757"/>
-          <circle cx="35" cy="30" r="3" fill="#fff" opacity="0.9"/>
-          <circle cx="45" cy="30" r="3" fill="#fff" opacity="0.9"/>
+        <!-- Typography fragments burst from center -->
+        <div class="frag" id="frag-a">A</div>
+        <div class="frag" id="frag-t">T</div>
+        <div class="frag" id="frag-o">O</div>
+        <div class="frag" id="frag-m">M</div>
+        <div class="frag" id="frag-ic">IC</div>
+        <div class="frag" id="frag-ha">HA</div>
+        <div class="frag" id="frag-bi">BI</div>
+        <div class="frag" id="frag-ts">TS</div>
+
+        <!-- Color Swatches + labels -->
+        <div class="swatch" id="sw-navy"></div>
+        <div class="swatch" id="sw-gold"></div>
+        <div class="swatch" id="sw-cream"></div>
+        <div class="label-tag" id="lbl-1">#0F1B2D — Authority</div>
+        <div class="label-tag" id="lbl-2">#C9A84C — Compound</div>
+        <div class="label-tag" id="lbl-3">#F5F0E8 — Clarity</div>
+
+        <!-- The reconstructed book cover sits in center during deconstruction -->
+        <div class="cover-block" id="cover">
+          <div class="cover-eyebrow" id="cv-ey">James Clear</div>
+          <div class="cover-title" id="cv-ti">Atomic<br>Habits</div>
+          <div class="cover-subtitle" id="cv-su">Tiny Changes<br>Remarkable Results</div>
+          <div class="cover-rule" id="cv-ru"></div>
+          <div class="cover-author" id="cv-au">James Clear</div>
+        </div>
+
+        <!-- Floating atoms -->
+        <div class="float-el" id="fe-atom1"></div>
+        <div class="float-el" id="fe-atom2"></div>
+        <div class="float-el" id="fe-atom3"></div>
+
+        <!-- Editorial grid overlay — drawn lines -->
+        <svg id="edit-lines" style="position:absolute;inset:0;width:1920px;height:1080px;opacity:0;" viewBox="0 0 1920 1080">
+          <line x1="640" y1="0" x2="640" y2="1080" stroke="#0F1B2D" stroke-width="0.5" stroke-dasharray="4 6"/>
+          <line x1="1280" y1="0" x2="1280" y2="1080" stroke="#0F1B2D" stroke-width="0.5" stroke-dasharray="4 6"/>
+          <line x1="0" y1="360" x2="1920" y2="360" stroke="#0F1B2D" stroke-width="0.5" stroke-dasharray="4 6"/>
+          <line x1="0" y1="720" x2="1920" y2="720" stroke="#0F1B2D" stroke-width="0.5" stroke-dasharray="4 6"/>
         </svg>
-        <div class="logo-name">Claude</div>
-        <div class="logo-by">by Anthropic</div>
       </div>
 
-      <!-- Scene 2: Tagline (4-8s) -->
-      <div id="scene-tagline" class="clip tagline" data-start="4" data-duration="4" data-track-index="1">
-        <div class="tagline-text">
-          Built for<br>
-          <span class="highlight">problem solvers.</span>
+      <!-- ══ ACT 2: IDEA EXPANSION (9–21s) ══ -->
+      <div id="act2">
+        <div class="v-rule" id="v-rule"></div>
+
+        <!-- Escalating keywords — compound growth metaphor -->
+        <div class="kw" id="kw0">Identity</div>
+        <div class="kw" id="kw1">System</div>
+        <div class="kw" id="kw2">Habit</div>
+        <div class="kw" id="kw3">Consistency</div>
+        <div class="kw" id="kw4">Compound</div>
+        <div class="kw" id="kw5">Effect</div>
+
+        <!-- Growth SVG arc -->
+        <svg id="growth-arc" style="position:absolute;inset:0;width:1920px;height:1080px;opacity:0;" viewBox="0 0 1920 1080">
+          <path id="arc-path" d="M 140 940 Q 600 900 900 600 T 1750 80"
+            fill="none" stroke="#C9A84C" stroke-width="2"
+            stroke-dasharray="2000" stroke-dashoffset="2000"/>
+          <!-- tick marks -->
+          <line x1="300" y1="900" x2="300" y2="916" stroke="#0F1B2D" stroke-width="1.5"/>
+          <line x1="600" y1="780" x2="600" y2="796" stroke="#0F1B2D" stroke-width="1.5"/>
+          <line x1="900" y1="600" x2="900" y2="616" stroke="#0F1B2D" stroke-width="1.5"/>
+          <line x1="1200" y1="380" x2="1200" y2="396" stroke="#0F1B2D" stroke-width="1.5"/>
+          <line x1="1500" y1="200" x2="1500" y2="216" stroke="#0F1B2D" stroke-width="1.5"/>
+          <text x="300" y="940" font-family="Helvetica Neue,sans-serif" font-size="11" fill="#888" letter-spacing="2" text-anchor="middle">DAY 1</text>
+          <text x="600" y="820" font-family="Helvetica Neue,sans-serif" font-size="11" fill="#888" letter-spacing="2" text-anchor="middle">DAY 30</text>
+          <text x="900" y="640" font-family="Helvetica Neue,sans-serif" font-size="11" fill="#888" letter-spacing="2" text-anchor="middle">DAY 90</text>
+          <text x="1200" y="420" font-family="Helvetica Neue,sans-serif" font-size="11" fill="#888" letter-spacing="2" text-anchor="middle">DAY 180</text>
+          <text x="1500" y="240" font-family="Helvetica Neue,sans-serif" font-size="11" fill="#888" letter-spacing="2" text-anchor="middle">DAY 365</text>
+          <!-- axis -->
+          <line x1="140" y1="960" x2="1800" y2="960" stroke="#0F1B2D" stroke-width="1"/>
+          <line x1="140" y1="60" x2="140" y2="960" stroke="#0F1B2D" stroke-width="1"/>
+        </svg>
+
+        <!-- 37% stat -->
+        <div class="pct-block" id="pct-block">
+          <div class="pct-num">37<span class="pct-sym">%</span></div>
+          <div class="pct-caption">Better · Every Year</div>
+        </div>
+
+        <!-- Compound dots — showing accumulation -->
+        <div class="dot-row" id="dr1">
+          <div class="dot"></div><div class="dot gold"></div><div class="dot"></div>
+        </div>
+        <div class="dot-row" id="dr2">
+          <div class="dot"></div><div class="dot gold"></div><div class="dot"></div>
+          <div class="dot"></div><div class="dot gold"></div><div class="dot"></div>
+        </div>
+        <div class="dot-row" id="dr3">
+          <div class="dot"></div><div class="dot gold"></div><div class="dot"></div>
+          <div class="dot"></div><div class="dot gold"></div><div class="dot"></div>
+          <div class="dot"></div><div class="dot gold"></div><div class="dot"></div>
+          <div class="dot"></div><div class="dot gold"></div>
         </div>
       </div>
 
-      <!-- Scene 3: Feature 1 — Complex Challenges (8-11s) -->
-      <div id="scene-f1" class="clip feature-container" data-start="8" data-duration="3" data-track-index="1">
-        <div class="feature-label">What Claude does</div>
-        <div class="feature-text">Tackle complex<br>challenges</div>
+      <!-- ══ ACT 3: EMOTIONAL CLIMAX (21–29s) ══ -->
+      <div id="act3">
+        <div class="quote-bg-text" id="qbg" data-layout-allow-overflow>SYS<br>TEM</div>
+        <div class="quote-rule" id="q-rule"></div>
+        <div class="quote-line1" id="ql1">You do not rise to<br>the level of your goals.</div>
+        <div class="quote-line2" id="ql2">You fall to the level<br>of your systems.</div>
+        <div class="quote-attr" id="q-attr">— James Clear · Atomic Habits</div>
       </div>
 
-      <!-- Scene 4: Feature grid — Analyze + Code (11-15s) -->
-      <div id="scene-grid" class="clip features-grid" data-start="11" data-duration="4" data-track-index="1">
-        <div class="feature-card" id="card1">
-          <div class="feature-card-icon">
-            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="8" y="32" width="12" height="24" rx="2" fill="#d97757"/>
-              <rect x="26" y="20" width="12" height="36" rx="2" fill="#d97757" opacity="0.8"/>
-              <rect x="44" y="8" width="12" height="48" rx="2" fill="#d97757" opacity="0.6"/>
-            </svg>
+      <!-- ══ ACT 4: RECONSTRUCTION (29–36s) ══ -->
+      <div id="act4">
+        <div class="final-cover" id="final-cover">
+          <div class="final-eyebrow">Motion Reading</div>
+          <div class="final-title">Atomic<br>Habits</div>
+          <div class="final-subtitle">Tiny Changes<br>Remarkable Results</div>
+          <div class="final-rule"></div>
+          <div class="final-author">James Clear</div>
+        </div>
+
+        <div class="side-text" id="side-l">
+          <div class="side-heading">Visual System</div>
+          <div class="side-body">
+            Navy authority.<br>
+            Gold compound.<br>
+            Cream clarity.
           </div>
-          <div class="feature-card-title">Analyze Data</div>
-          <div class="feature-card-desc">Turn raw data into<br>clear insights</div>
+          <div class="side-tag">Editorial · Business</div>
         </div>
-        <div class="feature-card" id="card2">
-          <div class="feature-card-icon">
-            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="6" y="10" width="52" height="44" rx="4" stroke="#d97757" stroke-width="3" fill="none"/>
-              <path d="M20 26 L12 32 L20 38" stroke="#d97757" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M44 26 L52 32 L44 38" stroke="#d97757" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M36 22 L28 42" stroke="#d97757" stroke-width="3" stroke-linecap="round"/>
-            </svg>
+
+        <div class="side-text" id="side-r">
+          <div class="side-heading">Core Insight</div>
+          <div class="side-body">
+            Small daily choices<br>
+            compound into the<br>
+            person you become.
           </div>
-          <div class="feature-card-title">Write Code</div>
-          <div class="feature-card-desc">Debug, refactor, and<br>build faster</div>
+          <div class="side-tag">Identity · System · Habit</div>
         </div>
-        <div class="feature-card" id="card3">
-          <div class="feature-card-icon">
-            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="32" cy="26" r="16" stroke="#d97757" stroke-width="3" fill="none"/>
-              <path d="M24 42 L26 52 L32 50 L38 52 L40 42" stroke="#d97757" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-              <circle cx="27" cy="24" r="2.5" fill="#d97757"/>
-              <circle cx="37" cy="24" r="2.5" fill="#d97757"/>
-              <path d="M27 30 Q32 34 37 30" stroke="#d97757" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-            </svg>
-          </div>
-          <div class="feature-card-title">Deep Thinking</div>
-          <div class="feature-card-desc">Reason through your<br>hardest problems</div>
-        </div>
+
+        <div id="final-badge">Motion Reading &nbsp;·&nbsp; <span>Atomic Habits</span> &nbsp;·&nbsp; James Clear</div>
       </div>
 
-      <!-- Scene 5: CTA (15-20s) -->
-      <div id="scene-cta" class="clip cta-container" data-start="15" data-duration="5" data-track-index="1">
-        <div class="cta-eyebrow">Anthropic AI</div>
-        <div class="cta-headline">Think through<br>your hardest work.</div>
-        <div class="cta-sub">claude.ai</div>
-      </div>
-
-      <!-- Bottom line decoration -->
-      <div class="divider-line" id="divider"></div>
-      <div class="anthropic-badge clip" id="badge" data-start="15" data-duration="5" data-track-index="2">
-        CLAUDE &nbsp;·&nbsp; ANTHROPIC &nbsp;·&nbsp; 2025
-      </div>
     </div>
 
     <script>
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
 
-      // Orb background glow
-      tl.to("#orb1", { opacity: 0.25, duration: 2 }, 0);
-      tl.to("#orb2", { opacity: 0.15, duration: 2 }, 1);
+      /* ─────────────────────────────
+         GLOBAL: grid fades in gently
+      ───────────────────────────── */
+      tl.to("#bg-grid", { opacity: 1, duration: 1.5, ease: "power1.inOut" }, 0.5);
 
-      // Particles float in (finite repeat to fit 20s duration)
-      ["#p1","#p2","#p3","#p4","#p5","#p6"].forEach((id, i) => {
-        const cycleDuration = 3;
-        const repeatCount = Math.floor((20 - i * 0.4) / cycleDuration) - 1;
-        tl.to(id, { opacity: 0.6, y: -20, duration: cycleDuration, repeat: repeatCount, yoyo: true, ease: "sine.inOut" }, i * 0.4);
-      });
+      /* ═══════════════════════════════
+         ACT 1: COVER DECONSTRUCTION (0–9s)
+      ═══════════════════════════════ */
 
-      // Scene 1: Logo
-      tl.fromTo("#scene-logo", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, 0.3);
-      tl.to("#scene-logo", { opacity: 0, y: -20, duration: 0.6, ease: "power2.in" }, 3.4);
-      tl.set("#scene-logo", { opacity: 0 }, 4.0);
+      // Cover assembles first
+      tl.fromTo("#cover", { opacity: 0, scale: 0.88 }, { opacity: 1, scale: 1, duration: 1.2, ease: "power3.out" }, 0.2);
+      tl.to("#cv-ey", { opacity: 1, duration: 0.5 }, 0.6);
+      tl.to("#cv-ti", { opacity: 1, duration: 0.7 }, 0.9);
+      tl.to("#cv-su", { opacity: 1, duration: 0.5 }, 1.3);
+      tl.to("#cv-ru", { opacity: 1, duration: 0.4 }, 1.7);
+      tl.to("#cv-au", { opacity: 1, duration: 0.4 }, 1.9);
 
-      // Scene 2: Tagline
-      tl.fromTo("#scene-tagline", { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 0.7, ease: "power2.out" }, 4.2);
-      tl.to("#scene-tagline", { opacity: 0, y: -20, duration: 0.5, ease: "power2.in" }, 7.5);
-      tl.set("#scene-tagline", { opacity: 0 }, 8.0);
+      // Grid lines appear — the "design analysis" moment
+      tl.to("#edit-lines", { opacity: 1, duration: 0.6, ease: "power2.out" }, 2.6);
 
-      // Scene 3: Feature 1
-      tl.fromTo("#scene-f1", { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.7, ease: "power3.out" }, 8.2);
-      tl.to("#scene-f1", { opacity: 0, x: 60, duration: 0.5, ease: "power2.in" }, 10.5);
-      tl.set("#scene-f1", { opacity: 0 }, 11.0);
+      // Swatches float in with labels
+      tl.fromTo("#sw-navy", { opacity: 0, x: 30 }, { opacity: 1, x: 0, duration: 0.5 }, 2.8);
+      tl.fromTo("#lbl-1",   { opacity: 0 }, { opacity: 1, duration: 0.4 }, 3.1);
+      tl.fromTo("#sw-gold",  { opacity: 0, x: 30 }, { opacity: 1, x: 0, duration: 0.5 }, 3.2);
+      tl.fromTo("#lbl-2",   { opacity: 0 }, { opacity: 1, duration: 0.4 }, 3.5);
+      tl.fromTo("#sw-cream", { opacity: 0, x: 30 }, { opacity: 1, x: 0, duration: 0.5 }, 3.6);
+      tl.fromTo("#lbl-3",   { opacity: 0 }, { opacity: 1, duration: 0.4 }, 3.9);
 
-      // Scene 4: Feature grid
-      tl.fromTo("#scene-grid", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 11.2);
-      tl.fromTo("#card1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "back.out(1.7)" }, 11.3);
-      tl.fromTo("#card2", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "back.out(1.7)" }, 11.55);
-      tl.fromTo("#card3", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: "back.out(1.7)" }, 11.8);
-      tl.to("#scene-grid", { opacity: 0, y: -20, duration: 0.5, ease: "power2.in" }, 14.5);
-      tl.set("#scene-grid", { opacity: 0 }, 15.0);
+      // Atoms float
+      tl.fromTo("#fe-atom1", { opacity: 0 }, { opacity: 1, y: -18, duration: 2, ease: "sine.inOut" }, 3.0);
+      tl.fromTo("#fe-atom2", { opacity: 0 }, { opacity: 1, y: -12, duration: 2, ease: "sine.inOut" }, 3.4);
+      tl.fromTo("#fe-atom3", { opacity: 0 }, { opacity: 1, y: -8,  duration: 2, ease: "sine.inOut" }, 3.8);
 
-      // Divider line
-      tl.to("#divider", { width: 600, duration: 1, ease: "power2.out" }, 15.2);
+      // Cover EXPLODES — elements burst out into letter fragments
+      tl.to("#cover", { scale: 1.05, duration: 0.15, ease: "power4.in" }, 5.4);
+      tl.to("#cover", { opacity: 0, scale: 1.1, duration: 0.3, ease: "power4.out", overwrite: "auto" }, 5.55);
+      tl.to("#edit-lines", { opacity: 0, duration: 0.2 }, 5.5);
+      tl.to(["#sw-navy","#sw-gold","#sw-cream","#lbl-1","#lbl-2","#lbl-3"], { opacity: 0, duration: 0.25 }, 5.5);
 
-      // Scene 5: CTA
-      tl.fromTo("#scene-cta", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.9, ease: "power2.out" }, 15.4);
-      tl.fromTo("#badge", { opacity: 0 }, { opacity: 1, duration: 0.8 }, 16.2);
+      // Letter fragments burst in from explosion
+      tl.fromTo("#frag-a",  { opacity: 0, x: 960, y: 540, scale: 0.1 }, { opacity: 0.12, x: 0,   y: 0,   scale: 1, duration: 0.7, ease: "power4.out" }, 5.6);
+      tl.fromTo("#frag-t",  { opacity: 0, x: 960, y: 540, scale: 0.1 }, { opacity: 0.12, x: 0,   y: 0,   scale: 1, duration: 0.7, ease: "power4.out" }, 5.65);
+      tl.fromTo("#frag-o",  { opacity: 0, x: 960, y: 540, scale: 0.1 }, { opacity: 0.12, x: 0,   y: 0,   scale: 1, duration: 0.7, ease: "power4.out" }, 5.7);
+      tl.fromTo("#frag-m",  { opacity: 0, x: 960, y: 540, scale: 0.1 }, { opacity: 0.12, x: 0,   y: 0,   scale: 1, duration: 0.7, ease: "power4.out" }, 5.75);
+      tl.fromTo("#frag-ic", { opacity: 0, x: 960, y: 540, scale: 0.1 }, { opacity: 0.10, x: 0, y: 0, scale: 1, duration: 0.8, ease: "power4.out" }, 5.7);
+      tl.fromTo("#frag-ha", { opacity: 0, x: 960, y: 540, scale: 0.1 }, { opacity: 0.10, x: 0, y: 0, scale: 1, duration: 0.8, ease: "power4.out" }, 5.75);
+      tl.fromTo("#frag-bi", { opacity: 0, x: 960, y: 540, scale: 0.1 }, { opacity: 0.10, x: 0, y: 0, scale: 1, duration: 0.8, ease: "power4.out" }, 5.8);
+      tl.fromTo("#frag-ts", { opacity: 0, x: 960, y: 540, scale: 0.1 }, { opacity: 0.10, x: 0, y: 0, scale: 1, duration: 0.8, ease: "power4.out" }, 5.85);
 
-      // Orbs shift for CTA
-      tl.to("#orb1", { opacity: 0.35, scale: 1.2, duration: 1.5, ease: "power1.inOut" }, 15);
+      // Fragments fade out
+      tl.to(["#frag-a","#frag-t","#frag-o","#frag-m","#frag-ic","#frag-ha","#frag-bi","#frag-ts","#fe-atom1","#fe-atom2","#fe-atom3"],
+        { opacity: 0, duration: 0.8, ease: "power2.in" }, 8.0);
+      tl.to("#bg-grid", { opacity: 0, duration: 0.5 }, 8.3);
+
+      /* ═══════════════════════════════
+         ACT 2: IDEA EXPANSION (9–21s)
+      ═══════════════════════════════ */
+      tl.fromTo("#act2", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 8.8);
+
+      // Vertical rule draws down
+      tl.fromTo("#v-rule", { opacity: 1, height: 0 }, { height: 840, duration: 1.2, ease: "power3.out" }, 9.0);
+
+      // Keywords appear in compound escalation
+      tl.fromTo("#kw0", { opacity: 0, x: -20 }, { opacity: 0.35, x: 0, duration: 0.5 }, 9.4);
+      tl.fromTo("#kw1", { opacity: 0, x: -20 }, { opacity: 0.45, x: 0, duration: 0.5 }, 9.8);
+      tl.fromTo("#kw2", { opacity: 0, x: -20 }, { opacity: 0.55, x: 0, duration: 0.5 }, 10.2);
+      tl.fromTo("#kw3", { opacity: 0, x: -20 }, { opacity: 0.65, x: 0, duration: 0.5 }, 10.6);
+      tl.fromTo("#kw4", { opacity: 0, x: -20 }, { opacity: 0.8,  x: 0, duration: 0.6 }, 11.1);
+      tl.fromTo("#kw5", { opacity: 0, x: -20 }, { opacity: 1.0,  x: 0, duration: 0.7 }, 11.7);
+
+      // Growth arc draws in
+      tl.fromTo("#growth-arc", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 12.2);
+      tl.to("#arc-path", { strokeDashoffset: 0, duration: 3.0, ease: "power2.inOut" }, 12.2);
+
+      // 37% stat
+      tl.fromTo("#pct-block", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, 13.0);
+
+      // Dot rows appear — accumulation
+      tl.fromTo("#dr1", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 14.5);
+      tl.fromTo("#dr2", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 15.0);
+      tl.fromTo("#dr3", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 15.5);
+
+      // Act 2 fades out
+      tl.to("#act2", { opacity: 0, duration: 0.8, ease: "power2.in" }, 20.0);
+
+      /* ═══════════════════════════════
+         ACT 3: EMOTIONAL CLIMAX (21–29s)
+      ═══════════════════════════════ */
+      tl.fromTo("#act3", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 20.5);
+      tl.fromTo("#qbg",  { opacity: 0 }, { opacity: 1, duration: 1.0 }, 20.8);
+
+      // Rule draws first
+      tl.fromTo("#q-rule", { opacity: 1, width: 0 }, { width: 80, duration: 0.5, ease: "power2.out" }, 21.2);
+
+      // Lines reveal word by word — use opacity + y for weight
+      tl.fromTo("#ql1", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.9, ease: "power3.out" }, 21.6);
+      tl.fromTo("#ql2", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.9, ease: "power3.out" }, 23.0);
+      tl.fromTo("#q-attr", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 24.5);
+
+      // Hold, then fade
+      tl.to("#act3", { opacity: 0, duration: 0.8, ease: "power2.in" }, 28.2);
+
+      /* ═══════════════════════════════
+         ACT 4: RECONSTRUCTION (29–36s)
+      ═══════════════════════════════ */
+      tl.fromTo("#act4", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 28.8);
+      tl.fromTo("#final-cover", { opacity: 0, scale: 0.7, y: 40 }, { opacity: 1, scale: 1, y: 0, duration: 1.2, ease: "power3.out" }, 29.2);
+
+      // Side panels slide in
+      tl.fromTo("#side-l", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.8, ease: "power2.out" }, 30.2);
+      tl.fromTo("#side-r", { opacity: 0, x: 40  }, { opacity: 1, x: 0, duration: 0.8, ease: "power2.out" }, 30.5);
+
+      // Final badge
+      tl.fromTo("#final-badge", { opacity: 0 }, { opacity: 1, duration: 0.6 }, 31.5);
+
+      // Subtle final glow on cover — gold border pulse
+      tl.to("#final-cover", { boxShadow: "0 0 60px rgba(201,168,76,0.3)", duration: 1.5, ease: "power1.inOut" }, 32.0);
 
       window.__timelines["main"] = tl;
     </script>
