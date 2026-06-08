@@ -41,10 +41,12 @@
     #a0cut{ position: absolute; right: 730px; top: 0; width: 4px; height: 1080px; background: #fff; opacity: 0; }
     #a0h  { position: absolute; top: 18px; left: 0;
              font-size: 510px; font-weight: 900; font-family: "Helvetica Neue", Arial, sans-serif;
-             color: #f0f0f0; letter-spacing: -26px; line-height: 0.78; text-transform: uppercase; opacity: 0; }
+             color: #f0f0f0; letter-spacing: -26px; line-height: 0.78; text-transform: uppercase; opacity: 0;
+             filter: url(#df); }
     #a0p  { position: absolute; bottom: 10px; left: 0;
              font-size: 510px; font-weight: 900; font-family: "Helvetica Neue", Arial, sans-serif;
-             color: #f0f0f0; letter-spacing: -26px; line-height: 0.78; text-transform: uppercase; opacity: 0; }
+             color: #f0f0f0; letter-spacing: -26px; line-height: 0.78; text-transform: uppercase; opacity: 0;
+             filter: url(#df); }
     #a0rtag { position: absolute; top: 80px; right: 60px; text-align: right; opacity: 0; }
     .rth { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: #fff; font-weight: 700; line-height: 2.8; }
     #a0bar { position: absolute; bottom: 0; left: 0; width: 1190px; height: 52px; background: #000;
@@ -128,24 +130,27 @@
     /* VOLDEMORT on RED — text is BLACK (Burnin Beat rule) */
     #a4vl { position:absolute; right:0; top:50%; transform:translateY(-54%); width:1020px; padding-left:60px; line-height:0.78; }
     .vl   { font-size:265px; font-weight:900; font-family:"Helvetica Neue",Arial,sans-serif;
-            color:#000; letter-spacing:-12px; text-transform:uppercase; display:block; opacity:0; }
+            color:#000; letter-spacing:-12px; text-transform:uppercase; display:block; opacity:0;
+            filter: url(#df); }
     #a4bt { position:absolute; bottom:80px; left:60px; opacity:0; }
     .a4ba { font-size:26px; font-weight:900; color:rgba(255,255,255,0.62); font-family:"Helvetica Neue",sans-serif; letter-spacing:2px; text-transform:uppercase; margin-bottom:10px; }
     .a4bs { font-family:"Helvetica Neue",sans-serif; font-size:9px; letter-spacing:5px; text-transform:uppercase; color:rgba(255,255,255,0.14); line-height:2.4; }
 
     /* ════ ACT 5 — ALWAYS (28–37s) ════ */
     #act5 { position:absolute; inset:0; background:#000; opacity:0; }
-    #a5ph { right:0; top:0; width:920px; height:1080px; background-position:30% top; }
-    #a5pf { position:absolute; right:0; top:0; width:920px; height:1080px;
-            background: linear-gradient(90deg, #000 0%, rgba(0,0,0,0.75) 6%, rgba(0,0,0,0) 22%); }
-    #a5vc { position:absolute; right:920px; top:0; width:3px; height:1080px; background:#C9A050; opacity:0; }
-    #a5q  { position:absolute; top:270px; left:60px; font-size:22px; color:rgba(255,255,255,0.1); font-style:italic; font-family:"Georgia",serif; opacity:0; }
-    #a5rl { position:absolute; top:350px; left:60px; width:0; height:2px; background:#C9A050; opacity:0; }
-    #a5wd { position:absolute; top:50%; left:0; transform:translateY(-48%);
-            font-size:430px; font-weight:900; letter-spacing:-22px;
-            font-family:"Helvetica Neue",Arial,sans-serif; color:#C9A050; line-height:1; opacity:0; }
-    #a5at { position:absolute; bottom:90px; left:60px; opacity:0;
-            font-family:"Helvetica Neue",sans-serif; font-size:9px; letter-spacing:7px; text-transform:uppercase; color:rgba(255,255,255,0.1); }
+    /* "After all this time?" — small italic, fades in on pure black */
+    #a5q  { position:absolute; top:50%; left:0; right:0; text-align:center; margin-top:-260px;
+            font-size:26px; color:rgba(255,255,255,0.15); font-style:italic;
+            font-family:"Georgia",serif; opacity:0; letter-spacing:1px; }
+    /* ALWAYS — fills the frame, gold distress glow */
+    #a5wd { position:absolute; left:0; right:0; top:50%; text-align:center;
+            font-size:500px; font-weight:900; letter-spacing:-25px;
+            font-family:"Helvetica Neue",Arial,sans-serif; color:#C9A050;
+            line-height:0.88; opacity:0;
+            filter: url(#df-xl); }
+    #a5at { position:absolute; bottom:88px; left:0; right:0; text-align:center; opacity:0;
+            font-family:"Helvetica Neue",sans-serif; font-size:9px; letter-spacing:8px;
+            text-transform:uppercase; color:rgba(255,255,255,0.12); }
 
     /* ════ ACT 6 — ENDCARD (37–46s) ════ */
     #act6 { position:absolute; inset:0; background:#0a0a0a; opacity:0; }
@@ -153,7 +158,7 @@
     #a6ct { position:absolute; right:880px; top:0; width:4px; height:1080px; background:#e8001c; opacity:0; }
     #a6lf { position:absolute; left:0; top:50%; transform:translateY(-50%); width:900px; opacity:0; }
     .a6s  { font-family:"Helvetica Neue",sans-serif; font-size:9px; letter-spacing:8px; text-transform:uppercase; color:#e8001c; font-weight:700; margin-bottom:28px; }
-    .a6t  { font-size:142px; font-weight:900; font-family:"Helvetica Neue",Arial,sans-serif; color:#f0f0f0; line-height:0.80; letter-spacing:-7px; text-transform:uppercase; opacity:0; }
+    .a6t  { font-size:142px; font-weight:900; font-family:"Helvetica Neue",Arial,sans-serif; color:#f0f0f0; line-height:0.80; letter-spacing:-7px; text-transform:uppercase; opacity:0; filter: url(#df); }
     .a6rl { width:60px; height:4px; background:#e8001c; margin:28px 0; }
     .a6d  { font-family:"Helvetica Neue",sans-serif; font-size:9px; letter-spacing:5px; text-transform:uppercase; color:rgba(255,255,255,0.18); line-height:3.0; }
     #a6rt { position:absolute; right:60px; top:50%; transform:translateY(-50%); width:760px; text-align:right; opacity:0; }
@@ -175,6 +180,22 @@
   data-width="1920"
   data-height="1080"
 >
+  <!-- DISTRESS FILTERS — shared SVG filter defs, not rendered -->
+  <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- Medium distress: HARRY / POTTER / VOLDEMORT -->
+      <filter id="df" x="-8%" y="-8%" width="116%" height="116%">
+        <feTurbulence type="turbulence" baseFrequency="0.062 0.091" numOctaves="3" seed="5" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="10" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <!-- Heavy distress: ALWAYS (large text, needs bigger displacement) -->
+      <filter id="df-xl" x="-10%" y="-10%" width="120%" height="120%">
+        <feTurbulence type="turbulence" baseFrequency="0.044 0.068" numOctaves="3" seed="12" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="20" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </defs>
+  </svg>
+
   <!-- GRAIN -->
   <svg style="position:absolute;top:0;left:0;width:1920px;height:1080px;pointer-events:none;z-index:9001;opacity:0.15">
     <defs><filter id="gf"><feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="4" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter></defs>
@@ -364,26 +385,11 @@
     </div>
   </div>
 
-  <!-- ACT 5 -->
+  <!-- ACT 5 — pure black -->
   <div id="act5" data-layout-allow-overflow>
-    <div id="a5ph" class="pb ps"></div>
-    <div id="a5pf"></div><div id="a5vc"></div>
-    <!-- SPOTLIGHT CONE — swings left→right to reveal "Always." -->
-    <svg id="a5spot" style="position:absolute;inset:0;width:1920px;height:1080px;pointer-events:none;opacity:0;mix-blend-mode:screen;" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <radialGradient id="coneGrad" cx="50%" cy="0%" r="100%" fx="50%" fy="0%">
-          <stop offset="0%"   stop-color="#C9A050" stop-opacity="0.55"/>
-          <stop offset="60%"  stop-color="#C9A050" stop-opacity="0.18"/>
-          <stop offset="100%" stop-color="#C9A050" stop-opacity="0"/>
-        </radialGradient>
-      </defs>
-      <!-- Cone apex at top-left lamp point, fans down to bottom -->
-      <polygon id="a5cone" points="200,0 -400,1080 800,1080" fill="url(#coneGrad)"/>
-    </svg>
     <div id="a5q">"After all this time?"</div>
-    <div id="a5rl"></div>
     <div id="a5wd" data-layout-allow-overflow>Always.</div>
-    <div id="a5at">Severus Snape &nbsp;·&nbsp; Deathly Hallows · Ch. 33</div>
+    <div id="a5at">Severus Snape &nbsp;·&nbsp; Deathly Hallows &nbsp;·&nbsp; Ch. 33</div>
   </div>
 
   <!-- ACT 6 -->
@@ -539,31 +545,38 @@
   tl.fromTo("#a4bt", { opacity:0, y:10 }, { opacity:1, y:0, duration:0.36, ease:"expo.out" }, 23.8);
   scanWipe(27.32); tl.set("#act4", { opacity: 0 }, 27.42);
 
-  /* ══ ACT 5 ══ */
+  /* ══ ACT 5 ══ — Pure black. "Always." crashes in. */
+  gsap.set("#a5wd", { yPercent: -50 });  /* center vertically without CSS transform */
   tl.set("#act5", { opacity: 1 }, 28.0);
-  tl.fromTo("#a5ph", { opacity:0, x:80 }, { opacity:0.88, x:0, duration:0.44, ease:"expo.out" }, 28.0);
-  tl.set("#a5vc", { opacity: 1 }, 28.0);
 
-  /* Spotlight cone swing: left → right → settle over "Always." */
-  tl.set("#a5spot", { opacity: 1 }, 28.0);
-  tl.set("#a5cone", { attr: { points: "-400,0 -1200,1080 400,1080" } }, 28.0);
-  tl.to("#a5cone",  { attr: { points: "1300,0 400,1080 1920,1080" }, duration: 1.4, ease: "power2.inOut" }, 28.1);
-  tl.to("#a5cone",  { attr: { points: "600,0 -200,1080 1400,1080" }, duration: 1.0, ease: "power3.inOut" }, 29.5);
-  tl.to("#a5cone",  { attr: { points: "350,0 -300,1080 1000,1080" }, duration: 0.8, ease: "power2.out"  }, 30.5);
-  tl.to("#a5spot",  { opacity: 0, duration: 0.6, ease: "power2.in" }, 31.0);
+  /* "After all this time?" drifts in quietly on black */
+  tl.fromTo("#a5q", { opacity:0, y:8 }, { opacity:1, y:0, duration:0.7, ease:"power2.out" }, 28.4);
 
-  tl.fromTo("#a5q",  { opacity:0 }, { opacity:1, duration:0.38 }, 28.7);
-  tl.fromTo("#a5rl", { opacity:1, width:0 }, { width:90, duration:0.28, ease:"power2.out" }, 30.1);
-  matteReveal("#a5wd", 31.0, 0.22);
-  scrambleIn("#a5wd", 31.0, 0.42);
-  camPunch(31.0, 1.11); distort("#a5wd", 31.0);
-  tl.set("#a5wd", { textShadow:"-14px 0 rgba(232,0,28,0.9), 14px 0 rgba(0,200,255,0.9), 0 0 50px rgba(201,160,80,0.5)" }, 31.0);
-  tl.to("#a5wd", { textShadow:"0 0 120px rgba(201,160,80,0.9), 0 0 260px rgba(201,160,80,0.4)", duration:0.5 }, 31.3);
-  tl.to("#a5wd", { x:-6, duration:0.03 }, 31.0); tl.to("#a5wd", { x:5, duration:0.03 }, 31.03);
-  tl.to("#a5wd", { x:-3, duration:0.03 }, 31.06); tl.to("#a5wd", { x:0, duration:0.04 }, 31.09);
-  tl.to("#a5ph", { opacity:0.96, duration:1.8, ease:"power1.out" }, 31.5);
-  tl.to("#a5wd", { textShadow:"0 0 180px rgba(201,160,80,1.0), 0 0 380px rgba(201,160,80,0.6)", duration:2.0 }, 32.0);
-  tl.fromTo("#a5at", { opacity:0 }, { opacity:1, duration:0.38 }, 33.0);
+  /* Silence… then "Always." explodes onto screen at 31s */
+  /* Start oversized + bright, slam down to real scale */
+  tl.fromTo("#a5wd",
+    { opacity:1, scale:1.55, yPercent:-50,
+      textShadow:"0 0 60px rgba(201,160,80,1), 0 0 120px rgba(201,160,80,0.9), 0 0 250px rgba(201,160,80,0.7)" },
+    { scale:1.0, yPercent:-50,
+      textShadow:"0 0 100px rgba(201,160,80,0.85), 0 0 220px rgba(201,160,80,0.5), 0 0 480px rgba(201,160,80,0.25)",
+      duration:0.38, ease:"power4.out" },
+    31.0
+  );
+  camPunch(31.0, 1.14);
+
+  /* Shake on impact */
+  tl.to("#a5wd", { x:-10, duration:0.028 }, 31.0);
+  tl.to("#a5wd", { x:8,   duration:0.028 }, 31.028);
+  tl.to("#a5wd", { x:-5,  duration:0.028 }, 31.056);
+  tl.to("#a5wd", { x:0,   duration:0.038 }, 31.084);
+
+  /* Glow breathes out slowly — embers fading */
+  tl.to("#a5wd", {
+    textShadow:"0 0 160px rgba(201,160,80,1.0), 0 0 380px rgba(201,160,80,0.65), 0 0 700px rgba(201,160,80,0.3)",
+    duration:3.2, ease:"power1.inOut"
+  }, 31.4);
+
+  tl.fromTo("#a5at", { opacity:0 }, { opacity:1, duration:0.44 }, 33.2);
   tl.to("#act5", { opacity:0, duration:0.55, ease:"power2.in" }, 36.2);
 
   /* ══ ACT 6 ══ */
