@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Lightning Assembly</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; }
+  #stage {
+    position: absolute;
+    left: 1250px; top: 50%;
+    transform: translateY(-50%);
+    width: 300px; height: 600px;
+  }
+  svg { width: 100%; height: 100%; overflow: visible; }
+</style>
+<script src="../node_modules/gsap/dist/gsap.min.js"></script>
+</head>
+<body>
+<div
+  id="lightning-root"
+  data-composition-id="lightning-assembly"
+  data-start="0"
+  data-duration="3"
+  data-width="1920"
+  data-height="1080"
+>
+  <div id="stage">
+    <svg id="scene" viewBox="0 0 200 400" xmlns="http://www.w3.org/2000/svg">
+      <path id="bolt-main"  d="M 120 10 L 40 210 L 100 210 L 80 390 L 160 170 L 98 170 Z" fill="#f0f0f0"/>
+      <path id="bolt-left"  d="M 120 10 L 40 210 L 100 210" fill="none" stroke="#e8001c" stroke-width="3"/>
+      <path id="bolt-right" d="M 100 210 L 80 390 L 160 170" fill="none" stroke="#e8001c" stroke-width="3"/>
+      <path id="bolt-inner" d="M 98 170 L 120 10 L 160 170 Z" fill="#e8001c" opacity="0.4"/>
+    </svg>
+  </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+(function () {
+  const scene  = document.getElementById("scene");
+  const main   = document.getElementById("bolt-main");
+  const left   = document.getElementById("bolt-left");
+  const right  = document.getElementById("bolt-right");
+  const inner  = document.getElementById("bolt-inner");
+
+  if (!scene || !main || !left || !right || !inner) return;
+
+  gsap.set([scene, main, left, right, inner], { transformOrigin: "50% 50%" });
+
+  // Deterministic broken-state scatter
+  const partDefs = [
+    { el: left,  dx: -4200, dy: -3000, sx: 0.05, sy: 4, rot:  90 },
+    { el: right, dx:  3800, dy:  4500, sx: 0.05, sy: 4, rot: -90 },
+    { el: inner, dx:  1200, dy: -5800, sx: 0.05, sy: 4, rot: 180 },
+  ];
+
+  gsap.set(main, { opacity: 0, scale: 0.15 });
+  partDefs.forEach(({ el, dx, dy, sx, sy, rot }) =>
+    gsap.set(el, { opacity: 0, x: dx, y: dy, scaleX: sx, scaleY: sy, rotation: rot })
+  );
+
+  const tl = gsap.timeline({ paused: true });
+
+  // Scene rotates in during assembly
+  tl.fromTo(scene, { rotation: -180, scale: 0.08 }, { rotation: 0, scale: 1, duration: 2.6, ease: "power4.out" }, 0);
+
+  // Main hull snaps in with elastic
+  tl.to(main, { opacity: 1, scale: 1, duration: 1.3, ease: "elastic.out(1, 0.45)" }, 0.15);
+
+  // Parts fly in
+  partDefs.forEach(({ el }, i) => {
+    tl.to(el, {
+      opacity: 1, x: 0, y: 0, scaleX: 1, scaleY: 1, rotation: 0,
+      duration: 1.0, ease: "back.out(2.5)"
+    }, 0.42 + i * 0.06);
+  });
+
+  // Glow pulse
+  tl.to(inner, { opacity: 0.85, duration: 0.25, ease: "power2.out" }, 1.7);
+  tl.to(inner, { opacity: 0.4,  duration: 0.4,  ease: "power2.in"  }, 1.95);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["lightning-assembly"] = tl;
+})();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 400" width="200" height="400">
+  <path id="bolt-main" d="M 120 10 L 40 210 L 100 210 L 80 390 L 160 170 L 98 170 Z" fill="#f0f0f0" stroke="none"/>
+  <path id="bolt-left"  d="M 120 10 L 40 210 L 100 210" fill="none" stroke="#e8001c" stroke-width="3"/>
+  <path id="bolt-right" d="M 100 210 L 80 390 L 160 170" fill="none" stroke="#e8001c" stroke-width="3"/>
+  <path id="bolt-inner" d="M 98 170 L 120 10 L 160 170 Z" fill="#e8001c" opacity="0.4"/>
+</svg>

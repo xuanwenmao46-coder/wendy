@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "skills": {
+    "claude-typer": {
+      "source": "vibe-motion/skills",
+      "sourceType": "github",
+      "skillPath": "claude-typer/SKILL.md",
+      "computedHash": "7e894ff3a75756fb2f45f7189c646dd199548e934edd94eb1b93865bbe3caa2e"
+    },
+    "light-spotlight-render": {
+      "source": "vibe-motion/skills",
+      "sourceType": "github",
+      "skillPath": "light-spotlight-render/SKILL.md",
+      "computedHash": "f745f10c2bd5aa3b5a84f749f2be314a483d8804a8172799ace7f9f40010fd07"
+    },
+    "procedural-fish-render": {
+      "source": "vibe-motion/skills",
+      "sourceType": "github",
+      "skillPath": "procedural-fish-render/SKILL.md",
+      "computedHash": "0ce8ef81487396a32d657dd844391753e5497605183d52d5af06f84791672052"
+    },
+    "remotion-3d-ticker": {
+      "source": "vibe-motion/skills",
+      "sourceType": "github",
+      "skillPath": "remotion-3d-ticker/SKILL.md",
+      "computedHash": "03c94b361541fb6f478ab906cfb06e3c7b8c2e834a0ecb0a9bdad6cae9a16558"
+    },
+    "ruler-progress-render": {
+      "source": "vibe-motion/skills",
+      "sourceType": "github",
+      "skillPath": "ruler-progress-render/SKILL.md",
+      "computedHash": "76fbf3c53caabd2308254b70bfb3ea967f230317b6430c628f2d9d78832dc976"
+    },
+    "svg-assembly-animator": {
+      "source": "vibe-motion/skills",
+      "sourceType": "github",
+      "skillPath": "svg-assembly-animator/SKILL.md",
+      "computedHash": "df107141126a2823cd898910cdfe43516c22b257031ebd05b37157e367498a80"
+    },
+    "threejs-earth-render": {
+      "source": "vibe-motion/skills",
+      "sourceType": "github",
+      "skillPath": "threejs-earth-render/SKILL.md",
+      "computedHash": "f076abe98936f374cdbf01c39e2fe033db24c8ebaad68390b1d2cd2a90d1938a"
+    },
+    "wechat-2d-render": {
+      "source": "vibe-motion/skills",
+      "sourceType": "github",
+      "skillPath": "wechat-2d-render/SKILL.md",
+      "computedHash": "0e99ed5883c45f08090f3a5b919ee6e236078899449f79404976b07c765b1a93"
+    }
+  }
+}

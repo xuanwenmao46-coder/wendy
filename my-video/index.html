@@ -205,8 +205,19 @@
   <div class="star" style="width:2px;height:2px;top:40px;left:1820px"></div>
   <div class="star" style="width:2px;height:2px;top:118px;left:780px"></div>
 
+  <!-- LIGHTNING ASSEMBLY — sub-composition overlay on Act 0 -->
+  <iframe
+    id="lightning-clip"
+    class="clip"
+    data-start="0"
+    data-duration="3"
+    data-track-index="5"
+    data-composition-id="lightning-assembly"
+    data-composition-src="compositions/lightning-assembly.html"
+    style="position:absolute;left:0;top:0;width:1920px;height:1080px;border:none;background:transparent;pointer-events:none;z-index:100;"
+  ></iframe>
+
   <!-- ACT 0 -->
-  <div id="act0">
     <div id="a0bg"></div><div id="a0red"></div><div id="a0cut"></div>
     <div id="a0h" data-layout-allow-overflow>HARRY</div>
     <div id="a0p" data-layout-allow-overflow>POTTER</div>
@@ -357,6 +368,18 @@
   <div id="act5" data-layout-allow-overflow>
     <div id="a5ph" class="pb ps"></div>
     <div id="a5pf"></div><div id="a5vc"></div>
+    <!-- SPOTLIGHT CONE — swings left→right to reveal "Always." -->
+    <svg id="a5spot" style="position:absolute;inset:0;width:1920px;height:1080px;pointer-events:none;opacity:0;mix-blend-mode:screen;" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="coneGrad" cx="50%" cy="0%" r="100%" fx="50%" fy="0%">
+          <stop offset="0%"   stop-color="#C9A050" stop-opacity="0.55"/>
+          <stop offset="60%"  stop-color="#C9A050" stop-opacity="0.18"/>
+          <stop offset="100%" stop-color="#C9A050" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <!-- Cone apex at top-left lamp point, fans down to bottom -->
+      <polygon id="a5cone" points="200,0 -400,1080 800,1080" fill="url(#coneGrad)"/>
+    </svg>
     <div id="a5q">"After all this time?"</div>
     <div id="a5rl"></div>
     <div id="a5wd" data-layout-allow-overflow>Always.</div>
@@ -520,6 +543,15 @@
   tl.set("#act5", { opacity: 1 }, 28.0);
   tl.fromTo("#a5ph", { opacity:0, x:80 }, { opacity:0.88, x:0, duration:0.44, ease:"expo.out" }, 28.0);
   tl.set("#a5vc", { opacity: 1 }, 28.0);
+
+  /* Spotlight cone swing: left → right → settle over "Always." */
+  tl.set("#a5spot", { opacity: 1 }, 28.0);
+  tl.set("#a5cone", { attr: { points: "-400,0 -1200,1080 400,1080" } }, 28.0);
+  tl.to("#a5cone",  { attr: { points: "1300,0 400,1080 1920,1080" }, duration: 1.4, ease: "power2.inOut" }, 28.1);
+  tl.to("#a5cone",  { attr: { points: "600,0 -200,1080 1400,1080" }, duration: 1.0, ease: "power3.inOut" }, 29.5);
+  tl.to("#a5cone",  { attr: { points: "350,0 -300,1080 1000,1080" }, duration: 0.8, ease: "power2.out"  }, 30.5);
+  tl.to("#a5spot",  { opacity: 0, duration: 0.6, ease: "power2.in" }, 31.0);
+
   tl.fromTo("#a5q",  { opacity:0 }, { opacity:1, duration:0.38 }, 28.7);
   tl.fromTo("#a5rl", { opacity:1, width:0 }, { width:90, duration:0.28, ease:"power2.out" }, 30.1);
   matteReveal("#a5wd", 31.0, 0.22);
