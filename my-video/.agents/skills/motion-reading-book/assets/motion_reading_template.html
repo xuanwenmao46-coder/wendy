@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1920, height=1080" />
+  <script src="./node_modules/gsap/dist/gsap.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 1920px; height: 1080px; overflow: hidden; background: #000; }
+    #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+    #cam { position: absolute; inset: 0; transform-origin: 50% 50%; }
+    #flash  { position: absolute; inset: 0; background: #fff; pointer-events: none; z-index: 9999; opacity: 0; }
+    #scanbar{ position: absolute; left: 0; top: 0; width: 1920px; height: 14px; background: #fff; z-index: 9998; opacity: 0; }
+
+    /* ── GLOBAL TEXTURE ── */
+    #scanlines {
+      position: absolute; inset: 0; pointer-events: none; z-index: 9000;
+      background: repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(0,0,0,0.10) 3px, rgba(0,0,0,0.10) 4px);
+    }
+    #scratches {
+      position: absolute; inset: 0; pointer-events: none; z-index: 8999;
+      background:
+        repeating-linear-gradient(-74deg, transparent 0, transparent 380px, rgba(255,255,255,0.03) 380px, rgba(255,255,255,0.03) 381px),
+        repeating-linear-gradient(-81deg, transparent 0, transparent 230px, rgba(255,255,255,0.022) 230px, rgba(255,255,255,0.022) 231px),
+        repeating-linear-gradient(-67deg, transparent 0, transparent 510px, rgba(255,255,255,0.018) 510px, rgba(255,255,255,0.018) 511px);
+    }
+
+    /* ── PHOTOS ── */
+    .pb { position: absolute; background-size: cover; background-position: center top; background-repeat: no-repeat; }
+    .prot { background-image: url("{{IMG_PROTAGONIST}}"); filter: grayscale(1) contrast(1.9) brightness(0.50); }
+    .emot { background-image: url("{{IMG_EMOTIONAL}}");  filter: grayscale(1) contrast(2.2) brightness(0.38); }
+    .anta { background-image: url("{{IMG_ANTAGONIST}}"); filter: grayscale(1) contrast(2.0) brightness(0.42); }
+
+    /* ════ ACT 0 — TITLE ════ */
+    #act0 { position: absolute; inset: 0; opacity: 0; }
+    #a0bg { position: absolute; inset: 0; background: {{COLOR_BG}}; }
+    #a0red{ position: absolute; right: 0; top: 0; width: 730px; height: 1080px; background: {{COLOR_ACCENT}}; }
+    #a0red::after { content:""; position:absolute; inset:0;
+      background: repeating-linear-gradient(-72deg, transparent 0, transparent 260px, rgba(0,0,0,0.06) 260px, rgba(0,0,0,0.06) 261px),
+                  repeating-linear-gradient(-80deg, transparent 0, transparent 150px, rgba(255,255,255,0.03) 150px, rgba(255,255,255,0.03) 151px); }
+    #a0cut{ position: absolute; right: 730px; top: 0; width: 4px; height: 1080px; background: #fff; opacity: 0; }
+    #a0h  { position: absolute; top: 18px; left: 0;
+             font-size: 510px; font-weight: 900; font-family: "Helvetica Neue", Arial, sans-serif;
+             color: {{COLOR_TEXT}}; letter-spacing: -26px; line-height: 0.78; text-transform: uppercase; opacity: 0;
+             filter: url(#df); }
+    #a0p  { position: absolute; bottom: 10px; left: 0;
+             font-size: 510px; font-weight: 900; font-family: "Helvetica Neue", Arial, sans-serif;
+             color: {{COLOR_TEXT}}; letter-spacing: -26px; line-height: 0.78; text-transform: uppercase; opacity: 0;
+             filter: url(#df); }
+    #a0rtag { position: absolute; top: 80px; right: 60px; text-align: right; opacity: 0; }
+    .rth { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: #fff; font-weight: 700; line-height: 2.8; }
+    #a0bar { position: absolute; bottom: 0; left: 0; width: 1190px; height: 52px; background: #000;
+              border-top: 1px solid rgba(255,255,255,0.14); display: flex; align-items: center; opacity: 0; overflow: hidden; }
+    .bc { padding: 0 28px; border-right: 1px solid rgba(255,255,255,0.09); height: 100%; display: flex; align-items: center; }
+    .bt { font-family:"Helvetica Neue",sans-serif; font-size:9px; letter-spacing:6px; text-transform:uppercase; color:rgba(255,255,255,0.28); white-space:nowrap; }
+    #a0code{ position: absolute; right: 56px; bottom: 14px; opacity: 0; }
+
+    /* ════ ACT 1 — QUOTE ════ */
+    #act1 { position: absolute; inset: 0; opacity: 0; }
+    #a1bg  { position: absolute; inset: 0; background: {{COLOR_BG}}; }
+    #a1w   { position: absolute; right: 0; top: 0; width: 600px; height: 1080px; background: {{COLOR_PANEL}}; }
+    #a1rc  { position: absolute; right: 600px; top: 0; width: 4px; height: 1080px; background: {{COLOR_ACCENT}}; }
+    #a1seal{ position: absolute; right: 60px; top: 180px; width: 480px; text-align: right; opacity: 0; }
+    .slh { font-family:"Helvetica Neue",sans-serif; font-size:9px; letter-spacing:7px; text-transform:uppercase; color:{{COLOR_INK}}; font-weight:700; margin-bottom:16px; }
+    .sls { font-family:"Helvetica Neue",sans-serif; font-size:9px; letter-spacing:4px; text-transform:uppercase; color:rgba(0,0,0,0.3); line-height:2.4; }
+    #a1ws { position: absolute; right: 270px; top: 430px; opacity: 0; }
+    #a1q  { position: absolute; left: 0; top: 50%; transform: translateY(-50%); max-width: 1280px; }
+    .ql   { font-size: 182px; font-weight: 900; font-family: "Helvetica Neue", Arial, sans-serif;
+            color: {{COLOR_TEXT}}; letter-spacing: -8px; line-height: 0.80; text-transform: uppercase; display: block; opacity: 0; }
+    .qlr  { color: {{COLOR_ACCENT}}; }
+    #a1at { position: absolute; bottom: 72px; left: 0; opacity: 0;
+            font-family:"Helvetica Neue",sans-serif; font-size:9px; letter-spacing:6px; text-transform:uppercase; color:rgba(255,255,255,0.18); }
+
+    /* ════ ACT 2 — PROTAGONIST ════ */
+    #act2 { position: absolute; inset: 0; background: {{COLOR_BG}}; opacity: 0; }
+    #a2grid{
+      position: absolute; left:0; top:0; width:960px; height:1080px; pointer-events:none;
+      background:
+        repeating-linear-gradient(90deg, transparent 0, transparent 191px, rgba(255,255,255,0.03) 191px, rgba(255,255,255,0.03) 192px),
+        repeating-linear-gradient(0deg,  transparent 0, transparent 215px, rgba(255,255,255,0.03) 215px, rgba(255,255,255,0.03) 216px); }
+    #a2ph { right:0; top:0; width:960px; height:1080px; }
+    #a2pf { position:absolute; right:0; top:0; width:960px; height:1080px;
+            background: linear-gradient(90deg, {{COLOR_BG}} 0%, rgba(13,20,39,0.5) 7%, rgba(13,20,39,0) 22%); }
+    #a2vc { position:absolute; right:960px; top:0; width:3px; height:1080px; background:rgba(255,255,255,0.18); opacity:0; }
+    #a2lb { position:absolute; top:60px; left:60px; font-family:"Helvetica Neue",sans-serif; font-size:9px; letter-spacing:7px; text-transform:uppercase; color:rgba(255,255,255,0.22); opacity:0; }
+    .lt { position:absolute; font-size:302px; font-weight:900; font-family:"Helvetica Neue",Arial,sans-serif;
+          color:{{COLOR_TEXT}}; letter-spacing:-12px; line-height:0.80; text-transform:uppercase; opacity:0; }
+    {{LETTER_CSS}}
+    .an { position:absolute; font-family:"Helvetica Neue",sans-serif; font-size:12px; letter-spacing:3px;
+          text-transform:uppercase; color:rgba(255,255,255,0.26); line-height:1.9; opacity:0; }
+    {{ANN_CSS}}
+    #a2rl{ position:absolute; top:422px; left:0; width:880px; height:1px; background:rgba(255,255,255,0.07); opacity:0; }
+    #a2rb{ position:absolute; bottom:80px; left:0; width:0; height:5px; background:{{COLOR_ACCENT}}; }
+
+    /* ════ ACT 3 — STATISTICS ════ */
+    #act3 { position: absolute; inset: 0; background: {{COLOR_BG}}; opacity: 0; }
+    #a3sw { position:absolute; top:55px; left:0; opacity:0; }
+    .a3n  { font-size:210px; font-weight:900; font-family:"Helvetica Neue",Arial,sans-serif;
+            color:{{COLOR_ACCENT}}; letter-spacing:-10px; line-height:0.78; }
+    .a3s  { font-family:"Helvetica Neue",sans-serif; font-size:9px; letter-spacing:6px; text-transform:uppercase; color:rgba(255,255,255,0.16); margin-top:8px; }
+    #a3ch { position:absolute; bottom:80px; left:60px; right:60px; top:330px; }
+    .bl   { position:absolute; bottom:48px; width:3px; opacity:0; transform-origin:bottom; }
+    {{BAR_CSS}}
+    .bab{ position:absolute; bottom:20px; font-family:"Helvetica Neue",sans-serif; font-size:9px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.2); opacity:0; transform:translateX(-50%); }
+    .bpg{ position:absolute; font-family:"Helvetica Neue",sans-serif; font-size:9px; color:rgba(255,255,255,0.28); opacity:0; transform:translateX(-50%); }
+    #ba1{left:60px;} #ba2{left:280px;} #ba3{left:500px;} #ba4{left:720px;} #ba5{left:940px;} #ba6{left:1160px;} #ba7{left:1380px;}
+    {{BARPG_CSS}}
+    #a3xa{ position:absolute; bottom:47px; left:0; width:1600px; height:1px; background:rgba(255,255,255,0.12); opacity:0; }
+    #a3cv{ position:absolute; bottom:48px; left:0; width:1600px; height:320px; overflow:visible; opacity:0; }
+    #a3peak{ position:absolute; bottom:{{PEAK_BOTTOM}}px; left:{{PEAK_LEFT}}px;
+             border:1px solid rgba({{COLOR_ACCENT_R}},{{COLOR_ACCENT_G}},{{COLOR_ACCENT_B}},0.75); padding:3px 8px;
+             font-family:"Helvetica Neue",sans-serif; font-size:9px; letter-spacing:4px;
+             color:{{COLOR_ACCENT}}; text-transform:uppercase; white-space:nowrap; opacity:0; }
+
+    /* ════ ACT 4 — ANTAGONIST ════ */
+    #act4 { position:absolute; inset:0; opacity:0; }
+    #a4dk { position:absolute; left:0; top:0; width:900px; height:1080px; background:#08101E; }
+    #a4ph { left:0; top:0; width:900px; height:1080px; }
+    #a4pf { position:absolute; left:0; top:0; width:900px; height:1080px;
+            background: linear-gradient(90deg, rgba(8,16,30,0.72) 0%, rgba(8,16,30,0.18) 60%, rgba(8,16,30,0) 85%); }
+    #a4rd { position:absolute; right:0; top:0; width:1020px; height:1080px; background:{{COLOR_ACCENT}}; }
+    #a4rd::after { content:""; position:absolute; inset:0;
+      background: repeating-linear-gradient(-70deg, transparent 0, transparent 300px, rgba(0,0,0,0.055) 300px, rgba(0,0,0,0.055) 301px),
+                  repeating-linear-gradient(-78deg, transparent 0, transparent 170px, rgba(255,255,255,0.025) 170px, rgba(255,255,255,0.025) 171px); }
+    #a4ct { position:absolute; left:900px; top:0; width:4px; height:1080px; background:#000; }
+    #a4tg { position:absolute; top:80px; right:60px; text-align:right; opacity:0;
+            font-family:"Helvetica Neue",sans-serif; font-size:9px; letter-spacing:7px; text-transform:uppercase; color:rgba(0,0,0,0.4); font-weight:700; }
+    #a4vl { position:absolute; right:0; top:50%; transform:translateY(-54%); width:1020px; padding-left:60px; line-height:0.78; }
+    .vl   { font-size:265px; font-weight:900; font-family:"Helvetica Neue",Arial,sans-serif;
+            color:#000; letter-spacing:-12px; text-transform:uppercase; display:block; opacity:0;
+            filter: url(#df); }
+    #a4bt { position:absolute; bottom:80px; left:60px; opacity:0; }
+    .a4ba { font-size:26px; font-weight:900; color:rgba(255,255,255,0.62); font-family:"Helvetica Neue",sans-serif; letter-spacing:2px; text-transform:uppercase; margin-bottom:10px; }
+    .a4bs { font-family:"Helvetica Neue",sans-serif; font-size:9px; letter-spacing:5px; text-transform:uppercase; color:rgba(255,255,255,0.14); line-height:2.4; }
+
+    /* ════ ACT 5 — EMOTIONAL CLOSE ════ */
+    #act5 { position:absolute; inset:0; background:#050810; opacity:0; }
+    #a5ph { position:absolute; inset:0; background-size:cover; background-position:60% top;
+            filter: grayscale(1) contrast(2.0) brightness(0.28); opacity:0; }
+    #a5q  { position:absolute; top:50%; left:0; right:0; text-align:center; margin-top:-290px;
+            font-size:24px; color:rgba(255,255,255,0.14); font-style:italic;
+            font-family:"Georgia","Times New Roman",serif; opacity:0; letter-spacing:1px; }
+    #a5wd { position:absolute; left:0; right:0; top:50%; text-align:center;
+            font-size:500px; font-weight:900; letter-spacing:-25px;
+            font-family:"Helvetica Neue",Arial,sans-serif; color:{{COLOR_GOLD}};
+            line-height:0.88; opacity:0; filter: url(#df-xl); }
+    #a5at { position:absolute; bottom:88px; left:0; right:0; text-align:center; opacity:0;
+            font-family:"Helvetica Neue",sans-serif; font-size:9px; letter-spacing:8px;
+            text-transform:uppercase; color:rgba(255,255,255,0.12); }
+
+    /* ════ ACT 6 — ENDCARD ════ */
+    #act6 { position:absolute; inset:0; background:{{COLOR_BG}}; opacity:0; }
+    #a6w  { position:absolute; right:0; top:0; width:880px; height:1080px; background:{{COLOR_PANEL}}; opacity:0; }
+    #a6ct { position:absolute; right:880px; top:0; width:4px; height:1080px; background:{{COLOR_ACCENT}}; opacity:0; }
+    #a6lf { position:absolute; left:0; top:50%; transform:translateY(-50%); width:900px; opacity:0; }
+    .a6s  { font-family:"Helvetica Neue",sans-serif; font-size:9px; letter-spacing:8px; text-transform:uppercase; color:{{COLOR_ACCENT}}; font-weight:700; margin-bottom:28px; }
+    .a6t  { font-size:142px; font-weight:900; font-family:"Helvetica Neue",Arial,sans-serif; color:{{COLOR_TEXT}}; line-height:0.80; letter-spacing:-7px; text-transform:uppercase; opacity:0; filter: url(#df); }
+    .a6rl { width:60px; height:4px; background:{{COLOR_ACCENT}}; margin:28px 0; }
+    .a6d  { font-family:"Helvetica Neue",sans-serif; font-size:9px; letter-spacing:5px; text-transform:uppercase; color:rgba(255,255,255,0.18); line-height:3.0; }
+    #a6rt { position:absolute; right:60px; top:50%; transform:translateY(-50%); width:760px; text-align:right; opacity:0; }
+    .a6rh { font-family:"Helvetica Neue",sans-serif; font-size:9px; letter-spacing:7px; text-transform:uppercase; color:{{COLOR_ACCENT}}; font-weight:700; margin-bottom:10px; }
+    .a6rdv{ height:1px; background:rgba({{COLOR_ACCENT_R}},{{COLOR_ACCENT_G}},{{COLOR_ACCENT_B}},0.35); margin:12px 0 20px; }
+    .a6rq { font-size:46px; font-weight:400; font-style:italic; color:{{COLOR_INK}};
+            font-family:"Georgia","Times New Roman",serif; line-height:1.45; letter-spacing:0; }
+    .a6ra { font-family:"Helvetica Neue",sans-serif; font-size:9px; letter-spacing:5px; text-transform:uppercase; color:rgba({{COLOR_ACCENT_R}},{{COLOR_ACCENT_G}},{{COLOR_ACCENT_B}},0.35); margin-top:24px; }
+    #a6sv { position:absolute; right:210px; top:50%; transform:translateY(-50%); opacity:0; }
+    #a6br { position:absolute; bottom:0; left:0; right:0; height:52px; background:#000; border-top:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; padding:0 60px; justify-content:space-between; opacity:0; }
+    .brt  { font-family:"Helvetica Neue",sans-serif; font-size:9px; letter-spacing:6px; text-transform:uppercase; color:rgba(255,255,255,0.22); }
+
+    .star { position:absolute; border-radius:50%; background:#fff; opacity:0; pointer-events:none; }
+  </style>
+</head>
+<body>
+<div id="root"
+  data-composition-id="main"
+  data-start="0"
+  data-duration="46"
+  data-width="1920"
+  data-height="1080"
+>
+  <!-- DISTRESS FILTERS -->
+  <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="df" x="-8%" y="-8%" width="116%" height="116%">
+        <feTurbulence type="turbulence" baseFrequency="0.062 0.091" numOctaves="3" seed="5" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="10" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <filter id="df-xl" x="-10%" y="-10%" width="120%" height="120%">
+        <feTurbulence type="turbulence" baseFrequency="0.044 0.068" numOctaves="3" seed="12" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="20" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- GRAIN -->
+  <svg style="position:absolute;top:0;left:0;width:1920px;height:1080px;pointer-events:none;z-index:9001;opacity:0.15">
+    <defs><filter id="gf"><feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="4" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter></defs>
+    <rect width="1920" height="1080" filter="url(#gf)"/>
+  </svg>
+  <div id="scanlines"></div>
+  <div id="scratches"></div>
+  <div id="flash"></div>
+  <div id="scanbar"></div>
+
+  <div id="cam">
+
+  <!-- ACT 0 — TITLE -->
+  <div id="act0">
+    <div id="a0bg"></div><div id="a0red"></div><div id="a0cut"></div>
+    <div id="a0h" data-layout-allow-overflow>{{TITLE_LINE1}}</div>
+    <div id="a0p" data-layout-allow-overflow>{{TITLE_LINE2}}</div>
+    <div id="a0rtag">
+      <div class="rth">Motion Reading</div>
+      <div class="rth" style="color:rgba(255,255,255,0.45)">Series No. {{SERIES_NO}}</div>
+      <div class="rth" style="color:rgba(255,255,255,0.25)">{{AUTHOR}} · {{YEAR}}</div>
+    </div>
+    <div id="a0bar">
+      <div class="bc"><span class="bt">{{BOOK_TITLE}}</span></div>
+      <div class="bc"><span class="bt">{{SERIES_NAME}}</span></div>
+      <div class="bc"><span class="bt">{{AUTHOR}} · {{YEAR}}</span></div>
+    </div>
+    <svg id="a0code" width="180" height="32" viewBox="0 0 180 32">
+      <rect x="0"  width="2" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="4"  width="1" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="7"  width="3" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="12" width="1" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="15" width="2" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="20" width="1" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="23" width="3" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="28" width="2" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="33" width="1" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="36" width="2" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="44" width="3" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="50" width="1" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="54" width="2" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="63" width="3" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="69" width="1" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="73" width="2" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="82" width="3" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="88" width="2" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="97" width="2" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="106" width="3" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="116" width="2" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="125" width="3" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="131" width="2" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="140" width="2" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="149" width="3" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="159" width="2" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="168" width="3" height="32" fill="rgba(255,255,255,0.32)"/>
+      <rect x="174" width="2" height="32" fill="rgba(255,255,255,0.32)"/>
+    </svg>
+  </div>
+
+  <!-- ACT 1 — QUOTE -->
+  <div id="act1">
+    <div id="a1bg"></div><div id="a1w"></div><div id="a1rc"></div>
+    <div id="a1seal">
+      <div class="slh">{{SERIES_NAME}}</div>
+      <div class="sls">{{AUTHOR}} · {{YEAR}}</div>
+    </div>
+    <svg id="a1ws" width="88" height="88" viewBox="0 0 88 88">
+      <circle cx="44" cy="44" r="40" fill="none" stroke="rgba(0,0,0,0.2)" stroke-width="0.8"/>
+      <text x="44" y="44" text-anchor="middle" dominant-baseline="middle"
+            font-family="Helvetica Neue,sans-serif" font-size="28" font-weight="900" fill="rgba(0,0,0,0.4)">M</text>
+    </svg>
+    <div id="a1q">
+      <span class="ql"    id="a1l1">YOU'RE</span>
+      <span class="ql"    id="a1l2">A WIZARD,</span>
+      <span class="ql qlr" id="a1l3">{{PROTAGONIST}}.</span>
+    </div>
+    <div id="a1at">— {{QUOTE_SPEAKER}}</div>
+  </div>
+
+  <!-- ACT 2 — PROTAGONIST -->
+  <div id="act2">
+    <div id="a2grid"></div>
+    <div id="a2ph" class="pb prot"></div>
+    <div id="a2pf"></div><div id="a2vc"></div>
+    <div id="a2lb">02 · TYPOGRAPHIC ANATOMY</div>
+    {{LETTER_HTML}}
+    <div id="a2rl"></div>
+    {{ANN_HTML}}
+    <div id="a2rb"></div>
+  </div>
+
+  <!-- ACT 3 — STATISTICS -->
+  <div id="act3" data-layout-allow-overflow>
+    <div id="a3sw">
+      <div class="a3n" id="a3n">{{STATS_NUMBER}}</div>
+      <div class="a3s">{{STATS_LABEL}}</div>
+    </div>
+    <div id="a3ch" data-layout-allow-overflow>
+      <div id="a3xa"></div>
+      <div id="a3peak">{{PEAK_LABEL}}</div>
+      <div class="bl" id="bl1"></div><div class="bl" id="bl2"></div><div class="bl" id="bl3"></div>
+      <div class="bl" id="bl4"></div><div class="bl" id="bl5"></div><div class="bl" id="bl6"></div>
+      <div class="bl" id="bl7"></div>
+      {{BA_HTML}}
+      {{BP_HTML}}
+      <svg id="a3cv" viewBox="0 0 1600 380" preserveAspectRatio="none">
+        <path id="tcurve"
+          d="M 60 303 C 140 285 220 260 280 243 C 360 215 440 185 500 169
+             C 570 148 650 110 720 81 C 795 50 870 28 940 18
+             C 1010 28 1080 60 1160 131 C 1240 180 1320 50 1380 28"
+          fill="none" stroke="{{COLOR_ACCENT}}" stroke-width="1.5"
+          stroke-dasharray="3000" stroke-dashoffset="3000" opacity="0.9"/>
+        <circle id="tc1" cx="60"  cy="303" r="4" fill="{{COLOR_TEXT}}" opacity="0"/>
+        <circle id="tc2" cx="280" cy="243" r="4" fill="{{COLOR_TEXT}}" opacity="0"/>
+        <circle id="tc3" cx="500" cy="169" r="4" fill="{{COLOR_TEXT}}" opacity="0"/>
+        <circle id="tc4" cx="720" cy="81"  r="5" fill="{{COLOR_ACCENT}}" opacity="0"/>
+        <circle id="tc5" cx="940" cy="18"  r="6" fill="{{COLOR_ACCENT}}" opacity="0"/>
+        <circle id="tc6" cx="1160" cy="131" r="4" fill="{{COLOR_TEXT}}" opacity="0"/>
+        <circle id="tc7" cx="1380" cy="28"  r="6" fill="{{COLOR_ACCENT}}" opacity="0"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ACT 4 — ANTAGONIST -->
+  <div id="act4" data-layout-allow-overflow>
+    <div id="a4dk"></div>
+    <div id="a4ph" class="pb anta"></div>
+    <div id="a4pf"></div><div id="a4rd"></div><div id="a4ct"></div>
+    <div id="a4tg">03 · THE ANTAGONIST</div>
+    <div id="a4vl" data-layout-allow-overflow>
+      <span class="vl" id="vl1">{{ANTAGONIST_L1}}</span>
+      <span class="vl" id="vl2">{{ANTAGONIST_L2}}</span>
+      <span class="vl" id="vl3">{{ANTAGONIST_L3}}</span>
+    </div>
+    <div id="a4bt">
+      <div class="a4ba">{{ANTAGONIST_QUOTE}}</div>
+      <div class="a4bs">{{ANTAGONIST_BIO}}</div>
+    </div>
+  </div>
+
+  <!-- ACT 5 — EMOTIONAL CLOSE -->
+  <div id="act5" data-layout-allow-overflow>
+    <div id="a5ph" class="pb emot"></div>
+    <div id="a5q">{{CLOSING_QUOTE}}</div>
+    <div id="a5wd" data-layout-allow-overflow>{{CLOSING_WORD}}</div>
+    <div id="a5at">{{CLOSING_SPEAKER}}</div>
+  </div>
+
+  <!-- ACT 6 — ENDCARD -->
+  <div id="act6">
+    <div id="a6w"></div><div id="a6ct"></div>
+    <div id="a6lf">
+      <div class="a6s">Motion Reading · Series No. {{SERIES_NO}}</div>
+      <div class="a6t" id="a6t1">{{TITLE_LINE1}}</div>
+      <div class="a6t" id="a6t2">{{TITLE_LINE2}}</div>
+      <div class="a6rl"></div>
+      <div class="a6d">{{AUTHOR}} · {{YEAR}}<br>Literature · {{SERIES_NAME}}</div>
+    </div>
+    <div id="a6rt">
+      <div class="a6rh">The Core Truth</div>
+      <div class="a6rdv"></div>
+      <div class="a6rq">{{ENDCARD_QUOTE}}</div>
+      <div class="a6ra">— Motion Reading</div>
+    </div>
+    <svg id="a6sv" width="320" height="320" viewBox="0 0 320 320" fill="none">
+      <circle cx="160" cy="160" r="150" stroke="rgba(0,0,0,0.1)" stroke-width="1"/>
+      <circle cx="160" cy="160" r="105" stroke="rgba(0,0,0,0.07)" stroke-width="1"/>
+      <circle cx="160" cy="160" r="18"  stroke="rgba(0,0,0,0.22)" stroke-width="1"/>
+      <circle cx="160" cy="160" r="6"   fill="{{COLOR_ACCENT}}" opacity="0.65"/>
+    </svg>
+    <div id="a6br">
+      <span class="brt">{{BOOK_TITLE}} · {{SERIES_NAME}}</span>
+      <span class="brt" style="color:{{COLOR_ACCENT}}">Motion Reading</span>
+    </div>
+  </div>
+
+  <div class="star" style="width:2px;height:2px;top:82px;left:243px"></div>
+  <div class="star" style="width:1px;height:1px;top:135px;left:890px"></div>
+  <div class="star" style="width:2px;height:2px;top:60px;left:1540px"></div>
+  <div class="star" style="width:2px;height:2px;top:40px;left:1820px"></div>
+  <div class="star" style="width:2px;height:2px;top:118px;left:780px"></div>
+
+  </div><!-- /#cam -->
+</div>
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+
+  function camPunch(t, s) {
+    tl.to("#cam", { scale: s||1.06, duration: 0.06, ease: "power3.in" }, t);
+    tl.to("#cam", { scale: 0.97, duration: 0.05 }, t + 0.06);
+    tl.to("#cam", { scale: 1.0,  duration: 0.12, ease: "power2.out" }, t + 0.11);
+  }
+  function distort(el, t) {
+    tl.to(el, { skewX: 16,  duration: 0.024 }, t);
+    tl.to(el, { skewX: -11, duration: 0.024 }, t + 0.024);
+    tl.to(el, { skewX:  7,  duration: 0.024 }, t + 0.048);
+    tl.to(el, { skewX: -3,  duration: 0.024 }, t + 0.072);
+    tl.to(el, { skewX:  0,  duration: 0.034 }, t + 0.096);
+  }
+  function chr(el, t) {
+    tl.set(el, { textShadow: "-8px 0 rgba({{COLOR_ACCENT_R}},{{COLOR_ACCENT_G}},{{COLOR_ACCENT_B}},0.92), 8px 0 rgba(0,200,255,0.92)" }, t);
+    tl.to(el,  { textShadow: "none", duration: 0.34 }, t + 0.08);
+  }
+  function matteReveal(el, t, dur) {
+    tl.fromTo(el,
+      { clipPath: "inset(48% 0% 48% 0%)", opacity: 1 },
+      { clipPath: "inset(0% 0% 0% 0%)", duration: dur||0.24, ease: "expo.out" }, t);
+  }
+  function scanWipe(t) {
+    tl.set("#scanbar",  { opacity: 1, y: -20 }, t - 0.1);
+    tl.to("#scanbar",   { y: 1100, duration: 0.1, ease: "none" }, t - 0.1);
+    tl.set("#scanbar",  { opacity: 0 }, t + 0.02);
+  }
+
+  const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#";
+  function scrambleIn(selector, t, dur) {
+    const el = document.querySelector(selector);
+    if (!el) return;
+    const real = el.textContent.trim();
+    const fps = 24, frames = Math.round((dur || 0.42) * fps);
+    tl.set(el, { opacity: 1 }, t);
+    for (let f = 0; f <= frames; f++) {
+      let txt = "";
+      for (let c = 0; c < real.length; c++) {
+        const ch = real[c];
+        if (ch === " " || ch === "'" || ch === "." || ch === "," || ch === "-") {
+          txt += ch;
+        } else {
+          const threshold = Math.floor(frames * (c + 1) / real.length);
+          txt += (f >= threshold) ? ch : CHARS[(c * 7 + f * 11) % CHARS.length];
+        }
+      }
+      const s = txt;
+      tl.call((() => { const v = s; return () => { el.textContent = v; }; })(), null, t + f / fps);
+    }
+  }
+
+  /* Stars */
+  document.querySelectorAll('.star').forEach((s, i) => {
+    tl.to(s, { opacity: 0.03 + (i % 5) * 0.03, duration: 1.0 }, 0.5 + (i * 0.1) % 2.5);
+  });
+
+  /* ══ ACT 0 ══ */
+  tl.set("#act0", { opacity: 1 }, 0);
+  tl.set("#a0cut", { opacity: 1 }, 0);
+  scrambleIn("#a0h", 0.25, 0.55); camPunch(0.25, 1.10); distort("#a0h", 0.25); chr("#a0h", 0.25);
+  scrambleIn("#a0p", 0.68, 0.55); camPunch(0.68, 1.08); distort("#a0p", 0.68); chr("#a0p", 0.68);
+  tl.fromTo("#a0rtag",  { opacity: 0, x: 16 }, { opacity: 1, x: 0, duration: 0.26 }, 1.05);
+  tl.fromTo("#a0bar",   { opacity: 0 }, { opacity: 1, duration: 0.22 }, 1.2);
+  tl.fromTo("#a0code",  { opacity: 0 }, { opacity: 1, duration: 0.2  }, 1.35);
+  scanWipe(2.95); tl.set("#act0", { opacity: 0 }, 3.0);
+
+  /* ══ ACT 1 ══ */
+  tl.set("#act1", { opacity: 1 }, 3.0);
+  tl.fromTo("#a1seal", { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.32, ease: "expo.out" }, 3.2);
+  tl.fromTo("#a1ws",   { opacity: 0 }, { opacity: 1, duration: 0.28 }, 3.45);
+  scrambleIn("#a1l1", 3.72,  0.40); camPunch(3.72,  1.07); chr("#a1l1", 3.72);  distort("#a1l1", 3.72);
+  scrambleIn("#a1l2", 4.20,  0.40); camPunch(4.20,  1.06); chr("#a1l2", 4.20);  distort("#a1l2", 4.20);
+  scrambleIn("#a1l3", 4.68,  0.40); camPunch(4.68,  1.09); chr("#a1l3", 4.68);  distort("#a1l3", 4.68);
+  tl.fromTo("#a1at",   { opacity: 0 }, { opacity: 1, duration: 0.26 }, 5.3);
+  scanWipe(8.32); tl.set("#act1", { opacity: 0 }, 8.42);
+
+  /* ══ ACT 2 ══ */
+  tl.set("#act2", { opacity: 1 }, 9.0);
+  tl.fromTo("#a2ph", { opacity: 0, x: 100 }, { opacity: 0.88, x: 0, duration: 0.44, ease: "expo.out" }, 9.0);
+  tl.set("#a2vc", { opacity: 1 }, 9.0);
+  tl.fromTo("#a2lb", { opacity: 0 }, { opacity: 1, duration: 0.18 }, 9.1);
+  ["#l0","#l1","#l2","#l3","#l4"].forEach((id, i) => {
+    const t = 9.4 + i * 0.15;
+    scrambleIn(id, t, 0.30); camPunch(t, 1.05); chr(id, t);
+  });
+  tl.set("#a2rl", { opacity: 1 }, 10.55);
+  ["#ah","#aa","#ar1","#ar2","#ay"].forEach((id, i) => {
+    tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: 0.18 }, 10.75 + i * 0.09);
+  });
+  tl.to("#a2rb", { width: 900, duration: 0.44, ease: "power2.out" }, 11.1);
+  scanWipe(13.08); tl.set("#act2", { opacity: 0 }, 13.18);
+
+  /* ══ ACT 3 ══ */
+  tl.set("#act3", { opacity: 1 }, 14.0);
+  tl.set("#a3sw", { opacity: 1 }, 14.08);
+  scrambleIn("#a3n", 14.1, 0.55); distort("#a3n", 14.1); camPunch(14.1, 1.08);
+  tl.to("#a3xa", { opacity: 1, duration: 0.32 }, 14.9);
+  const blT = [15.2,15.4,15.6,15.8,16.0,16.2,16.4];
+  for (let i = 1; i <= 7; i++) {
+    tl.to(`#bl${i}`, { opacity:1, scaleY:1, duration:0.30, ease:"expo.out" }, blT[i-1]);
+    tl.fromTo(`#ba${i}`, { opacity:0 }, { opacity:1, duration:0.16 }, blT[i-1]+0.25);
+    tl.fromTo(`#bp${i}`, { opacity:0 }, { opacity:1, duration:0.16 }, blT[i-1]+0.33);
+  }
+  tl.fromTo("#a3peak", { opacity:0, y:6 }, { opacity:1, y:0, duration:0.22, ease:"expo.out" }, 16.35);
+  tl.fromTo("#a3cv", { opacity:0 }, { opacity:1, duration:0.18 }, 17.1);
+  tl.to("#tcurve", { strokeDashoffset:0, duration:1.8, ease:"power1.inOut" }, 17.25);
+  ["#tc1","#tc2","#tc3","#tc4","#tc5","#tc6","#tc7"].forEach((id,i) => {
+    tl.to(id, { opacity:1, duration:0.1 }, 17.8 + i * 0.2);
+  });
+  scanWipe(21.08); tl.set("#act3", { opacity: 0 }, 21.18);
+
+  /* ══ ACT 4 ══ */
+  tl.set("#act4", { opacity: 1 }, 22.0);
+  tl.fromTo("#a4ph", { opacity:0, x:-60 }, { opacity:0.90, x:0, duration:0.44, ease:"expo.out" }, 22.0);
+  tl.fromTo("#a4tg", { opacity:0 }, { opacity:1, duration:0.20 }, 22.35);
+  scrambleIn("#vl1", 22.50, 0.32); camPunch(22.50, 1.10); distort("#vl1", 22.50); chr("#vl1", 22.50);
+  scrambleIn("#vl2", 22.88, 0.32); camPunch(22.88, 1.09); distort("#vl2", 22.88); chr("#vl2", 22.88);
+  scrambleIn("#vl3", 23.26, 0.32); camPunch(23.26, 1.10); distort("#vl3", 23.26); chr("#vl3", 23.26);
+  tl.fromTo("#a4bt", { opacity:0, y:10 }, { opacity:1, y:0, duration:0.36, ease:"expo.out" }, 23.8);
+  scanWipe(27.32); tl.set("#act4", { opacity: 0 }, 27.42);
+
+  /* ══ ACT 5 ══ */
+  gsap.set("#a5wd", { yPercent: -50 });
+  tl.set("#act5", { opacity: 1 }, 28.0);
+  tl.fromTo("#a5ph", { opacity:0 }, { opacity:0.18, duration:2.0, ease:"power2.out" }, 28.2);
+  tl.fromTo("#a5q", { opacity:0, y:8 }, { opacity:1, y:0, duration:0.7, ease:"power2.out" }, 28.5);
+  tl.fromTo("#a5wd",
+    { opacity:1, scale:1.55, yPercent:-50,
+      textShadow:"0 0 60px rgba({{COLOR_GOLD_R}},{{COLOR_GOLD_G}},{{COLOR_GOLD_B}},1), 0 0 120px rgba({{COLOR_GOLD_R}},{{COLOR_GOLD_G}},{{COLOR_GOLD_B}},0.9), 0 0 250px rgba({{COLOR_GOLD_R}},{{COLOR_GOLD_G}},{{COLOR_GOLD_B}},0.7)" },
+    { scale:1.0, yPercent:-50,
+      textShadow:"0 0 100px rgba({{COLOR_GOLD_R}},{{COLOR_GOLD_G}},{{COLOR_GOLD_B}},0.85), 0 0 220px rgba({{COLOR_GOLD_R}},{{COLOR_GOLD_G}},{{COLOR_GOLD_B}},0.5), 0 0 480px rgba({{COLOR_GOLD_R}},{{COLOR_GOLD_G}},{{COLOR_GOLD_B}},0.25)",
+      duration:0.38, ease:"power4.out" },
+    31.0
+  );
+  camPunch(31.0, 1.14);
+  tl.to("#a5wd", { x:-10, duration:0.028 }, 31.0);
+  tl.to("#a5wd", { x:8,   duration:0.028 }, 31.028);
+  tl.to("#a5wd", { x:-5,  duration:0.028 }, 31.056);
+  tl.to("#a5wd", { x:0,   duration:0.038 }, 31.084);
+  tl.to("#a5wd", {
+    textShadow:"0 0 160px rgba({{COLOR_GOLD_R}},{{COLOR_GOLD_G}},{{COLOR_GOLD_B}},1.0), 0 0 380px rgba({{COLOR_GOLD_R}},{{COLOR_GOLD_G}},{{COLOR_GOLD_B}},0.65), 0 0 700px rgba({{COLOR_GOLD_R}},{{COLOR_GOLD_G}},{{COLOR_GOLD_B}},0.3)",
+    duration:3.2, ease:"power1.inOut"
+  }, 31.4);
+  tl.to("#a5ph", { opacity:0.34, duration:2.8, ease:"power1.inOut" }, 31.4);
+  tl.fromTo("#a5at", { opacity:0 }, { opacity:1, duration:0.44 }, 33.2);
+  tl.to("#act5", { opacity:0, duration:0.55, ease:"power2.in" }, 36.2);
+
+  /* ══ ACT 6 ══ */
+  tl.set("#act6", { opacity: 1 }, 37.0);
+  tl.fromTo("#a6w",  { opacity:0, x:60 }, { opacity:1, x:0, duration:0.42, ease:"expo.out" }, 37.1);
+  tl.set("#a6ct", { opacity: 1 }, 37.1);
+  tl.set("#a6lf", { opacity: 1 }, 37.18);
+  scrambleIn("#a6t1", 37.22, 0.48); camPunch(37.22, 1.06); chr("#a6t1", 37.22);
+  scrambleIn("#a6t2", 37.68, 0.48); camPunch(37.68, 1.05); chr("#a6t2", 37.68);
+  tl.fromTo("#a6rt",  { opacity:0, x:26 }, { opacity:1, x:0, duration:0.40, ease:"expo.out" }, 38.4);
+  tl.fromTo("#a6sv",  { opacity:0 }, { opacity:1, duration:0.38 }, 38.7);
+  tl.fromTo("#a6br",  { opacity:0 }, { opacity:1, duration:0.26 }, 39.1);
+
+  window.__timelines["main"] = tl;
+</script>
+</body>
+</html>
