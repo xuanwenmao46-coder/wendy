@@ -7,221 +7,237 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { width: 1920px; height: 1080px; overflow: hidden; background: #000; }
-    #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: #000; }
+    #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
 
-    /* ── CAMERA LAYER (punch / shake target) ── */
+    /* ── CAMERA LAYER ── */
     #cam { position: absolute; inset: 0; transform-origin: 50% 50%; }
-
-    /* ── GRAIN ── */
-    #grain-svg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; z-index: 9998; }
-
-    /* ── SCAN LINES ── */
-    #scanlines {
-      position: absolute; inset: 0; pointer-events: none; z-index: 9997;
-      background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.12) 3px, rgba(0,0,0,0.12) 4px);
-    }
 
     /* ── FLASH ── */
     #flash { position: absolute; inset: 0; background: #fff; pointer-events: none; z-index: 9999; opacity: 0; }
 
     /* ── PHOTOS ── */
     .photo-base { position: absolute; background-size: cover; background-position: center top; background-repeat: no-repeat; }
-    .photo-harry { background-image: url("assets/harry-nobg.png"); filter: grayscale(0.4) contrast(1.4) brightness(0.65) sepia(0.2) hue-rotate(5deg) saturate(1.8); }
-    .photo-snape { background-image: url("assets/snape-nobg.png"); filter: grayscale(0.65) contrast(1.5) brightness(0.5) sepia(0.08) hue-rotate(195deg) saturate(1.1); }
-    .photo-tom   { background-image: url("assets/tomriddle-nobg.png"); filter: grayscale(0.2) contrast(1.6) brightness(0.72) sepia(0.1) hue-rotate(110deg) saturate(2.2); }
-
-    /* ── SHARED UTILS ── */
-    .lbl { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; font-weight: 700; }
-    .micro { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 5px; text-transform: uppercase; }
-    .rule-h { position: absolute; height: 1px; background: #C9A050; opacity: 0; }
-    .rule-v { position: absolute; width: 1px; background: #1a1a1a; opacity: 0; }
-    .red { color: #C8102E; }
-    .gold { color: #C9A050; }
-
-    /* ════════════════════════════════════════
-       ACT 0 — TITLE SLAM  (0–3s)
-    ════════════════════════════════════════ */
-    #act0 { position: absolute; inset: 0; }
-
-    /* "HARRY" bleeds from top */
-    #t-harry {
-      position: absolute; top: -20px; left: 0; right: 0; text-align: center;
-      font-size: 420px; font-weight: 900; letter-spacing: -20px; line-height: 0.82;
-      font-family: "Helvetica Neue", Arial, sans-serif; color: #fff;
-      text-transform: uppercase; opacity: 0;
+    .photo-harry {
+      background-image: url("assets/harry-nobg.png");
+      filter: grayscale(0.2) contrast(1.3) brightness(0.7);
+      mix-blend-mode: luminosity;
     }
-    /* "POTTER" bleeds from bottom */
-    #t-potter {
-      position: absolute; bottom: -20px; left: 0; right: 0; text-align: center;
-      font-size: 420px; font-weight: 900; letter-spacing: -20px; line-height: 0.82;
-      font-family: "Helvetica Neue", Arial, sans-serif; color: #fff;
-      text-transform: uppercase; opacity: 0;
+    .photo-snape {
+      background-image: url("assets/snape-nobg.png");
+      filter: grayscale(0.7) contrast(1.5) brightness(0.5);
+      mix-blend-mode: luminosity;
     }
-    /* Slash divider across center */
-    #t-slash { position: absolute; top: 538px; left: 0; right: 0; height: 2px; background: #C8102E; opacity: 0; }
-    #t-tag {
-      position: absolute; top: 552px; right: 120px;
-      font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px;
-      text-transform: uppercase; color: #C8102E; font-weight: 700; opacity: 0;
-    }
-    #t-year {
-      position: absolute; top: 552px; left: 120px;
-      font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px;
-      text-transform: uppercase; color: #333; opacity: 0;
+    .photo-tom {
+      background-image: url("assets/tomriddle-nobg.png");
+      filter: grayscale(0.3) contrast(1.6) brightness(0.7);
+      mix-blend-mode: luminosity;
     }
 
-    /* ════════════════════════════════════════
-       ACT 1 — THE LETTER  (3–9s)
-    ════════════════════════════════════════ */
-    #act1 { position: absolute; inset: 0; opacity: 0; }
-    /* Texture: a faint concrete-like diagonal stripe */
-    #act1::before {
-      content: ""; position: absolute; inset: 0;
+    /* ════════════════════════
+       FLAT COLOR BACKGROUNDS
+    ════════════════════════ */
+    /* Each act is its own vivid panel — HP color palette */
+    #act0 { position: absolute; inset: 0; background: #6E1020; } /* Gryffindor Crimson */
+    #act1 { position: absolute; inset: 0; background: #153A12; opacity: 0; } /* Hogwarts Forest */
+    #act2 { position: absolute; inset: 0; background: #0C1C4A; opacity: 0; overflow: hidden; } /* Night Sky Navy */
+    #act3 { position: absolute; inset: 0; background: #271800; opacity: 0; } /* Parchment Dark */
+    #act4 { position: absolute; inset: 0; background: #180830; overflow: hidden; opacity: 0; } /* Dark Slytherin */
+    #act5 { position: absolute; inset: 0; background: #000; opacity: 0; } /* Black */
+    #act6 { position: absolute; inset: 0; background: #080604; opacity: 0; } /* Near-black warm */
+
+    /* Background ink mark overlays per act */
+    #act0::before, #act1::before, #act2::before, #act3::before, #act4::before {
+      content: "";
+      position: absolute; inset: 0; pointer-events: none;
       background: repeating-linear-gradient(
-        -42deg, transparent, transparent 80px, rgba(255,255,255,0.012) 80px, rgba(255,255,255,0.012) 82px
+        -55deg, transparent, transparent 120px,
+        rgba(0,0,0,0.06) 120px, rgba(0,0,0,0.06) 122px
       );
     }
-    #seal-wrap { position: absolute; top: 120px; left: 120px; opacity: 0; }
-    .seal-label { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: #C9A050; font-weight: 700; margin-bottom: 10px; }
-    .seal-school { font-size: 9px; letter-spacing: 5px; text-transform: uppercase; color: #222; font-family: "Helvetica Neue", sans-serif; line-height: 2.4; }
-    #wax-seal { position: absolute; top: 110px; right: 240px; opacity: 0; }
-    /* Address: left side */
-    #address-block { position: absolute; top: 50%; left: 120px; transform: translateY(-50%); opacity: 0; }
-    .addr-to { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 5px; text-transform: uppercase; color: #2a2a2a; margin-bottom: 10px; }
-    .addr-name { font-size: 100px; font-weight: 900; color: #fff; font-family: "Helvetica Neue", sans-serif; letter-spacing: -4px; line-height: 0.88; text-transform: uppercase; }
-    .addr-place { font-family: "Helvetica Neue", sans-serif; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: #222; margin-top: 18px; line-height: 2.2; }
-    #act1-divider { position: absolute; left: 960px; top: 160px; width: 1px; height: 0; background: #1a1a1a; }
-    /* Quote: right side, giant */
-    #letter-quote { position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 900px; padding-right: 120px; opacity: 0; }
-    .lq-word { font-size: 110px; font-weight: 900; color: #fff; font-family: "Helvetica Neue", sans-serif; line-height: 0.88; letter-spacing: -4px; text-transform: uppercase; display: block; opacity: 0; }
-    .lq-word.accent { color: #C8102E; }
-    .lq-attr { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 6px; text-transform: uppercase; color: #2a2a2a; margin-top: 24px; }
 
-    /* ════════════════════════════════════════
+    /* ════════════════
+       CHALK FILTER SVG
+    ════════════════ */
+    #svg-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+    /* Apply chalk filter to text elements */
+    .chalk {
+      filter: url(#chalk);
+    }
+    .chalk-sm {
+      filter: url(#chalk-sm);
+    }
+
+    /* ══════════════════════
+       SHARED TYPE SYSTEM
+    ══════════════════════ */
+    .lbl { font-family: "Helvetica Neue", Arial, sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; font-weight: 700; }
+    .micro { font-family: "Helvetica Neue", Arial, sans-serif; font-size: 9px; letter-spacing: 5px; text-transform: uppercase; }
+
+    /* ════════════════════════════════════
+       ACT 0 — HARRY POTTER TITLE  (0–3s)
+    ════════════════════════════════════ */
+    #act0-bg-mark {
+      position: absolute; top: -80px; left: -60px; width: 600px; height: 600px;
+      border-radius: 50%; background: rgba(255,255,255,0.04); pointer-events: none;
+    }
+    #act0-bg-mark2 {
+      position: absolute; bottom: -120px; right: -80px; width: 800px; height: 500px;
+      border-radius: 50%; background: rgba(0,0,0,0.15); pointer-events: none;
+    }
+    /* Title: italic lean, fills frame */
+    #t-harry {
+      position: absolute; top: -30px; left: 0; right: 0; text-align: center;
+      font-size: 440px; font-weight: 900; font-style: italic;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      color: #fff; letter-spacing: -20px; line-height: 0.80; text-transform: uppercase;
+      opacity: 0;
+    }
+    #t-potter {
+      position: absolute; bottom: -30px; left: 0; right: 0; text-align: center;
+      font-size: 440px; font-weight: 900; font-style: italic;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      color: #fff; letter-spacing: -20px; line-height: 0.80; text-transform: uppercase;
+      opacity: 0;
+    }
+    #t-slash { position: absolute; top: 538px; left: 80px; right: 80px; height: 3px; background: rgba(255,255,255,0.25); opacity: 0; }
+    #t-tag { position: absolute; top: 550px; right: 120px; color: rgba(255,255,255,0.4); font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; font-weight: 700; opacity: 0; }
+    #t-year { position: absolute; top: 550px; left: 120px; color: rgba(255,255,255,0.25); font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; opacity: 0; }
+
+    /* ════════════════════════════════════
+       ACT 1 — THE LETTER  (3–9s)
+    ════════════════════════════════════ */
+    #seal-wrap { position: absolute; top: 100px; left: 120px; opacity: 0; }
+    .seal-label { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: rgba(255,255,255,0.6); font-weight: 700; margin-bottom: 10px; }
+    .seal-school { font-size: 9px; letter-spacing: 5px; text-transform: uppercase; color: rgba(255,255,255,0.2); font-family: "Helvetica Neue", sans-serif; line-height: 2.4; }
+    #wax-seal { position: absolute; top: 90px; right: 220px; opacity: 0; }
+    #address-block { position: absolute; top: 50%; left: 120px; transform: translateY(-50%); opacity: 0; }
+    .addr-to { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 5px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 12px; }
+    .addr-name { font-size: 96px; font-weight: 900; color: #fff; font-family: "Helvetica Neue", sans-serif; letter-spacing: -3px; line-height: 0.88; text-transform: uppercase; font-style: italic; }
+    .addr-place { font-family: "Helvetica Neue", sans-serif; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.2); margin-top: 18px; line-height: 2.2; }
+    #act1-divider { position: absolute; left: 960px; top: 160px; width: 1px; height: 0; background: rgba(255,255,255,0.1); }
+    /* Quote words — each line slams + tumbles separately */
+    #letter-quote { position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 870px; padding-right: 120px; }
+    .lq-word { font-size: 120px; font-weight: 900; font-style: italic; color: #fff; font-family: "Helvetica Neue", sans-serif; line-height: 0.86; letter-spacing: -4px; text-transform: uppercase; display: block; opacity: 0; }
+    .lq-accent { color: #A8E060; } /* Lime-gold accent for "HARRY" */
+    .lq-attr { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 6px; text-transform: uppercase; color: rgba(255,255,255,0.2); margin-top: 24px; opacity: 0; }
+
+    /* ════════════════════════════════════
        ACT 2 — H·A·R·R·Y  (9–14s)
-    ════════════════════════════════════════ */
-    #act2 { position: absolute; inset: 0; overflow: hidden; opacity: 0; }
+    ════════════════════════════════════ */
     #harry-photo { right: 0; top: 0; width: 900px; height: 1080px; opacity: 0; }
     #harry-photo-overlay {
       position: absolute; right: 0; top: 0; width: 900px; height: 1080px;
-      background: linear-gradient(90deg, #000 0%, rgba(0,0,0,0.5) 30%, rgba(0,0,0,0.05) 100%);
+      background: linear-gradient(90deg, #0C1C4A 0%, rgba(12,28,74,0.45) 32%, rgba(12,28,74,0.05) 100%);
       opacity: 0;
     }
-    #act2-lbl { position: absolute; top: 72px; left: 120px; color: #C9A050; opacity: 0; }
-    #act2-num { position: absolute; top: 72px; right: 120px; color: #1a1a1a; opacity: 0; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 5px; text-transform: uppercase; }
+    #act2-lbl { position: absolute; top: 72px; left: 120px; color: rgba(255,255,255,0.4); opacity: 0; }
+    #act2-num { position: absolute; top: 72px; right: 120px; color: rgba(255,255,255,0.12); opacity: 0; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 5px; text-transform: uppercase; }
     .letter-row { position: absolute; display: flex; gap: 0; left: 60px; right: 60px; }
-    #row-harry  { top: 140px; }
+    #row-harry  { top: 130px; }
     #row-potter { top: 558px; }
     .letter-unit { flex: 1; display: flex; flex-direction: column; align-items: center; }
-    .big-letter { font-size: 340px; font-weight: 900; line-height: 0.82; font-family: "Helvetica Neue", Arial, sans-serif; color: #fff; opacity: 0; letter-spacing: -14px; text-transform: uppercase; }
-    .letter-anno { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: #2a2a2a; margin-top: 8px; text-align: center; line-height: 1.8; opacity: 0; }
-    #letter-rule { position: absolute; top: 556px; left: 60px; right: 60px; height: 1px; background: #1a1a1a; opacity: 0; }
+    .big-letter { font-size: 340px; font-weight: 900; font-style: italic; line-height: 0.82; font-family: "Helvetica Neue", Arial, sans-serif; color: #fff; opacity: 0; letter-spacing: -14px; text-transform: uppercase; }
+    .letter-anno { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.2); margin-top: 8px; text-align: center; line-height: 1.8; opacity: 0; }
+    #letter-rule { position: absolute; top: 556px; left: 60px; right: 60px; height: 1px; background: rgba(255,255,255,0.08); opacity: 0; }
 
-    /* ════════════════════════════════════════
+    /* ════════════════════════════════════
        ACT 3 — SEVEN BOOKS  (14–22s)
-    ════════════════════════════════════════ */
-    #act3 { position: absolute; inset: 0; opacity: 0; }
+    ════════════════════════════════════ */
     #chart-header { position: absolute; top: 72px; left: 120px; opacity: 0; }
     .ch-title { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: #C9A050; font-weight: 700; margin-bottom: 6px; }
-    .ch-sub   { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: #1a1a1a; }
+    .ch-sub   { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.12); }
     #chart-area { position: absolute; bottom: 100px; left: 120px; right: 120px; top: 150px; }
     .book-line { position: absolute; bottom: 48px; width: 2px; opacity: 0; transform-origin: bottom; }
     #bl1{left:111px;height:77px;background:#6B1212;} #bl2{left:334px;height:87px;background:#6B1212;}
     #bl3{left:557px;height:109px;background:#6B1212;} #bl4{left:780px;height:219px;background:#C9A050;}
     #bl5{left:1003px;height:300px;background:#C9A050;} #bl6{left:1226px;height:209px;background:#6B1212;}
     #bl7{left:1449px;height:262px;background:#C9A050;}
-    .book-abbr { position: absolute; bottom: 20px; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: #222; opacity: 0; transform: translateX(-50%); }
-    .book-pages { position: absolute; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 1px; color: #444; opacity: 0; transform: translateX(-50%); }
+    .book-abbr { position: absolute; bottom: 20px; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.18); opacity: 0; transform: translateX(-50%); }
+    .book-pages { position: absolute; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 1px; color: rgba(255,255,255,0.28); opacity: 0; transform: translateX(-50%); }
     #abbr1{left:111px;} #abbr2{left:334px;} #abbr3{left:557px;}
     #abbr4{left:780px;} #abbr5{left:1003px;} #abbr6{left:1226px;} #abbr7{left:1449px;}
     #pg1{bottom:132px;left:111px;} #pg2{bottom:142px;left:334px;}
     #pg3{bottom:164px;left:557px;} #pg4{bottom:274px;left:780px;}
     #pg5{bottom:355px;left:1003px;} #pg6{bottom:264px;left:1226px;} #pg7{bottom:317px;left:1449px;}
     #tension-svg2 { position: absolute; bottom: 48px; left: 0; width: 1600px; height: 320px; overflow: visible; opacity: 0; }
+    .rule-h { position: absolute; height: 1px; background: #C9A050; opacity: 0; }
+    .rule-v { position: absolute; width: 1px; background: rgba(255,255,255,0.15); opacity: 0; }
     #x-axis { left: 0; bottom: 47px; width: 1600px; }
     #y-axis-left { left: 0; bottom: 48px; height: 320px; }
     .book-moment { position: absolute; opacity: 0; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: #C9A050; white-space: nowrap; }
     #stat-block { position: absolute; top: 72px; right: 120px; text-align: right; opacity: 0; }
-    .stat-num { font-size: 130px; font-weight: 900; color: #fff; font-family: "Helvetica Neue", sans-serif; line-height: 0.82; letter-spacing: -6px; }
-    .stat-label { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 6px; text-transform: uppercase; color: #2a2a2a; margin-top: 10px; }
+    .stat-num { font-size: 130px; font-weight: 900; font-style: italic; color: #C9A050; font-family: "Helvetica Neue", sans-serif; line-height: 0.82; letter-spacing: -6px; }
+    .stat-label { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 6px; text-transform: uppercase; color: rgba(255,255,255,0.2); margin-top: 10px; }
 
-    /* ════════════════════════════════════════
+    /* ════════════════════════════════════
        ACT 4 — VILLAIN CARDS  (22–28s)
-    ════════════════════════════════════════ */
-    #act4 { position: absolute; inset: 0; overflow: hidden; opacity: 0; }
-
-    /* CARD A: Tom Riddle with giant red VOLDEMORT */
+    ════════════════════════════════════ */
     #card-a { position: absolute; inset: 0; opacity: 0; }
-    #tom-photo { left: 0; top: 0; width: 800px; height: 1080px; opacity: 0; }
+    #tom-photo { left: 0; top: 0; width: 820px; height: 1080px; opacity: 0; }
     #tom-photo-fade {
-      position: absolute; left: 0; top: 0; width: 1000px; height: 1080px;
-      background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 45%, rgba(0,0,0,0.85) 72%, #000 100%);
+      position: absolute; left: 0; top: 0; width: 1050px; height: 1080px;
+      background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 42%, rgba(24,8,48,0.88) 70%, #180830 100%);
     }
-    #tom-photo-tint { position: absolute; left: 0; top: 0; width: 800px; height: 1080px; background: rgba(10,40,15,0.3); mix-blend-mode: color; }
-    /* Giant "VOLDE\nMORT" bleeds right edge */
+    #vol-tag { position: absolute; top: 72px; left: 120px; color: rgba(255,255,255,0.35); opacity: 0; }
     #vol-text {
-      position: absolute; right: -30px; top: 50%; transform: translateY(-50%);
-      text-align: right; opacity: 0;
+      position: absolute; right: -40px; top: 50%; transform: translateY(-50%);
+      text-align: right; line-height: 0.78;
     }
-    .vol-line { font-size: 260px; font-weight: 900; font-family: "Helvetica Neue", Arial, sans-serif; line-height: 0.80; letter-spacing: -12px; text-transform: uppercase; color: #fff; display: block; opacity: 0; }
-    .vol-line.red-txt { color: #C8102E; }
-    #vol-tag { position: absolute; top: 80px; left: 120px; color: #C9A050; opacity: 0; }
-    #tom-meta { position: absolute; bottom: 100px; left: 120px; opacity: 0; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 5px; text-transform: uppercase; color: #1a1a1a; }
+    .vol-line { font-size: 270px; font-weight: 900; font-style: italic; font-family: "Helvetica Neue", Arial, sans-serif; letter-spacing: -12px; text-transform: uppercase; color: #fff; display: block; opacity: 0; }
+    .vol-red { color: #C8102E; }
     #tom-anagram-line { position: absolute; bottom: 140px; left: 120px; opacity: 0; }
-    .anagram-text { font-size: 36px; font-weight: 900; color: #C9A050; font-family: "Helvetica Neue", sans-serif; letter-spacing: 3px; text-transform: uppercase; }
-    .anagram-label { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 5px; text-transform: uppercase; color: #333; margin-bottom: 10px; }
+    .anagram-text { font-size: 36px; font-weight: 900; font-style: italic; color: rgba(201,160,80,0.85); font-family: "Helvetica Neue", sans-serif; letter-spacing: 2px; text-transform: uppercase; }
+    .anagram-label { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 5px; text-transform: uppercase; color: rgba(255,255,255,0.2); margin-bottom: 10px; }
+    #tom-meta { position: absolute; bottom: 100px; left: 120px; opacity: 0; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 5px; text-transform: uppercase; color: rgba(255,255,255,0.12); }
 
-    /* CARD B: Mirror of Erised */
     #card-b { position: absolute; inset: 0; opacity: 0; }
-    .card-tag-top-b { position: absolute; top: 80px; left: 120px; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: #C9A050; font-weight: 700; }
-    #erised-ghost { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 76px; font-weight: 900; font-family: "Helvetica Neue", sans-serif; color: #111; line-height: 1.1; letter-spacing: 8px; text-align: center; text-transform: uppercase; opacity: 0; width: 1700px; }
+    .card-tag-top-b { position: absolute; top: 72px; left: 120px; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: rgba(255,255,255,0.35); font-weight: 700; }
+    #erised-ghost { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 76px; font-weight: 900; font-style: italic; font-family: "Helvetica Neue", sans-serif; color: rgba(255,255,255,0.06); line-height: 1.1; letter-spacing: 8px; text-align: center; text-transform: uppercase; opacity: 0; width: 1700px; }
     #erised-real { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; opacity: 0; }
-    .erised-line1 { font-size: 60px; font-weight: 900; color: #fff; font-family: "Helvetica Neue", sans-serif; line-height: 1.22; text-transform: uppercase; letter-spacing: -1px; }
+    .erised-line1 { font-size: 64px; font-weight: 900; font-style: italic; color: #fff; font-family: "Helvetica Neue", sans-serif; line-height: 1.2; text-transform: uppercase; letter-spacing: -2px; }
     .erised-gold { color: #C9A050; }
-    #erised-sub { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 6px; text-transform: uppercase; color: #2a2a2a; margin-top: 28px; }
+    #erised-sub { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 6px; text-transform: uppercase; color: rgba(255,255,255,0.2); margin-top: 28px; }
 
-    /* ════════════════════════════════════════
+    /* ════════════════════════════════════
        ACT 5 — ALWAYS  (28–37s)
-    ════════════════════════════════════════ */
-    #act5 { position: absolute; inset: 0; background: #000; opacity: 0; }
+    ════════════════════════════════════ */
     #snape-photo { right: 0; top: 0; width: 960px; height: 1080px; opacity: 0; }
     #snape-photo-fade {
       position: absolute; right: 0; top: 0; width: 1340px; height: 1080px;
       background: linear-gradient(90deg, #000 0%, rgba(0,0,0,0.95) 17%, rgba(0,0,0,0.6) 46%, rgba(0,0,0,0.1) 72%, rgba(0,0,0,0) 100%);
     }
-    #always-q { position: absolute; top: 370px; left: 120px; font-size: 36px; color: #2a2a2a; font-style: italic; font-family: "Georgia", serif; opacity: 0; }
+    #always-q { position: absolute; top: 370px; left: 120px; font-size: 36px; color: rgba(255,255,255,0.12); font-style: italic; font-family: "Georgia", serif; opacity: 0; }
     #always-rule { position: absolute; top: 466px; left: 120px; width: 0; height: 1px; background: #C9A050; opacity: 0; }
-    /* "Always." fills left half, massive */
     #always-word {
       position: absolute; top: 50%; left: 120px; transform: translateY(-46%);
-      font-size: 300px; font-weight: 900; letter-spacing: -14px;
+      font-size: 300px; font-weight: 900; font-style: italic; letter-spacing: -14px;
       font-family: "Helvetica Neue", Arial, sans-serif; color: #C9A050; line-height: 1;
       text-shadow: 0 0 80px rgba(201,160,80,0.4), 0 0 200px rgba(201,160,80,0.18);
-      opacity: 0; clip-path: inset(0 0 0 0);
+      opacity: 0;
     }
-    #always-attr { position: absolute; bottom: 130px; left: 120px; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: #1a1a1a; opacity: 0; }
+    #always-attr { position: absolute; bottom: 130px; left: 120px; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: rgba(255,255,255,0.1); opacity: 0; }
 
-    /* ════════════════════════════════════════
+    /* ════════════════════════════════════
        ACT 6 — ENDCARD  (37–46s)
-    ════════════════════════════════════════ */
-    #act6 { position: absolute; inset: 0; opacity: 0; }
+    ════════════════════════════════════ */
     #hogwarts-ghost { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); opacity: 0; }
     #final-block { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 420px; opacity: 0; }
     .fb-rule  { width: 100%; height: 1px; background: #C9A050; margin-bottom: 30px; }
     .fb-series { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: #C9A050; font-weight: 700; margin-bottom: 18px; }
-    .fb-title  { font-size: 88px; font-weight: 900; color: #fff; font-family: "Helvetica Neue", sans-serif; line-height: 0.86; margin-bottom: 12px; letter-spacing: -5px; text-transform: uppercase; }
-    .fb-sub    { font-size: 14px; color: #3a3a3a; font-style: italic; font-family: "Georgia", serif; line-height: 1.6; margin-bottom: 24px; }
+    .fb-title  { font-size: 88px; font-weight: 900; font-style: italic; color: #fff; font-family: "Helvetica Neue", sans-serif; line-height: 0.86; margin-bottom: 12px; letter-spacing: -5px; text-transform: uppercase; }
+    .fb-sub    { font-size: 14px; color: rgba(255,255,255,0.25); font-style: italic; font-family: "Georgia", serif; line-height: 1.6; margin-bottom: 24px; }
     .fb-rule2  { width: 32px; height: 1px; background: #C9A050; margin-bottom: 16px; }
-    .fb-author { font-family: "Helvetica Neue", sans-serif; font-size: 10px; letter-spacing: 6px; text-transform: uppercase; color: #2a2a2a; }
+    .fb-author { font-family: "Helvetica Neue", sans-serif; font-size: 10px; letter-spacing: 6px; text-transform: uppercase; color: rgba(255,255,255,0.2); }
     .side-panel { position: absolute; top: 50%; opacity: 0; font-family: "Helvetica Neue", sans-serif; }
-    #side-left  { left: 120px;  transform: translateY(-50%); width: 280px; }
+    #side-left  { left: 120px; transform: translateY(-50%); width: 280px; }
     #side-right { right: 120px; transform: translateY(-50%); width: 280px; text-align: right; }
     .sp-head { font-size: 9px; letter-spacing: 6px; text-transform: uppercase; color: #C9A050; font-weight: 700; margin-bottom: 18px; }
-    .sp-item { font-size: 13px; color: #fff; line-height: 2.5; }
-    .sp-foot { margin-top: 22px; font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: #1a1a1a; }
+    .sp-item { font-size: 13px; color: rgba(255,255,255,0.7); line-height: 2.5; }
+    .sp-foot { margin-top: 22px; font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.1); }
     #final-rule-top { position: absolute; top: 80px; left: 120px; width: 0; }
     #final-rule-bot { position: absolute; bottom: 80px; left: 120px; width: 0; }
-    #final-badge { position: absolute; bottom: 46px; left: 50%; transform: translateX(-50%); font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: #1a1a1a; opacity: 0; white-space: nowrap; }
+    #final-badge { position: absolute; bottom: 46px; left: 50%; transform: translateX(-50%); font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: rgba(255,255,255,0.1); opacity: 0; white-space: nowrap; }
     #final-badge span { color: #C9A050; }
 
     .star { position: absolute; border-radius: 50%; background: #fff; opacity: 0; pointer-events: none; }
@@ -235,18 +251,38 @@
   data-width="1920"
   data-height="1080"
 >
-  <div id="cam">
 
-  <!-- GRAIN (static) -->
-  <svg id="grain-svg" xmlns="http://www.w3.org/2000/svg">
-    <filter id="noise-filter">
-      <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="4" stitchTiles="stitch"/>
+  <!-- ── CHALK FILTER DEFINITIONS ── -->
+  <svg id="svg-defs" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- Chalk/crayon erode filter — large text -->
+      <filter id="chalk" color-interpolation-filters="sRGB" x="-4%" y="-8%" width="108%" height="116%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.038 0.055" numOctaves="4" seed="12" result="noise1"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise1" scale="5" xChannelSelector="R" yChannelSelector="G" result="displaced"/>
+        <feTurbulence type="fractalNoise" baseFrequency="0.065 0.08" numOctaves="5" seed="7" result="noise2"/>
+        <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  -3 -3 -3 0 4.2" in="noise2" result="mask"/>
+        <feComposite in="displaced" in2="mask" operator="in"/>
+      </filter>
+      <!-- Chalk filter — small/medium text (lighter erosion) -->
+      <filter id="chalk-sm" color-interpolation-filters="sRGB" x="-2%" y="-4%" width="104%" height="108%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.05 0.07" numOctaves="3" seed="4" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" result="displaced"/>
+        <feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="4" seed="9" result="mask-noise"/>
+        <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  -4 -4 -4 0 5.5" in="mask-noise" result="mask"/>
+        <feComposite in="displaced" in2="mask" operator="in"/>
+      </filter>
+    </defs>
+    <!-- Static grain overlay -->
+    <filter id="grain-f" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.68" numOctaves="4" stitchTiles="stitch"/>
       <feColorMatrix type="saturate" values="0"/>
     </filter>
-    <rect width="1920" height="1080" filter="url(#noise-filter)" opacity="0.055"/>
+    <rect id="grain-rect" x="0" y="0" width="1920" height="1080" filter="url(#grain-f)" opacity="0.05" style="position:absolute;top:0;left:0;pointer-events:none;z-index:9997"/>
   </svg>
-  <div id="scanlines"></div>
+
   <div id="flash"></div>
+
+  <div id="cam">
 
   <!-- AUDIO -->
   <audio id="bgm"   src="assets/bgm.wav"         class="clip" data-start="0"    data-duration="46"  data-volume="0.65" data-track-index="90" muted></audio>
@@ -264,72 +300,64 @@
   <div class="star" style="width:1px;height:1px;top:135px;left:890px"></div>
   <div class="star" style="width:2px;height:2px;top:60px;left:1540px"></div>
   <div class="star" style="width:3px;height:3px;top:55px;left:720px"></div>
-  <div class="star" style="width:1px;height:1px;top:95px;left:1240px"></div>
   <div class="star" style="width:2px;height:2px;top:40px;left:1820px"></div>
   <div class="star" style="width:3px;height:3px;top:25px;left:960px"></div>
   <div class="star" style="width:2px;height:2px;top:290px;left:1100px"></div>
   <div class="star" style="width:2px;height:2px;top:460px;left:220px"></div>
-  <div class="star" style="width:3px;height:3px;top:45px;left:1060px"></div>
   <div class="star" style="width:2px;height:2px;top:118px;left:780px"></div>
   <div class="star" style="width:2px;height:2px;top:68px;left:1750px"></div>
-  <div class="star" style="width:2px;height:2px;top:570px;left:1190px"></div>
-  <div class="star" style="width:3px;height:3px;top:30px;left:1360px"></div>
-  <div class="star" style="width:2px;height:2px;top:220px;left:1520px"></div>
   <div class="star" style="width:2px;height:2px;top:600px;left:1380px"></div>
-  <div class="star" style="width:1px;height:1px;top:200px;left:310px"></div>
-  <div class="star" style="width:2px;height:2px;top:170px;left:1680px"></div>
-  <div class="star" style="width:1px;height:1px;top:380px;left:500px"></div>
-  <div class="star" style="width:2px;height:2px;top:500px;left:80px"></div>
 
-  <!-- ════ ACT 0: TITLE SLAM ════ -->
+  <!-- ════ ACT 0: CRIMSON TITLE ════ -->
   <div id="act0">
-    <div id="t-harry" data-layout-allow-overflow>HARRY</div>
+    <div id="act0-bg-mark"></div>
+    <div id="act0-bg-mark2"></div>
+    <div id="t-harry" class="chalk" data-layout-allow-overflow>HARRY</div>
     <div id="t-slash"></div>
     <div id="t-tag">Motion Reading 02 &nbsp;·&nbsp; Complete Series</div>
     <div id="t-year">J.K. Rowling &nbsp;·&nbsp; 1997–2007</div>
-    <div id="t-potter" data-layout-allow-overflow>POTTER</div>
+    <div id="t-potter" class="chalk" data-layout-allow-overflow>POTTER</div>
   </div>
 
-  <!-- ════ ACT 1: THE LETTER ════ -->
+  <!-- ════ ACT 1: FOREST GREEN LETTER ════ -->
   <div id="act1">
     <div id="seal-wrap">
       <div class="seal-label">Hogwarts School</div>
       <div class="seal-school">of Witchcraft and Wizardry<br>Est. 990 · Hogsmeade · Scotland</div>
     </div>
     <svg id="wax-seal" width="120" height="120" viewBox="0 0 120 120" data-layout-allow-overflow>
-      <circle cx="60" cy="60" r="52" fill="none" stroke="#C9A050" stroke-width="0.8" opacity="0.4"/>
-      <circle cx="60" cy="60" r="44" fill="none" stroke="#C9A050" stroke-width="0.5" opacity="0.25"/>
-      <text x="60" y="50" text-anchor="middle" font-family="Helvetica Neue,sans-serif" font-size="30" font-weight="900" fill="#C9A050" opacity="0.7">H</text>
-      <text x="60" y="70" text-anchor="middle" font-family="Helvetica Neue,sans-serif" font-size="7" letter-spacing="2" fill="#C9A050" opacity="0.5">DRACO DORMIENS</text>
-      <text x="60" y="82" text-anchor="middle" font-family="Helvetica Neue,sans-serif" font-size="7" letter-spacing="1" fill="#C9A050" opacity="0.4">NUNQUAM TITILLANDUS</text>
+      <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.8"/>
+      <circle cx="60" cy="60" r="44" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+      <text x="60" y="50" text-anchor="middle" font-family="Helvetica Neue,sans-serif" font-size="30" font-weight="900" fill="rgba(255,255,255,0.6)">H</text>
+      <text x="60" y="70" text-anchor="middle" font-family="Helvetica Neue,sans-serif" font-size="7" letter-spacing="2" fill="rgba(255,255,255,0.3)">DRACO DORMIENS</text>
+      <text x="60" y="82" text-anchor="middle" font-family="Helvetica Neue,sans-serif" font-size="7" letter-spacing="1" fill="rgba(255,255,255,0.2)">NUNQUAM TITILLANDUS</text>
     </svg>
     <div id="address-block">
       <div class="addr-to">To ·</div>
-      <div class="addr-name">MR. H.<br>POTTER</div>
+      <div class="addr-name" style="filter:url(#chalk-sm)">MR. H.<br>POTTER</div>
       <div class="addr-place">The Cupboard Under The Stairs<br>4 Privet Drive · Surrey</div>
     </div>
     <div id="act1-divider"></div>
-    <!-- Each word on its own line, slams in separately -->
     <div id="letter-quote">
-      <span class="lq-word" id="lq1">YOU'RE</span>
-      <span class="lq-word" id="lq2">A WIZARD,</span>
-      <span class="lq-word accent" id="lq3">HARRY.</span>
-      <div class="lq-attr">— Rubeus Hagrid &nbsp;·&nbsp; Year One</div>
+      <span class="lq-word chalk" id="lq1">YOU'RE</span>
+      <span class="lq-word chalk" id="lq2">A WIZARD,</span>
+      <span class="lq-word chalk lq-accent" id="lq3">HARRY.</span>
+      <div class="lq-attr" id="lq-attr">— Rubeus Hagrid &nbsp;·&nbsp; Year One</div>
     </div>
   </div>
 
-  <!-- ════ ACT 2: H·A·R·R·Y ════ -->
+  <!-- ════ ACT 2: NAVY HARRY ════ -->
   <div id="act2">
     <div id="harry-photo" class="photo-base photo-harry"></div>
     <div id="harry-photo-overlay"></div>
     <div id="act2-lbl" class="lbl">02 &nbsp;·&nbsp; Typographic Anatomy</div>
     <div id="act2-num">J.K. Rowling &nbsp;·&nbsp; 1997–2007</div>
     <div class="letter-row" id="row-harry">
-      <div class="letter-unit"><div class="big-letter" id="lh">H</div><div class="letter-anno" id="ah">BORN TO<br>TWO WORLDS</div></div>
-      <div class="letter-unit"><div class="big-letter" id="la">A</div><div class="letter-anno" id="aa">MARKED<br>BY EVIL</div></div>
-      <div class="letter-unit"><div class="big-letter" id="lr1">R</div><div class="letter-anno" id="ar1">RAISED<br>AS HUMAN</div></div>
-      <div class="letter-unit"><div class="big-letter" id="lr2">R</div><div class="letter-anno" id="ar2">RETURNED<br>TO DESTINY</div></div>
-      <div class="letter-unit"><div class="big-letter" id="ly">Y</div><div class="letter-anno" id="ay">YOU ARE<br>THE ONE</div></div>
+      <div class="letter-unit"><div class="big-letter chalk" id="lh">H</div><div class="letter-anno" id="ah">BORN TO<br>TWO WORLDS</div></div>
+      <div class="letter-unit"><div class="big-letter chalk" id="la">A</div><div class="letter-anno" id="aa">MARKED<br>BY EVIL</div></div>
+      <div class="letter-unit"><div class="big-letter chalk" id="lr1">R</div><div class="letter-anno" id="ar1">RAISED<br>AS HUMAN</div></div>
+      <div class="letter-unit"><div class="big-letter chalk" id="lr2">R</div><div class="letter-anno" id="ar2">RETURNED<br>TO DESTINY</div></div>
+      <div class="letter-unit"><div class="big-letter chalk" id="ly">Y</div><div class="letter-anno" id="ay">YOU ARE<br>THE ONE</div></div>
     </div>
     <div id="letter-rule"></div>
     <div class="letter-row" id="row-potter">
@@ -342,14 +370,14 @@
     </div>
   </div>
 
-  <!-- ════ ACT 3: SEVEN BOOKS ════ -->
+  <!-- ════ ACT 3: AMBER BOOKS ════ -->
   <div id="act3" data-layout-allow-overflow>
     <div id="chart-header">
       <div class="ch-title">THE COMPLETE SERIES</div>
       <div class="ch-sub">Seven Books &nbsp;·&nbsp; 4,195 Pages &nbsp;·&nbsp; Narrative Tension Arc</div>
     </div>
     <div id="stat-block">
-      <div class="stat-num">4,195</div>
+      <div class="stat-num chalk">4,195</div>
       <div class="stat-label">TOTAL PAGES</div>
     </div>
     <div id="chart-area" data-layout-allow-overflow>
@@ -390,18 +418,16 @@
     </div>
   </div>
 
-  <!-- ════ ACT 4: VILLAIN CARDS ════ -->
+  <!-- ════ ACT 4: DARK PURPLE VILLAIN ════ -->
   <div id="act4" data-layout-allow-overflow>
     <div id="card-a" data-layout-allow-overflow>
       <div id="tom-photo" class="photo-base photo-tom"></div>
       <div id="tom-photo-fade"></div>
-      <div id="tom-photo-tint"></div>
       <div id="vol-tag" class="lbl">03 &nbsp;·&nbsp; THE DARK LORD</div>
-      <!-- Giant VOLDEMORT bleeds right -->
-      <div id="vol-text">
-        <span class="vol-line" id="vl1">LORD</span>
-        <span class="vol-line red-txt" id="vl2">VOLDE</span>
-        <span class="vol-line red-txt" id="vl3">MORT</span>
+      <div id="vol-text" data-layout-allow-overflow>
+        <span class="vol-line chalk" id="vl1">LORD</span>
+        <span class="vol-line vol-red chalk" id="vl2">VOLDE</span>
+        <span class="vol-line vol-red chalk" id="vl3">MORT</span>
       </div>
       <div id="tom-anagram-line">
         <div class="anagram-label">Tom Marvolo Riddle — an anagram of</div>
@@ -425,13 +451,13 @@
     </div>
   </div>
 
-  <!-- ════ ACT 5: ALWAYS ════ -->
+  <!-- ════ ACT 5: BLACK ALWAYS ════ -->
   <div id="act5" data-layout-allow-overflow>
     <div id="snape-photo" class="photo-base photo-snape"></div>
     <div id="snape-photo-fade"></div>
     <div id="always-q">"After all this time?"</div>
     <div id="always-rule"></div>
-    <div id="always-word">Always.</div>
+    <div id="always-word" class="chalk">Always.</div>
     <div id="always-attr">
       Severus Snape &nbsp;·&nbsp; Deathly Hallows<br>
       Chapter 33 &nbsp;·&nbsp; The Prince's Tale
@@ -441,26 +467,24 @@
   <!-- ════ ACT 6: ENDCARD ════ -->
   <div id="act6">
     <svg id="hogwarts-ghost" width="1920" height="400" viewBox="0 0 1920 400" fill="none">
-      <rect x="660" y="160" width="600" height="240" stroke="rgba(201,160,80,0.06)" stroke-width="1" fill="rgba(201,160,80,0.018)"/>
-      <rect x="870" y="60"  width="180" height="340" stroke="rgba(201,160,80,0.08)" stroke-width="1" fill="rgba(201,160,80,0.025)"/>
-      <polygon points="960,10 870,60 1050,60" stroke="rgba(201,160,80,0.09)" stroke-width="1" fill="rgba(201,160,80,0.03)"/>
-      <rect x="700"  y="100" width="100" height="300" stroke="rgba(201,160,80,0.06)" stroke-width="1" fill="rgba(201,160,80,0.018)"/>
-      <rect x="1120" y="100" width="100" height="300" stroke="rgba(201,160,80,0.06)" stroke-width="1" fill="rgba(201,160,80,0.018)"/>
-      <polygon points="750,58 700,100 800,100"    stroke="rgba(201,160,80,0.06)" stroke-width="1" fill="rgba(201,160,80,0.02)"/>
-      <polygon points="1170,58 1120,100 1220,100" stroke="rgba(201,160,80,0.06)" stroke-width="1" fill="rgba(201,160,80,0.02)"/>
+      <rect x="660" y="160" width="600" height="240" stroke="rgba(201,160,80,0.07)" stroke-width="1" fill="rgba(201,160,80,0.02)"/>
+      <rect x="870" y="60"  width="180" height="340" stroke="rgba(201,160,80,0.09)" stroke-width="1" fill="rgba(201,160,80,0.03)"/>
+      <polygon points="960,10 870,60 1050,60" stroke="rgba(201,160,80,0.1)" stroke-width="1" fill="rgba(201,160,80,0.04)"/>
+      <rect x="700"  y="100" width="100" height="300" stroke="rgba(201,160,80,0.07)" stroke-width="1" fill="rgba(201,160,80,0.02)"/>
+      <rect x="1120" y="100" width="100" height="300" stroke="rgba(201,160,80,0.07)" stroke-width="1" fill="rgba(201,160,80,0.02)"/>
       <line x1="0" y1="400" x2="1920" y2="400" stroke="rgba(201,160,80,0.06)" stroke-width="0.5"/>
     </svg>
     <div id="final-block">
       <div class="fb-rule"></div>
       <div class="fb-series">Motion Reading &nbsp;·&nbsp; Series No. 02</div>
-      <div class="fb-title">HARRY<br>POTTER</div>
-      <div class="fb-sub">The Complete Series<br>J.K. Rowling · 1997–2007</div>
+      <div class="fb-title" style="filter:url(#chalk-sm)">HARRY<br>POTTER</div>
+      <div class="fb-sub">The Complete Series · J.K. Rowling · 1997–2007</div>
       <div class="fb-rule2"></div>
       <div class="fb-author">Literature · Fantasy · Epic</div>
     </div>
     <div class="side-panel" id="side-left">
       <div class="sp-head">Visual System</div>
-      <div class="sp-item">#000000 · Mystery<br>#C8102E · Sacrifice<br>#C9A050 · Magic<br>#FFFFFF · Legacy</div>
+      <div class="sp-item">#6E1020 · Gryffindor<br>#153A12 · Hogwarts<br>#C9A050 · Magic<br>#C8102E · Sacrifice</div>
       <div class="sp-foot">Helvetica Neue · Georgia</div>
     </div>
     <div class="side-panel" id="side-right">
@@ -481,124 +505,108 @@
 
   /* ─── HELPERS ─── */
 
-  /* Camera Punch: scale #cam for impact feel */
-  function camPunch(t, strength) {
-    const s = strength || 1.05;
-    tl.to("#cam", { scale: s,    duration: 0.07, ease: "power3.in"  }, t);
-    tl.to("#cam", { scale: 0.97, duration: 0.05                     }, t + 0.07);
-    tl.to("#cam", { scale: 1.0,  duration: 0.14, ease: "power2.out" }, t + 0.12);
+  function camPunch(t, s) {
+    tl.to("#cam", { scale: s||1.055, duration: 0.07, ease: "power3.in" }, t);
+    tl.to("#cam", { scale: 0.97, duration: 0.05 }, t + 0.07);
+    tl.to("#cam", { scale: 1.0, duration: 0.14, ease: "power2.out" }, t + 0.12);
   }
 
-  /* Displacement Distortion: VHS/CRT skew on el for ~5 frames */
+  /* VHS displacement distortion */
   function distort(el, t) {
-    tl.set(el,  { skewX: 0 }, t);
-    tl.to(el,   { skewX: 14,  duration: 0.028 }, t);
-    tl.to(el,   { skewX: -10, duration: 0.028 }, t + 0.028);
-    tl.to(el,   { skewX: 6,   duration: 0.028 }, t + 0.056);
-    tl.to(el,   { skewX: -4,  duration: 0.028 }, t + 0.084);
-    tl.to(el,   { skewX: 0,   duration: 0.04  }, t + 0.112);
+    tl.to(el, { skewX: 14,  duration: 0.028 }, t);
+    tl.to(el, { skewX: -10, duration: 0.028 }, t + 0.028);
+    tl.to(el, { skewX: 6,   duration: 0.028 }, t + 0.056);
+    tl.to(el, { skewX: -3,  duration: 0.028 }, t + 0.084);
+    tl.to(el, { skewX: 0,   duration: 0.04  }, t + 0.112);
   }
 
-  /* Impact Scale: element punches at 120%→95%→100% */
-  function impact(el, t, dur) {
-    const d = dur || 0.5;
+  /* White flash frame */
+  function flash(t, str) {
+    tl.fromTo("#flash", { opacity: 0 }, { opacity: str||0.5, duration: 0.04 }, t);
+    tl.to("#flash", { opacity: 0, duration: 0.22 }, t + 0.04);
+  }
+
+  /* Tumble reveal — from video 2 style: spin+scale+slide in */
+  function tumbleIn(el, t, fromRot, fromX, fromY) {
     tl.fromTo(el,
-      { scale: 1.18, opacity: 0 },
-      { scale: 0.97, opacity: 1, duration: d * 0.4, ease: "power3.out" }, t);
-    tl.to(el, { scale: 1.0, duration: d * 0.6, ease: "back.out(1.5)" }, t + d * 0.4);
+      { opacity: 0, rotationZ: fromRot||10, x: fromX||0, y: fromY||30, scale: 0.92 },
+      { opacity: 1, rotationZ: 0, x: 0, y: 0, scale: 1,
+        duration: 0.42, ease: "back.out(2.2)" }, t);
   }
 
-  /* Matte Reveal: clip-path strip wipe from center */
+  /* Matte wipe from center */
   function matteReveal(el, t, dur) {
     tl.fromTo(el,
-      { clipPath: "inset(47% 0% 47% 0%)", opacity: 1 },
-      { clipPath: "inset(0% 0% 0% 0%)",   duration: dur || 0.38, ease: "expo.out" }, t);
-  }
-
-  /* Flash frame */
-  function flash(t, str) {
-    tl.fromTo("#flash", { opacity: 0 }, { opacity: str || 0.45, duration: 0.04 }, t);
-    tl.to("#flash", { opacity: 0, duration: 0.20 }, t + 0.04);
+      { clipPath: "inset(46% 0% 46% 0%)", opacity: 1 },
+      { clipPath: "inset(0% 0% 0% 0%)", duration: dur||0.38, ease: "expo.out" }, t);
   }
 
   /* Chromatic aberration flash */
   function chr(el, t) {
     tl.set(el, { textShadow: "-7px 0 rgba(255,0,50,0.85), 7px 0 rgba(0,190,255,0.85)" }, t);
-    tl.to(el,  { textShadow: "none", duration: 0.38 }, t + 0.08);
+    tl.to(el,  { textShadow: "none", duration: 0.42 }, t + 0.1);
   }
-
-  /* Hard cut in (no fade, instant) */
-  function hardCut(el, t) { tl.set(el, { opacity: 1 }, t); }
-  function hardCutOut(el, t) { tl.set(el, { opacity: 0 }, t); }
 
   /* ─── STARS ─── */
   document.querySelectorAll('.star').forEach((s, i) => {
-    const d = (i * 0.07) % 2.2, op = 0.04 + (i % 8) * 0.04;
-    tl.to(s, { opacity: op, duration: 1.0 }, 0.4 + d);
-    tl.to(s, { opacity: op * 0.12, duration: 2.2 + (i%4)*0.5, repeat: 10, yoyo: true, ease: "sine.inOut" }, 1.5 + d);
+    const d = (i * 0.08) % 2.5, op = 0.04 + (i % 7) * 0.04;
+    tl.to(s, { opacity: op, duration: 0.9 }, 0.4 + d);
+    tl.to(s, { opacity: op * 0.1, duration: 2.0 + (i%4)*0.5, repeat: 10, yoyo: true, ease: "sine.inOut" }, 1.5 + d);
   });
 
-  /* ════════════════════
-     ACT 0 — TITLE SLAM
-  ════════════════════ */
-  /* HARRY crashes from above, matte reveals from center */
-  hardCut("#act0", 0);
-  matteReveal("#t-harry", 0.5, 0.32);
-  distort("#t-harry", 0.5);
-  camPunch(0.5, 1.06);
-  chr("#t-harry", 0.5);
+  /* ════ ACT 0: CRIMSON TITLE ════ */
+  tl.set("#act0", { opacity: 1 }, 0);
 
-  /* POTTER slams from below */
-  matteReveal("#t-potter", 0.85, 0.32);
-  distort("#t-potter", 0.85);
-  camPunch(0.85, 1.04);
-  chr("#t-potter", 0.85);
+  /* HARRY: matte reveal + tumble + distort */
+  matteReveal("#t-harry", 0.4, 0.30);
+  tumbleIn("#t-harry", 0.4, -8, 0, -50);
+  distort("#t-harry", 0.4);
+  camPunch(0.4, 1.07);
+  chr("#t-harry", 0.4);
 
-  /* Red slash line fires across */
+  /* POTTER: from below */
+  matteReveal("#t-potter", 0.75, 0.30);
+  tumbleIn("#t-potter", 0.75, 8, 0, 50);
+  distort("#t-potter", 0.75);
+  camPunch(0.75, 1.05);
+  chr("#t-potter", 0.75);
+
   tl.fromTo("#t-slash", { scaleX: 0, transformOrigin: "left center", opacity: 1 },
-                         { scaleX: 1, duration: 0.22, ease: "expo.out" }, 1.1);
+                         { scaleX: 1, duration: 0.20, ease: "expo.out" }, 1.1);
   tl.fromTo("#t-tag",  { opacity: 0 }, { opacity: 1, duration: 0.3 }, 1.3);
   tl.fromTo("#t-year", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 1.4);
 
-  flash(2.85, 0.55);
-  hardCutOut("#act0", 2.95);
+  flash(2.88, 0.6);
+  tl.set("#act0", { opacity: 0 }, 2.98);
 
-  /* ════════════════════
-     ACT 1 — THE LETTER
-  ════════════════════ */
-  hardCut("#act1", 3.0);
+  /* ════ ACT 1: FOREST GREEN ════ */
   tl.set("#act1", { opacity: 1 }, 3.0);
-  tl.fromTo("#seal-wrap",     { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, 3.1);
+  tl.fromTo("#seal-wrap",     { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, 3.1);
   tl.fromTo("#wax-seal",      { opacity: 0 },          { opacity: 1, duration: 0.6 }, 3.3);
-  tl.fromTo("#address-block", { opacity: 0 },          { opacity: 1, duration: 0.4 }, 3.5);
-  tl.fromTo("#act1-divider",  { height: 0 },            { height: 680, duration: 0.55, ease: "power2.out" }, 3.8);
+  tl.fromTo("#address-block", { opacity: 0 },          { opacity: 1, duration: 0.5 }, 3.5);
+  tl.fromTo("#act1-divider",  { height: 0 },            { height: 700, duration: 0.5, ease: "power2.out" }, 3.8);
 
-  /* Each word slams in — hard cut style, rapid stagger */
-  ["#lq1","#lq2","#lq3"].forEach((id, i) => {
-    const t = 4.1 + i * 0.38;
-    impact(id, t, 0.45);
-    distort(id, t);
-    chr(id, t);
-    camPunch(t, 1.03);
-  });
+  /* Each quote word tumbles in from different angle */
+  tumbleIn("#lq1", 4.1, -12, -30, 0); distort("#lq1", 4.1); camPunch(4.1, 1.03);
+  tumbleIn("#lq2", 4.52, 8,  30, 0);  distort("#lq2", 4.52); camPunch(4.52, 1.03);
+  tumbleIn("#lq3", 4.94, -6, 0, 20);  distort("#lq3", 4.94); camPunch(4.94, 1.04);
+  tl.fromTo("#lq-attr", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 5.5);
 
-  flash(8.32, 0.5);
-  hardCutOut("#act1", 8.42);
+  flash(8.3, 0.55);
+  tl.set("#act1", { opacity: 0 }, 8.4);
 
-  /* ════════════════════
-     ACT 2 — H·A·R·R·Y
-  ════════════════════ */
-  hardCut("#act2", 9.0);
+  /* ════ ACT 2: NAVY HARRY ════ */
   tl.set("#act2", { opacity: 1 }, 9.0);
-  tl.fromTo("#harry-photo",        { opacity: 0, x: 80 }, { opacity: 0.80, x: 0, duration: 1.1, ease: "expo.out" }, 9.0);
+  tl.fromTo("#harry-photo",        { opacity: 0, x: 80 }, { opacity: 0.78, x: 0, duration: 1.1, ease: "expo.out" }, 9.0);
   tl.fromTo("#harry-photo-overlay",{ opacity: 0 },         { opacity: 1, duration: 0.7 }, 9.1);
   tl.fromTo("#act2-lbl",           { opacity: 0 },         { opacity: 1, duration: 0.3 }, 9.3);
   tl.fromTo("#act2-num",           { opacity: 0 },         { opacity: 1, duration: 0.3 }, 9.4);
 
-  /* Letters slam in with matte reveal + distortion */
+  /* Letters tumble in — alternating angles */
+  const angles = [-10, 8, -7, 9, -8];
   ["#lh","#la","#lr1","#lr2","#ly"].forEach((id, i) => {
     const t = 9.5 + i * 0.16;
-    matteReveal(id, t, 0.30);
+    tumbleIn(id, t, angles[i], 0, 60);
     distort(id, t);
     chr(id, t);
   });
@@ -609,20 +617,17 @@
     tl.fromTo(id, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.28 }, 10.9 + i * 0.1);
   });
   ["#lp","#lo","#lt","#lt2","#le","#lrr"].forEach((id, i) => {
-    tl.fromTo(id, { opacity: 0 }, { opacity: 0.09, duration: 0.25 }, 11.1 + i * 0.07);
+    tl.fromTo(id, { opacity: 0 }, { opacity: 0.08, duration: 0.25 }, 11.1 + i * 0.07);
   });
 
-  flash(13.08, 0.45);
-  hardCutOut("#act2", 13.18);
+  flash(13.05, 0.5);
+  tl.set("#act2", { opacity: 0 }, 13.15);
 
-  /* ════════════════════
-     ACT 3 — SEVEN BOOKS
-  ════════════════════ */
-  hardCut("#act3", 14.0);
+  /* ════ ACT 3: AMBER BOOKS ════ */
   tl.set("#act3", { opacity: 1 }, 14.0);
   tl.fromTo("#chart-header", { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, 14.1);
-  impact("#stat-block", 14.3, 0.6);
-  distort("#stat-block", 14.3);
+  tumbleIn("#stat-block", 14.3, 6, 0, 0); distort("#stat-block", 14.3);
+  tl.set("#stat-block", { opacity: 1 }, 14.3);
 
   tl.to("#x-axis",      { opacity: 1, width: 1600, duration: 0.62, ease: "power1.inOut" }, 14.7);
   tl.to("#y-axis-left", { opacity: 1, duration: 0.3 }, 14.7);
@@ -642,68 +647,48 @@
     tl.fromTo(id, { opacity: 0, y: 5 }, { opacity: 1, y: 0, duration: 0.28 }, 18.2 + i * 0.24);
   });
 
-  flash(21.05, 0.45);
-  hardCutOut("#act3", 21.15);
+  flash(21.05, 0.5);
+  tl.set("#act3", { opacity: 0 }, 21.15);
 
-  /* ════════════════════
-     ACT 4 — VILLAIN CARDS
-  ════════════════════ */
-  hardCut("#act4", 22.0);
-  tl.set("#act4", { opacity: 1 }, 22.0);
-  hardCut("#card-a", 22.0);
-  tl.set("#card-a", { opacity: 1 }, 22.0);
+  /* ════ ACT 4: DARK PURPLE VILLAIN ════ */
+  tl.set("#act4",  { opacity: 1 }, 22.0);
+  tl.set("#card-a",{ opacity: 1 }, 22.0);
+  tl.fromTo("#tom-photo", { opacity: 0, x: -60 }, { opacity: 0.90, x: 0, duration: 1.2, ease: "expo.out" }, 22.0);
+  tl.fromTo("#vol-tag",   { opacity: 0 },           { opacity: 1, duration: 0.3 }, 22.4);
 
-  /* Tom photo */
-  tl.fromTo("#tom-photo", { opacity: 0, x: -60 }, { opacity: 0.92, x: 0, duration: 1.2, ease: "expo.out" }, 22.0);
-  tl.fromTo("#vol-tag", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 22.4);
-
-  /* LORD — slams in */
-  impact("#vl1", 22.5, 0.40);  distort("#vl1", 22.5);  chr("#vl1", 22.5);
-  camPunch(22.5, 1.05);
-  /* VOLDE */
-  impact("#vl2", 22.95, 0.40); distort("#vl2", 22.95); chr("#vl2", 22.95);
-  camPunch(22.95, 1.04);
-  /* MORT */
-  impact("#vl3", 23.40, 0.40); distort("#vl3", 23.40); chr("#vl3", 23.40);
-  camPunch(23.40, 1.05);
+  /* VOLDEMORT slams in — each word tumbles from different direction */
+  tumbleIn("#vl1", 22.5, -10, 40, 0); distort("#vl1", 22.5); chr("#vl1", 22.5); camPunch(22.5, 1.06);
+  tumbleIn("#vl2", 22.95, 8, -40, 0); distort("#vl2", 22.95); chr("#vl2", 22.95); camPunch(22.95, 1.05);
+  tumbleIn("#vl3", 23.40, -6, 40, 0); distort("#vl3", 23.40); chr("#vl3", 23.40); camPunch(23.40, 1.06);
 
   tl.fromTo("#tom-anagram-line", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, 23.9);
   tl.fromTo("#tom-meta",         { opacity: 0 },         { opacity: 1, duration: 0.35 }, 24.3);
 
-  flash(25.2, 0.42);
-  hardCutOut("#card-a", 25.3);
-
-  /* Card B — Mirror */
-  hardCut("#card-b", 25.35);
+  flash(25.18, 0.45);
+  tl.set("#card-a", { opacity: 0 }, 25.28);
   tl.set("#card-b", { opacity: 1 }, 25.35);
-  tl.fromTo("#erised-ghost", { opacity: 0 }, { opacity: 1, duration: 0.42 }, 25.5);
+  tl.fromTo("#erised-ghost", { opacity: 0 }, { opacity: 1, duration: 0.45 }, 25.5);
   matteReveal("#erised-real", 26.1, 0.55);
   chr("#erised-real", 26.1);
 
-  flash(27.28, 0.4);
-  hardCutOut("#act4", 27.38);
+  flash(27.28, 0.45);
+  tl.set("#act4", { opacity: 0 }, 27.38);
 
-  /* ════════════════════
-     ACT 5 — ALWAYS
-  ════════════════════ */
-  hardCut("#act5", 28.0);
+  /* ════ ACT 5: BLACK ALWAYS ════ */
   tl.set("#act5", { opacity: 1 }, 28.0);
-  tl.fromTo("#snape-photo", { opacity: 0, x: 60 }, { opacity: 0.84, x: 0, duration: 2.0, ease: "power1.out" }, 28.0);
+  tl.fromTo("#snape-photo", { opacity: 0, x: 60 }, { opacity: 0.82, x: 0, duration: 2.0, ease: "power1.out" }, 28.0);
   tl.fromTo("#always-q",    { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 28.8);
   tl.fromTo("#always-rule", { opacity: 1, width: 0 }, { width: 120, duration: 0.42, ease: "power2.out" }, 30.1);
 
-  /* "Always." — matte reveal + impact + glow */
+  /* "Always." — tumble in + matte + shake */
   matteReveal("#always-word", 31.0, 0.55);
+  tumbleIn("#always-word", 31.0, -6, 0, 20);
   camPunch(31.0, 1.07);
   distort("#always-word", 31.0);
 
-  /* Chromatic flash → gold glow */
-  tl.set("#always-word",
-    { textShadow: "-10px 0 rgba(255,0,50,0.9), 10px 0 rgba(0,190,255,0.9), 0 0 50px rgba(201,160,80,0.4)" }, 31.0);
-  tl.to("#always-word",
-    { textShadow: "0 0 100px rgba(201,160,80,0.8), 0 0 260px rgba(201,160,80,0.35)", duration: 0.55 }, 31.3);
+  tl.set("#always-word", { textShadow: "-10px 0 rgba(255,0,50,0.9), 10px 0 rgba(0,190,255,0.9), 0 0 60px rgba(201,160,80,0.4)" }, 31.0);
+  tl.to("#always-word",  { textShadow: "0 0 100px rgba(201,160,80,0.8), 0 0 260px rgba(201,160,80,0.35)", duration: 0.55 }, 31.3);
 
-  /* Physical shake: 5 micro-moves */
   tl.to("#always-word", { x: -5, duration: 0.032 }, 31.0);
   tl.to("#always-word", { x:  5, duration: 0.032 }, 31.032);
   tl.to("#always-word", { x: -4, duration: 0.032 }, 31.064);
@@ -712,30 +697,21 @@
 
   tl.to("#snape-photo", { opacity: 0.60, duration: 1.0 }, 31.5);
   tl.to("#snape-photo", { opacity: 0.95, duration: 1.5, ease: "power1.out" }, 32.5);
-  tl.to("#always-word", {
-    textShadow: "0 0 200px rgba(201,160,80,1.0), 0 0 420px rgba(201,160,80,0.6)",
-    duration: 1.8, ease: "power1.inOut"
-  }, 32.5);
+  tl.to("#always-word", { textShadow: "0 0 200px rgba(201,160,80,1.0), 0 0 420px rgba(201,160,80,0.6)", duration: 1.8, ease: "power1.inOut" }, 32.5);
   tl.fromTo("#always-attr", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 33.4);
   tl.to("#act5", { opacity: 0, duration: 0.75, ease: "power2.in" }, 36.1);
 
-  /* ════════════════════
-     ACT 6 — ENDCARD
-  ════════════════════ */
-  hardCut("#act6", 37.0);
+  /* ════ ACT 6: ENDCARD ════ */
   tl.set("#act6", { opacity: 1 }, 37.0);
   tl.to("#final-rule-top", { opacity: 1, width: 1680, duration: 0.85, ease: "power1.inOut" }, 37.2);
   tl.to("#final-rule-bot", { opacity: 1, width: 1680, duration: 0.85, ease: "power1.inOut" }, 37.2);
   tl.fromTo("#hogwarts-ghost", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1.5, ease: "power2.out" }, 37.3);
-
-  impact("#final-block", 37.8, 0.85);
-  distort("#final-block", 37.8);
-  chr(".fb-title", 37.8);
-
+  tumbleIn("#final-block", 37.8, -5, 0, 0); distort("#final-block", 37.8);
+  tl.set("#final-block", { opacity: 1 }, 37.8);
   tl.fromTo("#side-left",  { opacity: 0, x: -28 }, { opacity: 1, x: 0, duration: 0.7, ease: "expo.out" }, 39.0);
   tl.fromTo("#side-right", { opacity: 0, x:  28 }, { opacity: 1, x: 0, duration: 0.7, ease: "expo.out" }, 39.3);
   tl.fromTo("#final-badge", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 40.1);
-  tl.to("#final-block", { filter: "drop-shadow(0 0 24px rgba(201,160,80,0.10))", duration: 2.5 }, 41.0);
+  tl.to("#final-block", { filter: "drop-shadow(0 0 24px rgba(201,160,80,0.08)) url(#chalk-sm)", duration: 2.5 }, 41.0);
 
   window.__timelines["main"] = tl;
 </script>
