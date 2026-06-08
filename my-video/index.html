@@ -138,9 +138,12 @@
 
     /* ════ ACT 5 — ALWAYS (28–37s) ════ */
     #act5 { position:absolute; inset:0; background:#000; opacity:0; }
-    /* "After all this time?" — small italic, fades in on pure black */
-    #a5q  { position:absolute; top:50%; left:0; right:0; text-align:center; margin-top:-260px;
-            font-size:26px; color:rgba(255,255,255,0.15); font-style:italic;
+    /* Snape — full-bleed ghost, fades in behind "Always." */
+    #a5ph { position:absolute; inset:0; background-size:cover; background-position:60% top;
+            filter: grayscale(1) contrast(2.0) brightness(0.28); opacity:0; }
+    /* "After all this time?" — small italic above */
+    #a5q  { position:absolute; top:50%; left:0; right:0; text-align:center; margin-top:-290px;
+            font-size:24px; color:rgba(255,255,255,0.14); font-style:italic;
             font-family:"Georgia",serif; opacity:0; letter-spacing:1px; }
     /* ALWAYS — fills the frame, gold distress glow */
     #a5wd { position:absolute; left:0; right:0; top:50%; text-align:center;
@@ -385,8 +388,9 @@
     </div>
   </div>
 
-  <!-- ACT 5 — pure black -->
+  <!-- ACT 5 — Snape full-bleed ghost + "Always." dominant -->
   <div id="act5" data-layout-allow-overflow>
+    <div id="a5ph" class="pb ps"></div>
     <div id="a5q">"After all this time?"</div>
     <div id="a5wd" data-layout-allow-overflow>Always.</div>
     <div id="a5at">Severus Snape &nbsp;·&nbsp; Deathly Hallows &nbsp;·&nbsp; Ch. 33</div>
@@ -545,12 +549,15 @@
   tl.fromTo("#a4bt", { opacity:0, y:10 }, { opacity:1, y:0, duration:0.36, ease:"expo.out" }, 23.8);
   scanWipe(27.32); tl.set("#act4", { opacity: 0 }, 27.42);
 
-  /* ══ ACT 5 ══ — Pure black. "Always." crashes in. */
+  /* ══ ACT 5 ══ — Snape ghost-bleed + "Always." dominates */
   gsap.set("#a5wd", { yPercent: -50 });  /* center vertically without CSS transform */
   tl.set("#act5", { opacity: 1 }, 28.0);
 
-  /* "After all this time?" drifts in quietly on black */
-  tl.fromTo("#a5q", { opacity:0, y:8 }, { opacity:1, y:0, duration:0.7, ease:"power2.out" }, 28.4);
+  /* Snape photo: starts invisible, floats up subtly through the act */
+  tl.fromTo("#a5ph", { opacity:0 }, { opacity:0.18, duration:2.0, ease:"power2.out" }, 28.2);
+
+  /* "After all this time?" drifts in quietly on near-black */
+  tl.fromTo("#a5q", { opacity:0, y:8 }, { opacity:1, y:0, duration:0.7, ease:"power2.out" }, 28.5);
 
   /* Silence… then "Always." explodes onto screen at 31s */
   /* Start oversized + bright, slam down to real scale */
@@ -575,6 +582,9 @@
     textShadow:"0 0 160px rgba(201,160,80,1.0), 0 0 380px rgba(201,160,80,0.65), 0 0 700px rgba(201,160,80,0.3)",
     duration:3.2, ease:"power1.inOut"
   }, 31.4);
+
+  /* Snape floats deeper out of the dark as glow settles */
+  tl.to("#a5ph", { opacity:0.34, duration:2.8, ease:"power1.inOut" }, 31.4);
 
   tl.fromTo("#a5at", { opacity:0 }, { opacity:1, duration:0.44 }, 33.2);
   tl.to("#act5", { opacity:0, duration:0.55, ease:"power2.in" }, 36.2);
