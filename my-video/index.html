@@ -9,91 +9,122 @@
     html, body { width: 1920px; height: 1080px; overflow: hidden; background: #000; }
     #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: #000; }
 
-    /* ══ GRAIN (static — animated grain bloats MP4) ══ */
-    #grain-svg {
-      position: absolute; left: 0; top: 0;
-      width: 1920px; height: 1080px;
-      pointer-events: none; z-index: 9998;
-    }
+    /* ── CAMERA LAYER (punch / shake target) ── */
+    #cam { position: absolute; inset: 0; transform-origin: 50% 50%; }
 
-    /* ══ SCAN LINES ══ */
+    /* ── GRAIN ── */
+    #grain-svg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; z-index: 9998; }
+
+    /* ── SCAN LINES ── */
     #scanlines {
       position: absolute; inset: 0; pointer-events: none; z-index: 9997;
-      background: repeating-linear-gradient(
-        0deg, transparent, transparent 2px,
-        rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px
-      );
+      background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.12) 3px, rgba(0,0,0,0.12) 4px);
     }
 
-    /* ══ FLASH LAYER ══ */
+    /* ── FLASH ── */
     #flash { position: absolute; inset: 0; background: #fff; pointer-events: none; z-index: 9999; opacity: 0; }
 
-    /* ══ PHOTOS ══ */
+    /* ── PHOTOS ── */
     .photo-base { position: absolute; background-size: cover; background-position: center top; background-repeat: no-repeat; }
-    .photo-harry {
-      background-image: url("assets/harry-nobg.png");
-      filter: grayscale(0.35) contrast(1.35) brightness(0.72) sepia(0.3) hue-rotate(5deg) saturate(1.9);
-    }
-    .photo-snape {
-      background-image: url("assets/snape-nobg.png");
-      filter: grayscale(0.6) contrast(1.45) brightness(0.55) sepia(0.1) hue-rotate(200deg) saturate(1.2);
-    }
-    .photo-tom {
-      background-image: url("assets/tomriddle-nobg.png");
-      filter: grayscale(0.25) contrast(1.5) brightness(0.78) sepia(0.12) hue-rotate(112deg) saturate(2.0);
-    }
+    .photo-harry { background-image: url("assets/harry-nobg.png"); filter: grayscale(0.4) contrast(1.4) brightness(0.65) sepia(0.2) hue-rotate(5deg) saturate(1.8); }
+    .photo-snape { background-image: url("assets/snape-nobg.png"); filter: grayscale(0.65) contrast(1.5) brightness(0.5) sepia(0.08) hue-rotate(195deg) saturate(1.1); }
+    .photo-tom   { background-image: url("assets/tomriddle-nobg.png"); filter: grayscale(0.2) contrast(1.6) brightness(0.72) sepia(0.1) hue-rotate(110deg) saturate(2.2); }
 
-    /* ══ ACT 0: TITLE CRASH ══ */
+    /* ── SHARED UTILS ── */
+    .lbl { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; font-weight: 700; }
+    .micro { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 5px; text-transform: uppercase; }
+    .rule-h { position: absolute; height: 1px; background: #C9A050; opacity: 0; }
+    .rule-v { position: absolute; width: 1px; background: #1a1a1a; opacity: 0; }
+    .red { color: #C8102E; }
+    .gold { color: #C9A050; }
+
+    /* ════════════════════════════════════════
+       ACT 0 — TITLE SLAM  (0–3s)
+    ════════════════════════════════════════ */
     #act0 { position: absolute; inset: 0; }
-    #title-wrap { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
-    #title-hp {
-      font-size: 260px; font-weight: 900; font-family: "Helvetica Neue", Arial, sans-serif;
-      color: #fff; letter-spacing: -14px; line-height: 0.82; text-transform: uppercase; opacity: 0;
+
+    /* "HARRY" bleeds from top */
+    #t-harry {
+      position: absolute; top: -20px; left: 0; right: 0; text-align: center;
+      font-size: 420px; font-weight: 900; letter-spacing: -20px; line-height: 0.82;
+      font-family: "Helvetica Neue", Arial, sans-serif; color: #fff;
+      text-transform: uppercase; opacity: 0;
     }
-    #title-rule { width: 0; height: 1px; background: #C9A050; margin: 22px auto; opacity: 0; }
-    #title-sub { font-size: 13px; letter-spacing: 16px; text-transform: uppercase; font-family: "Helvetica Neue", sans-serif; color: #C9A050; opacity: 0; }
-    #title-year { font-size: 10px; letter-spacing: 9px; color: #2a2a2a; text-transform: uppercase; font-family: "Helvetica Neue", sans-serif; opacity: 0; margin-top: 12px; }
+    /* "POTTER" bleeds from bottom */
+    #t-potter {
+      position: absolute; bottom: -20px; left: 0; right: 0; text-align: center;
+      font-size: 420px; font-weight: 900; letter-spacing: -20px; line-height: 0.82;
+      font-family: "Helvetica Neue", Arial, sans-serif; color: #fff;
+      text-transform: uppercase; opacity: 0;
+    }
+    /* Slash divider across center */
+    #t-slash { position: absolute; top: 538px; left: 0; right: 0; height: 2px; background: #C8102E; opacity: 0; }
+    #t-tag {
+      position: absolute; top: 552px; right: 120px;
+      font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px;
+      text-transform: uppercase; color: #C8102E; font-weight: 700; opacity: 0;
+    }
+    #t-year {
+      position: absolute; top: 552px; left: 120px;
+      font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px;
+      text-transform: uppercase; color: #333; opacity: 0;
+    }
 
-    /* ══ ACT 1: LETTER ══ */
+    /* ════════════════════════════════════════
+       ACT 1 — THE LETTER  (3–9s)
+    ════════════════════════════════════════ */
     #act1 { position: absolute; inset: 0; opacity: 0; }
-    #seal-wrap { position: absolute; top: 120px; left: 160px; opacity: 0; }
+    /* Texture: a faint concrete-like diagonal stripe */
+    #act1::before {
+      content: ""; position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        -42deg, transparent, transparent 80px, rgba(255,255,255,0.012) 80px, rgba(255,255,255,0.012) 82px
+      );
+    }
+    #seal-wrap { position: absolute; top: 120px; left: 120px; opacity: 0; }
     .seal-label { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: #C9A050; font-weight: 700; margin-bottom: 10px; }
-    .seal-school { font-size: 9px; letter-spacing: 5px; text-transform: uppercase; color: #333; font-family: "Helvetica Neue", sans-serif; line-height: 2.2; }
-    #wax-seal { position: absolute; top: 110px; right: 260px; opacity: 0; }
-    #address-block { position: absolute; top: 50%; left: 160px; transform: translateY(-50%); opacity: 0; }
-    .addr-to { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 5px; text-transform: uppercase; color: #333; margin-bottom: 12px; }
-    .addr-name { font-size: 96px; font-weight: 900; color: #fff; font-family: "Helvetica Neue", sans-serif; letter-spacing: -3px; line-height: 0.90; text-transform: uppercase; }
-    .addr-place { font-family: "Helvetica Neue", sans-serif; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: #2a2a2a; margin-top: 18px; line-height: 2.2; }
-    #act1-divider { position: absolute; left: 960px; top: 200px; width: 1px; height: 0; background: #1a1a1a; }
-    #letter-meme { position: absolute; right: 160px; top: 50%; transform: translateY(-50%); text-align: right; opacity: 0; width: 660px; }
-    .meme-text { font-size: 76px; font-weight: 900; color: #fff; font-family: "Helvetica Neue", sans-serif; line-height: 1.0; letter-spacing: -2px; text-transform: uppercase; }
-    .meme-gold { color: #C9A050; }
-    .meme-attr { font-family: "Helvetica Neue", sans-serif; font-size: 10px; letter-spacing: 5px; text-transform: uppercase; color: #2a2a2a; margin-top: 22px; }
+    .seal-school { font-size: 9px; letter-spacing: 5px; text-transform: uppercase; color: #222; font-family: "Helvetica Neue", sans-serif; line-height: 2.4; }
+    #wax-seal { position: absolute; top: 110px; right: 240px; opacity: 0; }
+    /* Address: left side */
+    #address-block { position: absolute; top: 50%; left: 120px; transform: translateY(-50%); opacity: 0; }
+    .addr-to { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 5px; text-transform: uppercase; color: #2a2a2a; margin-bottom: 10px; }
+    .addr-name { font-size: 100px; font-weight: 900; color: #fff; font-family: "Helvetica Neue", sans-serif; letter-spacing: -4px; line-height: 0.88; text-transform: uppercase; }
+    .addr-place { font-family: "Helvetica Neue", sans-serif; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: #222; margin-top: 18px; line-height: 2.2; }
+    #act1-divider { position: absolute; left: 960px; top: 160px; width: 1px; height: 0; background: #1a1a1a; }
+    /* Quote: right side, giant */
+    #letter-quote { position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 900px; padding-right: 120px; opacity: 0; }
+    .lq-word { font-size: 110px; font-weight: 900; color: #fff; font-family: "Helvetica Neue", sans-serif; line-height: 0.88; letter-spacing: -4px; text-transform: uppercase; display: block; opacity: 0; }
+    .lq-word.accent { color: #C8102E; }
+    .lq-attr { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 6px; text-transform: uppercase; color: #2a2a2a; margin-top: 24px; }
 
-    /* ══ ACT 2: HARRY ══ */
-    #act2 { position: absolute; inset: 0; opacity: 0; }
+    /* ════════════════════════════════════════
+       ACT 2 — H·A·R·R·Y  (9–14s)
+    ════════════════════════════════════════ */
+    #act2 { position: absolute; inset: 0; overflow: hidden; opacity: 0; }
     #harry-photo { right: 0; top: 0; width: 900px; height: 1080px; opacity: 0; }
     #harry-photo-overlay {
       position: absolute; right: 0; top: 0; width: 900px; height: 1080px;
-      background: linear-gradient(90deg, #000 0%, rgba(0,0,0,0.55) 28%, rgba(0,0,0,0.08) 100%);
+      background: linear-gradient(90deg, #000 0%, rgba(0,0,0,0.5) 30%, rgba(0,0,0,0.05) 100%);
       opacity: 0;
     }
-    #act2-label { position: absolute; top: 80px; left: 160px; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: #C9A050; font-weight: 700; opacity: 0; }
-    #act2-num   { position: absolute; top: 80px; right: 160px; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 5px; color: #1a1a1a; opacity: 0; }
-    .letter-row { position: absolute; display: flex; gap: 0; left: 80px; right: 80px; }
+    #act2-lbl { position: absolute; top: 72px; left: 120px; color: #C9A050; opacity: 0; }
+    #act2-num { position: absolute; top: 72px; right: 120px; color: #1a1a1a; opacity: 0; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 5px; text-transform: uppercase; }
+    .letter-row { position: absolute; display: flex; gap: 0; left: 60px; right: 60px; }
     #row-harry  { top: 140px; }
-    #row-potter { top: 540px; }
+    #row-potter { top: 558px; }
     .letter-unit { flex: 1; display: flex; flex-direction: column; align-items: center; }
-    .big-letter { font-size: 330px; font-weight: 900; line-height: 0.84; font-family: "Helvetica Neue", Arial, sans-serif; color: #fff; opacity: 0; letter-spacing: -14px; text-transform: uppercase; }
+    .big-letter { font-size: 340px; font-weight: 900; line-height: 0.82; font-family: "Helvetica Neue", Arial, sans-serif; color: #fff; opacity: 0; letter-spacing: -14px; text-transform: uppercase; }
     .letter-anno { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: #2a2a2a; margin-top: 8px; text-align: center; line-height: 1.8; opacity: 0; }
-    #letter-rule { position: absolute; top: 538px; left: 80px; right: 80px; height: 1px; background: #1a1a1a; opacity: 0; }
+    #letter-rule { position: absolute; top: 556px; left: 60px; right: 60px; height: 1px; background: #1a1a1a; opacity: 0; }
 
-    /* ══ ACT 3: BOOKS ══ */
+    /* ════════════════════════════════════════
+       ACT 3 — SEVEN BOOKS  (14–22s)
+    ════════════════════════════════════════ */
     #act3 { position: absolute; inset: 0; opacity: 0; }
-    #chart-header { position: absolute; top: 80px; left: 160px; opacity: 0; }
+    #chart-header { position: absolute; top: 72px; left: 120px; opacity: 0; }
     .ch-title { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: #C9A050; font-weight: 700; margin-bottom: 6px; }
     .ch-sub   { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: #1a1a1a; }
-    #chart-area { position: absolute; bottom: 120px; left: 160px; right: 160px; top: 160px; }
+    #chart-area { position: absolute; bottom: 100px; left: 120px; right: 120px; top: 150px; }
     .book-line { position: absolute; bottom: 48px; width: 2px; opacity: 0; transform-origin: bottom; }
     #bl1{left:111px;height:77px;background:#6B1212;} #bl2{left:334px;height:87px;background:#6B1212;}
     #bl3{left:557px;height:109px;background:#6B1212;} #bl4{left:780px;height:219px;background:#C9A050;}
@@ -107,78 +138,92 @@
     #pg3{bottom:164px;left:557px;} #pg4{bottom:274px;left:780px;}
     #pg5{bottom:355px;left:1003px;} #pg6{bottom:264px;left:1226px;} #pg7{bottom:317px;left:1449px;}
     #tension-svg2 { position: absolute; bottom: 48px; left: 0; width: 1600px; height: 320px; overflow: visible; opacity: 0; }
-    .rule-h { position: absolute; height: 1px; background: #C9A050; opacity: 0; }
-    .rule-v { position: absolute; width: 1px; background: #C9A050; opacity: 0; }
     #x-axis { left: 0; bottom: 47px; width: 1600px; }
     #y-axis-left { left: 0; bottom: 48px; height: 320px; }
     .book-moment { position: absolute; opacity: 0; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: #C9A050; white-space: nowrap; }
-    #stat-block { position: absolute; top: 80px; right: 160px; text-align: right; opacity: 0; }
+    #stat-block { position: absolute; top: 72px; right: 120px; text-align: right; opacity: 0; }
     .stat-num { font-size: 130px; font-weight: 900; color: #fff; font-family: "Helvetica Neue", sans-serif; line-height: 0.82; letter-spacing: -6px; }
     .stat-label { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 6px; text-transform: uppercase; color: #2a2a2a; margin-top: 10px; }
 
-    /* ══ ACT 4: CARDS ══ */
-    #act4 { position: absolute; inset: 0; opacity: 0; }
-    #card-a { position: absolute; inset: 0; opacity: 0; }
-    #tom-photo { left: 0; top: 0; width: 680px; height: 1080px; opacity: 0; }
-    #tom-photo-fade {
-      position: absolute; left: 0; top: 0; width: 900px; height: 1080px;
-      background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 52%, rgba(0,0,0,0.88) 76%, #000 100%);
-    }
-    #tom-photo-tint { position: absolute; left: 0; top: 0; width: 680px; height: 1080px; background: rgba(10,40,15,0.35); mix-blend-mode: color; }
-    .card-tag-top { position: absolute; top: 80px; left: 740px; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: #C9A050; font-weight: 700; opacity: 0; }
-    #tom-name { position: absolute; top: 180px; left: 740px; opacity: 0; }
-    .tom-name-line1,.tom-name-line2,.tom-name-line3 { font-size: 92px; font-weight: 900; color: #fff; font-family: "Helvetica Neue", sans-serif; line-height: 0.88; letter-spacing: -3px; text-transform: uppercase; }
-    #tom-rule { position: absolute; top: 500px; left: 740px; width: 0; height: 1px; background: #C9A050; opacity: 0; }
-    #tom-anagram { position: absolute; top: 526px; left: 740px; opacity: 0; }
-    .anagram-label { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 5px; text-transform: uppercase; color: #333; margin-bottom: 14px; }
-    .anagram-text { font-size: 40px; font-weight: 900; color: #C9A050; font-family: "Helvetica Neue", sans-serif; letter-spacing: 3px; text-transform: uppercase; }
-    #tom-bottom { position: absolute; bottom: 120px; left: 740px; opacity: 0; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 5px; text-transform: uppercase; color: #222; }
-    #card-b { position: absolute; inset: 0; opacity: 0; }
-    .card-tag-top-b { position: absolute; top: 80px; left: 160px; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: #C9A050; font-weight: 700; }
-    #erised-ghost { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 72px; font-weight: 900; font-family: "Helvetica Neue", sans-serif; color: #111; line-height: 1.1; letter-spacing: 8px; text-align: center; text-transform: uppercase; opacity: 0; width: 1600px; }
-    #erised-real { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; opacity: 0; }
-    .erised-line1 { font-size: 58px; font-weight: 900; color: #fff; font-family: "Helvetica Neue", sans-serif; line-height: 1.25; text-transform: uppercase; letter-spacing: -1px; }
-    .erised-gold { color: #C9A050; }
-    #erised-sub { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 6px; text-transform: uppercase; color: #2a2a2a; margin-top: 24px; }
+    /* ════════════════════════════════════════
+       ACT 4 — VILLAIN CARDS  (22–28s)
+    ════════════════════════════════════════ */
+    #act4 { position: absolute; inset: 0; overflow: hidden; opacity: 0; }
 
-    /* ══ ACT 5: ALWAYS ══ */
+    /* CARD A: Tom Riddle with giant red VOLDEMORT */
+    #card-a { position: absolute; inset: 0; opacity: 0; }
+    #tom-photo { left: 0; top: 0; width: 800px; height: 1080px; opacity: 0; }
+    #tom-photo-fade {
+      position: absolute; left: 0; top: 0; width: 1000px; height: 1080px;
+      background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 45%, rgba(0,0,0,0.85) 72%, #000 100%);
+    }
+    #tom-photo-tint { position: absolute; left: 0; top: 0; width: 800px; height: 1080px; background: rgba(10,40,15,0.3); mix-blend-mode: color; }
+    /* Giant "VOLDE\nMORT" bleeds right edge */
+    #vol-text {
+      position: absolute; right: -30px; top: 50%; transform: translateY(-50%);
+      text-align: right; opacity: 0;
+    }
+    .vol-line { font-size: 260px; font-weight: 900; font-family: "Helvetica Neue", Arial, sans-serif; line-height: 0.80; letter-spacing: -12px; text-transform: uppercase; color: #fff; display: block; opacity: 0; }
+    .vol-line.red-txt { color: #C8102E; }
+    #vol-tag { position: absolute; top: 80px; left: 120px; color: #C9A050; opacity: 0; }
+    #tom-meta { position: absolute; bottom: 100px; left: 120px; opacity: 0; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 5px; text-transform: uppercase; color: #1a1a1a; }
+    #tom-anagram-line { position: absolute; bottom: 140px; left: 120px; opacity: 0; }
+    .anagram-text { font-size: 36px; font-weight: 900; color: #C9A050; font-family: "Helvetica Neue", sans-serif; letter-spacing: 3px; text-transform: uppercase; }
+    .anagram-label { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 5px; text-transform: uppercase; color: #333; margin-bottom: 10px; }
+
+    /* CARD B: Mirror of Erised */
+    #card-b { position: absolute; inset: 0; opacity: 0; }
+    .card-tag-top-b { position: absolute; top: 80px; left: 120px; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: #C9A050; font-weight: 700; }
+    #erised-ghost { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 76px; font-weight: 900; font-family: "Helvetica Neue", sans-serif; color: #111; line-height: 1.1; letter-spacing: 8px; text-align: center; text-transform: uppercase; opacity: 0; width: 1700px; }
+    #erised-real { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; opacity: 0; }
+    .erised-line1 { font-size: 60px; font-weight: 900; color: #fff; font-family: "Helvetica Neue", sans-serif; line-height: 1.22; text-transform: uppercase; letter-spacing: -1px; }
+    .erised-gold { color: #C9A050; }
+    #erised-sub { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 6px; text-transform: uppercase; color: #2a2a2a; margin-top: 28px; }
+
+    /* ════════════════════════════════════════
+       ACT 5 — ALWAYS  (28–37s)
+    ════════════════════════════════════════ */
     #act5 { position: absolute; inset: 0; background: #000; opacity: 0; }
     #snape-photo { right: 0; top: 0; width: 960px; height: 1080px; opacity: 0; }
     #snape-photo-fade {
-      position: absolute; right: 0; top: 0; width: 1300px; height: 1080px;
-      background: linear-gradient(90deg, #000 0%, rgba(0,0,0,0.95) 18%, rgba(0,0,0,0.62) 46%, rgba(0,0,0,0.12) 72%, rgba(0,0,0,0) 100%);
+      position: absolute; right: 0; top: 0; width: 1340px; height: 1080px;
+      background: linear-gradient(90deg, #000 0%, rgba(0,0,0,0.95) 17%, rgba(0,0,0,0.6) 46%, rgba(0,0,0,0.1) 72%, rgba(0,0,0,0) 100%);
     }
-    #always-q { position: absolute; top: 380px; left: 160px; font-size: 36px; color: #2a2a2a; font-style: italic; font-family: "Georgia", serif; opacity: 0; }
-    #always-rule { position: absolute; top: 476px; left: 160px; width: 0; height: 1px; background: #C9A050; opacity: 0; }
+    #always-q { position: absolute; top: 370px; left: 120px; font-size: 36px; color: #2a2a2a; font-style: italic; font-family: "Georgia", serif; opacity: 0; }
+    #always-rule { position: absolute; top: 466px; left: 120px; width: 0; height: 1px; background: #C9A050; opacity: 0; }
+    /* "Always." fills left half, massive */
     #always-word {
-      position: absolute; top: 50%; left: 160px; transform: translateY(-42%);
-      font-size: 290px; font-weight: 900; letter-spacing: -12px;
+      position: absolute; top: 50%; left: 120px; transform: translateY(-46%);
+      font-size: 300px; font-weight: 900; letter-spacing: -14px;
       font-family: "Helvetica Neue", Arial, sans-serif; color: #C9A050; line-height: 1;
-      text-shadow: 0 0 80px rgba(201,160,80,0.5), 0 0 200px rgba(201,160,80,0.2);
-      opacity: 0;
+      text-shadow: 0 0 80px rgba(201,160,80,0.4), 0 0 200px rgba(201,160,80,0.18);
+      opacity: 0; clip-path: inset(0 0 0 0);
     }
-    #always-attr { position: absolute; bottom: 140px; left: 160px; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: #1a1a1a; opacity: 0; }
+    #always-attr { position: absolute; bottom: 130px; left: 120px; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: #1a1a1a; opacity: 0; }
 
-    /* ══ ACT 6: ENDCARD ══ */
+    /* ════════════════════════════════════════
+       ACT 6 — ENDCARD  (37–46s)
+    ════════════════════════════════════════ */
     #act6 { position: absolute; inset: 0; opacity: 0; }
     #hogwarts-ghost { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); opacity: 0; }
-    #final-block { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 400px; opacity: 0; }
-    .fb-rule { width: 100%; height: 1px; background: #C9A050; margin-bottom: 32px; }
-    .fb-series { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: #C9A050; font-weight: 700; margin-bottom: 20px; }
-    .fb-title { font-size: 84px; font-weight: 900; color: #fff; font-family: "Helvetica Neue", sans-serif; line-height: 0.88; margin-bottom: 10px; letter-spacing: -4px; text-transform: uppercase; }
-    .fb-sub { font-size: 14px; color: #444; font-style: italic; font-family: "Georgia", serif; line-height: 1.6; margin-bottom: 24px; }
-    .fb-rule2 { width: 32px; height: 1px; background: #C9A050; margin-bottom: 18px; }
+    #final-block { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 420px; opacity: 0; }
+    .fb-rule  { width: 100%; height: 1px; background: #C9A050; margin-bottom: 30px; }
+    .fb-series { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: #C9A050; font-weight: 700; margin-bottom: 18px; }
+    .fb-title  { font-size: 88px; font-weight: 900; color: #fff; font-family: "Helvetica Neue", sans-serif; line-height: 0.86; margin-bottom: 12px; letter-spacing: -5px; text-transform: uppercase; }
+    .fb-sub    { font-size: 14px; color: #3a3a3a; font-style: italic; font-family: "Georgia", serif; line-height: 1.6; margin-bottom: 24px; }
+    .fb-rule2  { width: 32px; height: 1px; background: #C9A050; margin-bottom: 16px; }
     .fb-author { font-family: "Helvetica Neue", sans-serif; font-size: 10px; letter-spacing: 6px; text-transform: uppercase; color: #2a2a2a; }
     .side-panel { position: absolute; top: 50%; opacity: 0; font-family: "Helvetica Neue", sans-serif; }
-    #side-left  { left: 160px; transform: translateY(-50%); width: 280px; }
-    #side-right { right: 160px; transform: translateY(-50%); width: 280px; text-align: right; }
-    .sp-head { font-size: 9px; letter-spacing: 6px; text-transform: uppercase; color: #C9A050; font-weight: 700; margin-bottom: 20px; }
-    .sp-item { font-size: 13px; color: #fff; line-height: 2.4; }
-    .sp-foot { margin-top: 24px; font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: #1a1a1a; }
-    #final-rule-top { position: absolute; top: 80px; left: 160px; width: 0; }
-    #final-rule-bot { position: absolute; bottom: 80px; left: 160px; width: 0; }
-    #final-badge { position: absolute; bottom: 48px; left: 50%; transform: translateX(-50%); font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: #1a1a1a; opacity: 0; white-space: nowrap; }
+    #side-left  { left: 120px;  transform: translateY(-50%); width: 280px; }
+    #side-right { right: 120px; transform: translateY(-50%); width: 280px; text-align: right; }
+    .sp-head { font-size: 9px; letter-spacing: 6px; text-transform: uppercase; color: #C9A050; font-weight: 700; margin-bottom: 18px; }
+    .sp-item { font-size: 13px; color: #fff; line-height: 2.5; }
+    .sp-foot { margin-top: 22px; font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: #1a1a1a; }
+    #final-rule-top { position: absolute; top: 80px; left: 120px; width: 0; }
+    #final-rule-bot { position: absolute; bottom: 80px; left: 120px; width: 0; }
+    #final-badge { position: absolute; bottom: 46px; left: 50%; transform: translateX(-50%); font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 7px; text-transform: uppercase; color: #1a1a1a; opacity: 0; white-space: nowrap; }
     #final-badge span { color: #C9A050; }
+
     .star { position: absolute; border-radius: 50%; background: #fff; opacity: 0; pointer-events: none; }
   </style>
 </head>
@@ -190,14 +235,15 @@
   data-width="1920"
   data-height="1080"
 >
+  <div id="cam">
 
-  <!-- GRAIN -->
+  <!-- GRAIN (static) -->
   <svg id="grain-svg" xmlns="http://www.w3.org/2000/svg">
     <filter id="noise-filter">
-      <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="4" stitchTiles="stitch"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="4" stitchTiles="stitch"/>
       <feColorMatrix type="saturate" values="0"/>
     </filter>
-    <rect width="2120" height="1280" filter="url(#noise-filter)" opacity="0.065"/>
+    <rect width="1920" height="1080" filter="url(#noise-filter)" opacity="0.055"/>
   </svg>
   <div id="scanlines"></div>
   <div id="flash"></div>
@@ -205,7 +251,7 @@
   <!-- AUDIO -->
   <audio id="bgm"   src="assets/bgm.wav"         class="clip" data-start="0"    data-duration="46"  data-volume="0.65" data-track-index="90" muted></audio>
   <audio id="sfx1"  src="assets/sfx_shimmer.wav" class="clip" data-start="0.8"  data-duration="2.8" data-volume="0.45" data-track-index="91" muted></audio>
-  <audio id="sfx2"  src="assets/sfx_impact.wav"  class="clip" data-start="31.0" data-duration="4.5" data-volume="0.70" data-track-index="92" muted></audio>
+  <audio id="sfx2"  src="assets/sfx_impact.wav"  class="clip" data-start="31.0" data-duration="4.5" data-volume="0.72" data-track-index="92" muted></audio>
   <audio id="sfx3a" src="assets/sfx_chime.wav"   class="clip" data-start="9.0"  data-duration="2.0" data-volume="0.35" data-track-index="93" muted></audio>
   <audio id="sfx3b" src="assets/sfx_chime.wav"   class="clip" data-start="22.0" data-duration="2.0" data-volume="0.30" data-track-index="94" muted></audio>
   <audio id="sfx3c" src="assets/sfx_chime.wav"   class="clip" data-start="37.0" data-duration="2.0" data-volume="0.30" data-track-index="95" muted></audio>
@@ -217,38 +263,34 @@
   <div class="star" style="width:2px;height:2px;top:82px;left:243px"></div>
   <div class="star" style="width:1px;height:1px;top:135px;left:890px"></div>
   <div class="star" style="width:2px;height:2px;top:60px;left:1540px"></div>
-  <div class="star" style="width:1px;height:1px;top:200px;left:310px"></div>
   <div class="star" style="width:3px;height:3px;top:55px;left:720px"></div>
   <div class="star" style="width:1px;height:1px;top:95px;left:1240px"></div>
-  <div class="star" style="width:2px;height:2px;top:170px;left:1680px"></div>
   <div class="star" style="width:2px;height:2px;top:40px;left:1820px"></div>
-  <div class="star" style="width:1px;height:1px;top:380px;left:500px"></div>
   <div class="star" style="width:3px;height:3px;top:25px;left:960px"></div>
   <div class="star" style="width:2px;height:2px;top:290px;left:1100px"></div>
-  <div class="star" style="width:1px;height:1px;top:110px;left:1400px"></div>
   <div class="star" style="width:2px;height:2px;top:460px;left:220px"></div>
-  <div class="star" style="width:2px;height:2px;top:500px;left:80px"></div>
   <div class="star" style="width:3px;height:3px;top:45px;left:1060px"></div>
-  <div class="star" style="width:1px;height:1px;top:540px;left:1550px"></div>
   <div class="star" style="width:2px;height:2px;top:118px;left:780px"></div>
   <div class="star" style="width:2px;height:2px;top:68px;left:1750px"></div>
   <div class="star" style="width:2px;height:2px;top:570px;left:1190px"></div>
-  <div class="star" style="width:2px;height:2px;top:410px;left:1480px"></div>
   <div class="star" style="width:3px;height:3px;top:30px;left:1360px"></div>
   <div class="star" style="width:2px;height:2px;top:220px;left:1520px"></div>
   <div class="star" style="width:2px;height:2px;top:600px;left:1380px"></div>
+  <div class="star" style="width:1px;height:1px;top:200px;left:310px"></div>
+  <div class="star" style="width:2px;height:2px;top:170px;left:1680px"></div>
+  <div class="star" style="width:1px;height:1px;top:380px;left:500px"></div>
+  <div class="star" style="width:2px;height:2px;top:500px;left:80px"></div>
 
-  <!-- ACT 0: TITLE CRASH (0–3s) -->
+  <!-- ════ ACT 0: TITLE SLAM ════ -->
   <div id="act0">
-    <div id="title-wrap">
-      <div id="title-hp">HARRY<br>POTTER</div>
-      <div id="title-rule"></div>
-      <div id="title-sub">The Complete Series</div>
-      <div id="title-year">J.K. Rowling &nbsp;·&nbsp; 1997–2007 &nbsp;·&nbsp; Motion Reading 02</div>
-    </div>
+    <div id="t-harry" data-layout-allow-overflow>HARRY</div>
+    <div id="t-slash"></div>
+    <div id="t-tag">Motion Reading 02 &nbsp;·&nbsp; Complete Series</div>
+    <div id="t-year">J.K. Rowling &nbsp;·&nbsp; 1997–2007</div>
+    <div id="t-potter" data-layout-allow-overflow>POTTER</div>
   </div>
 
-  <!-- ACT 1: THE LETTER (3–9s) -->
+  <!-- ════ ACT 1: THE LETTER ════ -->
   <div id="act1">
     <div id="seal-wrap">
       <div class="seal-label">Hogwarts School</div>
@@ -267,17 +309,20 @@
       <div class="addr-place">The Cupboard Under The Stairs<br>4 Privet Drive · Surrey</div>
     </div>
     <div id="act1-divider"></div>
-    <div id="letter-meme">
-      <div class="meme-text">"YOU'RE A<br>WIZARD,<br><span class="meme-gold">HARRY."</span></div>
-      <div class="meme-attr">— Rubeus Hagrid &nbsp;·&nbsp; Year One</div>
+    <!-- Each word on its own line, slams in separately -->
+    <div id="letter-quote">
+      <span class="lq-word" id="lq1">YOU'RE</span>
+      <span class="lq-word" id="lq2">A WIZARD,</span>
+      <span class="lq-word accent" id="lq3">HARRY.</span>
+      <div class="lq-attr">— Rubeus Hagrid &nbsp;·&nbsp; Year One</div>
     </div>
   </div>
 
-  <!-- ACT 2: H·A·R·R·Y + PHOTO (9–14s) -->
+  <!-- ════ ACT 2: H·A·R·R·Y ════ -->
   <div id="act2">
     <div id="harry-photo" class="photo-base photo-harry"></div>
     <div id="harry-photo-overlay"></div>
-    <div id="act2-label">02 &nbsp;·&nbsp; TYPOGRAPHIC ANATOMY</div>
+    <div id="act2-lbl" class="lbl">02 &nbsp;·&nbsp; Typographic Anatomy</div>
     <div id="act2-num">J.K. Rowling &nbsp;·&nbsp; 1997–2007</div>
     <div class="letter-row" id="row-harry">
       <div class="letter-unit"><div class="big-letter" id="lh">H</div><div class="letter-anno" id="ah">BORN TO<br>TWO WORLDS</div></div>
@@ -297,7 +342,7 @@
     </div>
   </div>
 
-  <!-- ACT 3: SEVEN BOOKS (14–22s) -->
+  <!-- ════ ACT 3: SEVEN BOOKS ════ -->
   <div id="act3" data-layout-allow-overflow>
     <div id="chart-header">
       <div class="ch-title">THE COMPLETE SERIES</div>
@@ -309,7 +354,7 @@
     </div>
     <div id="chart-area" data-layout-allow-overflow>
       <div class="rule-h" id="x-axis"></div>
-      <div class="rule-v" id="y-axis-left" style="overflow:visible;" data-layout-allow-overflow></div>
+      <div class="rule-v" id="y-axis-left" data-layout-allow-overflow></div>
       <div class="book-line" id="bl1"></div><div class="book-line" id="bl2"></div>
       <div class="book-line" id="bl3"></div><div class="book-line" id="bl4"></div>
       <div class="book-line" id="bl5"></div><div class="book-line" id="bl6"></div>
@@ -345,24 +390,24 @@
     </div>
   </div>
 
-  <!-- ACT 4: CHARACTER CARDS (22–28s) -->
-  <div id="act4">
-    <div id="card-a">
+  <!-- ════ ACT 4: VILLAIN CARDS ════ -->
+  <div id="act4" data-layout-allow-overflow>
+    <div id="card-a" data-layout-allow-overflow>
       <div id="tom-photo" class="photo-base photo-tom"></div>
       <div id="tom-photo-fade"></div>
       <div id="tom-photo-tint"></div>
-      <div class="card-tag-top" id="card-a-tag">03 &nbsp;·&nbsp; THE DARK LORD</div>
-      <div id="tom-name">
-        <div class="tom-name-line1">TOM</div>
-        <div class="tom-name-line2">MARVOLO</div>
-        <div class="tom-name-line3">RIDDLE</div>
+      <div id="vol-tag" class="lbl">03 &nbsp;·&nbsp; THE DARK LORD</div>
+      <!-- Giant VOLDEMORT bleeds right -->
+      <div id="vol-text">
+        <span class="vol-line" id="vl1">LORD</span>
+        <span class="vol-line red-txt" id="vl2">VOLDE</span>
+        <span class="vol-line red-txt" id="vl3">MORT</span>
       </div>
-      <div id="tom-rule"></div>
-      <div id="tom-anagram">
-        <div class="anagram-label">An anagram of</div>
+      <div id="tom-anagram-line">
+        <div class="anagram-label">Tom Marvolo Riddle — an anagram of</div>
         <div class="anagram-text">I AM LORD VOLDEMORT</div>
       </div>
-      <div id="tom-bottom">Slytherin &nbsp;·&nbsp; Hogwarts Class of 1945 &nbsp;·&nbsp; Half-Blood</div>
+      <div id="tom-meta">Slytherin &nbsp;·&nbsp; Class of 1945 &nbsp;·&nbsp; Half-Blood</div>
     </div>
     <div id="card-b">
       <div class="card-tag-top-b">04 &nbsp;·&nbsp; THE MIRROR OF ERISED</div>
@@ -380,7 +425,7 @@
     </div>
   </div>
 
-  <!-- ACT 5: ALWAYS + SNAPE (28–37s) -->
+  <!-- ════ ACT 5: ALWAYS ════ -->
   <div id="act5" data-layout-allow-overflow>
     <div id="snape-photo" class="photo-base photo-snape"></div>
     <div id="snape-photo-fade"></div>
@@ -393,17 +438,17 @@
     </div>
   </div>
 
-  <!-- ACT 6: ENDCARD (37–46s) -->
+  <!-- ════ ACT 6: ENDCARD ════ -->
   <div id="act6">
     <svg id="hogwarts-ghost" width="1920" height="400" viewBox="0 0 1920 400" fill="none">
-      <rect x="660" y="160" width="600" height="240" stroke="rgba(201,160,80,0.07)" stroke-width="1" fill="rgba(201,160,80,0.02)"/>
-      <rect x="870" y="60"  width="180" height="340" stroke="rgba(201,160,80,0.09)" stroke-width="1" fill="rgba(201,160,80,0.03)"/>
-      <polygon points="960,10 870,60 1050,60" stroke="rgba(201,160,80,0.10)" stroke-width="1" fill="rgba(201,160,80,0.04)"/>
-      <rect x="700"  y="100" width="100" height="300" stroke="rgba(201,160,80,0.07)" stroke-width="1" fill="rgba(201,160,80,0.02)"/>
-      <rect x="1120" y="100" width="100" height="300" stroke="rgba(201,160,80,0.07)" stroke-width="1" fill="rgba(201,160,80,0.02)"/>
-      <polygon points="750,58 700,100 800,100"   stroke="rgba(201,160,80,0.07)" stroke-width="1" fill="rgba(201,160,80,0.03)"/>
-      <polygon points="1170,58 1120,100 1220,100" stroke="rgba(201,160,80,0.07)" stroke-width="1" fill="rgba(201,160,80,0.03)"/>
-      <line x1="0" y1="400" x2="1920" y2="400" stroke="rgba(201,160,80,0.08)" stroke-width="0.5"/>
+      <rect x="660" y="160" width="600" height="240" stroke="rgba(201,160,80,0.06)" stroke-width="1" fill="rgba(201,160,80,0.018)"/>
+      <rect x="870" y="60"  width="180" height="340" stroke="rgba(201,160,80,0.08)" stroke-width="1" fill="rgba(201,160,80,0.025)"/>
+      <polygon points="960,10 870,60 1050,60" stroke="rgba(201,160,80,0.09)" stroke-width="1" fill="rgba(201,160,80,0.03)"/>
+      <rect x="700"  y="100" width="100" height="300" stroke="rgba(201,160,80,0.06)" stroke-width="1" fill="rgba(201,160,80,0.018)"/>
+      <rect x="1120" y="100" width="100" height="300" stroke="rgba(201,160,80,0.06)" stroke-width="1" fill="rgba(201,160,80,0.018)"/>
+      <polygon points="750,58 700,100 800,100"    stroke="rgba(201,160,80,0.06)" stroke-width="1" fill="rgba(201,160,80,0.02)"/>
+      <polygon points="1170,58 1120,100 1220,100" stroke="rgba(201,160,80,0.06)" stroke-width="1" fill="rgba(201,160,80,0.02)"/>
+      <line x1="0" y1="400" x2="1920" y2="400" stroke="rgba(201,160,80,0.06)" stroke-width="0.5"/>
     </svg>
     <div id="final-block">
       <div class="fb-rule"></div>
@@ -415,7 +460,7 @@
     </div>
     <div class="side-panel" id="side-left">
       <div class="sp-head">Visual System</div>
-      <div class="sp-item">#000000 · Mystery<br>#C9A050 · Magic<br>#6B1212 · Sacrifice<br>#FFFFFF · Legacy</div>
+      <div class="sp-item">#000000 · Mystery<br>#C8102E · Sacrifice<br>#C9A050 · Magic<br>#FFFFFF · Legacy</div>
       <div class="sp-foot">Helvetica Neue · Georgia</div>
     </div>
     <div class="side-panel" id="side-right">
@@ -428,165 +473,269 @@
     <div id="final-badge">Motion Reading &nbsp;·&nbsp; <span>Harry Potter</span> &nbsp;·&nbsp; J.K. Rowling</div>
   </div>
 
+  </div><!-- /#cam -->
 </div>
 <script>
   window.__timelines = window.__timelines || {};
   const tl = gsap.timeline({ paused: true });
 
-  /* ── stars ── */
+  /* ─── HELPERS ─── */
+
+  /* Camera Punch: scale #cam for impact feel */
+  function camPunch(t, strength) {
+    const s = strength || 1.05;
+    tl.to("#cam", { scale: s,    duration: 0.07, ease: "power3.in"  }, t);
+    tl.to("#cam", { scale: 0.97, duration: 0.05                     }, t + 0.07);
+    tl.to("#cam", { scale: 1.0,  duration: 0.14, ease: "power2.out" }, t + 0.12);
+  }
+
+  /* Displacement Distortion: VHS/CRT skew on el for ~5 frames */
+  function distort(el, t) {
+    tl.set(el,  { skewX: 0 }, t);
+    tl.to(el,   { skewX: 14,  duration: 0.028 }, t);
+    tl.to(el,   { skewX: -10, duration: 0.028 }, t + 0.028);
+    tl.to(el,   { skewX: 6,   duration: 0.028 }, t + 0.056);
+    tl.to(el,   { skewX: -4,  duration: 0.028 }, t + 0.084);
+    tl.to(el,   { skewX: 0,   duration: 0.04  }, t + 0.112);
+  }
+
+  /* Impact Scale: element punches at 120%→95%→100% */
+  function impact(el, t, dur) {
+    const d = dur || 0.5;
+    tl.fromTo(el,
+      { scale: 1.18, opacity: 0 },
+      { scale: 0.97, opacity: 1, duration: d * 0.4, ease: "power3.out" }, t);
+    tl.to(el, { scale: 1.0, duration: d * 0.6, ease: "back.out(1.5)" }, t + d * 0.4);
+  }
+
+  /* Matte Reveal: clip-path strip wipe from center */
+  function matteReveal(el, t, dur) {
+    tl.fromTo(el,
+      { clipPath: "inset(47% 0% 47% 0%)", opacity: 1 },
+      { clipPath: "inset(0% 0% 0% 0%)",   duration: dur || 0.38, ease: "expo.out" }, t);
+  }
+
+  /* Flash frame */
+  function flash(t, str) {
+    tl.fromTo("#flash", { opacity: 0 }, { opacity: str || 0.45, duration: 0.04 }, t);
+    tl.to("#flash", { opacity: 0, duration: 0.20 }, t + 0.04);
+  }
+
+  /* Chromatic aberration flash */
+  function chr(el, t) {
+    tl.set(el, { textShadow: "-7px 0 rgba(255,0,50,0.85), 7px 0 rgba(0,190,255,0.85)" }, t);
+    tl.to(el,  { textShadow: "none", duration: 0.38 }, t + 0.08);
+  }
+
+  /* Hard cut in (no fade, instant) */
+  function hardCut(el, t) { tl.set(el, { opacity: 1 }, t); }
+  function hardCutOut(el, t) { tl.set(el, { opacity: 0 }, t); }
+
+  /* ─── STARS ─── */
   document.querySelectorAll('.star').forEach((s, i) => {
-    const d = (i * 0.07) % 2.2, op = 0.05 + (i % 8) * 0.04;
+    const d = (i * 0.07) % 2.2, op = 0.04 + (i % 8) * 0.04;
     tl.to(s, { opacity: op, duration: 1.0 }, 0.4 + d);
-    tl.to(s, { opacity: op * 0.15, duration: 2.0 + (i%4)*0.5, repeat: 10, yoyo: true, ease: "sine.inOut" }, 1.5 + d);
+    tl.to(s, { opacity: op * 0.12, duration: 2.2 + (i%4)*0.5, repeat: 10, yoyo: true, ease: "sine.inOut" }, 1.5 + d);
   });
 
-  /* helper: chromatic flash on element then clear */
-  function chrFlash(sel, t) {
-    tl.set(sel,  { textShadow: "-6px 0 rgba(255,0,60,0.85), 6px 0 rgba(0,200,255,0.85)" }, t);
-    tl.to(sel,   { textShadow: "none", duration: 0.4 }, t + 0.12);
-  }
-  function flashFrame(t, strength) {
-    tl.fromTo("#flash", { opacity: 0 }, { opacity: strength || 0.35, duration: 0.04 }, t);
-    tl.to("#flash", { opacity: 0, duration: 0.18 }, t + 0.04);
-  }
+  /* ════════════════════
+     ACT 0 — TITLE SLAM
+  ════════════════════ */
+  /* HARRY crashes from above, matte reveals from center */
+  hardCut("#act0", 0);
+  matteReveal("#t-harry", 0.5, 0.32);
+  distort("#t-harry", 0.5);
+  camPunch(0.5, 1.06);
+  chr("#t-harry", 0.5);
 
-  /* ══ ACT 0 ══ */
-  tl.fromTo("#title-hp",
-    { opacity: 0, y: -130, skewY: -3 },
-    { opacity: 1, y: 0, skewY: 0, duration: 0.45, ease: "expo.out" }, 0.5);
-  chrFlash("#title-hp", 0.5);
-  /* shake on impact */
-  tl.to("#title-hp", { x: -5, duration: 0.03 }, 0.5);
-  tl.to("#title-hp", { x:  5, duration: 0.03 }, 0.53);
-  tl.to("#title-hp", { x: -3, duration: 0.03 }, 0.56);
-  tl.to("#title-hp", { x:  0, duration: 0.03 }, 0.59);
-  tl.to("#title-rule", { opacity: 1, width: 380, duration: 0.5, ease: "power2.out" }, 1.1);
-  tl.fromTo("#title-sub",  { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4 }, 1.4);
-  tl.fromTo("#title-year", { opacity: 0 },        { opacity: 1, duration: 0.5 },       1.7);
-  flashFrame(2.85, 0.45);
-  tl.to("#act0", { opacity: 0, duration: 0.25 }, 2.95);
+  /* POTTER slams from below */
+  matteReveal("#t-potter", 0.85, 0.32);
+  distort("#t-potter", 0.85);
+  camPunch(0.85, 1.04);
+  chr("#t-potter", 0.85);
 
-  /* ══ ACT 1 ══ */
-  tl.fromTo("#act1", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 3.0);
-  tl.fromTo("#seal-wrap",     { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.55, ease: "back.out(2)" }, 3.1);
-  tl.fromTo("#wax-seal",      { opacity: 0 },          { opacity: 1, duration: 0.6 },                           3.3);
-  tl.fromTo("#address-block", { opacity: 0, x: -24 },  { opacity: 1, x: 0, duration: 0.55, ease: "expo.out" },  3.5);
-  tl.fromTo("#act1-divider",  { height: 0 },            { height: 640, duration: 0.55, ease: "power2.out" },     4.0);
-  tl.fromTo("#letter-meme",   { opacity: 0, x: 44 },   { opacity: 1, x: 0, duration: 0.6, ease: "expo.out" },   4.3);
-  chrFlash("#letter-meme", 4.3);
-  flashFrame(8.3, 0.4);
-  tl.to("#act1", { opacity: 0, duration: 0.35 }, 8.38);
+  /* Red slash line fires across */
+  tl.fromTo("#t-slash", { scaleX: 0, transformOrigin: "left center", opacity: 1 },
+                         { scaleX: 1, duration: 0.22, ease: "expo.out" }, 1.1);
+  tl.fromTo("#t-tag",  { opacity: 0 }, { opacity: 1, duration: 0.3 }, 1.3);
+  tl.fromTo("#t-year", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 1.4);
 
-  /* ══ ACT 2 ══ */
-  tl.fromTo("#act2",               { opacity: 0 },      { opacity: 1, duration: 0.2 },                            9.0);
-  tl.fromTo("#harry-photo",        { opacity: 0, x: 80 },{ opacity: 0.82, x: 0, duration: 1.1, ease: "expo.out" },9.0);
-  tl.fromTo("#harry-photo-overlay",{ opacity: 0 },      { opacity: 1, duration: 0.7 },                            9.1);
-  tl.fromTo("#act2-label",         { opacity: 0 },      { opacity: 1, duration: 0.35 },                           9.3);
-  tl.fromTo("#act2-num",           { opacity: 0 },      { opacity: 1, duration: 0.35 },                           9.5);
+  flash(2.85, 0.55);
+  hardCutOut("#act0", 2.95);
 
+  /* ════════════════════
+     ACT 1 — THE LETTER
+  ════════════════════ */
+  hardCut("#act1", 3.0);
+  tl.set("#act1", { opacity: 1 }, 3.0);
+  tl.fromTo("#seal-wrap",     { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, 3.1);
+  tl.fromTo("#wax-seal",      { opacity: 0 },          { opacity: 1, duration: 0.6 }, 3.3);
+  tl.fromTo("#address-block", { opacity: 0 },          { opacity: 1, duration: 0.4 }, 3.5);
+  tl.fromTo("#act1-divider",  { height: 0 },            { height: 680, duration: 0.55, ease: "power2.out" }, 3.8);
+
+  /* Each word slams in — hard cut style, rapid stagger */
+  ["#lq1","#lq2","#lq3"].forEach((id, i) => {
+    const t = 4.1 + i * 0.38;
+    impact(id, t, 0.45);
+    distort(id, t);
+    chr(id, t);
+    camPunch(t, 1.03);
+  });
+
+  flash(8.32, 0.5);
+  hardCutOut("#act1", 8.42);
+
+  /* ════════════════════
+     ACT 2 — H·A·R·R·Y
+  ════════════════════ */
+  hardCut("#act2", 9.0);
+  tl.set("#act2", { opacity: 1 }, 9.0);
+  tl.fromTo("#harry-photo",        { opacity: 0, x: 80 }, { opacity: 0.80, x: 0, duration: 1.1, ease: "expo.out" }, 9.0);
+  tl.fromTo("#harry-photo-overlay",{ opacity: 0 },         { opacity: 1, duration: 0.7 }, 9.1);
+  tl.fromTo("#act2-lbl",           { opacity: 0 },         { opacity: 1, duration: 0.3 }, 9.3);
+  tl.fromTo("#act2-num",           { opacity: 0 },         { opacity: 1, duration: 0.3 }, 9.4);
+
+  /* Letters slam in with matte reveal + distortion */
   ["#lh","#la","#lr1","#lr2","#ly"].forEach((id, i) => {
-    const t = 9.55 + i * 0.17;
-    tl.fromTo(id, { opacity: 0, y: 90, scaleY: 1.12 }, { opacity: 1, y: 0, scaleY: 1, duration: 0.38, ease: "back.out(2.5)" }, t);
-    chrFlash(id, t);
+    const t = 9.5 + i * 0.16;
+    matteReveal(id, t, 0.30);
+    distort(id, t);
+    chr(id, t);
   });
-  tl.fromTo("#letter-rule", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 10.75);
+  camPunch(9.5, 1.04);
+
+  tl.fromTo("#letter-rule", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 10.72);
   ["#ah","#aa","#ar1","#ar2","#ay"].forEach((id, i) => {
-    tl.fromTo(id, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3 }, 11.0 + i * 0.11);
+    tl.fromTo(id, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.28 }, 10.9 + i * 0.1);
   });
   ["#lp","#lo","#lt","#lt2","#le","#lrr"].forEach((id, i) => {
-    tl.fromTo(id, { opacity: 0 }, { opacity: 0.10, duration: 0.28 }, 11.2 + i * 0.08);
+    tl.fromTo(id, { opacity: 0 }, { opacity: 0.09, duration: 0.25 }, 11.1 + i * 0.07);
   });
-  flashFrame(13.1, 0.4);
-  tl.to("#act2", { opacity: 0, duration: 0.45, ease: "power2.in" }, 13.15);
 
-  /* ══ ACT 3 ══ */
-  tl.fromTo("#act3",        { opacity: 0 },       { opacity: 1, duration: 0.3 },                           14.0);
-  tl.fromTo("#chart-header",{ opacity: 0, y: -10 },{ opacity: 1, y: 0, duration: 0.4, ease: "expo.out" },  14.1);
-  tl.fromTo("#stat-block",  { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.55, ease: "expo.out" }, 14.3);
-  tl.to("#x-axis",      { opacity: 1, width: 1600, duration: 0.65, ease: "power1.inOut" }, 14.7);
+  flash(13.08, 0.45);
+  hardCutOut("#act2", 13.18);
+
+  /* ════════════════════
+     ACT 3 — SEVEN BOOKS
+  ════════════════════ */
+  hardCut("#act3", 14.0);
+  tl.set("#act3", { opacity: 1 }, 14.0);
+  tl.fromTo("#chart-header", { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, 14.1);
+  impact("#stat-block", 14.3, 0.6);
+  distort("#stat-block", 14.3);
+
+  tl.to("#x-axis",      { opacity: 1, width: 1600, duration: 0.62, ease: "power1.inOut" }, 14.7);
   tl.to("#y-axis-left", { opacity: 1, duration: 0.3 }, 14.7);
-  const blD = [15.3,15.52,15.74,15.96,16.18,16.40,16.62];
+
+  const blD = [15.25,15.46,15.67,15.88,16.09,16.30,16.51];
   for (let i = 1; i <= 7; i++) {
-    tl.to(`#bl${i}`, { opacity: 1, scaleY: 1, duration: 0.45, ease: "expo.out" }, blD[i-1]);
-    tl.fromTo(`#abbr${i}`, { opacity: 0 }, { opacity: 1, duration: 0.25 }, blD[i-1] + 0.32);
-    tl.fromTo(`#pg${i}`,   { opacity: 0 }, { opacity: 1, duration: 0.25 }, blD[i-1] + 0.42);
+    tl.to(`#bl${i}`, { opacity: 1, scaleY: 1, duration: 0.42, ease: "expo.out" }, blD[i-1]);
+    tl.fromTo(`#abbr${i}`, { opacity: 0 }, { opacity: 1, duration: 0.22 }, blD[i-1] + 0.30);
+    tl.fromTo(`#pg${i}`,   { opacity: 0 }, { opacity: 1, duration: 0.22 }, blD[i-1] + 0.38);
   }
-  tl.fromTo("#tension-svg2", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 17.3);
-  tl.to("#tcurve", { strokeDashoffset: 0, duration: 2.0, ease: "power1.inOut" }, 17.4);
+  tl.fromTo("#tension-svg2", { opacity: 0 }, { opacity: 1, duration: 0.22 }, 17.2);
+  tl.to("#tcurve", { strokeDashoffset: 0, duration: 1.95, ease: "power1.inOut" }, 17.35);
   ["#tc1","#tc2","#tc3","#tc4","#tc5","#tc6","#tc7"].forEach((id, i) => {
-    tl.to(id, { opacity: 1, duration: 0.15 }, 18.0 + i * 0.24);
+    tl.to(id, { opacity: 1, duration: 0.14 }, 17.9 + i * 0.22);
   });
   ["#bm1","#bm3","#bm4","#bm5","#bm7"].forEach((id, i) => {
-    tl.fromTo(id, { opacity: 0, y: 5 }, { opacity: 1, y: 0, duration: 0.3 }, 18.3 + i * 0.26);
+    tl.fromTo(id, { opacity: 0, y: 5 }, { opacity: 1, y: 0, duration: 0.28 }, 18.2 + i * 0.24);
   });
-  flashFrame(21.1, 0.4);
-  tl.to("#act3", { opacity: 0, duration: 0.6, ease: "power2.in" }, 21.1);
 
-  /* ══ ACT 4 ══ */
-  tl.fromTo("#act4",   { opacity: 0 }, { opacity: 1, duration: 0.2 }, 22.0);
-  tl.fromTo("#card-a", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 22.0);
-  tl.fromTo("#tom-photo", { opacity: 0, x: -65 }, { opacity: 0.93, x: 0, duration: 1.3, ease: "expo.out" }, 22.0);
-  tl.fromTo("#card-a-tag", { opacity: 0 }, { opacity: 1, duration: 0.35 }, 22.4);
+  flash(21.05, 0.45);
+  hardCutOut("#act3", 21.15);
 
-  [".tom-name-line1",".tom-name-line2",".tom-name-line3"].forEach((sel, i) => {
-    const t = 22.55 + i * 0.2;
-    tl.fromTo(sel, { opacity: 0, x: 35 }, { opacity: 1, x: 0, duration: 0.32, ease: "expo.out" }, t);
-    chrFlash(sel, t);
-  });
-  tl.fromTo("#tom-rule",    { opacity: 1, width: 0 }, { width: 410, duration: 0.45, ease: "power2.out" }, 23.4);
-  tl.fromTo("#tom-anagram", { opacity: 0, y: 12 },    { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, 23.65);
-  chrFlash(".anagram-text", 23.65);
-  tl.fromTo("#tom-bottom",  { opacity: 0 }, { opacity: 1, duration: 0.35 }, 24.1);
-  flashFrame(25.2, 0.35);
-  tl.to("#card-a", { opacity: 0, duration: 0.35 }, 25.25);
+  /* ════════════════════
+     ACT 4 — VILLAIN CARDS
+  ════════════════════ */
+  hardCut("#act4", 22.0);
+  tl.set("#act4", { opacity: 1 }, 22.0);
+  hardCut("#card-a", 22.0);
+  tl.set("#card-a", { opacity: 1 }, 22.0);
 
-  tl.fromTo("#card-b",      { opacity: 0 },       { opacity: 1, duration: 0.3 },                            25.5);
-  tl.fromTo("#erised-ghost",{ opacity: 0 },       { opacity: 1, duration: 0.45 },                           25.7);
-  tl.fromTo("#erised-real", { opacity: 0, y: 18 },{ opacity: 1, y: 0, duration: 0.65, ease: "expo.out" },   26.2);
-  chrFlash("#erised-real", 26.2);
-  flashFrame(27.3, 0.35);
-  tl.to("#act4", { opacity: 0, duration: 0.45 }, 27.35);
+  /* Tom photo */
+  tl.fromTo("#tom-photo", { opacity: 0, x: -60 }, { opacity: 0.92, x: 0, duration: 1.2, ease: "expo.out" }, 22.0);
+  tl.fromTo("#vol-tag", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 22.4);
 
-  /* ══ ACT 5 ══ */
-  tl.fromTo("#act5",        { opacity: 0 },       { opacity: 1, duration: 0.38 },                             28.0);
-  tl.fromTo("#snape-photo", { opacity: 0, x: 65 },{ opacity: 0.86, x: 0, duration: 2.0, ease: "power1.out" },28.0);
-  tl.fromTo("#always-q",    { opacity: 0, y: 14 },{ opacity: 1, y: 0, duration: 0.65, ease: "power2.out" },  28.8);
-  tl.fromTo("#always-rule", { opacity: 1, width: 0 },{ width: 120, duration: 0.45, ease: "power2.out" },     30.1);
+  /* LORD — slams in */
+  impact("#vl1", 22.5, 0.40);  distort("#vl1", 22.5);  chr("#vl1", 22.5);
+  camPunch(22.5, 1.05);
+  /* VOLDE */
+  impact("#vl2", 22.95, 0.40); distort("#vl2", 22.95); chr("#vl2", 22.95);
+  camPunch(22.95, 1.04);
+  /* MORT */
+  impact("#vl3", 23.40, 0.40); distort("#vl3", 23.40); chr("#vl3", 23.40);
+  camPunch(23.40, 1.05);
 
-  /* ALWAYS — slam + shake + chromatic */
-  tl.fromTo("#always-word",
-    { opacity: 0, scale: 0.82, y: 24 },
-    { opacity: 1, scale: 1, y: 0, duration: 0.85, ease: "expo.out" }, 31.0);
+  tl.fromTo("#tom-anagram-line", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, 23.9);
+  tl.fromTo("#tom-meta",         { opacity: 0 },         { opacity: 1, duration: 0.35 }, 24.3);
+
+  flash(25.2, 0.42);
+  hardCutOut("#card-a", 25.3);
+
+  /* Card B — Mirror */
+  hardCut("#card-b", 25.35);
+  tl.set("#card-b", { opacity: 1 }, 25.35);
+  tl.fromTo("#erised-ghost", { opacity: 0 }, { opacity: 1, duration: 0.42 }, 25.5);
+  matteReveal("#erised-real", 26.1, 0.55);
+  chr("#erised-real", 26.1);
+
+  flash(27.28, 0.4);
+  hardCutOut("#act4", 27.38);
+
+  /* ════════════════════
+     ACT 5 — ALWAYS
+  ════════════════════ */
+  hardCut("#act5", 28.0);
+  tl.set("#act5", { opacity: 1 }, 28.0);
+  tl.fromTo("#snape-photo", { opacity: 0, x: 60 }, { opacity: 0.84, x: 0, duration: 2.0, ease: "power1.out" }, 28.0);
+  tl.fromTo("#always-q",    { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 28.8);
+  tl.fromTo("#always-rule", { opacity: 1, width: 0 }, { width: 120, duration: 0.42, ease: "power2.out" }, 30.1);
+
+  /* "Always." — matte reveal + impact + glow */
+  matteReveal("#always-word", 31.0, 0.55);
+  camPunch(31.0, 1.07);
+  distort("#always-word", 31.0);
+
+  /* Chromatic flash → gold glow */
   tl.set("#always-word",
-    { textShadow: "-10px 0 rgba(255,0,60,0.9), 10px 0 rgba(0,200,255,0.9), 0 0 60px rgba(201,160,80,0.5)" }, 31.0);
+    { textShadow: "-10px 0 rgba(255,0,50,0.9), 10px 0 rgba(0,190,255,0.9), 0 0 50px rgba(201,160,80,0.4)" }, 31.0);
   tl.to("#always-word",
-    { textShadow: "0 0 120px rgba(201,160,80,0.9), 0 0 280px rgba(201,160,80,0.4)", duration: 0.55 }, 31.3);
-  tl.to("#always-word", { x: -5, duration: 0.035 }, 31.0);
-  tl.to("#always-word", { x:  5, duration: 0.035 }, 31.035);
-  tl.to("#always-word", { x: -4, duration: 0.035 }, 31.07);
-  tl.to("#always-word", { x:  3, duration: 0.035 }, 31.105);
-  tl.to("#always-word", { x:  0, duration: 0.035 }, 31.14);
+    { textShadow: "0 0 100px rgba(201,160,80,0.8), 0 0 260px rgba(201,160,80,0.35)", duration: 0.55 }, 31.3);
 
-  tl.to("#snape-photo", { opacity: 0.62, duration: 1.0 }, 31.5);
-  tl.to("#snape-photo", { opacity: 0.94, duration: 1.5, ease: "power1.out" }, 32.5);
+  /* Physical shake: 5 micro-moves */
+  tl.to("#always-word", { x: -5, duration: 0.032 }, 31.0);
+  tl.to("#always-word", { x:  5, duration: 0.032 }, 31.032);
+  tl.to("#always-word", { x: -4, duration: 0.032 }, 31.064);
+  tl.to("#always-word", { x:  3, duration: 0.032 }, 31.096);
+  tl.to("#always-word", { x:  0, duration: 0.035 }, 31.128);
+
+  tl.to("#snape-photo", { opacity: 0.60, duration: 1.0 }, 31.5);
+  tl.to("#snape-photo", { opacity: 0.95, duration: 1.5, ease: "power1.out" }, 32.5);
   tl.to("#always-word", {
-    textShadow: "0 0 200px rgba(201,160,80,1.0), 0 0 400px rgba(201,160,80,0.6)",
+    textShadow: "0 0 200px rgba(201,160,80,1.0), 0 0 420px rgba(201,160,80,0.6)",
     duration: 1.8, ease: "power1.inOut"
   }, 32.5);
-  tl.fromTo("#always-attr", { opacity: 0 }, { opacity: 1, duration: 0.55 }, 33.4);
+  tl.fromTo("#always-attr", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 33.4);
   tl.to("#act5", { opacity: 0, duration: 0.75, ease: "power2.in" }, 36.1);
 
-  /* ══ ACT 6 ══ */
-  tl.fromTo("#act6",         { opacity: 0 },       { opacity: 1, duration: 0.4 },                             37.0);
-  tl.to("#final-rule-top",   { opacity: 1, width: 1600, duration: 0.9, ease: "power1.inOut" }, 37.2);
-  tl.to("#final-rule-bot",   { opacity: 1, width: 1600, duration: 0.9, ease: "power1.inOut" }, 37.2);
-  tl.fromTo("#hogwarts-ghost",{ opacity: 0, y: 50 },{ opacity: 1, y: 0, duration: 1.6, ease: "power2.out" },  37.3);
-  tl.fromTo("#final-block",   { opacity: 0, y: 22 },{ opacity: 1, y: 0, duration: 0.9, ease: "expo.out" },    37.8);
-  chrFlash(".fb-title", 37.8);
-  tl.fromTo("#side-left",  { opacity: 0, x: -28 }, { opacity: 1, x: 0, duration: 0.75, ease: "expo.out" }, 39.0);
-  tl.fromTo("#side-right", { opacity: 0, x:  28 }, { opacity: 1, x: 0, duration: 0.75, ease: "expo.out" }, 39.3);
-  tl.fromTo("#final-badge", { opacity: 0 }, { opacity: 1, duration: 0.55 }, 40.2);
-  tl.to("#final-block", { filter: "drop-shadow(0 0 28px rgba(201,160,80,0.12))", duration: 2.5 }, 41.0);
+  /* ════════════════════
+     ACT 6 — ENDCARD
+  ════════════════════ */
+  hardCut("#act6", 37.0);
+  tl.set("#act6", { opacity: 1 }, 37.0);
+  tl.to("#final-rule-top", { opacity: 1, width: 1680, duration: 0.85, ease: "power1.inOut" }, 37.2);
+  tl.to("#final-rule-bot", { opacity: 1, width: 1680, duration: 0.85, ease: "power1.inOut" }, 37.2);
+  tl.fromTo("#hogwarts-ghost", { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1.5, ease: "power2.out" }, 37.3);
+
+  impact("#final-block", 37.8, 0.85);
+  distort("#final-block", 37.8);
+  chr(".fb-title", 37.8);
+
+  tl.fromTo("#side-left",  { opacity: 0, x: -28 }, { opacity: 1, x: 0, duration: 0.7, ease: "expo.out" }, 39.0);
+  tl.fromTo("#side-right", { opacity: 0, x:  28 }, { opacity: 1, x: 0, duration: 0.7, ease: "expo.out" }, 39.3);
+  tl.fromTo("#final-badge", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 40.1);
+  tl.to("#final-block", { filter: "drop-shadow(0 0 24px rgba(201,160,80,0.10))", duration: 2.5 }, 41.0);
 
   window.__timelines["main"] = tl;
 </script>
