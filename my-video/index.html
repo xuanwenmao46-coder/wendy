@@ -19,18 +19,15 @@
     .photo-base { position: absolute; background-size: cover; background-position: center top; background-repeat: no-repeat; }
     .photo-harry {
       background-image: url("assets/harry-nobg.png");
-      filter: grayscale(0.2) contrast(1.3) brightness(0.7);
-      mix-blend-mode: luminosity;
+      filter: grayscale(1) contrast(1.6) brightness(0.55);
     }
     .photo-snape {
       background-image: url("assets/snape-nobg.png");
-      filter: grayscale(0.7) contrast(1.5) brightness(0.5);
-      mix-blend-mode: luminosity;
+      filter: grayscale(1) contrast(1.9) brightness(0.42);
     }
     .photo-tom {
       background-image: url("assets/tomriddle-nobg.png");
-      filter: grayscale(0.3) contrast(1.6) brightness(0.7);
-      mix-blend-mode: luminosity;
+      filter: grayscale(0.5) contrast(1.9) brightness(0.6);
     }
 
     /* ════════════════════════
@@ -104,27 +101,31 @@
     .addr-place { font-family: "Helvetica Neue", sans-serif; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.2); margin-top: 18px; line-height: 2.2; }
     #act1-divider { position: absolute; left: 960px; top: 160px; width: 1px; height: 0; background: rgba(255,255,255,0.1); }
     /* Quote words — each line slams + tumbles separately */
-    #letter-quote { position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 870px; padding-right: 120px; }
-    .lq-word { font-size: 120px; font-weight: 900; font-style: italic; color: #fff; font-family: "Helvetica Neue", sans-serif; line-height: 0.86; letter-spacing: -4px; text-transform: uppercase; display: block; opacity: 0; }
+    #letter-quote { position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 920px; padding-right: 100px; }
+    .lq-word { font-size: 148px; font-weight: 900; font-style: italic; color: #fff; font-family: "Helvetica Neue", sans-serif; line-height: 0.82; letter-spacing: -5px; text-transform: uppercase; display: block; opacity: 0; }
     .lq-accent { color: #A8E060; } /* Lime-gold accent for "HARRY" */
     .lq-attr { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 6px; text-transform: uppercase; color: rgba(255,255,255,0.2); margin-top: 24px; opacity: 0; }
 
     /* ════════════════════════════════════
        ACT 2 — H·A·R·R·Y  (9–14s)
     ════════════════════════════════════ */
-    #harry-photo { right: 0; top: 0; width: 900px; height: 1080px; opacity: 0; }
+    /* Photo hard-cuts right half — no blend, high contrast B&W panel */
+    #harry-photo { right: 0; top: 0; width: 960px; height: 1080px; opacity: 0; background-position: center top; }
     #harry-photo-overlay {
-      position: absolute; right: 0; top: 0; width: 900px; height: 1080px;
-      background: linear-gradient(90deg, #0C1C4A 0%, rgba(12,28,74,0.45) 32%, rgba(12,28,74,0.05) 100%);
+      position: absolute; right: 0; top: 0; width: 960px; height: 1080px;
+      background: linear-gradient(90deg, #0C1C4A 0%, rgba(12,28,74,0.7) 5%, rgba(12,28,74,0) 18%);
       opacity: 0;
     }
-    #act2-lbl { position: absolute; top: 72px; left: 120px; color: rgba(255,255,255,0.4); opacity: 0; }
-    #act2-num { position: absolute; top: 72px; right: 120px; color: rgba(255,255,255,0.12); opacity: 0; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 5px; text-transform: uppercase; }
-    .letter-row { position: absolute; display: flex; gap: 0; left: 60px; right: 60px; }
+    /* Hard vertical split — white hairline */
+    #harry-split { position: absolute; left: 960px; top: 0; width: 3px; height: 1080px; background: rgba(255,255,255,0.22); opacity: 0; }
+    #act2-lbl { position: absolute; top: 72px; left: 80px; color: rgba(255,255,255,0.4); opacity: 0; }
+    #act2-num { position: absolute; top: 72px; right: 990px; color: rgba(255,255,255,0.12); opacity: 0; font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 5px; text-transform: uppercase; }
+    /* Letter rows locked to left navy half */
+    .letter-row { position: absolute; display: flex; gap: 0; left: 40px; right: 960px; }
     #row-harry  { top: 130px; }
     #row-potter { top: 558px; }
     .letter-unit { flex: 1; display: flex; flex-direction: column; align-items: center; }
-    .big-letter { font-size: 340px; font-weight: 900; font-style: italic; line-height: 0.82; font-family: "Helvetica Neue", Arial, sans-serif; color: #fff; opacity: 0; letter-spacing: -14px; text-transform: uppercase; }
+    .big-letter { font-size: 310px; font-weight: 900; font-style: italic; line-height: 0.82; font-family: "Helvetica Neue", Arial, sans-serif; color: #fff; opacity: 0; letter-spacing: -12px; text-transform: uppercase; }
     .letter-anno { font-family: "Helvetica Neue", sans-serif; font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.2); margin-top: 8px; text-align: center; line-height: 1.8; opacity: 0; }
     #letter-rule { position: absolute; top: 556px; left: 60px; right: 60px; height: 1px; background: rgba(255,255,255,0.08); opacity: 0; }
 
@@ -189,16 +190,19 @@
     /* ════════════════════════════════════
        ACT 5 — ALWAYS  (28–37s)
     ════════════════════════════════════ */
-    #snape-photo { right: 0; top: 0; width: 960px; height: 1080px; opacity: 0; }
+    /* Snape: hard right-half panel, sharp B&W contrast */
+    #snape-photo { right: 0; top: 0; width: 920px; height: 1080px; opacity: 0; background-position: 30% top; }
     #snape-photo-fade {
-      position: absolute; right: 0; top: 0; width: 1340px; height: 1080px;
-      background: linear-gradient(90deg, #000 0%, rgba(0,0,0,0.95) 17%, rgba(0,0,0,0.6) 46%, rgba(0,0,0,0.1) 72%, rgba(0,0,0,0) 100%);
+      position: absolute; right: 0; top: 0; width: 920px; height: 1080px;
+      background: linear-gradient(90deg, #000 0%, rgba(0,0,0,0.85) 6%, rgba(0,0,0,0) 22%);
     }
-    #always-q { position: absolute; top: 370px; left: 120px; font-size: 36px; color: rgba(255,255,255,0.12); font-style: italic; font-family: "Georgia", serif; opacity: 0; }
-    #always-rule { position: absolute; top: 466px; left: 120px; width: 0; height: 1px; background: #C9A050; opacity: 0; }
+    /* Hard vertical divider Snape */
+    #snape-split { position: absolute; right: 920px; top: 0; width: 3px; height: 1080px; background: rgba(201,160,80,0.4); opacity: 0; }
+    #always-q { position: absolute; top: 300px; left: 80px; font-size: 28px; color: rgba(255,255,255,0.14); font-style: italic; font-family: "Georgia", serif; opacity: 0; }
+    #always-rule { position: absolute; top: 390px; left: 80px; width: 0; height: 2px; background: #C9A050; opacity: 0; }
     #always-word {
-      position: absolute; top: 50%; left: 120px; transform: translateY(-46%);
-      font-size: 300px; font-weight: 900; font-style: italic; letter-spacing: -14px;
+      position: absolute; top: 50%; left: 60px; transform: translateY(-46%);
+      font-size: 390px; font-weight: 900; font-style: italic; letter-spacing: -18px;
       font-family: "Helvetica Neue", Arial, sans-serif; color: #C9A050; line-height: 1;
       text-shadow: 0 0 80px rgba(201,160,80,0.4), 0 0 200px rgba(201,160,80,0.18);
       opacity: 0;
@@ -319,6 +323,7 @@
   <div id="act2">
     <div id="harry-photo" class="photo-base photo-harry"></div>
     <div id="harry-photo-overlay"></div>
+    <div id="harry-split"></div>
     <div id="act2-lbl" class="lbl">02 &nbsp;·&nbsp; Typographic Anatomy</div>
     <div id="act2-num">J.K. Rowling &nbsp;·&nbsp; 1997–2007</div>
     <div class="letter-row" id="row-harry">
@@ -424,6 +429,7 @@
   <div id="act5" data-layout-allow-overflow>
     <div id="snape-photo" class="photo-base photo-snape"></div>
     <div id="snape-photo-fade"></div>
+    <div id="snape-split"></div>
     <div id="always-q">"After all this time?"</div>
     <div id="always-rule"></div>
     <div id="always-word">Always.</div>
@@ -495,12 +501,12 @@
     tl.to("#flash", { opacity: 0, duration: 0.22 }, t + 0.04);
   }
 
-  /* Tumble reveal — from video 2 style: spin+scale+slide in */
+  /* Tumble reveal — aggressive spin-slam: ±28°+, 0.18s, back.out(3.5) */
   function tumbleIn(el, t, fromRot, fromX, fromY) {
     tl.fromTo(el,
-      { opacity: 0, rotationZ: fromRot||10, x: fromX||0, y: fromY||30, scale: 0.92 },
+      { opacity: 0, rotationZ: fromRot||28, x: fromX||0, y: fromY||50, scale: 0.84 },
       { opacity: 1, rotationZ: 0, x: 0, y: 0, scale: 1,
-        duration: 0.42, ease: "back.out(2.2)" }, t);
+        duration: 0.18, ease: "back.out(3.5)" }, t);
   }
 
   /* Matte wipe from center */
@@ -527,16 +533,16 @@
   tl.set("#act0", { opacity: 1 }, 0);
 
   /* HARRY: matte reveal + tumble + distort */
-  matteReveal("#t-harry", 0.4, 0.30);
-  tumbleIn("#t-harry", 0.4, -8, 0, -50);
+  matteReveal("#t-harry", 0.4, 0.22);
+  tumbleIn("#t-harry", 0.4, -26, 0, -80);
   distort("#t-harry", 0.4);
-  camPunch(0.4, 1.07);
+  camPunch(0.4, 1.09);
   chr("#t-harry", 0.4);
 
   /* POTTER: from below */
-  matteReveal("#t-potter", 0.75, 0.30);
-  tumbleIn("#t-potter", 0.75, 8, 0, 50);
-  distort("#t-potter", 0.75);
+  matteReveal("#t-potter", 0.72, 0.22);
+  tumbleIn("#t-potter", 0.72, 24, 0, 80);
+  distort("#t-potter", 0.72);
   camPunch(0.75, 1.05);
   chr("#t-potter", 0.75);
 
@@ -555,10 +561,10 @@
   tl.fromTo("#address-block", { opacity: 0 },          { opacity: 1, duration: 0.5 }, 3.5);
   tl.fromTo("#act1-divider",  { height: 0 },            { height: 700, duration: 0.5, ease: "power2.out" }, 3.8);
 
-  /* Each quote word tumbles in from different angle */
-  tumbleIn("#lq1", 4.1, -12, -30, 0); distort("#lq1", 4.1); camPunch(4.1, 1.03);
-  tumbleIn("#lq2", 4.52, 8,  30, 0);  distort("#lq2", 4.52); camPunch(4.52, 1.03);
-  tumbleIn("#lq3", 4.94, -6, 0, 20);  distort("#lq3", 4.94); camPunch(4.94, 1.04);
+  /* Each quote word tumbles in from different angle — savage */
+  tumbleIn("#lq1", 4.1,  -32, -50, 0); distort("#lq1", 4.1);  camPunch(4.1,  1.06); chr("#lq1", 4.1);
+  tumbleIn("#lq2", 4.46,  28,  50, 0); distort("#lq2", 4.46); camPunch(4.46, 1.05); chr("#lq2", 4.46);
+  tumbleIn("#lq3", 4.82, -22, 0, 40);  distort("#lq3", 4.82); camPunch(4.82, 1.07); chr("#lq3", 4.82);
   tl.fromTo("#lq-attr", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 5.5);
 
   flash(8.3, 0.55);
@@ -566,20 +572,21 @@
 
   /* ════ ACT 2: NAVY HARRY ════ */
   tl.set("#act2", { opacity: 1 }, 9.0);
-  tl.fromTo("#harry-photo",        { opacity: 0, x: 80 }, { opacity: 0.78, x: 0, duration: 1.1, ease: "expo.out" }, 9.0);
-  tl.fromTo("#harry-photo-overlay",{ opacity: 0 },         { opacity: 1, duration: 0.7 }, 9.1);
-  tl.fromTo("#act2-lbl",           { opacity: 0 },         { opacity: 1, duration: 0.3 }, 9.3);
-  tl.fromTo("#act2-num",           { opacity: 0 },         { opacity: 1, duration: 0.3 }, 9.4);
+  tl.fromTo("#harry-photo",        { opacity: 0, x: 120 }, { opacity: 0.88, x: 0, duration: 0.65, ease: "expo.out" }, 9.0);
+  tl.fromTo("#harry-photo-overlay",{ opacity: 0 },          { opacity: 1, duration: 0.4 }, 9.05);
+  tl.set("#harry-split",  { opacity: 1 }, 9.0);
+  tl.fromTo("#act2-lbl",  { opacity: 0 }, { opacity: 1, duration: 0.2 }, 9.1);
+  tl.fromTo("#act2-num",  { opacity: 0 }, { opacity: 1, duration: 0.2 }, 9.15);
 
-  /* Letters tumble in — alternating angles */
-  const angles = [-10, 8, -7, 9, -8];
+  /* Letters tumble in — savage alternating angles */
+  const angles = [-30, 26, -28, 24, -32];
   ["#lh","#la","#lr1","#lr2","#ly"].forEach((id, i) => {
-    const t = 9.5 + i * 0.16;
-    tumbleIn(id, t, angles[i], 0, 60);
+    const t = 9.5 + i * 0.13;
+    tumbleIn(id, t, angles[i], 0, 70);
     distort(id, t);
     chr(id, t);
+    camPunch(t, 1.05);
   });
-  camPunch(9.5, 1.04);
 
   tl.fromTo("#letter-rule", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 10.72);
   ["#ah","#aa","#ar1","#ar2","#ay"].forEach((id, i) => {
@@ -625,10 +632,10 @@
   tl.fromTo("#tom-photo", { opacity: 0, x: -60 }, { opacity: 0.90, x: 0, duration: 1.2, ease: "expo.out" }, 22.0);
   tl.fromTo("#vol-tag",   { opacity: 0 },           { opacity: 1, duration: 0.3 }, 22.4);
 
-  /* VOLDEMORT slams in — each word tumbles from different direction */
-  tumbleIn("#vl1", 22.5, -10, 40, 0); distort("#vl1", 22.5); chr("#vl1", 22.5); camPunch(22.5, 1.06);
-  tumbleIn("#vl2", 22.95, 8, -40, 0); distort("#vl2", 22.95); chr("#vl2", 22.95); camPunch(22.95, 1.05);
-  tumbleIn("#vl3", 23.40, -6, 40, 0); distort("#vl3", 23.40); chr("#vl3", 23.40); camPunch(23.40, 1.06);
+  /* VOLDEMORT slams in — savage */
+  tumbleIn("#vl1", 22.5,  -28,  80, 0); distort("#vl1", 22.5);  chr("#vl1", 22.5);  camPunch(22.5,  1.09);
+  tumbleIn("#vl2", 22.82,  26, -80, 0); distort("#vl2", 22.82); chr("#vl2", 22.82); camPunch(22.82, 1.07);
+  tumbleIn("#vl3", 23.14, -24,  80, 0); distort("#vl3", 23.14); chr("#vl3", 23.14); camPunch(23.14, 1.09);
 
   tl.fromTo("#tom-anagram-line", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, 23.9);
   tl.fromTo("#tom-meta",         { opacity: 0 },         { opacity: 1, duration: 0.35 }, 24.3);
@@ -645,13 +652,14 @@
 
   /* ════ ACT 5: BLACK ALWAYS ════ */
   tl.set("#act5", { opacity: 1 }, 28.0);
-  tl.fromTo("#snape-photo", { opacity: 0, x: 60 }, { opacity: 0.82, x: 0, duration: 2.0, ease: "power1.out" }, 28.0);
+  tl.fromTo("#snape-photo", { opacity: 0, x: 100 }, { opacity: 0.92, x: 0, duration: 0.65, ease: "expo.out" }, 28.0);
+  tl.set("#snape-split", { opacity: 1 }, 28.0);
   tl.fromTo("#always-q",    { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 28.8);
   tl.fromTo("#always-rule", { opacity: 1, width: 0 }, { width: 120, duration: 0.42, ease: "power2.out" }, 30.1);
 
   /* "Always." — tumble in + matte + shake */
-  matteReveal("#always-word", 31.0, 0.55);
-  tumbleIn("#always-word", 31.0, -6, 0, 20);
+  matteReveal("#always-word", 31.0, 0.30);
+  tumbleIn("#always-word", 31.0, -24, -60, 0);
   camPunch(31.0, 1.07);
   distort("#always-word", 31.0);
 
