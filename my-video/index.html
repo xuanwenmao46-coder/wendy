@@ -55,19 +55,6 @@
       );
     }
 
-    /* ════════════════
-       CHALK FILTER SVG
-    ════════════════ */
-    #svg-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
-
-    /* Apply chalk filter to text elements */
-    .chalk {
-      filter: url(#chalk);
-    }
-    .chalk-sm {
-      filter: url(#chalk-sm);
-    }
-
     /* ══════════════════════
        SHARED TYPE SYSTEM
     ══════════════════════ */
@@ -252,26 +239,8 @@
   data-height="1080"
 >
 
-  <!-- ── CHALK FILTER DEFINITIONS ── -->
-  <svg id="svg-defs" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <!-- Chalk/crayon erode filter — large text -->
-      <filter id="chalk" color-interpolation-filters="sRGB" x="-4%" y="-8%" width="108%" height="116%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.038 0.055" numOctaves="4" seed="12" result="noise1"/>
-        <feDisplacementMap in="SourceGraphic" in2="noise1" scale="5" xChannelSelector="R" yChannelSelector="G" result="displaced"/>
-        <feTurbulence type="fractalNoise" baseFrequency="0.065 0.08" numOctaves="5" seed="7" result="noise2"/>
-        <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  -3 -3 -3 0 4.2" in="noise2" result="mask"/>
-        <feComposite in="displaced" in2="mask" operator="in"/>
-      </filter>
-      <!-- Chalk filter — small/medium text (lighter erosion) -->
-      <filter id="chalk-sm" color-interpolation-filters="sRGB" x="-2%" y="-4%" width="104%" height="108%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.05 0.07" numOctaves="3" seed="4" result="noise"/>
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" result="displaced"/>
-        <feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="4" seed="9" result="mask-noise"/>
-        <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  -4 -4 -4 0 5.5" in="mask-noise" result="mask"/>
-        <feComposite in="displaced" in2="mask" operator="in"/>
-      </filter>
-    </defs>
+  <!-- ── GRAIN OVERLAY ── -->
+  <svg id="svg-defs" xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden">
     <!-- Static grain overlay -->
     <filter id="grain-f" x="0" y="0" width="100%" height="100%">
       <feTurbulence type="fractalNoise" baseFrequency="0.68" numOctaves="4" stitchTiles="stitch"/>
@@ -312,11 +281,11 @@
   <div id="act0">
     <div id="act0-bg-mark"></div>
     <div id="act0-bg-mark2"></div>
-    <div id="t-harry" class="chalk" data-layout-allow-overflow>HARRY</div>
+    <div id="t-harry" data-layout-allow-overflow>HARRY</div>
     <div id="t-slash"></div>
     <div id="t-tag">Motion Reading 02 &nbsp;·&nbsp; Complete Series</div>
     <div id="t-year">J.K. Rowling &nbsp;·&nbsp; 1997–2007</div>
-    <div id="t-potter" class="chalk" data-layout-allow-overflow>POTTER</div>
+    <div id="t-potter" data-layout-allow-overflow>POTTER</div>
   </div>
 
   <!-- ════ ACT 1: FOREST GREEN LETTER ════ -->
@@ -334,14 +303,14 @@
     </svg>
     <div id="address-block">
       <div class="addr-to">To ·</div>
-      <div class="addr-name" style="filter:url(#chalk-sm)">MR. H.<br>POTTER</div>
+      <div class="addr-name">MR. H.<br>POTTER</div>
       <div class="addr-place">The Cupboard Under The Stairs<br>4 Privet Drive · Surrey</div>
     </div>
     <div id="act1-divider"></div>
     <div id="letter-quote">
-      <span class="lq-word chalk" id="lq1">YOU'RE</span>
-      <span class="lq-word chalk" id="lq2">A WIZARD,</span>
-      <span class="lq-word chalk lq-accent" id="lq3">HARRY.</span>
+      <span class="lq-word" id="lq1">YOU'RE</span>
+      <span class="lq-word" id="lq2">A WIZARD,</span>
+      <span class="lq-word lq-accent" id="lq3">HARRY.</span>
       <div class="lq-attr" id="lq-attr">— Rubeus Hagrid &nbsp;·&nbsp; Year One</div>
     </div>
   </div>
@@ -353,11 +322,11 @@
     <div id="act2-lbl" class="lbl">02 &nbsp;·&nbsp; Typographic Anatomy</div>
     <div id="act2-num">J.K. Rowling &nbsp;·&nbsp; 1997–2007</div>
     <div class="letter-row" id="row-harry">
-      <div class="letter-unit"><div class="big-letter chalk" id="lh">H</div><div class="letter-anno" id="ah">BORN TO<br>TWO WORLDS</div></div>
-      <div class="letter-unit"><div class="big-letter chalk" id="la">A</div><div class="letter-anno" id="aa">MARKED<br>BY EVIL</div></div>
-      <div class="letter-unit"><div class="big-letter chalk" id="lr1">R</div><div class="letter-anno" id="ar1">RAISED<br>AS HUMAN</div></div>
-      <div class="letter-unit"><div class="big-letter chalk" id="lr2">R</div><div class="letter-anno" id="ar2">RETURNED<br>TO DESTINY</div></div>
-      <div class="letter-unit"><div class="big-letter chalk" id="ly">Y</div><div class="letter-anno" id="ay">YOU ARE<br>THE ONE</div></div>
+      <div class="letter-unit"><div class="big-letter" id="lh">H</div><div class="letter-anno" id="ah">BORN TO<br>TWO WORLDS</div></div>
+      <div class="letter-unit"><div class="big-letter" id="la">A</div><div class="letter-anno" id="aa">MARKED<br>BY EVIL</div></div>
+      <div class="letter-unit"><div class="big-letter" id="lr1">R</div><div class="letter-anno" id="ar1">RAISED<br>AS HUMAN</div></div>
+      <div class="letter-unit"><div class="big-letter" id="lr2">R</div><div class="letter-anno" id="ar2">RETURNED<br>TO DESTINY</div></div>
+      <div class="letter-unit"><div class="big-letter" id="ly">Y</div><div class="letter-anno" id="ay">YOU ARE<br>THE ONE</div></div>
     </div>
     <div id="letter-rule"></div>
     <div class="letter-row" id="row-potter">
@@ -377,7 +346,7 @@
       <div class="ch-sub">Seven Books &nbsp;·&nbsp; 4,195 Pages &nbsp;·&nbsp; Narrative Tension Arc</div>
     </div>
     <div id="stat-block">
-      <div class="stat-num chalk">4,195</div>
+      <div class="stat-num">4,195</div>
       <div class="stat-label">TOTAL PAGES</div>
     </div>
     <div id="chart-area" data-layout-allow-overflow>
@@ -425,9 +394,9 @@
       <div id="tom-photo-fade"></div>
       <div id="vol-tag" class="lbl">03 &nbsp;·&nbsp; THE DARK LORD</div>
       <div id="vol-text" data-layout-allow-overflow>
-        <span class="vol-line chalk" id="vl1">LORD</span>
-        <span class="vol-line vol-red chalk" id="vl2">VOLDE</span>
-        <span class="vol-line vol-red chalk" id="vl3">MORT</span>
+        <span class="vol-line" id="vl1">LORD</span>
+        <span class="vol-line vol-red" id="vl2">VOLDE</span>
+        <span class="vol-line vol-red" id="vl3">MORT</span>
       </div>
       <div id="tom-anagram-line">
         <div class="anagram-label">Tom Marvolo Riddle — an anagram of</div>
@@ -457,7 +426,7 @@
     <div id="snape-photo-fade"></div>
     <div id="always-q">"After all this time?"</div>
     <div id="always-rule"></div>
-    <div id="always-word" class="chalk">Always.</div>
+    <div id="always-word">Always.</div>
     <div id="always-attr">
       Severus Snape &nbsp;·&nbsp; Deathly Hallows<br>
       Chapter 33 &nbsp;·&nbsp; The Prince's Tale
@@ -477,7 +446,7 @@
     <div id="final-block">
       <div class="fb-rule"></div>
       <div class="fb-series">Motion Reading &nbsp;·&nbsp; Series No. 02</div>
-      <div class="fb-title" style="filter:url(#chalk-sm)">HARRY<br>POTTER</div>
+      <div class="fb-title">HARRY<br>POTTER</div>
       <div class="fb-sub">The Complete Series · J.K. Rowling · 1997–2007</div>
       <div class="fb-rule2"></div>
       <div class="fb-author">Literature · Fantasy · Epic</div>
@@ -711,7 +680,7 @@
   tl.fromTo("#side-left",  { opacity: 0, x: -28 }, { opacity: 1, x: 0, duration: 0.7, ease: "expo.out" }, 39.0);
   tl.fromTo("#side-right", { opacity: 0, x:  28 }, { opacity: 1, x: 0, duration: 0.7, ease: "expo.out" }, 39.3);
   tl.fromTo("#final-badge", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 40.1);
-  tl.to("#final-block", { filter: "drop-shadow(0 0 24px rgba(201,160,80,0.08)) url(#chalk-sm)", duration: 2.5 }, 41.0);
+  
 
   window.__timelines["main"] = tl;
 </script>
