@@ -1,4 +1,5 @@
 node_modules/
 renders/
 .hyperframes/
+.waveform-cache/
 *.log
