@@ -1,0 +1,862 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <meta name="hyperframes-composition" content="true" />
+    <meta name="composition-id" content="medeo-brand-video" />
+    <meta name="composition-duration" content="60" />
+    <meta name="composition-width" content="1920" />
+    <meta name="composition-height" content="1080" />
+    <script src="./node_modules/gsap/dist/gsap.min.js"></script>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      :root {
+        --primary: #00d7c0;
+        --dark: #071316;
+        --light: #f2fffc;
+        --blue: #3b82f6;
+        --pulse: #b8ff2c;
+        --muted: rgba(242, 255, 252, 0.58);
+      }
+      html, body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--dark);
+        font-family: Inter, Helvetica, Arial, sans-serif;
+      }
+      #root {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        background: var(--dark);
+      }
+      .scene {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        opacity: 0;
+        background: var(--dark);
+      }
+      .grid-tex {
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(242,255,252,.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(242,255,252,.035) 1px, transparent 1px);
+        background-size: 40px 40px;
+        opacity: .7;
+      }
+      .noise {
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at 18% 12%, rgba(0,215,192,.18), transparent 24%),
+          radial-gradient(circle at 84% 76%, rgba(59,130,246,.12), transparent 28%);
+        mix-blend-mode: screen;
+        opacity: .85;
+      }
+      .flood {
+        position: absolute;
+        inset: 0;
+        z-index: 80;
+        pointer-events: none;
+        clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+      }
+      #fl-dark { background: var(--dark); }
+      #fl-light { background: var(--light); }
+      #fl-primary { background: var(--primary); }
+      #fl-brand {
+        position: absolute;
+        inset: 0;
+        z-index: 90;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary);
+        font-family: Impact, "Arial Narrow", sans-serif;
+        font-size: 270px;
+        letter-spacing: -.04em;
+        opacity: 0;
+        pointer-events: none;
+      }
+      .display {
+        font-family: Impact, "Arial Narrow", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: -.025em;
+      }
+      .mono {
+        font-family: "Arial Narrow", Arial, sans-serif;
+        text-transform: uppercase;
+        letter-spacing: .22em;
+      }
+      .label {
+        color: var(--primary);
+        font-size: 18px;
+        letter-spacing: .38em;
+        text-transform: uppercase;
+      }
+      .panel-line {
+        position: absolute;
+        height: 1px;
+        background: rgba(242,255,252,.22);
+      }
+
+      /* S01 */
+      #s01-scanline {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1920px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        box-shadow: 0 0 26px rgba(0,215,192,.85);
+        opacity: 0;
+      }
+      #s01-init {
+        position: absolute;
+        left: 84px;
+        top: 70px;
+        opacity: 0;
+      }
+      #s01-signal {
+        position: absolute;
+        right: 84px;
+        top: 70px;
+        color: rgba(242,255,252,.46);
+        font-size: 15px;
+        letter-spacing: .28em;
+        opacity: 0;
+      }
+      #s01-det-bar {
+        position: absolute;
+        left: 760px;
+        top: 250px;
+        width: 0;
+        height: 4px;
+        background: var(--primary);
+        box-shadow: 0 0 24px rgba(0,215,192,.7);
+      }
+      #s01-detected {
+        position: absolute;
+        left: 758px;
+        top: 282px;
+        opacity: 0;
+      }
+      #s01-letters {
+        position: absolute;
+        left: 214px;
+        top: 333px;
+        display: flex;
+        gap: 18px;
+      }
+      .s1l {
+        color: var(--light);
+        font-size: 250px;
+        line-height: .88;
+        opacity: 0;
+      }
+      #s01-kw-label {
+        position: absolute;
+        left: 84px;
+        top: 760px;
+        opacity: 0;
+      }
+      .s1-kw {
+        position: absolute;
+        top: 808px;
+        font-size: 68px;
+        opacity: 0;
+      }
+      #kw1 { left: 84px; color: var(--primary); }
+      #kw2 { left: 368px; color: rgba(242,255,252,.78); }
+      #kw3 { left: 640px; color: rgba(242,255,252,.58); }
+      #kw4 { left: 910px; color: rgba(242,255,252,.38); }
+      #s01-progress-shell {
+        position: absolute;
+        left: 84px;
+        bottom: 96px;
+        width: 620px;
+        height: 6px;
+        border: 1px solid rgba(0,215,192,.42);
+      }
+      #s01-progress { width: 0; height: 100%; background: var(--primary); opacity: 0; }
+      #s01-counter {
+        position: absolute;
+        left: 730px;
+        bottom: 83px;
+        color: var(--light);
+        font-size: 34px;
+        opacity: 0;
+      }
+
+      /* S02 */
+      #s02 { background: var(--dark); }
+      .color-block {
+        position: absolute;
+        top: 0;
+        height: 1080px;
+        clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+        padding: 132px 64px 0;
+      }
+      #cb-pri { left: 0; width: 640px; background: var(--primary); color: var(--dark); }
+      #cb-sec { left: 640px; width: 640px; background: var(--light); color: var(--dark); }
+      #cb-acc { left: 1280px; width: 640px; background: var(--dark); color: var(--light); border-left: 1px solid rgba(242,255,252,.18); }
+      .color-kicker {
+        font-size: 16px;
+        letter-spacing: .38em;
+        text-transform: uppercase;
+        opacity: 0;
+      }
+      .color-name {
+        margin-top: 112px;
+        font-size: 124px;
+        line-height: .9;
+        opacity: 0;
+      }
+      .color-hex {
+        margin-top: 28px;
+        font-size: 42px;
+        letter-spacing: .08em;
+        opacity: 0;
+      }
+      .color-desc {
+        margin-top: 80px;
+        max-width: 430px;
+        font-size: 28px;
+        line-height: 1.35;
+        opacity: 0;
+      }
+
+      /* S03 */
+      #s03 { background: var(--dark); }
+      #grid-svg {
+        position: absolute;
+        inset: 0;
+      }
+      .grid-line { stroke: rgba(242,255,252,.2); stroke-width: 1; opacity: 0; }
+      .grid-dot { fill: var(--primary); opacity: 0; }
+      .gd-label {
+        position: absolute;
+        width: 270px;
+        min-height: 76px;
+        border-left: 3px solid var(--primary);
+        padding: 10px 0 10px 16px;
+        color: var(--light);
+        background: rgba(7,19,22,.72);
+        opacity: 0;
+      }
+      .gd-label span {
+        display: block;
+        color: rgba(0,215,192,.72);
+        font-size: 13px;
+        letter-spacing: .25em;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+      .gd-label strong {
+        font-size: 29px;
+        line-height: 1;
+      }
+
+      /* S04 */
+      #s04 { background: var(--light); color: var(--dark); }
+      #tw1 {
+        position: absolute;
+        left: 88px;
+        top: 92px;
+        font-size: 232px;
+        line-height: .9;
+        opacity: 0;
+      }
+      .type-word {
+        position: absolute;
+        opacity: 0;
+      }
+      #tw2 {
+        left: 105px;
+        top: 384px;
+        font-size: 148px;
+        color: transparent;
+        -webkit-text-stroke: 3px var(--primary);
+        text-stroke: 3px var(--primary);
+      }
+      #tw3 {
+        right: 116px;
+        top: 380px;
+        font-size: 192px;
+        color: var(--dark);
+      }
+      #tw4 {
+        left: 100px;
+        bottom: 136px;
+        font-size: 76px;
+        color: rgba(7,19,22,.48);
+      }
+      #tw5 {
+        right: -34px;
+        bottom: 40px;
+        font-size: 270px;
+        color: rgba(7,19,22,.06);
+        opacity: 0;
+      }
+
+      /* S05 */
+      #s05 { background: var(--dark); }
+      #s05 .label { position: absolute; left: 92px; top: 78px; opacity: 0; }
+      .chart-card {
+        position: absolute;
+        border: 1px solid rgba(242,255,252,.16);
+        background: rgba(242,255,252,.045);
+        backdrop-filter: blur(8px);
+      }
+      #line-card { left: 88px; top: 154px; width: 930px; height: 395px; }
+      #bar-card { right: 88px; top: 154px; width: 700px; height: 395px; }
+      #ring-card { left: 88px; bottom: 88px; width: 520px; height: 330px; }
+      #nodes-card { right: 88px; bottom: 88px; width: 1100px; height: 330px; }
+      .chart-title {
+        position: absolute;
+        left: 30px;
+        top: 24px;
+        color: rgba(242,255,252,.58);
+        font-size: 16px;
+        letter-spacing: .28em;
+        text-transform: uppercase;
+      }
+      #line-path {
+        fill: none;
+        stroke: var(--primary);
+        stroke-width: 5;
+        stroke-dasharray: 900;
+        stroke-dashoffset: 900;
+      }
+      .bar {
+        transform-origin: bottom;
+        transform-box: fill-box;
+        transform: scaleY(0);
+      }
+      #ring-pct {
+        position: absolute;
+        left: 64px;
+        top: 108px;
+        color: var(--primary);
+        font-size: 104px;
+        opacity: 0;
+      }
+      #ring-caption {
+        position: absolute;
+        left: 70px;
+        top: 224px;
+        color: rgba(242,255,252,.58);
+        font-size: 22px;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        opacity: 0;
+      }
+      .node, .connector { opacity: 0; }
+
+      /* S06 */
+      #s06 { background: var(--primary); color: var(--dark); }
+      #s06-head {
+        position: absolute;
+        left: 58px;
+        top: 34px;
+        font-size: 82px;
+        opacity: 0;
+      }
+      .pc {
+        position: absolute;
+        width: 480px;
+        height: 300px;
+        padding: 32px;
+        opacity: 0;
+        overflow: hidden;
+      }
+      .pc-dark { background: var(--dark); color: var(--light); }
+      .pc-acid { background: var(--primary); color: var(--dark); border: 1px solid rgba(7,19,22,.25); }
+      .pc-light { background: var(--light); color: var(--dark); }
+      .pc-tag {
+        font-size: 14px;
+        letter-spacing: .3em;
+        text-transform: uppercase;
+        opacity: .58;
+      }
+      .pc-name {
+        position: absolute;
+        left: 32px;
+        right: 32px;
+        bottom: 30px;
+        font-size: 43px;
+        line-height: 1;
+      }
+      .pc-stat-num {
+        margin-top: 76px;
+        font-size: 76px;
+        line-height: .95;
+      }
+      .pc-stat-sub {
+        margin-top: 16px;
+        font-size: 22px;
+        line-height: 1.15;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        opacity: .66;
+      }
+      .pc-deco {
+        position: absolute;
+        right: -18px;
+        top: -34px;
+        font-size: 180px;
+        opacity: .08;
+      }
+      .pc-scan {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(transparent 48%, rgba(0,215,192,.12) 50%, transparent 52%);
+        background-size: 100% 18px;
+        opacity: .28;
+      }
+
+      /* S07 */
+      #s07 { background: var(--dark); }
+      .frag {
+        position: absolute;
+        width: 190px;
+        height: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        opacity: 0;
+      }
+      .frag.a { background: var(--primary); color: var(--dark); }
+      .frag.b { background: var(--light); color: var(--dark); }
+      .frag.c { background: rgba(242,255,252,.08); color: var(--light); border: 1px solid rgba(242,255,252,.2); }
+      #s07-brand {
+        position: absolute;
+        left: 50%;
+        top: 47%;
+        color: var(--light);
+        font-size: 248px;
+        line-height: .9;
+        opacity: 0;
+      }
+      #s07-tagline {
+        position: absolute;
+        left: 50%;
+        top: 65%;
+        color: var(--primary);
+        font-size: 38px;
+        letter-spacing: .18em;
+        opacity: 0;
+      }
+
+      /* S08 */
+      #s08 { background: var(--primary); color: var(--dark); }
+      #final-brand {
+        position: absolute;
+        left: 50%;
+        top: 42%;
+        font-size: 260px;
+        line-height: .88;
+        opacity: 0;
+      }
+      #final-tagline {
+        position: absolute;
+        left: 50%;
+        top: 61%;
+        font-size: 54px;
+        letter-spacing: .04em;
+        opacity: 0;
+      }
+      #final-web {
+        position: absolute;
+        left: 50%;
+        bottom: 116px;
+        font-size: 44px;
+        letter-spacing: .16em;
+        opacity: 0;
+      }
+      .footer-left, .footer-right {
+        position: absolute;
+        bottom: 48px;
+        font-size: 17px;
+        letter-spacing: .24em;
+        text-transform: uppercase;
+        opacity: .55;
+      }
+      .footer-left { left: 64px; }
+      .footer-right { right: 64px; }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="medeo-brand-video"
+      data-start="0"
+      data-duration="60"
+      data-width="1920"
+      data-height="1080"
+    >
+      <audio id="bgm" class="clip" src="audio/bgm.wav" data-start="0" data-track-index="10" data-volume="0.38"></audio>
+      <audio id="impact-open" class="clip" src="audio/sfx-impact.wav" data-start="0.05" data-track-index="11" data-volume="0.7"></audio>
+      <audio id="scan-whoosh" class="clip" src="audio/sfx-whoosh.wav" data-start="0.4" data-track-index="16" data-volume="0.45"></audio>
+      <audio id="det-type" class="clip" src="audio/sfx-type.wav" data-start="2.5" data-track-index="11" data-volume="0.42"></audio>
+      <audio id="letter-type" class="clip" src="audio/sfx-type.wav" data-start="3.0" data-track-index="12" data-volume="0.36"></audio>
+      <audio id="kw-tick-1" class="clip" src="audio/sfx-tick.wav" data-start="4.5" data-track-index="11" data-volume="0.38"></audio>
+      <audio id="kw-tick-2" class="clip" src="audio/sfx-tick.wav" data-start="5.0" data-track-index="12" data-volume="0.38"></audio>
+      <audio id="kw-tick-3" class="clip" src="audio/sfx-tick.wav" data-start="5.5" data-track-index="11" data-volume="0.38"></audio>
+      <audio id="kw-tick-4" class="clip" src="audio/sfx-tick.wav" data-start="6.0" data-track-index="12" data-volume="0.38"></audio>
+      <audio id="s01-sweep" class="clip" src="audio/sfx-acid-sweep.wav" data-start="9.74" data-track-index="16" data-volume="0.52"></audio>
+      <audio id="s02-whoosh" class="clip" src="audio/sfx-whoosh.wav" data-start="10.05" data-track-index="11" data-volume="0.42"></audio>
+      <audio id="grid-tick-a" class="clip" src="audio/sfx-tick.wav" data-start="17.3" data-track-index="11" data-volume="0.35"></audio>
+      <audio id="grid-tick-b" class="clip" src="audio/sfx-tick.wav" data-start="17.5" data-track-index="12" data-volume="0.35"></audio>
+      <audio id="s03-whoosh" class="clip" src="audio/sfx-whoosh.wav" data-start="24.74" data-track-index="11" data-volume="0.42"></audio>
+      <audio id="s04-type" class="clip" src="audio/sfx-type.wav" data-start="25.2" data-track-index="16" data-volume="0.38"></audio>
+      <audio id="s04-sweep" class="clip" src="audio/sfx-acid-sweep.wav" data-start="32.74" data-track-index="11" data-volume="0.5"></audio>
+      <audio id="s05-whoosh" class="clip" src="audio/sfx-whoosh.wav" data-start="37.74" data-track-index="12" data-volume="0.42"></audio>
+      <audio id="matrix-sfx" class="clip" src="audio/sfx-matrix.wav" data-start="38" data-track-index="11" data-volume="0.28"></audio>
+      <audio id="collapse-sfx" class="clip" src="audio/sfx-collapse.wav" data-start="50" data-track-index="11" data-volume="0.45"></audio>
+      <audio id="final-sweep" class="clip" src="audio/sfx-acid-sweep.wav" data-start="56.74" data-track-index="12" data-volume="0.5"></audio>
+
+      <div id="s01" class="clip scene" data-start="0" data-duration="10" data-track-index="1">
+        <div class="grid-tex"></div><div class="noise"></div>
+        <div id="s01-scanline"></div>
+        <div id="s01-init" class="label">System initializing / care intelligence module</div>
+        <div id="s01-signal" class="mono">Signal lock: 99.9 / HIPAA-ready mesh</div>
+        <div id="s01-det-bar"></div>
+        <div id="s01-detected" class="label">Brand detected</div>
+        <div id="s01-letters" class="display">
+          <span id="s1-M" class="s1l">M</span><span id="s1-E" class="s1l">E</span><span id="s1-D" class="s1l">D</span><span id="s1-E2" class="s1l">E</span><span id="s1-O" class="s1l">O</span>
+        </div>
+        <div id="s01-kw-label" class="label">Brand DNA</div>
+        <div id="kw1" class="s1-kw display">CARE</div>
+        <div id="kw2" class="s1-kw display">DATA</div>
+        <div id="kw3" class="s1-kw display">TRUST</div>
+        <div id="kw4" class="s1-kw display">FLOW</div>
+        <div id="s01-progress-shell"><div id="s01-progress"></div></div>
+        <div id="s01-counter" class="mono">ANALYSIS 100%</div>
+      </div>
+
+      <div id="s02" class="clip scene" data-start="10" data-duration="7" data-track-index="1">
+        <div id="cb-pri" class="color-block">
+          <div class="color-kicker">Primary signal</div>
+          <div class="color-name display">Clinical<br />Teal</div>
+          <div class="color-hex mono">#00D7C0</div>
+          <div class="color-desc">Real-time care signal, routing state, and active system confidence.</div>
+        </div>
+        <div id="cb-sec" class="color-block">
+          <div class="color-kicker">Light field</div>
+          <div class="color-name display">Sterile<br />Mint</div>
+          <div class="color-hex mono">#F2FFFC</div>
+          <div class="color-desc">Readable clinical space for patient context and operational clarity.</div>
+        </div>
+        <div id="cb-acc" class="color-block">
+          <div class="color-kicker" style="color: var(--primary)">Core depth</div>
+          <div class="color-name display">Care<br />Black</div>
+          <div class="color-hex mono">#071316</div>
+          <div class="color-desc" style="color: rgba(242,255,252,.68)">A secure foundation for protected data and executive command views.</div>
+        </div>
+      </div>
+
+      <div id="s03" class="clip scene" data-start="17" data-duration="8" data-track-index="1">
+        <div class="grid-tex"></div>
+        <svg id="grid-svg" viewBox="0 0 1920 1080" aria-hidden="true">
+          <g id="grid-lines"></g>
+          <g id="grid-dots"></g>
+        </svg>
+        <div id="gdl1" class="gd-label" style="left:285px;top:95px"><span>User profile</span><strong>AGE 28-62</strong></div>
+        <div id="gdl2" class="gd-label" style="left:445px;top:365px"><span>Role</span><strong>CARE OPS</strong></div>
+        <div id="gdl3" class="gd-label" style="left:765px;top:500px"><span>Context</span><strong>HYBRID CARE</strong></div>
+        <div id="gdl4" class="gd-label" style="left:1085px;top:230px"><span>Sector</span><strong>DIGITAL HEALTH</strong></div>
+        <div id="gdl5" class="gd-label" style="left:1405px;top:635px"><span>Scale</span><strong>NETWORK</strong></div>
+        <div id="gdl6" class="gd-label" style="left:1565px;top:95px"><span>Reach</span><strong>24/7 SIGNAL</strong></div>
+      </div>
+
+      <div id="s04" class="clip scene" data-start="25" data-duration="8" data-track-index="1">
+        <div id="tw1" class="display">MEDEO</div>
+        <div id="tw2" class="type-word display">CONNECTED</div>
+        <div id="tw3" class="type-word display">CARE</div>
+        <div id="tw4" class="type-word display">INTELLIGENCE THAT MOVES WITH THE PATIENT</div>
+        <div id="tw5" class="type-word display">MEDEO</div>
+      </div>
+
+      <div id="s05" class="clip scene" data-start="33" data-duration="5" data-track-index="1">
+        <div class="grid-tex"></div>
+        <div class="label">Operational intelligence dashboard</div>
+        <div id="line-card" class="chart-card">
+          <div class="chart-title">Care demand signal</div>
+          <svg viewBox="0 0 930 395" width="930" height="395" aria-hidden="true">
+            <polyline points="64,290 160,260 260,282 368,206 484,224 600,150 720,172 846,92" id="line-path" />
+            <circle class="node" cx="846" cy="92" r="10" fill="#00d7c0" />
+          </svg>
+        </div>
+        <div id="bar-card" class="chart-card">
+          <div class="chart-title">Triage throughput</div>
+          <svg viewBox="0 0 700 395" width="700" height="395" aria-hidden="true">
+            <rect class="bar" x="90" y="172" width="82" height="170" fill="#00d7c0" />
+            <rect class="bar" x="220" y="118" width="82" height="224" fill="#3b82f6" />
+            <rect class="bar" x="350" y="76" width="82" height="266" fill="#b8ff2c" />
+            <rect class="bar" x="480" y="52" width="82" height="290" fill="#f2fffc" />
+          </svg>
+        </div>
+        <div id="ring-card" class="chart-card">
+          <div class="chart-title">Signal confidence</div>
+          <div id="ring-pct" class="display">0%</div>
+          <div id="ring-caption">Routing accuracy</div>
+        </div>
+        <div id="nodes-card" class="chart-card">
+          <div class="chart-title">Care network graph</div>
+          <svg viewBox="0 0 1100 330" width="1100" height="330" aria-hidden="true">
+            <line class="connector" x1="162" y1="180" x2="360" y2="86" stroke="#00d7c0" stroke-width="3" />
+            <line class="connector" x1="360" y1="86" x2="560" y2="196" stroke="#00d7c0" stroke-width="3" />
+            <line class="connector" x1="560" y1="196" x2="770" y2="108" stroke="#00d7c0" stroke-width="3" />
+            <line class="connector" x1="770" y1="108" x2="930" y2="208" stroke="#00d7c0" stroke-width="3" />
+            <circle class="node" cx="162" cy="180" r="22" fill="#00d7c0" />
+            <circle class="node" cx="360" cy="86" r="18" fill="#f2fffc" />
+            <circle class="node" cx="560" cy="196" r="26" fill="#3b82f6" />
+            <circle class="node" cx="770" cy="108" r="18" fill="#b8ff2c" />
+            <circle class="node" cx="930" cy="208" r="22" fill="#00d7c0" />
+          </svg>
+        </div>
+      </div>
+
+      <div id="s06" class="clip scene" data-start="38" data-duration="12" data-track-index="1">
+        <div id="s06-head" class="display">TARGET AUDIENCE MATRIX</div>
+        <div id="pc00" class="pc pc-dark" style="left:0;top:120px"><div class="pc-scan"></div><div class="pc-deco display">D</div><div class="pc-tag">Audience 01</div><div class="pc-name display">DIGITAL HEALTH TEAMS</div></div>
+        <div id="pc01" class="pc pc-acid" style="left:480px;top:120px"><div class="pc-stat-num display">24/7</div><div class="pc-stat-sub">Care signal</div></div>
+        <div id="pc02" class="pc pc-dark" style="left:960px;top:120px"><div class="pc-scan"></div><div class="pc-deco display">C</div><div class="pc-tag">Audience 02</div><div class="pc-name display">CLINICAL OPERATIONS</div></div>
+        <div id="pc03" class="pc pc-light" style="left:1440px;top:120px"><div class="pc-stat-num display">3.2X</div><div class="pc-stat-sub">Triage speed</div></div>
+        <div id="pc10" class="pc pc-acid" style="left:0;top:420px"><div class="pc-stat-num display">99.9%</div><div class="pc-stat-sub">Uptime target</div></div>
+        <div id="pc11" class="pc pc-dark" style="left:480px;top:420px"><div class="pc-scan"></div><div class="pc-deco display">P</div><div class="pc-tag">Audience 03</div><div class="pc-name display">PROVIDER NETWORKS</div></div>
+        <div id="pc12" class="pc pc-light" style="left:960px;top:420px"><div class="pc-stat-num display">1M+</div><div class="pc-stat-sub">Care touchpoints</div></div>
+        <div id="pc13" class="pc pc-dark" style="left:1440px;top:420px"><div class="pc-scan"></div><div class="pc-deco display">C</div><div class="pc-tag">Audience 04</div><div class="pc-name display">CARE COORDINATORS</div></div>
+        <div id="pc20" class="pc pc-dark" style="left:0;top:720px"><div class="pc-scan"></div><div class="pc-deco display">P</div><div class="pc-tag">Audience 05</div><div class="pc-name display">PATIENT EXPERIENCE</div></div>
+        <div id="pc21" class="pc pc-acid" style="left:480px;top:720px"><div class="pc-stat-num display">HIPAA</div><div class="pc-stat-sub">Ready workflow</div></div>
+        <div id="pc22" class="pc pc-dark" style="left:960px;top:720px"><div class="pc-scan"></div><div class="pc-deco display">H</div><div class="pc-tag">Audience 06</div><div class="pc-name display">HEALTHCARE LEADERS</div></div>
+        <div id="pc23" class="pc pc-light" style="left:1440px;top:720px"><div class="pc-stat-num display">REAL</div><div class="pc-stat-sub">Time insight</div></div>
+      </div>
+
+      <div id="s07" class="clip scene" data-start="50" data-duration="7" data-track-index="1">
+        <div class="grid-tex"></div><div class="noise"></div>
+        <div id="f0" class="frag a display" style="left:70px;top:90px">CARE</div>
+        <div id="f1" class="frag b display" style="left:370px;top:122px">COLOR</div>
+        <div id="f2" class="frag c display" style="left:690px;top:74px">GRID</div>
+        <div id="f3" class="frag a display" style="right:410px;top:118px">TYPE</div>
+        <div id="f4" class="frag b display" style="right:82px;top:78px">DATA</div>
+        <div id="f5" class="frag c display" style="left:90px;top:430px">MOTION</div>
+        <div id="f6" class="frag a display" style="right:90px;top:420px">TRUST</div>
+        <div id="f7" class="frag b display" style="left:220px;bottom:116px">ROUTING</div>
+        <div id="f8" class="frag c display" style="left:560px;bottom:80px">PATIENT</div>
+        <div id="f9" class="frag a display" style="right:560px;bottom:108px">SYSTEM</div>
+        <div id="f10" class="frag b display" style="right:220px;bottom:78px">FLOW</div>
+        <div id="f11" class="frag c display" style="left:870px;top:835px">MEDEO</div>
+        <div id="s07-brand" class="display">MEDEO</div>
+        <div id="s07-tagline" class="mono">CONNECTED CARE INTELLIGENCE</div>
+      </div>
+
+      <div id="s08" class="clip scene" data-start="57" data-duration="3" data-track-index="1">
+        <div id="final-brand" class="display">MEDEO</div>
+        <div id="final-tagline" class="mono">Connected Care Intelligence</div>
+        <div id="final-web" class="display">MEDEO.HEALTH</div>
+        <div class="footer-left mono">MEDEO STUDIO © 2026</div>
+        <div class="footer-right mono">HEALTH TECHNOLOGY / CARE OPERATING SYSTEM</div>
+      </div>
+
+      <div id="fl-dark" class="flood"></div>
+      <div id="fl-light" class="flood"></div>
+      <div id="fl-primary" class="flood"></div>
+      <div id="fl-brand">MEDEO</div>
+    </div>
+
+    <script>
+      (function () {
+        window.__timelines = window.__timelines || {};
+        var tl = gsap.timeline({ paused: true });
+
+        function makeGrid() {
+          var lines = document.getElementById("grid-lines");
+          var dots = document.getElementById("grid-dots");
+          for (var x = 160; x <= 1760; x += 160) {
+            var v = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            v.setAttribute("class", "grid-line vline");
+            v.setAttribute("x1", x); v.setAttribute("x2", x);
+            v.setAttribute("y1", 70); v.setAttribute("y2", 1010);
+            lines.appendChild(v);
+          }
+          for (var y = 95; y <= 905; y += 135) {
+            var h = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            h.setAttribute("class", "grid-line hline");
+            h.setAttribute("x1", 160); h.setAttribute("x2", 1760);
+            h.setAttribute("y1", y); h.setAttribute("y2", y);
+            lines.appendChild(h);
+          }
+          for (var dx = 160; dx <= 1760; dx += 160) {
+            for (var dy = 95; dy <= 905; dy += 135) {
+              var c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+              c.setAttribute("class", "grid-dot");
+              c.setAttribute("cx", dx); c.setAttribute("cy", dy); c.setAttribute("r", 4);
+              dots.appendChild(c);
+            }
+          }
+        }
+
+        function diagonalIn(id, t, dur) {
+          dur = dur || 0.22;
+          tl.fromTo(id,
+            { clipPath: "polygon(0 0,0 0,0 100%,0 100%)" },
+            { clipPath: "polygon(0 0,100% 0,100% 100%,0 100%)", duration: dur, ease: "power3.out" }, t);
+        }
+        function diagonalOut(id, t, dur) {
+          dur = dur || 0.2;
+          tl.to(id, { clipPath: "polygon(40% 0,100% 0,100% 100%,70% 100%)", duration: dur * 0.55, ease: "power2.in" }, t);
+          tl.to(id, { clipPath: "polygon(100% 0,100% 0,100% 100%,100% 100%)", duration: dur * 0.45, ease: "power2.in" }, t + dur * 0.55);
+        }
+        function flashFlood(id, t, dur) {
+          dur = dur || 0.24;
+          tl.fromTo(id,
+            { clipPath: "polygon(0 0,0 0,0 100%,0 100%)" },
+            { clipPath: "polygon(0 0,100% 0,100% 100%,0 100%)", duration: dur, ease: "power4.in" }, t);
+          tl.set(id, { clipPath: "polygon(0 0,0 0,0 100%,0 100%)" }, t + dur + 0.02);
+        }
+        function brandFlash(t, lightBg) {
+          tl.set("#fl-brand", { color: lightBg ? "#071316" : "#00d7c0", opacity: 0 }, t - 0.01);
+          tl.to("#fl-brand", { opacity: 0.9, duration: 0.1, ease: "power4.in" }, t);
+          tl.to("#fl-brand", { opacity: 0, duration: 0.2, ease: "power2.out" }, t + 0.26);
+        }
+
+        makeGrid();
+
+        tl.set("#s01", { opacity: 1 }, 0);
+        tl.set("#s01-scanline", { y: 0, opacity: 1 }, 0.3);
+        tl.to("#s01-scanline", { y: 1082, duration: 1.5, ease: "power1.inOut" }, 0.3);
+        tl.set("#s01-scanline", { opacity: 0 }, 1.85);
+        tl.to("#s01-init", { opacity: 1, duration: 0.2 }, 0.35);
+        tl.to("#s01-signal", { opacity: 1, duration: 0.2 }, 0.8);
+        tl.to("#s01-det-bar", { width: 400, duration: 0.35, ease: "power3.out" }, 2.0);
+        tl.to("#s01-detected", { opacity: 1, duration: 0.25 }, 2.2);
+        ["#s1-M", "#s1-E", "#s1-D", "#s1-E2", "#s1-O"].forEach(function (id, i) {
+          tl.fromTo(id, { opacity: 0, y: 55 }, { opacity: 1, y: 0, duration: 0.15, ease: "power4.out" }, 3.0 + i * 0.12);
+        });
+        tl.to("#s01-kw-label", { opacity: 1, duration: 0.2 }, 4.2);
+        ["#kw1", "#kw2", "#kw3", "#kw4"].forEach(function (id, i) {
+          tl.fromTo(id, { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.22, ease: "power3.out" }, 4.5 + i * 0.5);
+        });
+        tl.to("#s01-progress", { width: 600, opacity: 1, duration: 1.0, ease: "power2.inOut" }, 6.5);
+        tl.to("#s01-counter", { opacity: 1, duration: 0.3 }, 7.5);
+        flashFlood("#fl-dark", 9.74, 0.22);
+        brandFlash(9.74, false);
+        tl.set("#s01", { opacity: 0 }, 10.0);
+
+        tl.set("#s02", { opacity: 1 }, 10.0);
+        diagonalIn("#cb-pri", 10.05, 0.24);
+        diagonalIn("#cb-sec", 10.18, 0.24);
+        diagonalIn("#cb-acc", 10.31, 0.24);
+        tl.to("#s02 .color-kicker", { opacity: 1, duration: 0.25, stagger: 0.1 }, 10.7);
+        tl.to("#s02 .color-name", { opacity: 1, y: 0, duration: 0.35, stagger: 0.1, ease: "power3.out" }, 11.0);
+        tl.to("#s02 .color-hex", { opacity: 1, duration: 0.25, stagger: 0.1 }, 11.5);
+        tl.to("#s02 .color-desc", { opacity: 1, y: -8, duration: 0.35, stagger: 0.1 }, 12.1);
+        diagonalOut("#cb-pri", 16.55, 0.2);
+        diagonalOut("#cb-sec", 16.62, 0.2);
+        diagonalOut("#cb-acc", 16.69, 0.2);
+        brandFlash(16.74, false);
+        tl.set("#s02", { opacity: 0 }, 17.0);
+
+        tl.set("#s03", { opacity: 1 }, 17.0);
+        tl.to(".grid-line", { opacity: 1, duration: 0.25, stagger: 0.015 }, 17.25);
+        tl.to(".grid-dot", { opacity: 0.55, duration: 0.18, stagger: 0.004 }, 18.0);
+        ["#gdl1", "#gdl2", "#gdl3", "#gdl4", "#gdl5", "#gdl6"].forEach(function (id, i) {
+          tl.fromTo(id, { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.25, ease: "power3.out" }, 20.0 + i * 0.18);
+        });
+        flashFlood("#fl-light", 24.74, 0.22);
+        brandFlash(24.74, true);
+        tl.set("#s03", { opacity: 0 }, 25.0);
+
+        tl.set("#s04", { opacity: 1 }, 25.0);
+        tl.fromTo("#tw1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 25.2);
+        tl.to("#tw1", { letterSpacing: "0.06em", duration: 0.45, ease: "power2.out" }, 26.26);
+        tl.to("#tw1", { letterSpacing: "-0.01em", duration: 0.3, ease: "power2.in" }, 26.72);
+        tl.fromTo("#tw2", { opacity: 0, x: -70 }, { opacity: 1, x: 0, duration: 0.38, ease: "power3.out" }, 27.1);
+        tl.fromTo("#tw3", { opacity: 0, x: 70 }, { opacity: 1, x: 0, duration: 0.38, ease: "power3.out" }, 27.5);
+        tl.fromTo("#tw4", { opacity: 0, y: 25 }, { opacity: 1, y: 0, duration: 0.35 }, 28.3);
+        tl.to("#tw5", { opacity: 1, duration: 0.5 }, 29.0);
+        flashFlood("#fl-dark", 32.74, 0.22);
+        brandFlash(32.74, false);
+        tl.set("#s04", { opacity: 0 }, 33.0);
+
+        tl.set("#s05", { opacity: 1 }, 33.0);
+        tl.to("#s05 .label", { opacity: 1, duration: 0.25 }, 33.12);
+        tl.to("#line-path", { strokeDashoffset: 0, duration: 0.8, ease: "power2.out" }, 33.55);
+        tl.to("#line-card .node", { opacity: 1, scale: 1.2, transformOrigin: "center", duration: 0.25 }, 34.25);
+        tl.to(".bar", { scaleY: 1, duration: 0.6, stagger: 0.08, ease: "power3.out" }, 34.2);
+        var ring = { value: 0 };
+        tl.set("#ring-pct,#ring-caption", { opacity: 1 }, 35.1);
+        tl.to(ring, {
+          value: 94,
+          duration: 0.75,
+          ease: "power2.out",
+          onUpdate: function () {
+            var el = document.getElementById("ring-pct");
+            if (el) el.textContent = Math.round(ring.value) + "%";
+          }
+        }, 35.1);
+        tl.to(".connector", { opacity: 1, duration: 0.25, stagger: 0.08 }, 35.8);
+        tl.to("#nodes-card .node", { opacity: 1, scale: 1.15, transformOrigin: "center", duration: 0.25, stagger: 0.08 }, 36.1);
+        flashFlood("#fl-primary", 37.74, 0.22);
+        brandFlash(37.74, true);
+        tl.set("#s05", { opacity: 0 }, 38.0);
+
+        tl.set("#s06", { opacity: 1 }, 38.0);
+        tl.fromTo("#s06-head", { opacity: 0, y: -24 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 38.18);
+        ["#pc00", "#pc01", "#pc02", "#pc03"].forEach(function (id, i) {
+          tl.fromTo(id, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 38.7 + i * 0.15);
+        });
+        ["#pc10", "#pc11", "#pc12", "#pc13"].forEach(function (id, i) {
+          tl.fromTo(id, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 39.4 + i * 0.15);
+        });
+        ["#pc20", "#pc21", "#pc22", "#pc23"].forEach(function (id, i) {
+          tl.fromTo(id, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 40.1 + i * 0.15);
+        });
+        ["#pc00", "#pc02", "#pc11", "#pc13", "#pc20", "#pc22"].forEach(function (id, i) {
+          tl.to(id, { scale: 1.02, duration: 0.25, ease: "power2.out" }, 44.0 + i * 0.15);
+          tl.to(id, { scale: 1.0, duration: 0.2, ease: "power2.in" }, 44.25 + i * 0.15);
+        });
+        flashFlood("#fl-dark", 49.7, 0.22);
+        brandFlash(49.7, false);
+        tl.set("#s06", { opacity: 0 }, 50.0);
+
+        tl.set("#s07", { opacity: 1 }, 50.0);
+        var fragIds = ["#f0", "#f1", "#f2", "#f3", "#f4", "#f5", "#f6", "#f7", "#f8", "#f9", "#f10", "#f11"];
+        fragIds.forEach(function (id, i) {
+          tl.to(id, { opacity: 1, duration: 0.08 }, 50.1 + i * 0.05);
+        });
+        fragIds.forEach(function (id, i) {
+          tl.to(id, { left: 865, top: 498, scale: 0.04, opacity: 0, duration: 1.15, ease: "power2.in" }, 51.4 + i * 0.04);
+        });
+        tl.fromTo("#s07-brand",
+          { opacity: 0, scale: 0.06, xPercent: -50, yPercent: -50 },
+          { opacity: 1, scale: 1, xPercent: -50, yPercent: -50, duration: 0.6, ease: "back.out(1.4)" }, 53.0);
+        tl.fromTo("#s07-tagline",
+          { opacity: 0, xPercent: -50, y: 20 },
+          { opacity: 1, xPercent: -50, y: 0, duration: 0.4 }, 53.7);
+        flashFlood("#fl-primary", 56.74, 0.22);
+        brandFlash(56.74, true);
+        tl.set("#s07", { opacity: 0 }, 57.0);
+
+        tl.set("#s08", { opacity: 1 }, 57.0);
+        tl.fromTo("#final-brand",
+          { opacity: 0, scale: 0.86, xPercent: -50, yPercent: -50 },
+          { opacity: 1, scale: 1, xPercent: -50, yPercent: -50, duration: 0.32, ease: "power3.out" }, 57.1);
+        tl.fromTo("#final-tagline",
+          { opacity: 0, xPercent: -50, y: 16 },
+          { opacity: 0.72, xPercent: -50, y: 0, duration: 0.36 }, 57.45);
+        tl.fromTo("#final-web",
+          { opacity: 0, xPercent: -50, y: 16 },
+          { opacity: 0.62, xPercent: -50, y: 0, duration: 0.36 }, 58.0);
+
+        window.__timelines["medeo-brand-video"] = tl;
+      })();
+    </script>
+  </body>
+</html>
